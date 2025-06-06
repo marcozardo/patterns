@@ -1,0 +1,2 @@
+- entity_types: reactant,product,intermediate, metabolite,cofactor,enzyme,protein,mRNA,rRNA,SRP RNA,tRNA,tmRNA,DNA,gene,molecule,chemical compound,biological compound
+- reaction_setting: Binding,Dissociation,Conversion,Expression,Repression,Coexpression,Traslation,Degradation,Synthesis,Catalysis,Cascade reaction
