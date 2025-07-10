@@ -1,0 +1,61 @@
+
+# I might not specify the format since all the files inside "inputs" folder are in .md, but it is useful if I may get different types of files in the same repo.
+# .text --> assign the list to the old variable "Papers"
+# I might remove the .md inside the glob.wildcards()
+# use "snakemake --dryrun" to see on the shell what are the values we printed to screen.
+
+
+print("Snakefile is being executed!", flush=True)
+
+# Showing output files 
+
+Papers = glob_wildcards("workdir/inputs/{text}.md").text
+
+rule all:
+    input:
+        expand("workdir/fabric_output/{sample}.txt", sample=Papers),      
+        "workdir/all_simulations.csv"
+
+### Conversion from MarkDown to Antimony model ###
+
+rule conversion:
+    input: "workdir/inputs/{sample}.md"
+
+    output: "workdir/fabric_output/{sample}.txt"
+
+    shell: "type '{input}' | fabric -p Antimony_Converter > '{output}'"
+         
+            
+### Checking the Simulation ###
+
+rule check_simulation:
+    input: 
+        generated_model = "workdir/fabric_output/{model}.txt"
+
+    output:
+        simulated_model = "workdir/csv_output/{model}_result.csv"  
+        
+    script: "scripts/check_simulation.py"
+
+#scripts/check_simulation.py --log {log} {input.generated_model} > {output.simulated_model}
+
+### Aggregation of the information in a unique file ###
+
+#table = glob_wildcards("workdir/csv_output/{row}_result.csv").row
+
+rule aggregate_results:	
+    input: expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
+    
+    output: "workdir/all_simulations.csv"
+    
+    run:
+        import pandas as pd 
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+        
+
+
+
+        
+        
