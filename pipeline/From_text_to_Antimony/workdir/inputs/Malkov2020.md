@@ -1,6 +1,87 @@
+logo: ELSEVIER
+
+Company Name & Tagline :
+  • The logo prominently displays the company name "ELSEVIER" in uppercase, orange serif font.
+  • Above the name, there is an intricate illustration featuring a tree, a standing figure, and a banner with the Latin phrase "NON SOLUS".
+
+Graphic Elements :
+  • The illustration is rendered in grayscale with fine linework.
+  • A large, leafy tree occupies the center, with a man in classical attire standing to the right, holding a branch.
+  • The banner "NON SOLUS" is draped across the tree's branches.
+  • There is a small bush or shrub at the base of the tree, to the left of the figure.
+
+Dimensions & Placement :
+  • The illustration is centered above the company name.
+  • The company name "ELSEVIER" is in a bold, orange serif font, all caps, and is centered below the illustration.
+
+Analysis :
+  • The logo combines classical imagery and Latin text to evoke tradition, scholarship, and authority, aligning with Elsevier's identity as a major academic publisher. <!-- figure, from page 0 (l=0.415,t=0.106,r=0.585,b=0.245), with ID ffd4d037-1270-41e6-a69c-e4c79bd02f29 -->
+
+Since January 2020 Elsevier has created a COVID-19 resource centre with
+free information in English and Mandarin on the novel coronavirus COVID-
+19. The COVID-19 resource centre is hosted on Elsevier Connect, the
+company's public news and information website. <!-- text, from page 0 (l=0.111,t=0.291,r=0.887,b=0.417), with ID d44cd810-9855-48e4-8d29-3a71c906551a -->
+
+Elsevier hereby grants permission to make all its COVID-19-related research that is available on the COVID-19 resource centre - including this research content - immediately available in PubMed Central and other publicly funded repositories, such as the WHO COVID database with rights for unrestricted research re-use and analyses in any form or by any means with acknowledgement of the original source. These permissions are granted for free by Elsevier for as long as the COVID-19 resource centre remains active. <!-- text, from page 0 (l=0.113,t=0.464,r=0.887,b=0.710), with ID 992251a8-c6c4-4c5a-9f53-dae1caf0dc39 -->
+
+Chaos, Solitons and Fractals 139 (2020) 110296 <!-- marginalia, from page 0 (l=0.379,t=0.043,r=0.621,b=0.057), with ID 148c4c20-3f7d-4e6b-a98c-8667ce8c2c2f -->
+
+logo: ELSEVIER
+
+Summary : This image displays the official logo of Elsevier, a major academic publishing company, featuring a detailed illustration of a tree with a person standing beneath it, and the company name "ELSEVIER" in orange capital letters below.
+
+Logo Elements :
+  • Company name: ELSEVIER (all uppercase, serif font, orange color).
+  • Illustration: A large, leafy tree with a person (possibly a scholar) standing beneath, reaching toward the branches.
+  • Additional details: Flowing ribbon or banner entwined in the tree branches, with some illegible text or symbols.
+  • Placement: Illustration occupies the upper portion; company name is centered below the illustration.
+  • Color palette: Illustration in grayscale; text in orange.
+
+Dimensions & Placement :
+  • Logo is vertically oriented, with the illustration above and the text below.
+  • Proportions: Illustration occupies approximately two-thirds of the height; text one-third.
+
+Analysis :
+  • The logo combines a classical illustration with modern, bold text, suggesting a blend of tradition and authority in academic publishing. The use of orange for the company name makes it stand out against the grayscale illustration. <!-- figure, from page 0 (l=0.059,t=0.077,r=0.170,b=0.166), with ID e054bf0e-e983-433e-b133-8f14407019c4 -->
+
+Contents lists available at ScienceDirect <!-- text, from page 0 (l=0.375,t=0.078,r=0.634,b=0.094), with ID 7ae40bd7-1992-4101-87fb-43b19c466808 -->
+
+Chaos,
+Solitons
+& Fractals
+
+An Interdisciplinary
+Journal of Nonlinear
+Science
+
+Founding Editor:
+Professor Mohamed El Naschie <!-- text, from page 0 (l=0.845,t=0.071,r=0.939,b=0.163), with ID 15d53b4e-cd28-4bdf-8b05-a3f5b5e12dc8 -->
+
+# Chaos, Solitons and Fractals
+Nonlinear Science, and Nonequilibrium and Complex Phenomena <!-- text, from page 0 (l=0.271,t=0.100,r=0.737,b=0.141), with ID f7deefac-477d-4fdc-8a3b-88a3bf895e98 -->
+
+journal homepage: www.elsevier.com/locate/chaos <!-- text, from page 0 (l=0.340,t=0.149,r=0.668,b=0.162), with ID b7386b4c-336d-4038-8854-99fcb3325d67 -->
 
 Simulation of coronavirus disease 2019 (COVID-19) scenarios with
 possibility of reinfection <!-- text, from page 0 (l=0.059,t=0.207,r=0.771,b=0.255), with ID 2b81c8b0-d41b-4dce-ac41-b125fe2c7608 -->
+
+Summary : This is a button-style user interface element prompting the user to check for updates, featuring a circular icon with a red bookmark and a multicoloured ring.
+
+logo: 
+  Scene Overview : 
+    • Main subject is a circular icon with a red bookmark or ribbon in the center, surrounded by a ring that is yellow on the left and blue on the right.
+    • Below the icon, the text reads “Check for updates” in a bold, sans-serif font.
+    • The background is a light grey gradient, giving a subtle 3D button effect.
+  Technical Details : 
+    • No company name or tagline is visible.
+    • The icon is centered above the text.
+    • The image is square, with the icon and text vertically aligned.
+  Spatial Relationships : 
+    • The icon occupies the upper half, with the text directly below.
+    • The design is symmetrical and balanced.
+  Analysis : 
+    • The use of a bookmark and circular ring suggests a focus on marking or tracking updates.
+    • The multicoloured ring may imply inclusivity or a connection to a broader ecosystem, but no explicit branding is present. <!-- figure, from page 0 (l=0.836,t=0.211,r=0.889,b=0.251), with ID 04219a64-864d-4ec6-a80b-fa7dd47a5035 -->
 
 Egor Malkovᵃ,ᵇ  
 ᵃ Department of Economics, University of Minnesota, 1925 Fourth Street South, Minneapolis, MN 55455, USA  
@@ -26,6 +107,97 @@ A B S T R A C T
 Epidemiological models of COVID-19 transmission assume that recovered individuals have a fully protected immunity. To date, there is no definite answer about whether people who recover from COVID-19 can be reinfected with the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). In the absence of a clear answer about the risk of reinfection, it is instructive to consider the possible scenarios. To study the epidemiological dynamics with the possibility of reinfection, I use a Susceptible-Exposed-Infectious-Resistant-Susceptible model with the time-varying transmission rate. I consider three different ways of modeling reinfection. The crucial feature of this study is that I explore both the difference between the reinfection and no-reinfection scenarios and how the mitigation measures affect this difference. The principal results are the following. First, the dynamics of the reinfection and no-reinfection scenarios are indistinguishable before the infection peak. Second, the mitigation measures delay not only the infection peak, but also the moment when the difference between the reinfection and no-reinfection scenarios becomes prominent. These results are robust to various modeling assumptions. <!-- text, from page 0 (l=0.334,t=0.339,r=0.943,b=0.512), with ID ea295819-c80b-4fab-8917-4f39018b8449 -->
 
 © 2020 Elsevier Ltd. All rights reserved. <!-- text, from page 0 (l=0.707,t=0.514,r=0.940,b=0.528), with ID 0c1f89f1-9c20-4660-8a13-a48891621c1b -->
+
+1. Introduction
+
+    The rapid spread of coronavirus disease 2019 (COVID-19) creates significant challenges for economies and healthcare systems of many countries around the world. The situation evolves extremely quickly and, to date, there is a high degree of uncertainty about the future outcomes of the pandemic. As of September 1, 2020, there have been 25.9 million confirmed cases globally, including about 860 thousand deaths, see [28]. <!-- text, from page 0 (l=0.058,t=0.560,r=0.490,b=0.680), with ID 229de4ca-3176-4db2-93ab-b49c694ce014 -->
+
+One of the crucial questions that still has no definite answer
+is whether people who recover from COVID-19 can be reinfected
+with the severe acute respiratory syndrome coronavirus 2 (SARS-
+CoV-2). The case reports are scarce — there are a few of them
+about positive testing after recovering from COVID-19 in China,
+Japan, and South Korea — and it is not clear whether these pa-
+tients are truly reinfected or not. Shi et al. [24] discuss the immune
+responses induced by COVID-19. Another study, Bao et al. [4], us-
+ing the sample of four rhesus macaques, conclude that the primary
+SARS-CoV-2 infection could protect from subsequent reinfections.
+In turn, An et al. [1], show that 38 out of 262 patients, i.e. 14.5
+percent, recovered from COVID-19, tested positive for SARS-CoV-2,
+using polymerase chain reaction (PCR) tests, after being discharged <!-- text, from page 0 (l=0.059,t=0.681,r=0.490,b=0.854), with ID 46da70b9-9dce-4d7d-9d0d-99fa581ed8ab -->
+
+from the hospital in Shenzhen. Those patients did not show ob-
+viously clinical symptoms and disease progression upon readmis-
+sion. A recent study by To et al. [25] shows the results of the
+whole genome sequencing that was performed directly on respi-
+ratory specimens collected during two episodes of COVID-19 in a
+patient. Epidemiological, clinical, serological, and genomic analy-
+ses confirmed that the patient had reinfection instead of persistent
+viral shedding from the first infection. Their paper suggests that
+SARS-CoV-2 may continue to circulate among the human popula-
+tions despite herd immunity due to natural infection or vaccina-
+tion. <!-- text, from page 0 (l=0.511,t=0.562,r=0.942,b=0.706), with ID 47c98372-40f0-4c02-a187-f6305eae8190 -->
+
+In the absence of a clear answer about the risk of reinfec-
+tion with the new coronavirus, it is instructive to be aware of
+the possible scenarios. This study aims at providing the attempt
+in this direction. I use a Susceptible-Exposed-Infectious-Resistant-
+Susceptible (SEIRS) model that differs from a standard SEIR model,
+considered in Hethcote [11] and Chowell et al. [8], and, in applica-
+tion to COVID-19, Kucharski et al. [14], Lin et al. [18], Prem et al.
+[20], and Wang et al. [27], among others, with an additional as-
+sumption that recovered individuals can become susceptible to in-
+fection again. In methodologically related papers, Reynolds et al.
+[22] and Ebtahaigh et al. [9] study the reinfection of swines with
+influenza A virus (IAV). The simulations considered in this paper
+are by no means the definitive quantitative forecasts. Instead, the
+purpose is to show the patterns of the disease dynamics if people <!-- text, from page 0 (l=0.511,t=0.707,r=0.942,b=0.894), with ID b5990625-27aa-42de-a892-01beae73672d -->
+
+_E-mail address:_ malko017@umn.edu <!-- text, from page 0 (l=0.080,t=0.883,r=0.264,b=0.896), with ID 7ed3ab05-c199-4230-8889-f72c1eb91481 -->
+
+https://doi.org/10.1016/j.chaos.2020.110296
+0960-0779/© 2020 Elsevier Ltd. All rights reserved. <!-- marginalia, from page 0 (l=0.060,t=0.915,r=0.324,b=0.939), with ID 25e2bbee-c017-414f-b4c1-53d38e6eb017 -->
+
+*E. Malkov* <!-- marginalia, from page 0 (l=0.059,t=0.043,r=0.114,b=0.056), with ID 0cb9b1e1-85d7-4558-84b7-2228534df309 -->
+
+*Chaos, Solitons and Fractals* 139 (2020) 110296 <!-- marginalia, from page 0 (l=0.705,t=0.042,r=0.940,b=0.057), with ID 61bbd2d2-8799-40ce-b9ae-92612faa4461 -->
+
+can be reinfected with the new coronavirus. In fact, the risk of re-
+infection would definitely affect the scope and duration of policies
+that are currently in place. <!-- text, from page 0 (l=0.060,t=0.070,r=0.489,b=0.109), with ID 3f8629f2-cbe4-4a10-a9f5-df8cffa7c1f9 -->
+
+I consider three different ways of modeling reinfection. I begin
+with the model where individuals have constant immunity waning
+rate and study the effects of the mitigation policies captured by
+the changes in the transmission rate and hence the reproduction
+number. The basic reproduction number, $R_0$, is a crucial parameter
+for evaluation the spread of the infection and the effects of mitiga-
+tion measures. Existing estimates for COVID-19 suggest that $R_0$ is
+between 2 and 6. Using the data from Wuhan, China, Wu et al.
+[29] estimate $R_0$ to be 2.68 (95% confidence interval (CI): 2.47–
+2.86). Using the data from mainland China, Zhao et al. [30] con-
+clude that the mean estimate of $R_0$ ranges from 2.24 (95% CI: 1.96–
+2.55) to 3.58 (95% CI: 2.89–4.39). Using the data for Italy, Remuzzi
+and Remuzzi [21] propose $R_0$ to be in the range 2.76–3.25. Using
+the data for Japan, Kuniya [15] estimates $R_0$ to be 2.6 (95% CI:
+2.4–2.8). Fauci et al. [10] propose $R_0$ to be 2.2. Sanche et al. [23] obtain
+a higher median estimate, $R_0 = 5.7$ (95% CI: 3.8–8.9). Beyond that,
+Korolev [13] shows that estimates of $R_0$ are highly sensitive to the
+values of epidemiologic parameters. In the simulations, I consider
+the range of values of the basic reproduction number. <!-- text, from page 0 (l=0.060,t=0.110,r=0.488,b=0.359), with ID e7b36baf-bc94-47a0-a439-70a6c1b5f00f -->
+
+Crucially, in each model experiment I consider not only how
+different are the reinfection and no-reinfection scenarios, but also
+how the mitigation measures affect this difference. To check the
+robustness of my findings about the role of the mitigation mea-
+sures with and without reinfection, I turn to the alternative model-
+ing assumptions about reinfection. First, I assume that individuals,
+once being reinfected, have a milder form of the disease. Second,
+instead of a constant immunity waning rate, I assume that the in-
+dividuals that are resistant at some date (those who were infected
+in the past) become susceptible again. The conceptual framework
+that I use can be easily incorporated into more complex models in
+future studies. <!-- text, from page 0 (l=0.060,t=0.359,r=0.488,b=0.519), with ID 247860f7-d447-4c27-9de4-61ecbde4f6f7 -->
 
 ## 2. Model
 
@@ -668,3 +840,80 @@ line plots:
 $R_0$) delay not only the infection peak, but also the moment when
 the difference between the reinfection and no-reinfection scenarios
 becomes prominent. <!-- text, from page 0 (l=0.059,t=0.406,r=0.487,b=0.449), with ID 14439135-c9c4-450d-b921-4d0f739f1e09 -->
+
+5. Conclusion
+
+    To date, the immune response, including duration of immunity, to SARS-CoV-2 infection is not yet understood. Unless it is clearly known that patients with COVID-19 are unlikely to be reinfected, it is instructive to consider the possible scenarios. In this paper, I study how the possibility of reinfection shapes the epidemiological dynamics at the population level. To explore the difference in the dynamics of the disease under the reinfection and no-reinfection scenarios and, furthermore, the effects of the mitigation measures, I use a SEIRS model and consider three different ways of modeling reinfection. A key finding is that the mitigation measures delay not only the infection peak, but also the moment when the difference between the reinfection and no-reinfection scenarios becomes prominent. This result is robust to various modeling assumptions. The framework is simple and therefore can serve as a baseline for more complex models. <!-- text, from page 0 (l=0.059,t=0.461,r=0.488,b=0.687), with ID 03ef808b-6267-474a-84f2-4b38040c9ce5 -->
+
+**Funding**
+
+    This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors. <!-- text, from page 0 (l=0.059,t=0.699,r=0.489,b=0.756), with ID e0bb8125-67ed-481b-9002-0c4d7ca7623d -->
+
+Declaration of Competing Interest
+
+    The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper. <!-- text, from page 0 (l=0.060,t=0.767,r=0.488,b=0.835), with ID 62c93798-5dc0-4795-a206-c55238560916 -->
+
+Acknowledgments
+
+    I thank the editor, Gabriel B. Mindlin, and two anonymous referees for their constructive comments, which helped me to improve the manuscript. I thank Polina Protasova, James Stock, and Alexis Akira Toda for useful comments and discussion. All remaining errors are mine. The views expressed herein are those of the <!-- text, from page 0 (l=0.060,t=0.848,r=0.487,b=0.941), with ID a9c3e292-9c9c-4f55-9635-db6316dfb779 -->
+
+author and not necessarily those of the Federal Reserve Bank of
+Minneapolis or the Federal Reserve System. <!-- text, from page 0 (l=0.512,t=0.407,r=0.941,b=0.436), with ID a034f198-407d-4c07-b23a-4598ed097ed4 -->
+
+References
+
+[1] An J., Liao X., Xiao T., Qian S., Yuan J., Ye H., et al. Clinical Characteristics of the Recovered COVID-19 Patients with Re-Detectable Positive RNA. Test. medRxiv 20200326024442222020. 10.1101/2020.03.26.20044222
+
+[2] Anderson RM, Heesterbeek H, Klinkenberg D, Hollingsworth TD. How will country-based mitigation measures influence the course of the COVID-19 epidemic? Lancet 2020;395(10228):931–4. doi: 10.1016/S0140-6736(20)30567-5.
+
+[3] Atkeson AG. What will be the economic impact of COVID-19 in the US? Rough estimates of disease scenarios. NBER working paper No 26867; 2020. doi:10.3386/w26867.
+
+[4] Bao L., Deng W., Gao H., Xiao C., Liu J., Xue J., et al. Reinfection Could not Occur in SARS-CoV-2 Infected Rhesus Macaques. bioRxiv; 2020. 10.1101/2020.03.13.990226
+
+[5] Berger DW, Herkenhoff KF, Mongey S. Reopening in an SEIR model with testing and targeted quarantine. University of Chicago Unpublished Manuscript; 2020.
+
+[6] Camacho A, Cazelles B. Does homologous reinfection drive multiple-wave influenza outbreaks? Accounting for immunodynamics in epidemiological models. Epidemiics 2013;5(4):187–96. doi:10.1016/j.epidem.2013.09.003.
+
+[7] Chen N, Zhou M, Dong X, Qu J, Gong F, Han Y, et al. Epidemiological and clinical characteristics of 99 cases of 2019 novel coronavirus pneumonia in Wuhan, China: a descriptive study. Lancet 2020;395(10223):507–13. doi: 10.1016/S0140-6736(20)30211-7.
+
+[8] Chowell G, Hengartner NW, Castillo-Chavez C, Fenimore PW, Hyman JM. The basic reproductive number of ebola and the effects of public health measures: the cases of congo and uganda. J Theor Biol 2004;229(1):119–26. doi:10.1016/ j.jtbi.2004.03.006.
+
+[9] Etbaigha F, Willms AR, Poljak Z. An SEIR model of influenza a virus infection and reinfection within a farrow-to-finish swine farm. PLoS One 2018;13(9). doi:10.1371/journal.pone.0202493.
+
+[10] Fauci AS, Lane HC, Redfield RR. COVID-19 — navigating the uncharted. Engl J Med 2020. doi:10.1056/NEJMe2002387.
+
+[11] Hethcote HW. The mathematics of infectious diseases. SIAM Rev 2000;42(4):599–653. doi:10.1137/S0036144500371907.
+
+[12] Hortacsu A, Liu J, Schwieg T. Estimating the Fraction of Unreported Infections in Epidemics with a Known Epicenter: An Application to COVID-19. Tech. Rep.; 2020. doi:10.3386/w27028.
+
+[13] Korolev I. Identification and estimation of the SEIRD epidemic model for COVID-19. J Econom 2020. doi:10.1016/j.jeconom.2020.07.038.
+
+[14] Kucharski AJ, Russell TW, Diamond C, Liu Y, Edmunds J, Funk S, et al. Early dynamics of transmission and control of COVID-19: a mathematical modelling study. Lancet Infect Dis 2020. doi:10.1016/S1473-3099(20)30144-4.
+
+[15] Kuniya T. Prediction of the epidemic peak of coronavirus disease in Japan, 2020. J Clin Med 2020;9(3):789–95. doi:10.3390/jcm9030789.
+
+[16] Lan L, Xu D, Ye G, Xia C, Wang S, Li Y, et al. Early transmission dynamics in Wuhan, China, of novel coronavirus-infected pneumonia. N Engl J Med 2020. <!-- text, from page 0 (l=0.513,t=0.452,r=0.942,b=0.938), with ID 78f6a9a3-3f9e-47d6-8785-caaf4af472a7 -->
+
+7 <!-- marginalia, from page 0 (l=0.493,t=0.955,r=0.507,b=0.966), with ID 655fa18f-9e2f-4884-9f8c-ce68d3e9979d -->
+
+*E. Malkov* <!-- marginalia, from page 0 (l=0.059,t=0.042,r=0.115,b=0.058), with ID 297721f9-f81b-4a82-bd89-f6233c01a01f -->
+
+*Chaos, Solitons and Fractals* 139 (2020) 110296 <!-- marginalia, from page 0 (l=0.705,t=0.042,r=0.941,b=0.058), with ID 399dbc16-dab9-457b-b3e8-0157f575b88f -->
+
+1. Li R, Pei S, Chen B, Song Y, Zhang T, Yang W, et al. Substantial undocumented infection facilitates the rapid dissemination of novel coronavirus (SARS-CoV2). Science 2020. doi:10.1126/science.abb3221.
+2. Lin Q, Zhao S, Gao D, Lou Y, Yang S, Musa SS, et al. A conceptual model for the coronavirus disease 2019 (COVID-19) outbreak in Wuhan, China with individual reaction and governmental action. Int J Infect Dis 2020:211–16. doi:10.1016/j.ijid.2020.02.058.
+3. Peirlinck M, Linka K, Costabal FS, Kuhl E. Outbreak dynamics of COVID-19 in China and the United States. Biomech Model Mechanobiol 2020:1–15. doi:10.1007/s10237-020-01332-5.
+4. Prem K, Liu Y, Russell TW, Kucharski AJ, Eggo RM, Davies N, et al. The effect of control strategies to reduce social mixing on outcomes of the COVID-19 epidemic in wuhan, china: a modelling study. Lancet Public Health 2020. doi:10.1016/S2468-2667(20)30073-6.
+5. Remuzzi A, Remuzzi G. COVID-19 and Italy: what next? Lancet 2020. doi:10.1016/S0140-6736(20)30627-9.
+6. Reynolds JJ, Torremorell M, Craft ME. Mathematical modeling of influenza a virus dynamics within swine farms and the effects of vaccination. PLoS One 2014;9(8). doi:10.1371/journal.pone.0106177.
+7. Sanche S, Lin Y, Xu C, Romero-Severson E, Hengartner N, Ke R. High contagiousness and rapid spread of severe acute respiratory syndrome coronavirus 2. Emerg Infect Dis 2020;26(7). doi:10.3201/eid2607.200282. <!-- text, from page 0 (l=0.058,t=0.067,r=0.493,b=0.296), with ID 69123c24-0407-4fda-a62b-ad3436d3319b -->
+
+1. [24] Shi Y., Wang Y., Shao C., Huang J., Gan J., Huang X., et al. COVID-19 Infection: The Perspectives on Immune Responses. 2020. 10.1038/s41418-020-0530-3
+2. [25] To KK-W, Hung IF-N, Ip JD, Chu AW-H, Chan W-M, Tam AR, et al. COVID-19 Re-infection by a phylogenetically distinct SARS-coronavirus-2 strain confirmed by whole genome sequencing. Clin Infect Dis 2020. doi:10.1093/cid/ciaa1275.
+3. [26] Toda AAA. Susceptible-infected-recovered (SIR) dynamics of COVID-19 and economic impact. arXiv:2003112212020.
+4. [27] Wang H, Wang Z, Dong Y, Chang R, Xu C, Yu X, et al. Phase-adjusted estimation of the number of coronavirus disease 2019 cases in Wuhan, China. Cell Discov 2020;6(1):1–8. doi:10.1038/s41421-020-0148-0.
+5. [28] Worldometers. Coronavirus cases, 2020, (accessed September 2, 2020) https://www.worldometers.info/coronavirus/.
+6. [29] Wu JT, Leung K, Leung GM. Nowcasting and forecasting the potential domestic and international spread of the 2019-nCoV outbreak originating in Wuhan, China: a modelling study. Lancet 2020;395(10225):689–97. doi:10.1016/S0140-6736(20)30260-9.
+7. [30] Zhao S, Lin Q, Ran J, Musa SS, Yang G, Wang W, et al. Preliminary estimation of the basic reproduction number of novel coronavirus (2019-nCoV) in China, from 2019 to 2020: a data-driven analysis in the early phase of the outbreak. Int J Infect Dis 2020;92:214–17. doi:10.1016/j.ijid.2020.01.050. <!-- text, from page 0 (l=0.511,t=0.069,r=0.943,b=0.276), with ID 23cfcbb6-4b02-4e97-adda-0abe9f84f43b -->
+
+8 <!-- marginalia, from page 0 (l=0.494,t=0.955,r=0.506,b=0.967), with ID da69685a-8e41-4db3-9609-a9fa6697153e -->

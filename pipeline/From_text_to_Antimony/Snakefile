@@ -1,61 +1,127 @@
 
-# I might not specify the format since all the files inside "inputs" folder are in .md, but it is useful if I may get different types of files in the same repo.
-# .text --> assign the list to the old variable "Papers"
-# I might remove the .md inside the glob.wildcards()
-# use "snakemake --dryrun" to see on the shell what are the values we printed to screen.
-
-
-print("Snakefile is being executed!", flush=True)
-
-# Showing output files 
+import os
+import pandas as pd
+from pathlib import Path
 
 Papers = glob_wildcards("workdir/inputs/{text}.md").text
 
 rule all:
     input:
-        expand("workdir/fabric_output/{sample}.txt", sample=Papers),      
+        expand("workdir/simulated/well_simulated/{sample}.txt", sample=Papers), 
+        expand("workdir/simulated/wrong_simulated/{sample}.txt", sample=Papers),
+        expand("workdir/csv_output/False/{sample}_result.csv", sample=Papers),
         "workdir/all_simulations.csv"
 
-### Conversion from MarkDown to Antimony model ###
-
 rule conversion:
-    input: "workdir/inputs/{sample}.md"
+    input:"workdir/inputs/{sample}.md"
 
-    output: "workdir/fabric_output/{sample}.txt"
+    output:"workdir/fabric_output/{sample}.txt"
 
-    shell: "type '{input}' | fabric -p Antimony_Converter > '{output}'"
-         
-            
-### Checking the Simulation ###
+    shell:"Type \"{input}\" | fabric -p Antimony_Converter > \"{output}\""
+                     
 
-rule check_simulation:
-    input: 
-        generated_model = "workdir/fabric_output/{model}.txt"
+rule simulation:
+    input:
+        model="workdir/fabric_output/{sample}.txt",
 
     output:
-        simulated_model = "workdir/csv_output/{model}_result.csv"  
-        
-    script: "scripts/check_simulation.py"
-
-#scripts/check_simulation.py --log {log} {input.generated_model} > {output.simulated_model}
-
-### Aggregation of the information in a unique file ###
-
-#table = glob_wildcards("workdir/csv_output/{row}_result.csv").row
-
-rule aggregate_results:	
-    input: expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
+        new_model="workdir/simulated/{sample}.txt",
+        result="workdir/csv_output/{sample}_result.csv",
+        attempt="workdir/attempt/{sample}_attempt.txt"  # se simula: generiamo un file csv che contenga (nome_modello, simulation = True)
     
+    params:
+        file = lambda wildcards: wildcards.sample 
+                                                             # errore del modello quando non simula 
+    script:
+        "script/check_simulation.py"
+        "Move-Item -Path \"{input.model}\" -Destination > \"{output.new_model}\""
+         
+rule moving_model:
+    input:
+        csv ="workdir/csv_output/{sample}_result.csv",
+        model="workdir/simulated/{sample}.txt"
+        
+    output:
+        well="workdir/simulated/well_simulated/{sample}.txt",
+        wrong="workdir/simulated/wrong_simulated/{sample}.txt" 
+    run:
+        import os
+        import pandas as pd
+        import shutil
+        dfs = [pd.read_csv(file) for file in input.csv]
+
+        if dfs['simulation'].iloc[0] == True:
+            shutil.move({input.model}, {output.well})
+        else:
+            shutil.move({input.model}, {output.wrong})
+
+
+checkpoint check_number_simulation:
+    output:
+        rules.simulation.output.attempt
+
+def input_for_aggregate(wildcards):
+    with checkpoints.check_number_simulation.get(sample=wildcards.sample).output[0].open() as f:
+        if f.read().strip() == "4":
+            return rules.aggregate.output[0]
+        else:
+            return "workdir/csv_output/False/{sample}_result.csv"
+    
+rule check_false_simulation:
+    input:
+        "workdir/csv_output/{sample}_result.csv"
+    output:
+        false="workdir/csv_output/False/{sample}_result.csv"
+    run:
+        import os
+        import shutil
+        dfs = [pd.read_csv(file) for file in input]
+
+        if dfs['simulation'].iloc[0] == False:
+                shutil.move({input}, {output.false})
+
+
+rule get_error:
+    input:
+        "workdir/csv_output/False/{sample}_result.csv"   
+    output:
+        error = "workdir/Error/{sample}.error.txt" 
+    run:
+        dfs = pd.read_csv(input)
+
+        if dfs["error"].iloc[0]:
+            error_value = dfs["error"].iloc[0]
+
+        with open(output.error, "w") as f:
+            f.write(str(error_value))
+            f.close()
+
+rule correction:
+    input:
+        model = "workdir/simulated/wrong_simulated/{sample}.txt",
+        error = "workdir/Error/{sample}.error.txt",
+        wrong_csv = "workdir/csv_output/False/{sample}_result.csv"
+     
+    output:
+        correct_model = "workdir/fabric_output/{sample}.txt"
+
+    shell:
+        "Type \"{input.model}\" \"{input.error}\" | fabric -p Antimomy_Editor > \"{output.correct_model}\""
+        "Remove-Item  \"{input.model}\""
+        "Remove-Item \"{input.error}\""
+        "Remove-Item \"{input.wrong_csv}\""
+        
+rule aggregate:
+    input:
+        expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
+
     output: "workdir/all_simulations.csv"
     
     run:
-        import pandas as pd 
+        import pandas as pd
         dfs = [pd.read_csv(file) for file in input]
         df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output[0], index=False)
-        
-
-
 
         
-        
+

@@ -1,61 +1,68 @@
-#import sys
 import os
 import pandas as pd
+import traceback
 import tellurium as te
+from pathlib import Path
 
-input_file = snakemake.input.generated_model
-output_file = snakemake.output.simulated_model
-#log_file = snakemake.log[0]
+# Snakemake I/O
+input_file = snakemake.simulation.input.model
+output_file = snakemake.simulation.output.result
+attempt_file = snakemake.simulation.output.attempt 
+sample = snakemake.simulation.params.file
 
-print(input_file, output_file)
+def read_Simulation_count(attempt_file):
+    try:
+        if os.path.exists(attempt_file):
+            with open(attempt_file, "r") as f:
+                return int(f.read().strip())
+    except FileNotFoundError:
+        pass
+    return 0
+
+def write_Simulation_Count(attempt_file, count):
+    with open(attempt_file, "w") as f:
+        f.write(str(count))
+                      
 
 def simulate_and_check(input_file):
-    try:
-        with open(input_file, "r") as f:
-            antimony_str = f.read()
+    file_name = os.path.basename(input_file)
+    simulation_success = False
+    error_msg = ""
+    
+    
+    number_of_simulation = read_Simulation_count(attempt_file)
+    
+    if number_of_simulation < 4:
 
-        rr = te.loadAntimonyModel(antimony_str)
-        rr.simulate(0,100,200)
+        try:
+            with open(input_file, "r") as f:
+                antimony_str = f.read()
 
-        print(f"Simulation succeeded for {input_file}") #file=log_file)
-        return True
+                rr = te.loadAntimonyModel(antimony_str)
+                rr.simulate(0, 100, 200)
 
-    except Exception as e:
-        print(f"Simulation Failed for {input_file}:\n{e}") #file=log_file)
-        return False
+                simulation_success = True
+                print(f"Simulation succeeded for {input_file}")
 
-# Open log file
-#with open(output_file, "w") as output_file:
-
-success = simulate_and_check(input_file)
-
-# Create output dataframe
-file_name = os.path.basename(input_file)
-df = pd.DataFrame({
-    "filename": [file_name],
-    "simulation": [success]
-})
-df.to_csv(output_file, index=False)
+        except Exception as e:
+            error_msg = traceback.format_exc()
+            print(f"Simulation failed for {input_file}:\n{error_msg}")
 
 
-#if __name__ == "__main__":
+            # write csv
+            df = pd.DataFrame({
+                "filename": [sample],
+                "simulation": [simulation_success],
+                "error": [error_msg if not simulation_success else ""]
+                })
+            df.to_csv(output_file, index=False)
 
-#    if len(sys.argv) < 2:
-#        print("Usage: python check_sinulation.py with <model_file>")        
-#        sys.exit(1)
+        write_Simulation_Count(attempt_file, number_of_simulation + 1)
 
-#   input = sys.argv[1]
-#    file_name = os.path.basename(input)
 
-#    success = simulate_and_check(input)
+    else:
+        print("max number of simulation covered")
 
-    # creation of the dataframe to see if each Antimony model created by fabric
-    # can be simulated
-
-#    df = pd.DataFrame({
-#        "filename": [file_name],
-#        "simulation":[success]
-#   })
-
-#    output_file = input.replace(".txt", "_result.csv")
-#    df.to_csv(output_file, index=False)    
+    return simulation_success
+ 
+simulate_and_check(input_file)
