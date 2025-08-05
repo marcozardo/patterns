@@ -432,55 +432,52 @@ Follow these rules while you are costructing the model.
 
 # STEPS
 
-1. Identify species and, if exist, their compartments.
+1. Carefully read and understand the input file.
 
-2. Extract reactions, with stoichiometries and rate laws (including parameter names and values) when they are available.
+2. Meticulously uncover and extract every essential model component from the input text. Take inspiration from the following list: 
+[species, compartments, reactions, specie initializations, variable initializations, compartment initializations, assignment rules, other declarations, unit definitions, display names]
 
-3. Capture initial concentrations for species where they are defined.
-
-4. Detect simulation setting (time span, time units, tolerances and piecewise if given).
-
-5. Construct the model following the conversion rules given in the previous section and composing it with all the elements collected in the previous four points.
+3. Build the model following the conversion rules given in "Antimony syntax requirements"'s section and composing it with all the components collected in the previous point.
 
 # OUTPUT INSTRUCTIONS
-
-* Provide the Antimony model in a txt file.
-
-* Take all the time you need to analyze in deep the input file.
-
-* Extract every piece of biochemical reaction data from the input file whether it appears as narrative descriptions of species and interactions, mathematical expressions or differential equations, tables of parameters and initial concentrations, or figure captions and legends indicating kinetic details.
 
 * Follow the order of the "Steps" section.
 
 * Fully resolve the task before go through the next one.
 
-* Follow the conversion guidelines exactly as given, without any deviations.
+* Take all the time you need to analyze in deep the input text.
 
-* Do not use the provided example as a template when generating the Antimony model.
+* Extract every biochemical modeling element from the input text regardless of presentation as prose, equations, tables, or figures.
 
-* Use only the input file; include no other information.
+* Use only the provided input text to build the model; include no other information.
 
-* Do not add or assume any rules or instructions that are not explicitly provided in the input file. 
+* Use every detail from the input text, do not leave anything out.
 
-* Use every detail from the input file, do not leave anything out.
+* Follow the conversion rules exactly as given, without any deviations.
 
-* If any required detail (e.g., compartments, initial concentrations, or rate constants) is missing from the input, leave it out and build the Antimony model using only the information that’s provided.
+* Use as further building guideline the examples provided in the "Examples" section.
+
+* Do not copy information from the provided examples in the "Example" section.
+
+* Treat each input text as a separate conversion: generate one Antimony model per text and do not combine information from different inputs. 
+
+# * Do not write "'''Antimony" in the first line of the output file.
+
+# * Use the following structure to define the name of an Antimony model: "model *ModelName()". (sistemalo nella sezione "Antimony Syntax requirements")
+
+* Output only the Antimony model; no explanatory prose, commentary, or text messaging. From "model" keyword to "end" one. 
+
+* Define the name of the model taking the name of the first outhor merged with the pubblication's year of the article.
 
 * Incorporate all time‐dependent variables and parameters whenever the model is influenced by time.
 
-* Reject inputs you cannot parse unambiguously.
+* if concentration and rate law values are not provided, use the information about species to build the reaction.
 
 * Always generate the Antimony model, even if it’s incomplete.
 
-* if concentration and rate law values are not provided, use the information about species to build the reaction.
-
-* Follow the structure define in the Examples shown below.
-
-* Output only the Antimony model code, no explanatory prose, commentary, or text messaging.
-
-* If you are not undestanding full or part of the input-text file, give me insights about that in a different text-file called "Exceptions.txt".
-
 # OUTPUT
+
+* Provide the Antimony model in a txt file.
 
 * After analyzing the input text and focusing on the conversion rules showed in the "ANTIMONY SYNTAX  REQUIREMENTS": 
 Provide an Antimony model that mirror the structure of the two models provided in the "Examples" section below.
