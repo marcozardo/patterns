@@ -174,9 +174,14 @@ Follow these rules while you are costructing the model.
   '''
 
   ## 6. Model costruction and adding comments 
-  When you build an Antimony model, you have to start with the "model" keyword, while "end" has to be used as ending point. Inside the building block use comments to separate each section. 
-  To add single-line comments use "#" or "//" symbols, either to insert multi-line comments you can use as starting and ending points the symbols "/* -comments- */".
+  Build an Antimony model starting with "model" keyword, while "end" has to be used as ending point. 
+  Inside the building block it is possible to use comments to separate each section.
+  Add single-line comments use "#" or "//" symbols.
+  To insert multi-line comments, surround them with the following symbols: "/\* [your comments] \*/".
   Multi-line comments can be used ouside the "model / end" block to enrich the model description. 
+  
+  Pay attention: There is no other ways to make comments. USE only what is provided in this section, otherwise the model will be not recognized. 
+  To mention an Antimony model, provide this structure: "model \*ModelName()"
 
   Example:
   *Input:*
@@ -186,8 +191,10 @@ Follow these rules while you are costructing the model.
   '''
   *Output:*
   '''
-  - /* Fructose-1,6-bisphosphate aldolase step in glycolysis */
-    model aldolase_step
+  - /\* Fructose-1,6-bisphosphate aldolase step 
+    in glycolysis \*/
+    
+    model \*aldolase_step
 
       // Reactions
       J0: F1_6BP -> G3P + DHAP; k_ald\*F1_6BP  // Aldolase mass-action kinetics
@@ -222,7 +229,7 @@ Follow these rules while you are costructing the model.
   '''
   *Output:*
   '''
-  - model *BIOMD0000000005()
+  - model \*BIOMD0000000005()
 
      // Compartments and Species:
      compartment cell;
@@ -319,7 +326,7 @@ Follow these rules while you are costructing the model.
 
   To assess that something is in a conpartment, the "in" keyword is used. this keyword is used for declaration, assignment for reactions, submodules or other variables:
   - *compartment comp1 in comp2;*
-  - *J0 in comp1: x -> y; k1*x;*
+  - *J0 in comp1: x -> y; k1\*x;*
   - *S1 in comp2 = 5;*
 
   Example:
@@ -330,7 +337,7 @@ Follow these rules while you are costructing the model.
   '''
   *Output:*
   '''
-  - model *Fung2005_Metabolator()
+  - model \*Fung2005_Metabolator()
 
       // Compartments and Species:
       compartment compartment_;
@@ -373,7 +380,7 @@ Follow these rules while you are costructing the model.
   '''
   *Output:*
   '''
-  - model *Ataullahkhanov1996_Adenylate()
+  - model \*Ataullahkhanov1996_Adenylate()
 
       // Compartments and Species:
       compartment cell;
@@ -460,10 +467,6 @@ Follow these rules while you are costructing the model.
 * Do not copy information from the provided examples in the "Example" section.
 
 * Treat each input text as a separate conversion: generate one Antimony model per text and do not combine information from different inputs. 
-
-# * Do not write "'''Antimony" in the first line of the output file.
-
-# * Use the following structure to define the name of an Antimony model: "model *ModelName()". (sistemalo nella sezione "Antimony Syntax requirements")
 
 * Output only the Antimony model; no explanatory prose, commentary, or text messaging. From "model" keyword to "end" one. 
 

@@ -8,6 +8,7 @@ Papers = glob_wildcards("workdir/inputs/{text}.md").text
 rule all:
     input:
         expand("workdir/fabric_output/{sample}.txt", sample=Papers),
+        expand("workdir/csv_output/{sample}_result.csv", sample=Papers),
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv"
 
@@ -26,17 +27,16 @@ rule first_simulation:
         "workdir/fabric_output/{sample}.txt" 
 
     output: 
-        error = "workdir/Error/{sample}_1er.txt",
-        simulated = "workdir/simulated/{sample}_1S.txt"
+        "workdir/Error/{sample}_1er.txt",
+        "workdir/simulated/{sample}_1S.txt"
     
     #params:
     #    file = lambda wc : wc.sample
     
     script:
-        """
-        script/check_simulation.py  
-        """
+        "scripts/check_simulation.py"
 
+     
 rule first_correction:
     input:
         error = "workdir/Error/{sample}_1er.txt",
@@ -46,28 +46,27 @@ rule first_correction:
         corrected_model = "workdir/corrected/{sample}_1C.txt"
 
     run:
-        with open({input.error}, "r") as f:
+        with open({input[0]}, "r") as f:
             content = f.read()
             if not content:
                 shell("Copy-Item \"{input.model}\" -Destination \"{output_corrected_model}\"")
             else:
                 shell("Type \"{input.model}\" \"{input.error}\" | fabric -p Antimomy_Editor > \"{output.corrected_model}\"")
 
-rule Second_simulation:
+
+rule second_simulation:
     input:
         "workdir/corrected/{sample}_1C.txt" 
 
     output: 
-        error = "workdir/Error/{sample}_2er.txt",
-        simulated = "workdir/simulated/{sample}_2S.txt"
+        "workdir/Error/{sample}_2er.txt",
+        "workdir/simulated/{sample}_2S.txt"
     
     #params:
     #    file = lambda wc : wc.sample
-    
     script:
-        """
-        script/check_simulation.py  
-        """
+        "scripts/check_simulation.py"
+        
 
 rule Second_correction:
     input:
@@ -93,16 +92,16 @@ rule third_simulation:
         "workdir/corrected/{sample}_2C.txt"
 
     output: 
-        result= "workdir/all_simulations.csv",
+        result= "workdir/csv_output/{sample}_result.csv",
         final_model = "workdir/final_models/{sample}_tested.txt"
-    #params:
-    #    file = lambda wc : wc.sample
+    
+    params:
+        file = lambda wc : wc.sample
+    
     script:
-        """
-        script/csv_creation.py   
-        """
-        
-"""
+        "scripts/csv_creation.py"
+     
+
 # aggregate the result of each model in a final csv file!
 
 rule aggregate_result:
@@ -118,7 +117,7 @@ rule aggregate_result:
         df.to_csv(output[0], index=False)
 
 
-
+"""
 rule aggregate_result:
     input:
         expand("workdir/Error/{sample}.sim{iter}.txt", sample=Papers, iter=range(0, Max_iter + 1))
