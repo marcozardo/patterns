@@ -20,7 +20,9 @@ rule conversion:
         "workdir/fabric_output/{sample}.txt"
 
     shell:
-        "Type \"{input}\" | fabric -p Antimony_Converter > \"{output}\""
+        "fabric -p Antimony_Converter \"{input}\" > \"{output}\""
+        
+        #"Type \"{input}\" | fabric -p Antimony_Converter > \"{output}\""
 
 rule first_simulation:
     input:
@@ -30,29 +32,26 @@ rule first_simulation:
         "workdir/Error/{sample}_1er.txt",
         "workdir/simulated/{sample}_1S.txt"
     
-    #params:
-    #    file = lambda wc : wc.sample
-    
     script:
         "scripts/check_simulation.py"
 
      
 rule first_correction:
     input:
-        error = "workdir/Error/{sample}_1er.txt",
         model = "workdir/simulated/{sample}_1S.txt"
 
     output:
         corrected_model = "workdir/corrected/{sample}_1C.txt"
 
-    run:
-        with open({input[0]}, "r") as f:
-            content = f.read()
-            if not content:
-                shell("Copy-Item \"{input.model}\" -Destination \"{output_corrected_model}\"")
-            else:
-                shell("Type \"{input.model}\" \"{input.error}\" | fabric -p Antimomy_Editor > \"{output.corrected_model}\"")
+    params:
+        error = "workdir/Error/{sample}_1er.txt"
 
+    shell:
+        """ 
+        fabric -p Antimony_Editor Type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
+        shell = "powershell"
+        
+        """
 
 rule second_simulation:
     input:
@@ -62,27 +61,26 @@ rule second_simulation:
         "workdir/Error/{sample}_2er.txt",
         "workdir/simulated/{sample}_2S.txt"
     
-    #params:
-    #    file = lambda wc : wc.sample
     script:
         "scripts/check_simulation.py"
         
 
 rule Second_correction:
     input:
-        error = "workdir/Error/{sample}_2er.txt",
         model = "workdir/simulated/{sample}_2S.txt"
 
     output:
         corrected_model = "workdir/corrected/{sample}_2C.txt"
 
-    run:
-        with open({input.error}, "r") as f:
-            content = f.read()
-            if not content:
-                shell("Copy-Item \"{input.model}\" -Destination \"{output_corrected_model}\"")
-            else:
-                shell("Type \"{input.model}\" \"{input.error}\" | fabric -p Antimomy_Editor > \"{output.corrected_model}\"")
+    params:
+        error = "workdir/Error/{sample}_2er.txt"
+
+    shell:
+        """ 
+        fabric -p Antimony_Editor Type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
+        shell = "powershell"
+        
+        """
 
 # third Simulation: the model will be copied in the ./final_model repository: it contains all tested model (corrected or not). In the end we are going to generate a final csv file with some info about each 
 # model simulation + final errors encountered.
@@ -116,6 +114,15 @@ rule aggregate_result:
         df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output[0], index=False)
 
+
+
+
+ #fabric -p Antimony_Editor type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
+        #shell = "powershell" 
+
+        #"Type \"{params.error}\" < \"{input.model}\" | fabric -p Antimony_Editor > \'{output}\'"
+        
+        #"Type \"{input.model}\"; Type \"{input.error}\" | fabric -p Antimony_Editor > \"{output.corrected_model}\""
 
 """
 rule aggregate_result:

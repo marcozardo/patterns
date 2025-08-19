@@ -5,47 +5,46 @@ import traceback
 import tellurium as te
 from pathlib import Path
 
-### Snakemake I/O ###
-in_file = snakemake.third_simulation.input[0]
-out_file = snakemake.third_simulation.output.result
-final_model = snakemake.third_simulation.output.final_model
-sample = snakemake.third_simulation.params.file
+### Snakemake ###
+in_file = snakemake.input[0]
+out_file = snakemake.output.result
+final_model = snakemake.output.final_model
+sample = snakemake.params.file
 
 ### generating_csv function to obtain the final csv for each model ###
 
-def generating_csv(input_file, model_name):
-    file_name = os.path.basename(input_file)
-    simulation_success = False
-    error_msg = ""
-
+def generating_csv(file, filename, table, final_path):
+    
+    data = {
+          "filename": filename,
+          "simulation": True,
+          "error": ""
+    }
+    
     try:
-        with open(input_file, "r") as f:
+        with open(file, "r") as f:
                 antimony_str = f.read()
 
                 rr = te.loadAntimonyModel(antimony_str)
-                rr.simulate(0, 100, 200)
+                result = rr.simulate(0, 100, 200)
 
-                return {
-                      "filename": model_name,
-                      "simulation": True,
-                      "error": ""
-                }
+                data["simulation"] = True
+                data["error"] = ""
         
     except Exception:
-            error_msg = traceback.format_exc()
-            return {
-                  "filename": model_name,
-                  "simulation": True,
-                  "error": error_msg 
-            }
-    df = pd.DataFrame()
-    df.to_csv(out_file, index=False)
+            data["simulation"] = False
+            data["error"] = traceback.format_exc()
+
+    pd.DataFrame([data]).to_csv(table, index=False)
     
-validation = generating_csv(in_file, sample)
+    # copy the final models in the last repo.
+    
+    shutil.copy(in_file, final_path)
+    
+    return table, final_path
 
-# copy the final models in the last repo.
 
-for model in in_file:
-    filename = os.path.basename(model)
-    destination = os.path.join(final_model, filename)
-    shutil.copy(model, destination)
+validation = generating_csv(in_file, sample, out_file, final_model)
+
+
+
