@@ -1,0 +1,59 @@
+model *Fung2005_Metabolator()
+  // Compartments and Species:
+  compartment cell;
+  species Glucose in cell, Acetate in cell, AcCoA in cell, E1 in cell, E2 in cell;
+
+  // Assignment Rules:
+  glucose_uptake_rate := Vmax_glucose*Glucose/(Km_glucose + Glucose);
+
+  // Reactions:
+  R1: Glucose -> Acetate; cell*(glucose_uptake_rate*E1);
+  R2: Acetate -> AcCoA; cell*k_acetate*Acetate*E2;
+  E1_synthesis:  => E1; cell*k_synth_E1;
+  E1_degradation: E1 => ; cell*k_deg_E1*E1;
+  E2_synthesis:  => E2; cell*k_synth_E2;
+  E2_degradation: E2 => ; cell*k_deg_E2*E2;
+
+  // Species initializations:
+  Glucose = 10;
+  Acetate = 0;
+  AcCoA = 0;
+  E1 = 0;
+  E2 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  Vmax_glucose = 0.5;
+  Km_glucose = 1;
+  k_acetate = 0.3;
+  k_synth_E1 = 0.1;
+  k_deg_E1 = 0.05;
+  k_synth_E2 = 0.1;
+  k_deg_E2 = 0.05;
+
+  // Other declarations:
+  var glucose_uptake_rate;
+  const cell, Vmax_glucose, Km_glucose, k_acetate, k_synth_E1, k_deg_E1, k_synth_E2, k_deg_E2;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit substance = 1e-6 mole;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  cell is "Intracellular space";
+  Glucose is "Glucose";
+  Acetate is "Acetate";
+  AcCoA is "Acetyl-CoA";
+  E1 is "Enzyme 1";
+  E2 is "Enzyme 2";
+  glucose_uptake_rate is "Glucose uptake rate";
+  R1 is "Glucose to acetate conversion";
+  R2 is "Acetate to acetyl-CoA conversion";
+  E1_synthesis is "Enzyme 1 synthesis";
+  E1_degradation is "Enzyme 1 degradation";
+  E2_synthesis is "Enzyme 2 synthesis";
+  E2_degradation is "Enzyme 2 degradation";
+end

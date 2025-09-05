@@ -1,0 +1,151 @@
+Since the error report is **Empty** and the provided Antimony model is already syntactically correct, no modifications are required. Here is the validated model:
+
+```antimony
+model *Dudziuk2019___Mathematical_Model_of_the_Cell_Cycle_Regulation_in_Fission_Yeast()
+
+  // Compartments and Species:
+  compartment cell;
+  species $EmptySet in cell;
+  species SK in cell, Cdc25 in cell, Wee1 in cell, Cdc2_CycB in cell, Cdc2_CycB_P in cell;
+  species Rum1 in cell, Ste9 in cell, Slp1 in cell, Cdc13 in cell, Cdc13_P in cell;
+  species Cdc2_CycB_PP in cell, IE in cell, PP in cell, IE_PP in cell;
+
+  // Assignment Rules:
+  Cdc2_CycB_Total := Cdc2_CycB + Cdc2_CycB_P + Cdc2_CycB_PP;
+  Cdc13_Total := Cdc13 + Cdc13_P;
+
+  // Reactions:
+  // Cdc2-CycB module
+  J1: SK => SK + Cdc25; cell * (k1 * SK);
+  J2: Cdc25 => ; cell * (k2 * Cdc25);
+  J3: Wee1 => ; cell * (k3 * Cdc2_CycB_PP * Wee1 / (J3 + Wee1));
+  J4: $EmptySet => Wee1; cell * (k4 * Cdc2_CycB * SK / (J4 + SK));
+  J5: Cdc2_CycB => Cdc2_CycB_P; cell * (k5 * Wee1 * Cdc2_CycB / (J5 + Cdc2_CycB));
+  J6: Cdc2_CycB_P => Cdc2_CycB; cell * (k6 * Cdc25 * Cdc2_CycB_P / (J6 + Cdc2_CycB_P));
+  J7: Cdc2_CycB_P => Cdc2_CycB_PP; cell * (k7 * Cdc2_CycB_P * Cdc13_P / (J7 + Cdc13_P));
+  J8: Cdc2_CycB_PP => Cdc2_CycB_P; cell * (k8 * PP * Cdc2_CycB_PP / (J8 + Cdc2_CycB_PP));
+
+  // Rum1 module
+  J9: $EmptySet => Rum1; cell * (k9 * Cdc13_P);
+  J10: Rum1 => ; cell * (k10 * Rum1 * Cdc2_CycB_PP / (J10 + Cdc2_CycB_PP));
+
+  // Ste9 module
+  J11: $EmptySet => Ste9; cell * (k11);
+  J12: Ste9 => ; cell * (k12 * Ste9 * Cdc2_CycB_PP / (J12 + Cdc2_CycB_PP));
+
+  // Slp1 module
+  J13: $EmptySet => Slp1; cell * (k13 * Cdc13_P);
+  J14: Slp1 => ; cell * (k14 * Slp1 * Cdc2_CycB_PP / (J14 + Cdc2_CycB_PP));
+
+  // Cdc13 module
+  J15: Cdc13 => Cdc13_P; cell * (k15 * Cdc2_CycB_PP * Cdc13 / (J15 + Cdc13));
+  J16: Cdc13_P => Cdc13; cell * (k16 * PP * Cdc13_P / (J16 + Cdc13_P));
+
+  // IE module
+  J17: $EmptySet => IE; cell * (k17 * Cdc13_P);
+  J18: IE => ; cell * (k18 * IE * Cdc2_CycB_PP / (J18 + Cdc2_CycB_PP));
+  J19: IE + PP => IE_PP; cell * (k19 * IE * PP);
+  J20: IE_PP => IE + PP; cell * (k20 * IE_PP);
+
+  // Species initializations:
+  SK = 1;
+  Cdc25 = 0;
+  Wee1 = 1;
+  Cdc2_CycB = 1;
+  Cdc2_CycB_P = 0;
+  Cdc2_CycB_PP = 0;
+  Rum1 = 0;
+  Ste9 = 1;
+  Slp1 = 0;
+  Cdc13 = 1;
+  Cdc13_P = 0;
+  IE = 0;
+  PP = 1;
+  IE_PP = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.025;
+  k2 = 0.025;
+  k3 = 0.025;
+  k4 = 0.025;
+  k5 = 0.025;
+  k6 = 0.025;
+  k7 = 0.025;
+  k8 = 0.025;
+  k9 = 0.025;
+  k10 = 0.025;
+  k11 = 0.025;
+  k12 = 0.025;
+  k13 = 0.025;
+  k14 = 0.025;
+  k15 = 0.025;
+  k16 = 0.025;
+  k17 = 0.025;
+  k18 = 0.025;
+  k19 = 0.025;
+  k20 = 0.025;
+  J3 = 1;
+  J4 = 1;
+  J5 = 1;
+  J6 = 1;
+  J7 = 1;
+  J8 = 1;
+  J10 = 1;
+  J12 = 1;
+  J14 = 1;
+  J15 = 1;
+  J16 = 1;
+  J18 = 1;
+
+  // Other declarations:
+  var Cdc2_CycB_Total, Cdc13_Total;
+  const cell, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19, k20;
+  const J3, J4, J5, J6, J7, J8, J10, J12, J14, J15, J16, J18;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  substance is "nanomole (default)";
+  time_unit is "minute (default)";
+  cell is "Cell";
+  SK is "SK";
+  Cdc25 is "Cdc25";
+  Wee1 is "Wee1";
+  Cdc2_CycB is "Cdc2-CycB";
+  Cdc2_CycB_P is "Cdc2-CycB-P";
+  Cdc2_CycB_PP is "Cdc2-CycB-PP";
+  Rum1 is "Rum1";
+  Ste9 is "Ste9";
+  Slp1 is "Slp1";
+  Cdc13 is "Cdc13";
+  Cdc13_P is "Cdc13-P";
+  IE is "IE";
+  PP is "PP";
+  IE_PP is "IE-PP";
+  J1 is "SK activation of Cdc25";
+  J2 is "Cdc25 degradation";
+  J3 is "Wee1 degradation";
+  J4 is "Wee1 synthesis";
+  J5 is "Cdc2-CycB phosphorylation by Wee1";
+  J6 is "Cdc2-CycB dephosphorylation by Cdc25";
+  J7 is "Cdc2-CycB-P phosphorylation by Cdc13-P";
+  J8 is "Cdc2-CycB-PP dephosphorylation by PP";
+  J9 is "Rum1 synthesis";
+  J10 is "Rum1 degradation";
+  J11 is "Ste9 synthesis";
+  J12 is "Ste9 degradation";
+  J13 is "Slp1 synthesis";
+  J14 is "Slp1 degradation";
+  J15 is "Cdc13 phosphorylation by Cdc2-CycB-PP";
+  J16 is "Cdc13 dephosphorylation by PP";
+  J17 is "IE synthesis";
+  J18 is "IE degradation";
+  J19 is "IE-PP complex formation";
+  J20 is "IE-PP complex dissociation";
+end
+```

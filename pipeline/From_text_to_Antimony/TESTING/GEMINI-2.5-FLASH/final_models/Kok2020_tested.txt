@@ -1,0 +1,26 @@
+```antimony
+model EmptyModel()
+
+  // Compartments and Species:
+  compartment compartment_;
+
+  // Assignment Rules:
+
+  // Reactions:
+
+  // Species initializations:
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+
+  // Display Names:
+  compartment_ is "Default Compartment";
+end
+```

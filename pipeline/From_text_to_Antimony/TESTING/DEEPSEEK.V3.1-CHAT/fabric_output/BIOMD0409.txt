@@ -1,0 +1,35 @@
+model *BIOMD0000000409()
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, P in compartment_, E in compartment_, ES in compartment_;
+
+  // Reactions:
+  R1: S + E -> ES; k1*S*E - k2*ES;
+  R2: ES -> E + P; k3*ES;
+
+  // Species initializations:
+  S = 1;
+  P = 0;
+  E = 0.1;
+  ES = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 10;
+  k2 = 1;
+  k3 = 5;
+
+  // Other declarations:
+  const compartment_, k1, k2, k3;
+
+  // Display Names:
+  compartment_ is "default compartment";
+  S is "Substrate";
+  P is "Product";
+  E is "Enzyme";
+  ES is "Enzyme-Substrate complex";
+  R1 is "Substrate-Enzyme binding";
+  R2 is "Product formation";
+end

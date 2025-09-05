@@ -1,0 +1,39 @@
+model *CellCycle_APC_CycB()
+
+  compartment cell;
+  species CycB in cell, APC_a in cell, APC_i in cell;
+  species $EmptySet;
+
+  APC_T := APC_a + APC_i;
+
+  R1: $EmptySet => CycB; k_s;
+  R2: CycB => $EmptySet; k_d * CycB * APC_a;
+  R3: APC_i => APC_a; V_max * CycB / (K_m + CycB);
+  R4: APC_a => APC_i; k_i * APC_a;
+
+  CycB = 0;
+  APC_a = 0;
+  APC_i = 1;
+
+  cell = 1;
+
+  k_s = 0.1;
+  k_d = 1.0;
+  V_max = 3.0;
+  K_m = 0.5;
+  k_i = 0.1;
+
+  var APC_T;
+  const cell, k_s, k_d, V_max, K_m, k_i;
+
+  CycB is "Cyclin B/CDK1";
+  APC_a is "Active APC/C";
+  APC_i is "Inactive APC/C";
+  APC_T is "Total APC/C";
+  R1 is "Cyclin B Synthesis";
+  R2 is "Cyclin B Degradation";
+  R3 is "APC/C Activation";
+  R4 is "APC/C Inactivation";
+  cell is "Cellular Compartment";
+
+end

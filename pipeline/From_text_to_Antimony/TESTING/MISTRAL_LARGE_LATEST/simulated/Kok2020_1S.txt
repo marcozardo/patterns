@@ -1,0 +1,127 @@
+```antimony
+model *Kok2020___A_whole_cell_model_of_Mycoplasma_genitalium()
+
+  // Compartments and Species:
+  compartment cell;
+  species $EmptySet in cell;
+  species RNAP in cell, RNAP_DNA in cell, RNAP_DNA_RNA in cell, RNA in cell, Ribosome in cell, Ribosome_RNA in cell, Protein in cell, Metabolite in cell, Metabolite_Enzyme in cell, Enzyme in cell, DNA in cell;
+
+  // Assignment Rules:
+  // (No explicit assignment rules provided in the input text)
+
+  // Reactions:
+  // Transcription
+  Transcription_Initiation: RNAP + DNA -> RNAP_DNA; k_transcription_initiation * RNAP * DNA;
+  Transcription_Elongation: RNAP_DNA -> RNAP_DNA_RNA; k_transcription_elongation * RNAP_DNA;
+  Transcription_Termination: RNAP_DNA_RNA -> RNAP + RNA; k_transcription_termination * RNAP_DNA_RNA;
+
+  // Translation
+  Translation_Initiation: Ribosome + RNA -> Ribosome_RNA; k_translation_initiation * Ribosome * RNA;
+  Translation_Elongation: Ribosome_RNA -> Ribosome_RNA + Protein; k_translation_elongation * Ribosome_RNA;
+  Translation_Termination: Ribosome_RNA -> Ribosome; k_translation_termination * Ribosome_RNA;
+
+  // Metabolism
+  Metabolism_Enzyme_Binding: Metabolite + Enzyme -> Metabolite_Enzyme; k_metabolism_binding * Metabolite * Enzyme;
+  Metabolism_Catalysis: Metabolite_Enzyme -> Enzyme + Metabolite; k_metabolism_catalysis * Metabolite_Enzyme;
+
+  // DNA Replication
+  DNA_Replication: DNA -> 2 DNA; k_DNA_replication * DNA;
+
+  // Cell Division
+  Cell_Division: DNA + RNA + Protein + Metabolite + Ribosome + RNAP + Enzyme -> 2 DNA + 2 RNA + 2 Protein + 2 Metabolite + 2 Ribosome + 2 RNAP + 2 Enzyme; k_cell_division * DNA;
+
+  // Biosynthesis
+  RNAP_Synthesis: $EmptySet -> RNAP; k_RNAP_synthesis;
+  Ribosome_Synthesis: $EmptySet -> Ribosome; k_ribosome_synthesis;
+  Enzyme_Synthesis: $EmptySet -> Enzyme; k_enzyme_synthesis;
+  Metabolite_Synthesis: $EmptySet -> Metabolite; k_metabolite_synthesis;
+
+  // Species initializations:
+  RNAP = 100;
+  RNAP_DNA = 0;
+  RNAP_DNA_RNA = 0;
+  RNA = 0;
+  Ribosome = 5000;
+  Ribosome_RNA = 0;
+  Protein = 0;
+  Metabolite = 1000;
+  Metabolite_Enzyme = 0;
+  Enzyme = 100;
+  DNA = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k_transcription_initiation = 0.001;
+  k_transcription_elongation = 0.1;
+  k_transcription_termination = 0.01;
+  k_translation_initiation = 0.001;
+  k_translation_elongation = 0.1;
+  k_translation_termination = 0.01;
+  k_metabolism_binding = 0.001;
+  k_metabolism_catalysis = 0.1;
+  k_DNA_replication = 0.0001;
+  k_cell_division = 0.00001;
+  k_RNAP_synthesis = 0.1;
+  k_ribosome_synthesis = 1;
+  k_enzyme_synthesis = 0.1;
+  k_metabolite_synthesis = 1;
+
+  // Other declarations:
+  const cell;
+  var RNAP, RNAP_DNA, RNAP_DNA_RNA, RNA, Ribosome, Ribosome_RNA, Protein, Metabolite, Metabolite_Enzyme, Enzyme, DNA;
+  var k_transcription_initiation, k_transcription_elongation, k_transcription_termination;
+  var k_translation_initiation, k_translation_elongation, k_translation_termination;
+  var k_metabolism_binding, k_metabolism_catalysis, k_DNA_replication, k_cell_division;
+  var k_RNAP_synthesis, k_ribosome_synthesis, k_enzyme_synthesis, k_metabolite_synthesis;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = second;
+
+  // Display Names:
+  cell is "Mycoplasma genitalium cell";
+  RNAP is "RNA Polymerase";
+  RNAP_DNA is "RNA Polymerase bound to DNA";
+  RNAP_DNA_RNA is "RNA Polymerase transcribing RNA";
+  RNA is "mRNA";
+  Ribosome is "Ribosome";
+  Ribosome_RNA is "Ribosome translating mRNA";
+  Protein is "Protein";
+  Metabolite is "Metabolite";
+  Metabolite_Enzyme is "Metabolite bound to Enzyme";
+  Enzyme is "Enzyme";
+  DNA is "DNA";
+  $EmptySet is "Source";
+  k_transcription_initiation is "Transcription Initiation Rate Constant";
+  k_transcription_elongation is "Transcription Elongation Rate Constant";
+  k_transcription_termination is "Transcription Termination Rate Constant";
+  k_translation_initiation is "Translation Initiation Rate Constant";
+  k_translation_elongation is "Translation Elongation Rate Constant";
+  k_translation_termination is "Translation Termination Rate Constant";
+  k_metabolism_binding is "Metabolism Enzyme Binding Rate Constant";
+  k_metabolism_catalysis is "Metabolism Catalysis Rate Constant";
+  k_DNA_replication is "DNA Replication Rate Constant";
+  k_cell_division is "Cell Division Rate Constant";
+  k_RNAP_synthesis is "RNA Polymerase Synthesis Rate Constant";
+  k_ribosome_synthesis is "Ribosome Synthesis Rate Constant";
+  k_enzyme_synthesis is "Enzyme Synthesis Rate Constant";
+  k_metabolite_synthesis is "Metabolite Synthesis Rate Constant";
+  Transcription_Initiation is "Transcription Initiation";
+  Transcription_Elongation is "Transcription Elongation";
+  Transcription_Termination is "Transcription Termination";
+  Translation_Initiation is "Translation Initiation";
+  Translation_Elongation is "Translation Elongation";
+  Translation_Termination is "Translation Termination";
+  Metabolism_Enzyme_Binding is "Metabolism Enzyme Binding";
+  Metabolism_Catalysis is "Metabolism Catalysis";
+  DNA_Replication is "DNA Replication";
+  Cell_Division is "Cell Division";
+  RNAP_Synthesis is "RNA Polymerase Synthesis";
+  Ribosome_Synthesis is "Ribosome Synthesis";
+  Enzyme_Synthesis is "Enzyme Synthesis";
+  Metabolite_Synthesis is "Metabolite Synthesis";
+
+end
+```

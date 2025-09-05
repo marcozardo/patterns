@@ -1,0 +1,99 @@
+```antimony
+model *Ko2006_Tryptophan_Operon()
+
+  // Compartments and Species:
+  compartment cell;
+  species mRNA_trpR in cell, TrpR in cell, mRNA_trp in cell, Enzyme_trp in cell;
+  species Trp in cell;
+  const species Trp_ext in cell;
+
+  // Assignment Rules:
+  TrpR_total := TrpR;
+  Trp_power_2_div_K_D_Trp := Trp^2/K_D_Trp;
+  TrpR_Trp2 := (TrpR_total + Trp_power_2_div_K_D_Trp - sqrt((TrpR_total + Trp_power_2_div_K_D_Trp)^2 - 4*TrpR_total*Trp_power_2_div_K_D_Trp))/2;
+  theta_p := (TrpR_Trp2/K_D_trpR)/(1 + TrpR_Trp2/K_D_trpR);
+  t_trans := L_l/v_trans;
+  theta_a := 1 - exp(-k_atten*t_trans/v_pol);
+  TrpR_total_power_n_H := TrpR_total^n_H;
+  K_D_TrpR_power_n_H := K_D_TrpR^n_H;
+
+  // Reactions:
+  R1:  => mRNA_trpR; cell*(k_s_mRNA_trpR*TrpR_total_power_n_H)/(K_D_TrpR_power_n_H + TrpR_total_power_n_H);
+  R2: mRNA_trpR => ;      cell*k_d_mRNA_trpR*mRNA_trpR;
+  R3:  => TrpR;      cell*k_s_TrpR*mRNA_trpR;
+  R4: TrpR => ;      cell*k_d_TrpR*TrpR;
+  R5:  => mRNA_trp;  cell*k_s_mRNA_trp*(1 - theta_p)*(1 - theta_a);
+  R6: mRNA_trp => ;      cell*k_d_mRNA_trp*mRNA_trp;
+  R7:  => Enzyme_trp; cell*k_s_Enzyme_trp*mRNA_trp;
+  R8: Enzyme_trp => ;      cell*k_d_Enzyme_trp*Enzyme_trp;
+  R9:  => Trp;       cell*k_s_Trp*Enzyme_trp;
+  R10: Trp => ;       cell*k_d_Trp*Trp;
+  R11: Trp_ext => Trp;      cell*k_in_Trp*Trp_ext;
+
+  // Species initializations:
+  mRNA_trpR = 0.4;
+  TrpR = 100;
+  mRNA_trp = 0.4;
+  Enzyme_trp = 1000;
+  Trp = 1000;
+  Trp_ext = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k_s_mRNA_trpR = 0.94;
+  K_D_TrpR = 20;
+  n_H = 2;
+  k_d_mRNA_trpR = 0.023;
+  k_s_TrpR = 0.23;
+  k_d_TrpR = 0.023;
+  k_s_mRNA_trp = 1.4;
+  k_d_mRNA_trp = 0.023;
+  k_s_Enzyme_trp = 2.3;
+  k_d_Enzyme_trp = 0.023;
+  k_s_Trp = 0.23;
+  k_d_Trp = 0.0023;
+  k_in_Trp = 0;
+  K_D_Trp = 1000;
+  K_D_trpR = 20;
+  k_atten = 0.04;
+  L_l = 140;
+  v_trans = 12;
+  v_pol = 60;
+
+  // Other declarations:
+  var TrpR_total, Trp_power_2_div_K_D_Trp, TrpR_Trp2, theta_p, t_trans;
+  var theta_a, TrpR_total_power_n_H, K_D_TrpR_power_n_H;
+  const cell, k_s_mRNA_trpR, K_D_TrpR, n_H, k_d_mRNA_trpR, k_s_TrpR;
+  const k_d_TrpR, k_s_mRNA_trp, k_d_mRNA_trp, k_s_Enzyme_trp, k_d_Enzyme_trp;
+  const k_s_Trp, k_d_Trp, k_in_Trp, K_D_Trp, K_D_trpR, k_atten, L_l;
+  const v_trans, v_pol;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "min";
+  substance is "nM";
+  cell is "cell";
+  mRNA_trpR is "mRNA for TrpR";
+  TrpR is "Tryptophan repressor protein (total)";
+  mRNA_trp is "mRNA for tryptophan synthesis enzymes";
+  Enzyme_trp is "tryptophan synthesis enzymes";
+  Trp is "Tryptophan";
+  Trp_ext is "external Tryptophan";
+  R1 is "synthesis of mRNA for TrpR";
+  R2 is "degradation of mRNA for TrpR";
+  R3 is "synthesis of TrpR";
+  R4 is "degradation of TrpR";
+  R5 is "synthesis of mRNA for trp enzymes";
+  R6 is "degradation of mRNA for trp enzymes";
+  R7 is "synthesis of trp enzymes";
+  R8 is "degradation of trp enzymes";
+  R9 is "synthesis of Tryptophan";
+  R10 is "degradation of Tryptophan";
+  R11 is "transport of external tryptophan into the cell";
+end
+```

@@ -1,0 +1,34 @@
+model *Simple_Decay_Reaction()
+  // Compartments and Species:
+  compartment cell;
+  species A in cell, B in cell;
+
+  // Reactions:
+  R1: A -> B; k1*A;
+
+  // Species initializations:
+  A = 5;
+  B = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.1;
+
+  // Other declarations:
+  const cell, k1;
+
+  // Unit definitions:
+  unit time_unit = 1 second;
+  unit substance = 1 mole;
+
+  // Display Names:
+  A is "Species A";
+  B is "Species B";
+  R1 is "First-order decay";
+  k1 is "Rate constant";
+  cell is "Default compartment";
+  time_unit is "seconds";
+  substance is "moles";
+end

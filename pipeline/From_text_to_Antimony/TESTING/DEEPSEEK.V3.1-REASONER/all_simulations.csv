@@ -1,0 +1,29 @@
+filename,simulation,error
+BIOMD003,True,
+BIOMD0300,True,
+BIOMD0409,True,
+BIOMD0535,True,
+BIOMD105,True,
+BIOMD139,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmp77tzln67.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 4:  syntax error, unexpected ':', expecting '('
+"
+Dudziuk2019,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmp_w0tif4e.csv_creation.py"", line 33, in generating_csv
+    result = rr.simulate(0, 100, 200)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\roadrunner\roadrunner.py"", line 4772, in simulate
+    result = self._simulate(o)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\roadrunner\roadrunner.py"", line 4403, in _simulate
+    return _roadrunner.RoadRunner__simulate(self, opt)
+RuntimeError: CVODE Error: CV_CONV_FAILURE: Convergence test failures occurred too many times (= MXNCF = 10) during one internal timestep or occurred with |h| = hmin.; In ?integrate@CVODEIntegrator@rr@@UEAANNN@Z
+"
+Kimmel2021,True,
+Kok2020,True,
+Malkov2020,True,

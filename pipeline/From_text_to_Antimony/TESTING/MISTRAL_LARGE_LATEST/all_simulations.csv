@@ -1,0 +1,111 @@
+filename,simulation,error
+BIOMD003,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpn8jivouu.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+BIOMD0300,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmptlzlcf80.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+BIOMD0409,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpwflb8u1r.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+BIOMD0535,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmp35qcveqg.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+BIOMD105,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpuzxvm176.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+BIOMD139,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpnqaev52f.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected text string
+"
+Dudziuk2019,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpl1mnx_bu.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+Kimmel2021,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmp5mcfm14k.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected text string
+"
+Kok2020,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpqwxiek8h.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"
+Malkov2020,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmpdu_8_o79.csv_creation.py"", line 32, in generating_csv
+    rr = te.loadAntimonyModel(antimony_str)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 538, in loadAntimonyModel
+    sbml = antimonyToSBML(ant)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 605, in antimonyToSBML
+    _checkAntimonyReturnCode(code)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\tellurium\tellurium.py"", line 297, in _checkAntimonyReturnCode
+    raise Exception('Antimony: {}'.format(antimony.getLastError()))
+Exception: Antimony: Error in model string, line 1:  syntax error, unexpected element name
+"

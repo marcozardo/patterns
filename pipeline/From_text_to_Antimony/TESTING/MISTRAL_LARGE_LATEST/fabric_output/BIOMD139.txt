@@ -1,0 +1,181 @@
+```antimony
+model *BIOMD139()
+
+  // Compartments and Species:
+  compartment cell;
+  species EpoR in cell, Epo in cell, EpoR_Epo in cell, EpoR_Epo_Jak2 in cell, Jak2 in cell;
+  species pEpoR_Epo_Jak2 in cell, pJak2 in cell, pEpoR in cell, pEpoR_Epo in cell;
+  species pEpoR_Epo_pJak2 in cell, pEpoR_pJak2 in cell, pEpoR_Epo_Jak2_SHP1 in cell;
+  species SHP1 in cell, pEpoR_Epo_pJak2_SHP1 in cell, pEpoR_pJak2_SHP1 in cell;
+  species pEpoR_Epo_pJak2_pSHP1 in cell, pEpoR_pJak2_pSHP1 in cell, pSHP1 in cell;
+  species pEpoR_Epo_pSHP1 in cell, pEpoR_pSHP1 in cell, pEpoR_Epo in cell;
+  species pEpoR_Epo_Jak2_SOCS3 in cell, SOCS3 in cell, pEpoR_Epo_pJak2_SOCS3 in cell;
+  species pEpoR_pJak2_SOCS3 in cell, pEpoR_Epo_SOCS3 in cell, pEpoR_SOCS3 in cell;
+  species pEpoR_Epo_pJak2_pSOCS3 in cell, pEpoR_pJak2_pSOCS3 in cell, pSOCS3 in cell;
+
+  // Reactions:
+  J0: EpoR + Epo -> EpoR_Epo; kf1*EpoR*Epo - kr1*EpoR_Epo;
+  J1: EpoR_Epo + Jak2 -> EpoR_Epo_Jak2; kf2*EpoR_Epo*Jak2 - kr2*EpoR_Epo_Jak2;
+  J2: EpoR_Epo_Jak2 -> pEpoR_Epo_Jak2; kp1*EpoR_Epo_Jak2;
+  J3: pEpoR_Epo_Jak2 -> pEpoR_Epo + pJak2; kp2*pEpoR_Epo_Jak2;
+  J4: pEpoR_Epo -> pEpoR + Epo; kp3*pEpoR_Epo;
+  J5: pEpoR + Jak2 -> pEpoR_pJak2; kf3*pEpoR*Jak2 - kr3*pEpoR_pJak2;
+  J6: pEpoR_pJak2 -> pEpoR + pJak2; kp4*pEpoR_pJak2;
+  J7: EpoR_Epo_Jak2 + SHP1 -> EpoR_Epo_Jak2_SHP1; kf4*EpoR_Epo_Jak2*SHP1 - kr4*EpoR_Epo_Jak2_SHP1;
+  J8: pEpoR_Epo_Jak2 + SHP1 -> pEpoR_Epo_pJak2_SHP1; kf5*pEpoR_Epo_Jak2*SHP1 - kr5*pEpoR_Epo_pJak2_SHP1;
+  J9: pEpoR_pJak2 + SHP1 -> pEpoR_pJak2_SHP1; kf6*pEpoR_pJak2*SHP1 - kr6*pEpoR_pJak2_SHP1;
+  J10: pEpoR_Epo_pJak2_SHP1 -> pEpoR_Epo_pJak2_pSHP1; kp5*pEpoR_Epo_pJak2_SHP1;
+  J11: pEpoR_pJak2_SHP1 -> pEpoR_pJak2_pSHP1; kp6*pEpoR_pJak2_SHP1;
+  J12: pEpoR_Epo_pJak2_pSHP1 -> pEpoR_Epo_pSHP1 + pJak2; kp7*pEpoR_Epo_pJak2_pSHP1;
+  J13: pEpoR_pJak2_pSHP1 -> pEpoR_pSHP1 + pJak2; kp8*pEpoR_pJak2_pSHP1;
+  J14: pEpoR_Epo_pSHP1 -> pEpoR_Epo + pSHP1; kp9*pEpoR_Epo_pSHP1;
+  J15: pEpoR_pSHP1 -> pEpoR + pSHP1; kp10*pEpoR_pSHP1;
+  J16: EpoR_Epo_Jak2 + SOCS3 -> EpoR_Epo_Jak2_SOCS3; kf7*EpoR_Epo_Jak2*SOCS3 - kr7*EpoR_Epo_Jak2_SOCS3;
+  J17: pEpoR_Epo_Jak2 + SOCS3 -> pEpoR_Epo_pJak2_SOCS3; kf8*pEpoR_Epo_Jak2*SOCS3 - kr8*pEpoR_Epo_pJak2_SOCS3;
+  J18: pEpoR_pJak2 + SOCS3 -> pEpoR_pJak2_SOCS3; kf9*pEpoR_pJak2*SOCS3 - kr9*pEpoR_pJak2_SOCS3;
+  J19: pEpoR_Epo_pJak2_SOCS3 -> pEpoR_Epo_pJak2_pSOCS3; kp11*pEpoR_Epo_pJak2_SOCS3;
+  J20: pEpoR_pJak2_SOCS3 -> pEpoR_pJak2_pSOCS3; kp12*pEpoR_pJak2_SOCS3;
+  J21: pEpoR_Epo_pJak2_pSOCS3 -> pEpoR_Epo_pSOCS3 + pJak2; kp13*pEpoR_Epo_pJak2_pSOCS3;
+  J22: pEpoR_pJak2_pSOCS3 -> pEpoR_pSOCS3 + pJak2; kp14*pEpoR_pJak2_pSOCS3;
+  J23: pEpoR_Epo_pSOCS3 -> pEpoR_Epo + pSOCS3; kp15*pEpoR_Epo_pSOCS3;
+  J24: pEpoR_pSOCS3 -> pEpoR + pSOCS3; kp16*pEpoR_pSOCS3;
+
+  // Species initializations:
+  EpoR = 1000;
+  Epo = 100;
+  EpoR_Epo = 0;
+  EpoR_Epo_Jak2 = 0;
+  Jak2 = 1000;
+  pEpoR_Epo_Jak2 = 0;
+  pJak2 = 0;
+  pEpoR = 0;
+  pEpoR_Epo = 0;
+  pEpoR_Epo_pJak2 = 0;
+  pEpoR_pJak2 = 0;
+  pEpoR_Epo_Jak2_SHP1 = 0;
+  SHP1 = 1000;
+  pEpoR_Epo_pJak2_SHP1 = 0;
+  pEpoR_pJak2_SHP1 = 0;
+  pEpoR_Epo_pJak2_pSHP1 = 0;
+  pEpoR_pJak2_pSHP1 = 0;
+  pSHP1 = 0;
+  pEpoR_Epo_pSHP1 = 0;
+  pEpoR_pSHP1 = 0;
+  pEpoR_Epo_Jak2_SOCS3 = 0;
+  SOCS3 = 1000;
+  pEpoR_Epo_pJak2_SOCS3 = 0;
+  pEpoR_pJak2_SOCS3 = 0;
+  pEpoR_Epo_SOCS3 = 0;
+  pEpoR_SOCS3 = 0;
+  pEpoR_Epo_pJak2_pSOCS3 = 0;
+  pEpoR_pJak2_pSOCS3 = 0;
+  pSOCS3 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kf1 = 0.0001;
+  kr1 = 0.01;
+  kf2 = 0.0001;
+  kr2 = 0.01;
+  kp1 = 0.1;
+  kp2 = 0.1;
+  kp3 = 0.1;
+  kf3 = 0.0001;
+  kr3 = 0.01;
+  kp4 = 0.1;
+  kf4 = 0.0001;
+  kr4 = 0.01;
+  kf5 = 0.0001;
+  kr5 = 0.01;
+  kf6 = 0.0001;
+  kr6 = 0.01;
+  kp5 = 0.1;
+  kp6 = 0.1;
+  kp7 = 0.1;
+  kp8 = 0.1;
+  kp9 = 0.1;
+  kp10 = 0.1;
+  kf7 = 0.0001;
+  kr7 = 0.01;
+  kf8 = 0.0001;
+  kr8 = 0.01;
+  kf9 = 0.0001;
+  kr9 = 0.01;
+  kp11 = 0.1;
+  kp12 = 0.1;
+  kp13 = 0.1;
+  kp14 = 0.1;
+  kp15 = 0.1;
+  kp16 = 0.1;
+
+  // Other declarations:
+  const cell, kf1, kr1, kf2, kr2, kp1, kp2, kp3, kf3, kr3, kp4, kf4, kr4, kf5, kr5, kf6, kr6;
+  const kp5, kp6, kp7, kp8, kp9, kp10, kf7, kr7, kf8, kr8, kf9, kr9, kp11, kp12, kp13, kp14, kp15, kp16;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  substance is "nanomole";
+  time_unit is "minute";
+  cell is "Cell";
+  EpoR is "EpoR";
+  Epo is "Epo";
+  EpoR_Epo is "EpoR_Epo";
+  EpoR_Epo_Jak2 is "EpoR_Epo_Jak2";
+  Jak2 is "Jak2";
+  pEpoR_Epo_Jak2 is "pEpoR_Epo_Jak2";
+  pJak2 is "pJak2";
+  pEpoR is "pEpoR";
+  pEpoR_Epo is "pEpoR_Epo";
+  pEpoR_Epo_pJak2 is "pEpoR_Epo_pJak2";
+  pEpoR_pJak2 is "pEpoR_pJak2";
+  pEpoR_Epo_Jak2_SHP1 is "EpoR_Epo_Jak2_SHP1";
+  SHP1 is "SHP1";
+  pEpoR_Epo_pJak2_SHP1 is "pEpoR_Epo_pJak2_SHP1";
+  pEpoR_pJak2_SHP1 is "pEpoR_pJak2_SHP1";
+  pEpoR_Epo_pJak2_pSHP1 is "pEpoR_Epo_pJak2_pSHP1";
+  pEpoR_pJak2_pSHP1 is "pEpoR_pJak2_pSHP1";
+  pSHP1 is "pSHP1";
+  pEpoR_Epo_pSHP1 is "pEpoR_Epo_pSHP1";
+  pEpoR_pSHP1 is "pEpoR_pSHP1";
+  pEpoR_Epo_Jak2_SOCS3 is "pEpoR_Epo_Jak2_SOCS3";
+  SOCS3 is "SOCS3";
+  pEpoR_Epo_pJak2_SOCS3 is "pEpoR_Epo_pJak2_SOCS3";
+  pEpoR_pJak2_SOCS3 is "pEpoR_pJak2_SOCS3";
+  pEpoR_Epo_SOCS3 is "pEpoR_Epo_SOCS3";
+  pEpoR_SOCS3 is "pEpoR_SOCS3";
+  pEpoR_Epo_pJak2_pSOCS3 is "pEpoR_Epo_pJak2_pSOCS3";
+  pEpoR_pJak2_pSOCS3 is "pEpoR_pJak2_pSOCS3";
+  pSOCS3 is "pSOCS3";
+  J0 is "EpoR and Epo binding";
+  J1 is "EpoR_Epo and Jak2 binding";
+  J2 is "EpoR_Epo_Jak2 phosphorylation";
+  J3 is "pEpoR_Epo_Jak2 dissociation";
+  J4 is "pEpoR_Epo dissociation";
+  J5 is "pEpoR and Jak2 binding";
+  J6 is "pEpoR_pJak2 dissociation";
+  J7 is "EpoR_Epo_Jak2 and SHP1 binding";
+  J8 is "pEpoR_Epo_Jak2 and SHP1 binding";
+  J9 is "pEpoR_pJak2 and SHP1 binding";
+  J10 is "pEpoR_Epo_pJak2_SHP1 phosphorylation";
+  J11 is "pEpoR_pJak2_SHP1 phosphorylation";
+  J12 is "pEpoR_Epo_pJak2_pSHP1 dissociation";
+  J13 is "pEpoR_pJak2_pSHP1 dissociation";
+  J14 is "pEpoR_Epo_pSHP1 dissociation";
+  J15 is "pEpoR_pSHP1 dissociation";
+  J16 is "EpoR_Epo_Jak2 and SOCS3 binding";
+  J17 is "pEpoR_Epo_Jak2 and SOCS3 binding";
+  J18 is "pEpoR_pJak2 and SOCS3 binding";
+  J19 is "pEpoR_Epo_pJak2_SOCS3 phosphorylation";
+  J20 is "pEpoR_pJak2_SOCS3 phosphorylation";
+  J21 is "pEpoR_Epo_pJak2_pSOCS3 dissociation";
+  J22 is "pEpoR_pJak2_pSOCS3 dissociation";
+  J23 is "pEpoR_Epo_pSOCS3 dissociation";
+  J24 is "pEpoR_pSOCS3 dissociation";
+
+end
+```

@@ -1,0 +1,6 @@
+```antimony
+model EmptyInputModel()
+
+
+end
+```

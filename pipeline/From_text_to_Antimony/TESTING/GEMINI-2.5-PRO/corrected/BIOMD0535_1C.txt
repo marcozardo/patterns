@@ -1,0 +1,99 @@
+```antimony
+model *Wee1_CellCycleOscillator()
+
+  // Compartments and Species:
+  compartment cell;
+  species Cdc25_P in cell, Wee1_P in cell, IE_P in cell, CycB in cell, preMPF in cell;
+  species MPF in cell, APC_P in cell;
+
+  // Reactions:
+  J1: Cdc25_P => ; (k1*Cdc25_P)/(Km1 + Cdc25_P);
+  J2:  => Cdc25_P; (k2*(Cdc25_T - Cdc25_P)*MPF)/(Km2 + Cdc25_T - Cdc25_P);
+  J3: Wee1_P => ; (k3*Wee1_P)/(Km3 + Wee1_P);
+  J4:  => Wee1_P; (k4*(Wee1_T - Wee1_P)*MPF)/(Km4 + Wee1_T - Wee1_P);
+  J5: IE_P => ; (k5*IE_P)/(Km5 + IE_P);
+  J6:  => IE_P; (k6*(IE_T - IE_P)*MPF)/(Km6 + IE_T - IE_P);
+  J7:  => CycB; ks;
+  J8: CycB => ; kd*CycB;
+  J9: CycB => ; (k9*CycB*APC_P)/(Km9 + CycB);
+  J10: CycB => preMPF; k10*CycB;
+  J11: preMPF => CycB; (k11*preMPF*Wee1_P)/(Km11 + preMPF);
+  J12: preMPF => MPF; (k12*preMPF*Cdc25_P)/(Km12 + preMPF);
+  J13: MPF => ; kd*MPF;
+  J14:  => APC_P; (k14*(APC_T - APC_P)*IE_P)/(Km14 + APC_T - APC_P);
+  J15: APC_P => ; (k15*APC_P)/(Km15 + APC_P);
+
+  // Species initializations:
+  Cdc25_P = 0.01;
+  Wee1_P = 0.01;
+  IE_P = 0.01;
+  CycB = 0.01;
+  preMPF = 0.01;
+  MPF = 0.01;
+  APC_P = 0.01;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.05;
+  Km1 = 0.01;
+  k2 = 0.25;
+  Km2 = 0.01;
+  Cdc25_T = 0.1;
+  k3 = 0.05;
+  Km3 = 0.01;
+  k4 = 0.25;
+  Km4 = 0.01;
+  Wee1_T = 0.1;
+  k5 = 0.05;
+  Km5 = 0.01;
+  k6 = 0.25;
+  Km6 = 0.01;
+  IE_T = 0.1;
+  ks = 0.015;
+  kd = 0.005;
+  k9 = 0.2;
+  Km9 = 0.02;
+  k10 = 0.025;
+  k11 = 0.1;
+  Km11 = 0.01;
+  k12 = 0.1;
+  Km12 = 0.01;
+  k14 = 0.1;
+  Km14 = 0.01;
+  APC_T = 0.1;
+  k15 = 0.05;
+  Km15 = 0.01;
+
+  // Other declarations:
+  const cell, k1, Km1, k2, Km2, Cdc25_T, k3, Km3, k4, Km4, Wee1_T, k5, Km5;
+  const k6, Km6, IE_T, ks, kd, k9, Km9, k10, k11, Km11, k12, Km12, k14, Km14;
+  const APC_T, k15, Km15;
+
+  // Display Names:
+  Cdc25_P is "phosphorylated Cdc25";
+  Wee1_P is "phosphorylated Wee1";
+  IE_P is "phosphorylated Intermediate Enzyme";
+  CycB is "Cyclin B";
+  preMPF is "pre-Mitosis Promoting Factor";
+  MPF is "active Mitosis Promoting Factor";
+  APC_P is "phosphorylated APC";
+  J1 is "Cdc25-P dephosphorylation";
+  J2 is "Cdc25 phosphorylation";
+  J3 is "Wee1-P dephosphorylation";
+  J4 is "Wee1 phosphorylation";
+  J5 is "IE-P dephosphorylation";
+  J6 is "IE phosphorylation";
+  J7 is "CycB synthesis";
+  J8 is "CycB degradation (APC-independent)";
+  J9 is "CycB degradation (APC-dependent)";
+  J10 is "preMPF formation";
+  J11 is "preMPF dephosphorylation to CycB";
+  J12 is "MPF activation";
+  J13 is "MPF degradation";
+  J14 is "APC activation";
+  J15 is "APC inactivation";
+
+end
+```

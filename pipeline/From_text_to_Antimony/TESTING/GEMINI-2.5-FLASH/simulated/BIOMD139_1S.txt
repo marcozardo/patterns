@@ -1,0 +1,32 @@
+```antimony
+model EmptyModel()
+
+  // Compartments and Species:
+  // No species or compartments were described in the input.
+
+  // Assignment Rules:
+  // No assignment rules were described in the input.
+
+  // Reactions:
+  // No reactions were described in the input.
+
+  // Species initializations:
+  // No species initializations were described in the input.
+
+  // Compartment initializations:
+  // No compartment initializations were described in the input.
+
+  // Variable initializations:
+  // No variable initializations were described in the input.
+
+  // Other declarations:
+  // No other declarations were described in the input.
+
+  // Unit definitions:
+  // No unit definitions were described in the input.
+
+  // Display Names:
+  // No display names were described in the input.
+
+end
+```

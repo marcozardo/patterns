@@ -1,0 +1,97 @@
+model *Malkov2020___A_mathematical_model_of_mitochondrial_swelling()
+
+  // Compartments and Species:
+  compartment cytosol, mitochondria;
+  species mPTP in mitochondria, Ca2plus in cytosol, Ca2plus_m in mitochondria;
+  species Pi in cytosol, Pi_m in mitochondria, ADP in cytosol, ADP_m in mitochondria;
+  species ATP in cytosol, ATP_m in mitochondria, Hplus in cytosol, Hplus_m in mitochondria;
+  species DPsi;
+
+  // Assignment Rules:
+  DPsi := (F/(R*T)) * (59 * log10(Ca2plus_m/Ca2plus) + 59 * log10(Pi_m/Pi) + 59 * log10(ADP_m/ADP) + 59 * log10(ATP_m/ATP) - 59 * log10(Hplus_m/Hplus));
+
+  // Reactions:
+  Ca_uptake: Ca2plus => Ca2plus_m; (Vmax_Ca * (Ca2plus - Ca2plus_m * exp(-(F*DPsi)/(R*T))) / (Km_Ca + Ca2plus + Ca2plus_m * exp(-(F*DPsi)/(R*T))));
+  Pi_uptake: Pi => Pi_m; (Vmax_Pi * (Pi - Pi_m * exp(-(F*DPsi)/(R*T))) / (Km_Pi + Pi + Pi_m * exp(-(F*DPsi)/(R*T))));
+  ADP_ATP_exchange: ADP + ATP_m => ATP + ADP_m; (Vmax_A * (ADP*ATP_m - ATP*ADP_m * exp(-(F*DPsi)/(R*T)))) / (Km_A * (1 + ADP/Ki_ADP + ATP/Ki_ATP) + ADP*ATP_m + ATP*ADP_m * exp(-(F*DPsi)/(R*T))));
+  H_leak: Hplus_m => Hplus; gH * (DPsi - (R*T/F) * log(Hplus_m/Hplus));
+  mPTP_formation:  => mPTP; k_open * Ca2plus_m^h * (1 - mPTP);
+  mPTP_closure: mPTP => ; k_close * mPTP;
+  Permeabilization: Ca2plus_m => Ca2plus; k_perm * mPTP * (Ca2plus_m - Ca2plus);
+  Permeabilization_Pi: Pi_m => Pi; k_perm * mPTP * (Pi_m - Pi);
+  Permeabilization_ADP: ADP_m => ADP; k_perm * mPTP * (ADP_m - ADP);
+  Permeabilization_ATP: ATP_m => ATP; k_perm * mPTP * (ATP_m - ATP);
+  Permeabilization_H: Hplus_m => Hplus; k_perm * mPTP * (Hplus_m - Hplus);
+
+  // Species initializations:
+  mPTP = 0;
+  Ca2plus = 0.1;
+  Ca2plus_m = 0.001;
+  Pi = 10;
+  Pi_m = 0.1;
+  ADP = 0.5;
+  ADP_m = 5;
+  ATP = 5;
+  ATP_m = 0.5;
+  Hplus = 10^(-7.2);
+  Hplus_m = 10^(-7.8);
+
+  // Compartment initializations:
+  cytosol = 1;
+  mitochondria = 0.1;
+
+  // Variable initializations:
+  F = 96485;
+  R = 8.314;
+  T = 310;
+  Vmax_Ca = 100;
+  Km_Ca = 0.1;
+  Vmax_Pi = 50;
+  Km_Pi = 1;
+  Vmax_A = 200;
+  Km_A = 0.1;
+  Ki_ADP = 0.5;
+  Ki_ATP = 5;
+  gH = 10;
+  k_open = 0.1;
+  h = 4;
+  k_close = 0.01;
+  k_perm = 1;
+
+  // Other declarations:
+  var DPsi;
+  const cytosol, mitochondria, F, R, T, Vmax_Ca, Km_Ca, Vmax_Pi, Km_Pi, Vmax_A;
+  const Km_A, Ki_ADP, Ki_ATP, gH, k_open, h, k_close, k_perm;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit substance = 1e-3 mole;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  cytosol is "Cytosol";
+  mitochondria is "Mitochondria";
+  mPTP is "mPTP open probability";
+  Ca2plus is "Cytosolic Ca²⁺";
+  Ca2plus_m is "Mitochondrial Ca²⁺";
+  Pi is "Cytosolic Pi";
+  Pi_m is "Mitochondrial Pi";
+  ADP is "Cytosolic ADP";
+  ADP_m is "Mitochondrial ADP";
+  ATP is "Cytosolic ATP";
+  ATP_m is "Mitochondrial ATP";
+  Hplus is "Cytosolic H⁺";
+  Hplus_m is "Mitochondrial H⁺";
+  DPsi is "Mitochondrial membrane potential";
+  Ca_uptake is "Ca²⁺ uptake";
+  Pi_uptake is "Pi uptake";
+  ADP_ATP_exchange is "ADP/ATP exchange";
+  H_leak is "H⁺ leak";
+  mPTP_formation is "mPTP formation";
+  mPTP_closure is "mPTP closure";
+  Permeabilization is "Ca²⁺ permeabilization";
+  Permeabilization_Pi is "Pi permeabilization";
+  Permeabilization_ADP is "ADP permeabilization";
+  Permeabilization_ATP is "ATP permeabilization";
+  Permeabilization_H is "H⁺ permeabilization";
+end

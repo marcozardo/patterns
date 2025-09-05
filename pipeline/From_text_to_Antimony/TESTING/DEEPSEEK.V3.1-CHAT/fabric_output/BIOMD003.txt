@@ -1,0 +1,102 @@
+model *BIOMD0000000003___Goldbeter1995___Minimal_model_for_circadian_oscillations_in_the_Drosophila_period_protein()
+  // Compartments and Species:
+  compartment compartment_;
+  species P0 in compartment_, P1 in compartment_, P2 in compartment_, M in compartment_;
+
+  // Assignment Rules:
+  vd := VdP2*P2/(Kd + P2);
+  vst := Vm*M/(Km + M);
+  vs := Ks*P0;
+  vdt := VdP0*P0/(KdP0 + P0);
+  v1 := V1P1*P1/(K1 + P1);
+  v2 := V2P2*P2/(K2 + P2);
+  v3 := V3P0*P0/(K3 + P0);
+  v4 := V4P1*P1/(K4 + P1);
+
+  // Reactions:
+  Transcription:  => M; compartment_*vst;
+  Translation: M => P0; compartment_*vs;
+  Degradation_M: M => ; compartment_*vm*M;
+  Phosphorylation_P0_P1: P0 => P1; compartment_*v1;
+  Phosphorylation_P1_P2: P1 => P2; compartment_*v2;
+  Dephosphorylation_P2_P0: P2 => P0; compartment_*v3;
+  Dephosphorylation_P1_P0: P1 => P0; compartment_*v4;
+  Degradation_P0: P0 => ; compartment_*vdt;
+  Degradation_P2: P2 => ; compartment_*vd;
+
+  // Species initializations:
+  P0 = 0;
+  P1 = 0;
+  P2 = 0;
+  M = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  VdP2 = 2.5;
+  Kd = 0.2;
+  Vm = 1;
+  Km = 0.15;
+  Ks = 0.5;
+  VdP0 = 1;
+  KdP0 = 0.1;
+  V1P1 = 3.2;
+  K1 = 2;
+  V2P2 = 1.58;
+  K2 = 2;
+  V3P0 = 5;
+  K3 = 2;
+  V4P1 = 2.5;
+  K4 = 2;
+  vm = 0.5;
+
+  // Other declarations:
+  var vd, vst, vs, vdt, v1, v2, v3, v4;
+  const compartment_, VdP2, Kd, Vm, Km, Ks, VdP0, KdP0, V1P1, K1, V2P2, K2;
+  const V3P0, K3, V4P1, K4, vm;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "day";
+  compartment_ is "compartment";
+  P0 is "unphosphorylated PER protein";
+  P1 is "monophosphorylated PER protein";
+  P2 is "bisphosphorylated PER protein";
+  M is "per mRNA";
+  vd is "degradation rate of P2";
+  vst is "transcription rate";
+  vs is "translation rate";
+  vdt is "degradation rate of P0";
+  v1 is "phosphorylation rate P0->P1";
+  v2 is "phosphorylation rate P1->P2";
+  v3 is "dephosphorylation rate P2->P0";
+  v4 is "dephosphorylation rate P1->P0";
+  VdP2 is "maximum degradation rate of P2";
+  Kd is "Michaelis constant for degradation";
+  Vm is "maximum transcription rate";
+  Km is "Michaelis constant for transcription";
+  Ks is "translation rate constant";
+  VdP0 is "maximum degradation rate of P0";
+  KdP0 is "Michaelis constant for P0 degradation";
+  V1P1 is "maximum rate for P0->P1 phosphorylation";
+  K1 is "Michaelis constant for P0->P1";
+  V2P2 is "maximum rate for P1->P2 phosphorylation";
+  K2 is "Michaelis constant for P1->P2";
+  V3P0 is "maximum rate for P2->P0 dephosphorylation";
+  K3 is "Michaelis constant for P2->P0";
+  V4P1 is "maximum rate for P1->P0 dephosphorylation";
+  K4 is "Michaelis constant for P1->P0";
+  vm is "mRNA degradation rate constant";
+  Transcription is "per gene transcription";
+  Translation is "PER protein translation";
+  Degradation_M is "mRNA degradation";
+  Phosphorylation_P0_P1 is "P0 to P1 phosphorylation";
+  Phosphorylation_P1_P2 is "P1 to P2 phosphorylation";
+  Dephosphorylation_P2_P0 is "P2 to P0 dephosphorylation";
+  Dephosphorylation_P1_P0 is "P1 to P0 dephosphorylation";
+  Degradation_P0 is "P0 degradation";
+  Degradation_P2 is "P2 degradation";
+end

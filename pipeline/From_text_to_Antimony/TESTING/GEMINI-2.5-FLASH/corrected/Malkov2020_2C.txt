@@ -1,0 +1,53 @@
+```antimony
+model SimpleEnzymePathway()
+
+  compartment cytoplasm;
+  species S in cytoplasm, P in cytoplasm, W in cytoplasm, E in cytoplasm, F in cytoplasm;
+
+  R1: S -> P; (Vmax1 * S) / (Km1 + S) - (Vmax2 * P) / (Km2 + P);
+  R2: P => W; k_cat_F * F * P;
+
+  S = 10;
+  P = 1;
+  W = 0;
+  E = 0.1;
+  F = 0.05;
+
+  cytoplasm = 1.5;
+
+  Vmax1 = 5;
+  Km1 = 2;
+  Vmax2 = 2;
+  Km2 = 3;
+  k_cat_F = 0.5;
+
+  const cytoplasm, Vmax1, Km1, Vmax2, Km2, k_cat_F;
+  var S, P, W, E, F;
+
+  unit concentration = 1e-3 mole / litre;
+  unit time = second;
+  unit volume = litre;
+  unit rate = concentration / time;
+  unit rate_constant = 1 / (concentration * time);
+
+  cytoplasm is "Cytoplasm";
+  S is "Substrate";
+  P is "Product";
+  W is "Waste";
+  E is "Enzyme E";
+  F is "Enzyme F";
+  R1 is "Substrate to Product Conversion";
+  R2 is "Product to Waste Conversion";
+  Vmax1 is "Maximum forward rate for R1";
+  Km1 is "Michaelis constant for S in R1";
+  Vmax2 is "Maximum reverse rate for R1";
+  Km2 is "Michaelis constant for P in R1";
+  k_cat_F is "Catalytic rate constant for R2";
+  concentration is "millimolar (mM)";
+  time is "second (s)";
+  volume is "litre";
+  rate is "millimolar per second (mM/s)";
+  rate_constant is "per millimolar per second (1/(mM*s))";
+
+end
+```

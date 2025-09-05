@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmp85xokxpw.check_simulation.py", line 22, in simulate_and_check
+    antimony_str = f.read()
+  File "C:\Users\marco\anaconda3\envs\antimony_project\lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 2559: character maps to <undefined>

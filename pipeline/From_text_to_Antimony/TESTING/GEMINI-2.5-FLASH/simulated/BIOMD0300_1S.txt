@@ -1,0 +1,27 @@
+```antimony
+model EmptyInputModel()
+  /*
+  No biochemical reaction description was provided in the input text.
+  Therefore, an empty Antimony model structure has been generated
+  as per the instruction to always generate a complete model structure.
+  */
+
+  // Compartments and Species:
+
+  // Assignment Rules:
+
+  // Reactions:
+
+  // Species initializations:
+
+  // Compartment initializations:
+
+  // Variable initializations:
+
+  // Other declarations:
+
+  // Unit definitions:
+
+  // Display Names:
+end
+```

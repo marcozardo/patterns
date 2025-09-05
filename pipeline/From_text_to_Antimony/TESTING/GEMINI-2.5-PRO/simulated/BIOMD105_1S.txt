@@ -1,0 +1,68 @@
+```antimony
+/*
+A simple model of circadian rhythms based on transcriptional activation of a clock gene and translation of a clock protein, with feedback regulation.
+This model is based on the paper:
+Leloup JC, Goldbeter A. A model for circadian rhythms in Drosophila incorporating the formation of a complex between the PER and TIM proteins. J Biol Rhythms. 1998 Feb;13(1):70-87. doi: 10.1177/074873049801300108. PMID: 9481747.
+*/
+model *Leloup1998_CircadianRhythms()
+
+  // Compartments and Species:
+  compartment cytosol, nucleus;
+  species M in cytosol, P_C in cytosol, P_N in nucleus;
+
+  // Reactions:
+  J1:      => M;   cytosol * (v_s * K_I^n / (K_I^n + P_N^n));
+  J2: M   =>  ;   cytosol * (v_m * M / (K_m + M));
+  J3:      => P_C; cytosol * (k_s * M);
+  J4: P_C =>  ;   cytosol * (v_d * P_C / (K_d + P_C));
+  J5: P_C -> P_N; k_1 * P_C;
+  J6: P_N -> P_C; k_2 * P_N;
+
+  // Species initializations:
+  M = 0.1;
+  P_C = 0.1;
+  P_N = 0.1;
+
+  // Compartment initializations:
+  cytosol = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  v_s = 0.76;
+  v_m = 0.65;
+  K_m = 0.5;
+  k_s = 0.38;
+  v_d = 0.95;
+  K_d = 0.2;
+  k_1 = 0.19;
+  k_2 = 0.13;
+  K_I = 1.0;
+  n = 4;
+
+  // Other declarations:
+  const v_s, v_m, K_m, k_s, v_d, K_d, k_1, k_2, K_I, n;
+  const cytosol, nucleus;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+  unit concentration = 1e-9 mole / litre;
+  unit per_hour = 1 / 3600 second;
+
+  // Display Names:
+  time_unit is "hour";
+  concentration is "nanomolar (nM)";
+  cytosol is "Cytosol";
+  nucleus is "Nucleus";
+  M is "Per mRNA";
+  P_C is "Cytosolic Per protein";
+  P_N is "Nuclear Per protein";
+  J1 is "mRNA transcription";
+  J2 is "mRNA degradation";
+  J3 is "Protein translation";
+  J4 is "Cytosolic protein degradation";
+  J5 is "Protein import to nucleus";
+  J6 is "Protein export from nucleus";
+
+end
+```

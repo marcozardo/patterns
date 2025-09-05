@@ -1,0 +1,10 @@
+filename,simulation,error
+Dudziuk2019,False,"Traceback (most recent call last):
+  File ""C:\Users\marco\Documents\GitHub\patterns\pipeline\From_text_to_Antimony\.snakemake\scripts\tmp_w0tif4e.csv_creation.py"", line 33, in generating_csv
+    result = rr.simulate(0, 100, 200)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\roadrunner\roadrunner.py"", line 4772, in simulate
+    result = self._simulate(o)
+  File ""C:\Users\marco\anaconda3\envs\antimony_project\lib\site-packages\roadrunner\roadrunner.py"", line 4403, in _simulate
+    return _roadrunner.RoadRunner__simulate(self, opt)
+RuntimeError: CVODE Error: CV_CONV_FAILURE: Convergence test failures occurred too many times (= MXNCF = 10) during one internal timestep or occurred with |h| = hmin.; In ?integrate@CVODEIntegrator@rr@@UEAANNN@Z
+"

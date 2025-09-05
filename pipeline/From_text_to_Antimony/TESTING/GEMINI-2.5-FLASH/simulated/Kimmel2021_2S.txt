@@ -1,0 +1,23 @@
+```antimony
+model *EmptyInputModel()
+
+  // Compartments and Species:
+
+  // Assignment Rules:
+
+  // Reactions:
+
+  // Species initializations:
+
+  // Compartment initializations:
+
+  // Variable initializations:
+
+  // Other declarations:
+
+  // Unit definitions:
+
+  // Display Names:
+
+end
+```

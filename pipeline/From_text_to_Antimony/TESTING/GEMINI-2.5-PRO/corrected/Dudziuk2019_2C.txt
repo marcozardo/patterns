@@ -1,0 +1,39 @@
+model *EnzymeKineticsModel()
+
+  compartment cytosol;
+  species S in cytosol, E in cytosol, ES in cytosol, P in cytosol;
+
+  E_total := E + ES;
+
+  Binding: E + S -> ES; k_f * E * S - k_r * ES;
+  Catalysis: ES => E + P; k_cat * ES;
+
+  E = 1.0e-6;
+  S = 1.0e-5;
+  ES = 0;
+  P = 0;
+
+  cytosol = 1.5e-12;
+
+  k_f = 1.0e6;
+  k_r = 1.0e-4;
+  k_cat = 0.1;
+
+  var E_total;
+  const cytosol, k_f, k_r, k_cat;
+
+  unit time_unit = second;
+  unit substance = mole;
+  unit volume = litre;
+  unit concentration = mole / litre;
+
+  S is "Substrate";
+  E is "Enzyme";
+  ES is "Enzyme-substrate complex";
+  P is "Product";
+  E_total is "Total enzyme concentration";
+  cytosol is "Cytosol";
+  Binding is "Enzyme-Substrate Binding";
+  Catalysis is "Product Formation";
+
+end

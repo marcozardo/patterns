@@ -1,0 +1,206 @@
+model *Dudziuk2019___Mathematical_model_of_glucose_metabolism_in_yeast()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Glucose in compartment_, Glucose6P in compartment_, Fructose6P in compartment_;
+  species Fructose16bisP in compartment_, Glyceraldehyde3P in compartment_, DihydroxyacetoneP in compartment_;
+  species _13bisphosphoglycerate in compartment_, _3phosphoglycerate in compartment_, _2phosphoglycerate in compartment_;
+  species Phosphoenolpyruvate in compartment_, Pyruvate in compartment_, Acetaldehyde in compartment_;
+  species Ethanol in compartment_, Glycerol in compartment_, Succinate in compartment_;
+  species Acetate in compartment_, Trehalose in compartment_, Glycogen in compartment_;
+  species ATP in compartment_, ADP in compartment_, NAD in compartment_, NADH in compartment_;
+  species CO2 in compartment_, H2O in compartment_, Pi in compartment_, Hplus in compartment_;
+
+  // Assignment Rules:
+  vHK := Vm_HK * Glucose * ATP / (Km_HK_Glucose * Km_HK_ATP * (1 + Glucose/Km_HK_Glucose) * (1 + ATP/Km_HK_ATP));
+  vPGI := Vm_PGI * (Glucose6P - Fructose6P/Keq_PGI) / (Km_PGI_G6P * (1 + Glucose6P/Km_PGI_G6P + Fructose6P/Km_PGI_F6P));
+  vPFK := Vm_PFK * Fructose6P * ATP / ((Km_PFK_F6P * Km_PFK_ATP) * (1 + Fructose6P/Km_PFK_F6P) * (1 + ATP/Km_PFK_ATP) * (1 + (ATP/Ki_PFK_ATP)^n));
+  vALD := Vm_ALD * Fructose16bisP / (Km_ALD_F16BP * (1 + Fructose16bisP/Km_ALD_F16BP));
+  vTPI := Vm_TPI * (DihydroxyacetoneP - Glyceraldehyde3P/Keq_TPI) / (Km_TPI_DHAP * (1 + DihydroxyacetoneP/Km_TPI_DHAP + Glyceraldehyde3P/Km_TPI_G3P));
+  vGAPDH := Vm_GAPDH * Glyceraldehyde3P * NAD * Pi / (Km_GAPDH_G3P * Km_GAPDH_NAD * Km_GAPDH_Pi * (1 + Glyceraldehyde3P/Km_GAPDH_G3P) * (1 + NAD/Km_GAPDH_NAD) * (1 + Pi/Km_GAPDH_Pi));
+  vPGK := Vm_PGK * _13bisphosphoglycerate * ADP / (Km_PGK_13BPG * Km_PGK_ADP * (1 + _13bisphosphoglycerate/Km_PGK_13BPG) * (1 + ADP/Km_PGK_ADP));
+  vPGM := Vm_PGM * (_3phosphoglycerate - _2phosphoglycerate/Keq_PGM) / (Km_PGM_3PG * (1 + _3phosphoglycerate/Km_PGM_3PG + _2phosphoglycerate/Km_PGM_2PG));
+  vENO := Vm_ENO * (_2phosphoglycerate - Phosphoenolpyruvate/Keq_ENO) / (Km_ENO_2PG * (1 + _2phosphoglycerate/Km_ENO_2PG + Phosphoenolpyruvate/Km_ENO_PEP));
+  vPK := Vm_PK * Phosphoenolpyruvate * ADP / (Km_PK_PEP * Km_PK_AD极 * (1 + Phosphoenolpyruvate/Km_PK_PEP) * (1 + ADP/Km_PK_ADP));
+  vPDC := Vm_PDC * Pyruvate / (Km_PDC_Pyr * (1 + Pyruvate/Km_PDC_Pyr));
+  vADH := Vm_ADH * Acetaldehyde * NADH / (Km_ADH_Acd * Km_ADH_NADH * (1 + Acetaldehyde/K极_ADH_Acd) * (1 + NADH/Km_ADH_NADH));
+  vG3PDH := Vm_G3PDH * DihydroxyacetoneP * NADH / (Km_G3PDH_DHAP * Km_G3PDH_NADH * (1 + DihydroxyacetoneP/Km_G3PDH_DHAP) * (1 + NADH/Km_G3PDH_NADH));
+  vSUC := Vm_SUC * Pyruvate / (Km_SUC_Pyr * (1 + Pyruvate/Km_SUC_Pyr));
+  vACK := Vm_ACK * Acetate * ADP / (Km_ACK_Ace * Km_ACK_ADP * (1 + Acetate/Km_ACK_Ace) * (1 + ADP/Km_ACK_ADP));
+  vTRE := Vm_TRE * Glucose6P * UDP_glucose / (Km_TRE_G6P * Km_TRE_UDPG * (1 + Glucose6P/Km_TRE_G6P) * (1 + UDP_glucose/Km_TRE_UDPG));
+  vGLY := Vm_GLY * Glucose6P * ATP / (Km_GLY_G6P * Km_GLY_ATP * (1 + Glucose6P/Km_GLY_G6P) * (1 + ATP/Km_GLY_ATP));
+  vATPase := Vm_ATPase * ATP / (Km_ATPase_ATP * (1 + ATP/Km_ATPase_ATP));
+
+  // Reactions:
+  HK: Glucose + ATP => Glucose6P + ADP; compartment_*vHK;
+  PGI: Glucose6P => Fructose6P; compartment_*vPGI;
+  PFK: Fructose6P + ATP => Fructose16bisP + ADP; compartment_*vPFK;
+  ALD: Fructose16bisP => Glyceraldehyde3P + DihydroxyacetoneP; compartment_*vALD;
+  TPI: DihydroxyacetoneP => Glyceraldehyde3P; compartment_*vTPI;
+  GAPDH: Glyceraldehyde3P + NAD + Pi => _13bisphosphoglycerate + NADH + Hplus; compartment_*vGAPDH;
+  PGK: _13bisphosphoglycerate + ADP => _3phosphoglycerate + ATP; compartment_*vPGK;
+  PGM: _3phosphoglycerate => _2phosphoglycerate; compartment_*vPGM;
+  ENO: _2phosphoglycerate => Phosphoenolpyruvate + H2O; compartment_*vENO;
+  PK: Phosphoenolpyruvate + ADP => Pyruvate + ATP; compartment_*vPK;
+  PDC: Pyruvate => Acetaldehyde + CO2; compartment_*极PDC;
+  ADH: Acetaldehyde + NADH => Ethanol + NAD; compartment_*vADH;
+  G3PDH: DihydroxyacetoneP + NADH => Glycerol + NAD + Pi; compartment_*vG3PDH;
+  SUC: Pyruvate => Succinate + CO2; compartment_*vSUC;
+  ACK: Acetate + ADP => Acetyl_P + ATP; compartment_*vACK;
+  TRE: Glucose6P + UDP_glucose => Trehalose + UDP; compartment_*vTRE;
+  GLY: Glucose6P + ATP => Glycogen + ADP; compartment_*vGLY;
+  ATPase: ATP => ADP + Pi; compartment_*vATPase;
+
+  // Species initializations:
+  Glucose = 100;
+  Glucose6P = 0.5;
+  Fructose6P = 0.3;
+  Fructose16bisP = 0.1;
+  Glyceraldehyde3P = 0.05;
+  DihydroxyacetoneP = 0.15;
+  _13bisphosphoglycerate = 0.02;
+  _3phosphoglycerate = 0.5;
+  _2phosphoglycerate = 0.2;
+  Phosphoenolpyruvate = 0.1;
+  Pyruvate = 0.5;
+  Acetaldehyde = 0;
+  Ethanol = 0;
+  Glycerol = 0;
+  Succinate = 0;
+  Acetate = 0;
+  Trehalose = 0;
+  Glycogen = 0;
+  ATP = 3;
+  ADP = 1;
+  NAD = 2;
+  NADH = 0.1;
+  CO2 = 0;
+  H2O = 1;
+  Pi = 1;
+  Hplus = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Vm_HK = 100;
+  Km_HK_Glucose = 0.1;
+  Km_HK_ATP = 0.5;
+  Vm_PGI = 400;
+  Km_PGI_G6P = 0.8;
+  Km_PGI_F6P = 0.3;
+  Keq_PGI = 0.4;
+  Vm_PFK = 100;
+  Km_PFK_F6P = 0.1;
+  Km_PFK_ATP = 0.4;
+  Ki_PFK_ATP = 1;
+  n = 4;
+  Vm_ALD = 400;
+  Km_ALD_F16BP = 0.02;
+  Vm_TPI = 1000;
+  Km_TPI_DHAP = 0.6;
+  Km_TPI_G3P = 0.4;
+  Keq_TPI = 0.05;
+  Vm_GAPDH = 600;
+  Km_GAPDH_G3P = 0.2;
+  Km_GAPDH_NAD = 0.1;
+  Km_GAPDH_Pi = 1;
+  Vm_PGK = 1000;
+  Km_PGK_13BPG = 0.003;
+  Km_PGK_ADP = 0.2;
+  Vm_PGM = 1200;
+  Km_PGM_3PG = 1.2;
+  Km_PGM_2PG = 0.3;
+  Keq_PGM = 0.2;
+  Vm_ENO = 500;
+  Km_ENO_2PG = 0.04;
+  Km_ENO_PEP = 0.5;
+  Keq_ENO = 3.3;
+  Vm_PK = 800;
+  Km_PK_PEP = 0.2;
+  Km_PK_ADP = 0.3;
+  Vm_PDC = 200;
+  Km_PDC_Pyr = 4;
+  Vm_ADH = 1000;
+  Km_ADH_Acd = 0.2;
+  Km_ADH_NADH = 0.01;
+  Vm_G3PDH = 100;
+  Km_G3PDH_DHAP = 0.4;
+  Km_G3PDH_NADH = 0.03;
+  Vm_SUC = 50;
+  Km_SUC_Pyr = 5;
+  Vm_ACK = 80;
+  Km_ACK_Ace = 0.5;
+  Km_ACK_ADP = 0.4;
+  Vm_TRE = 20;
+  Km_TRE_G6P = 0.5;
+  Km_TRE_UDPG = 0.1;
+  Vm_GLY = 10;
+  Km_GLY_G6P = 0.5;
+  Km_GLY_ATP = 0.4;
+  Vm_ATPase = 10;
+  Km_ATPase_ATP = 0.5;
+  UDP_glucose = 0.1;
+  Acetyl_P = 0;
+
+  // Other declarations:
+  var vHK, vPGI, vPFK, vALD, vTPI, vGAPDH, vPGK, vPGM, vENO, vPK, vPDC, vADH, vG3PDH, vSUC, vACK, vTRE, vGLY, vATPase;
+  const compartment_, Vm_HK, Km_HK_Glucose, Km_HK_ATP, Vm_PGI, Km_PGI_G6P, Km_PGI_F6P, Keq_PGI, Vm_PFK, Km_PFK_F6P;
+  const Km_PFK_ATP, Ki_PFK_ATP, n, Vm_ALD, Km_ALD_F16BP, Vm_TPI, Km_TPI_DHAP, Km_TPI_G3P, Keq_TPI, Vm_GAPDH, Km_GAPDH_G3P;
+  const Km_GAPDH_NAD, Km_GAPDH_Pi, Vm_PGK, Km_PGK_13BPG, Km_PGK_ADP, Vm_PGM, Km_PGM_3PG, Km_PGM_2PG, Keq_PGM, Vm_ENO;
+  const Km_ENO_2PG, Km_ENO_PEP, Keq_ENO, Vm_PK, Km_PK_PEP, Km_PK_ADP, Vm_PDC, Km_PDC_Pyr, Vm_ADH, Km_ADH_Acd, Km_ADH_NADH;
+  const Vm_G3PDH, Km_G3PDH_DHAP, Km_G3PDH_NADH, Vm_SUC, Km_SUC_Pyr, Vm_ACK, Km_ACK_Ace, Km_ACK_ADP, Vm_TRE, Km_TRE_G6P;
+  const Km_TRE_UDPG, Vm_GLY, Km_GLY_G6P, Km_GLY_ATP, Vm_ATPase, Km_ATPase_ATP, UDP_glucose, Acetyl_P;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit substance = 1e-3 mole;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  compartment_ is "Yeast cell";
+  Glucose is "Glucose";
+  Glucose6P is "Glucose-6-phosphate";
+  Fructose6P is "Fructose-6-phosphate";
+  Fructose16bisP is "Fructose-1,6-bisphosphate";
+  Glyceraldehyde3P is "Glyceraldehyde-3-phosphate";
+  DihydroxyacetoneP is "Dihydroxyacetone phosphate";
+  _13bisphosphoglycerate is "1,3-bisphosphoglycerate";
+  _3phosphoglycerate is "3-phosphoglycerate";
+  _2phosphoglycerate is "2-phosphoglycerate";
+  Phosphoenolpyruvate is "Phosphoenolpyruvate";
+  Pyruvate is "Pyruvate";
+  Acetaldehyde is "Acetaldehyde";
+  Ethanol is "Ethanol";
+  Glycerol is "Glycerol";
+  Succinate is "Succinate";
+  Acetate is "Acetate";
+  Trehalose is "Trehalose";
+  Glycogen is "Glycogen";
+  ATP is "ATP";
+  ADP is "ADP";
+  NAD is "NAD+";
+  NADH is "NADH";
+  CO2 is "Carbon dioxide";
+  H2O is "Water";
+  Pi is "Inorganic phosphate";
+  Hplus is "Proton";
+  HK is "Hexokinase";
+  PGI is "Phosphoglucose isomerase";
+  PFK is "Phosphofructokinase";
+  ALD is "Aldolase";
+  TPI is "Triosephosphate isomerase";
+  GAPDH is "Glyceraldehyde-3-phosphate dehydrogenase";
+  PGK is "Phosphoglycerate kinase";
+  PGM is "Phosphoglycerate mutase";
+  ENO is "Enolase";
+  PK is "Pyruvate kinase";
+  PDC is "极ruvate decarboxylase";
+  ADH is "Alcohol dehydrogenase";
+  G3PDH is "Glycerol-3-phosphate dehydrogenase";
+  SUC is "Succinate synthesis";
+  ACK is "Acetate kinase";
+  TRE is "Trehalose synthesis";
+  GLY is "Glycogen synthesis";
+  ATPase is "ATP hydrolysis";
+end

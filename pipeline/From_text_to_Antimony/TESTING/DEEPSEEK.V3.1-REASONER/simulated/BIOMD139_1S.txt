@@ -1,0 +1,35 @@
+model *Hexokinase_Reaction()
+
+  // Compartments and Species:
+  compartment cell;
+  species Glucose in cell, ATP in cell, Glucose6P in cell, ADP in cell;
+
+  // Reactions:
+  Hexokinase_Reaction: Glucose + ATP => Glucose6P + ADP; k2*Glucose*(ATP/(K_ATP + ATP));
+
+  // Species initializations:
+  Glucose = 5;
+  ATP = 3;
+  Glucose6P = 0;
+  ADP = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k2 = 0.5;
+  K_ATP = 0.1;
+
+  // Other declarations:
+  const cell, k2, K_ATP;
+
+  // Display Names:
+  cell is "Cell";
+  Glucose is "Glucose";
+  ATP is "ATP";
+  Glucose6P is "Glucose-6-phosphate";
+  ADP is "ADP";
+  Hexokinase_Reaction is "Hexokinase-catalyzed phosphorylation";
+  k2 is "Catalytic rate constant";
+  K_ATP is "Michaelis constant for ATP";
+end

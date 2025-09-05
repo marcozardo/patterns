@@ -1,0 +1,181 @@
+```
+model *My_Antimony_Model()
+
+  // Compartments and Species:
+  compartment cell;
+  species S1 in cell, E in cell, ES in cell, A in cell, B in cell, C in cell, D in cell;
+  species DFG in cell, E1 in cell, E2 in cell, Gly in cell, Cn in cell;
+  species Glucose in cell, ATP in cell, Glucose6P in cell;
+  species X in cell, Y in cell; // For J1 example
+  species cAMP in cell, AMP in cell; // For M1 example
+  species F1_6BP in cell, G3P in cell, DHAP in cell; // For aldolase step
+  species I in cell, A_pool in cell, E_pool in cell; // For Ataullahkhanov1996_Adenylate
+  species AcCoA in cell; // For Fung2005_Metabolator
+
+  // Assignment Rules:
+  T_ATP := (A_pool + 3*E_pool - ((6*A_pool*E_pool - 3*E_pool^2) + A_pool^2)^0.5)/6;
+  M_AMP := (7*A_pool - 3*E_pool - ((6*A_pool*E_pool - 3*E_pool^2) + A_pool^2)^0.5)/6;
+
+  // Reactions:
+  // From Rule 1 & 3:
+  S1 + E -> ES; k1_S1E_ES*S1*E - k2_ES_S1E*ES;
+  A -> B; k1_A_B*A;
+
+  // From Rule 2:
+  DFG => E1; v1_k1_DFG*DFG;
+  DFG => E2; v2_k2_DFG*DFG;
+  DFG => Gly + Cn; v3_k3_DFG*DFG;
+  Glucose -> Glucose6P; k2_Glucose6P*Glucose*(ATP / (K_ATP + ATP));
+
+  // From Rule 4:
+  A -> B; k1_A_B_branched*A;
+  B -> C; k2_B_C*B;
+  B -> D; k3_B_D*B - k4_C_D*C;
+
+  // From Rule 5:
+  J1: X + Y -> C; k1_J1*X*Y;
+  M1: cAMP -> AMP; k1_M1*cAMP;
+
+  // From Rule 6:
+  J0: F1_6BP -> G3P + DHAP; k_ald*F1_6BP;
+
+  // From Rule 7:
+  Reaction6: $EmptySet => Y; cell*Reaction6_k1aa;
+  U1:  => I; cell*P_U1*J_U1;
+  U2: 3 I + E_pool => ; cell*W2_U2*I*T_ATP;
+  U3:  => E_pool; cell*W3_U3*T_ATP^0.52*M_AMP^0.41;
+
+  // From Rule 8:
+  V_gly:  => AcCoA; cell*S0_Vgly;
+
+  // Species initializations:
+  S1 = 30.4;
+  E = 1.2;
+  ES = 2.1;
+  A = 5;
+  B = 0;
+  C = 0;
+  D = 0;
+  DFG = 1; // Placeholder
+  E1 = 0; // Placeholder
+  E2 = 0; // Placeholder
+  Gly = 0; // Placeholder
+  Cn = 0; // Placeholder
+  Glucose = 1; // Placeholder
+  ATP = 1; // Placeholder
+  Glucose6P = 0; // Placeholder
+  X = 5;
+  Y = 2;
+  cAMP = 10;
+  AMP = 0;
+  F1_6BP = 10;
+  G3P = 0;
+  DHAP = 3;
+  $EmptySet = 0;
+  I = 10;
+  A_pool = 1.11;
+  E_pool = 2.1;
+  AcCoA = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1_S1E_ES = 3;
+  k2_ES_S1E = 1.4;
+  k1_A_B = 0.1;
+  v1_k1_DFG = k_generic_v1; // Placeholder for k1 from "v1 = k1*DFG"
+  v2_k2_DFG = k_generic_v2; // Placeholder for k2 from "v2 = k2*DFG"
+  v3_k3_DFG = k_generic_v3; // Placeholder for k3 from "v3 = k3*DFG"
+  k2_Glucose6P = 1; // Placeholder
+  K_ATP = 1; // Placeholder
+  k1_A_B_branched = 0.1;
+  k2_B_C = 0.2;
+  k3_B_D = 0.15;
+  k4_C_D = 3.4;
+  k1_J1 = 0.1;
+  k1_M1 = 0.1;
+  k_ald = 0.1;
+  Reaction6_k1aa = 0.015;
+  P_U1 = 0.121;
+  J_U1 = 100;
+  W2_U2 = 0.2;
+  W3_U3 = 13.48;
+  S0_Vgly = 0.5;
+
+  // Other declarations:
+  var T_ATP, M_AMP;
+  const cell, P_U1, J_U1, W2_U2, W3_U3, S0_Vgly;
+  const k1_S1E_ES, k2_ES_S1E, k1_A_B, v1_k1_DFG, v2_k2_DFG, v3_k3_DFG, k2_Glucose6P, K_ATP;
+  const k1_A_B_branched, k2_B_C, k3_B_D, k4_C_D, k1_J1, k1_M1, k_ald, Reaction6_k1aa;
+  const k_generic_v1, k_generic_v2, k_generic_v3; // Declaring generic rate constants as const
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  cell is "Intracellular";
+  S1 is "Substrate S1";
+  E is "Enzyme E";
+  ES is "Enzyme-Substrate Complex ES";
+  A is "Species A";
+  B is "Species B";
+  C is "Species C";
+  D is "Species D";
+  DFG is "N-(1-deoxy-D-fructos-1-yl)glycine (DFG)";
+  E1 is "Intermediate E1";
+  E2 is "Intermediate E2";
+  Gly is "Glycine";
+  Cn is "Carbonyl fragment (Cn)";
+  Glucose is "Glucose";
+  ATP is "ATP";
+  Glucose6P is "Glucose-6-Phosphate";
+  X is "Substrate A (J1)";
+  Y is "Cofactor B (J1)";
+  cAMP is "cyclic AMP";
+  AMP is "AMP";
+  F1_6BP is "Fructose-1,6-bisphosphate (F1,6BP)";
+  G3P is "Glyceraldehyde-3-phosphate (G3P)";
+  DHAP is "Dihydroxyacetone phosphate (DHAP)";
+  I is "Ions";
+  A_pool is "Adenylate pool";
+  E_pool is "Energy pool";
+  T_ATP is "ATP";
+  M_AMP is "AMP";
+  AcCoA is "Acetyl-CoA";
+
+  k1_S1E_ES is "Forward rate constant k1 (S1+E->ES)";
+  k2_ES_S1E is "Reverse rate constant k2 (ES->S1+E)";
+  k1_A_B is "Rate constant k1 (A->B)";
+  v1_k1_DFG is "Rate constant k1 (DFG->E1)";
+  v2_k2_DFG is "Rate constant k2 (DFG->E2)";
+  v3_k3_DFG is "Rate constant k3 (DFG->Gly+Cn)";
+  k2_Glucose6P is "Rate constant k2 (Glucose->Glucose6P)";
+  K_ATP is "K_ATP";
+  k1_A_B_branched is "Rate constant k1 (A->B branched)";
+  k2_B_C is "Rate constant k2 (B->C)";
+  k3_B_D is "Rate constant k3 (B->D)";
+  k4_C_D is "Rate constant k4 (C->D)";
+  J1 is "Regulatory Junction";
+  k1_J1 is "Rate constant k1 (J1)";
+  M1 is "cAMP Hydrolysis";
+  k1_M1 is "Rate constant k1 (M1)";
+  J0 is "Aldolase step";
+  k_ald is "Rate constant for aldolase";
+  Reaction6 is "cyclin biosynthesis";
+  Reaction6_k1aa is "Rate constant k1aa (Reaction6)";
+  U1 is "Passive ion influx";
+  P_U1 is "Membrane permeability";
+  J_U1 is "Extracellular ion concentration";
+  U2 is "ATP consumption by ion pump";
+  W2_U2 is "Ion pump activity";
+  U3 is "ATP from glycolysis";
+  W3_U3 is "Glycolytic activity";
+  V_gly is "Glycolytic flux";
+  S0_Vgly is "Glycolytic input rate";
+  substance is "millimole (default)";
+  time_unit is "hour (default)";
+
+end
+```

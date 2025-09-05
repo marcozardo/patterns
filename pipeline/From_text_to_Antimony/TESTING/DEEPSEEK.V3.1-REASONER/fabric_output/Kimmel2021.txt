@@ -1,0 +1,79 @@
+model *Glycolysis_Pathway()
+
+  // Compartments and Species:
+  compartment cytosol, nucleus;
+  species Glucose in cytosol, G6P in cytosol, F6P in cytosol, F16BP in cytosol;
+  species G3P in cytosol, DHAP in cytosol, $ATP in cytosol, $ADP in cytosol;
+
+  // Reactions:
+  R1: Glucose + ATP => G6P + ADP; cytosol*(Vmax1*Glucose*ATP/(Km1_Glucose*(1 + ADP/Ki) + ATP*(1 + Glucose/Km1_Glucose)));
+  R2: G6P => F6P; cytosol*(Vmax2*G6P/Km2 - Vmax2r*F6P/Km2r);
+  R3: F6P + ATP => F16BP + ADP; cytosol*(Vmax3*F6P*ATP/(Km3_F6P*Km3_ATP + Km3_ATP*F6P + Km3_F6P*ATP + F6P*ATP));
+  R4: F16BP => G3P + DHAP; cytosol*(Vmax4*F16BP/Km4);
+
+  // Species initializations:
+  Glucose = 5;
+  G6P = 0.083;
+  F6P = 0.014;
+  F16BP = 0.031;
+  G3P = 0.019;
+  DHAP = 0.14;
+  ATP = 1.85;
+  ADP = 0.14;
+
+  // Compartment initializations:
+  cytosol = 1e-14;
+  nucleus = 2e-15;
+
+  // Variable initializations:
+  Vmax1 = 0.036;
+  Km1_Glucose = 0.08;
+  Ki = 0.15;
+  Vmax2 = 0.22;
+  Km2 = 0.3;
+  Vmax2r = 0.32;
+  Km2r = 0.05;
+  Vmax3 = 0.0026;
+  Km3_F6P = 0.0012;
+  Km3_ATP = 0.003;
+  Vmax4 = 0.033;
+  Km4 = 0.001;
+
+  // Other declarations:
+  const cytosol, nucleus, ATP, ADP, Vmax1, Km1_Glucose, Ki, Vmax2, Km2;
+  const Vmax2r, Km2r, Vmax3, Km3_F6P, Km3_ATP, Vmax4, Km4;
+
+  // Unit definitions:
+  unit volume = 1e-14 litre;
+  unit concentration = 1e-3 mole/litre;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  cytosol is "Cytosol";
+  nucleus is "Nucleus";
+  Glucose is "Glucose";
+  G6P is "Glucose-6-phosphate";
+  F6P is "Fructose-6-phosphate";
+  F16BP is "Fructose-1,6-bisphosphate";
+  G3P is "Glyceraldehyde-3-phosphate";
+  DHAP is "Dihydroxyacetone phosphate";
+  ATP is "Adenosine triphosphate";
+  ADP is "Adenosine diphosphate";
+  R1 is "Hexokinase reaction";
+  R2 is "Phosphoglucose isomerase";
+  R3 is "Phosphofructokinase";
+  R4 is "Aldolase";
+  Vmax1 is "Maximum velocity for hexokinase";
+  Km1_Glucose is "Michaelis constant for glucose";
+  Ki is "Inhibition constant for ADP";
+  Vmax2 is "Forward maximum velocity for PGI";
+  Km2 is "Michaelis constant for G6P";
+  Vmax2r is "Reverse maximum velocity for PGI";
+  Km2r is "Michaelis constant for F6P";
+  Vmax3 is "Maximum velocity for PFK";
+  Km3_F6P is "Michaelis constant for F6P";
+  Km3_ATP is "Michaelis constant for ATP";
+  Vmax4 is "Maximum velocity for aldolase";
+  Km4 is "Michaelis constant for F16BP";
+
+end

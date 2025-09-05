@@ -1,0 +1,39 @@
+model *DFG_degradation_pathways()
+  // Compartments and Species:
+  compartment comp;
+  species DFG in comp, E1 in comp, E2 in comp, Gly in comp, Cn in comp;
+
+  // Reactions:
+  R1: DFG => E1; k1*DFG;
+  R2: DFG => E2; k2*DFG;
+  R3: DFG => Gly + Cn; k3*DFG;
+
+  // Species initializations:
+  DFG = 0;
+  E1 = 0;
+  E2 = 0;
+  Gly = 0;
+  Cn = 0;
+
+  // Compartment initializations:
+  comp = 1;
+
+  // Variable initializations:
+  k1 = 0;
+  k2 = 0;
+  k3 = 0;
+
+  // Other declarations:
+  const comp;
+  var k1, k2, k3;
+
+  // Display Names:
+  DFG is "N-(1-deoxy-D-fructos-1-yl)glycine";
+  E1 is "1,2-enolization intermediate";
+  E2 is "2,3-enolization intermediate";
+  Gly is "free glycine";
+  Cn is "carbonyl fragment";
+  R1 is "DFG 1,2-enolization";
+  R2 is "DFG 2,3-enolization";
+  R3 is "DFG direct cleavage";
+end

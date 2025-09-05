@@ -1,0 +1,172 @@
+model *BIOMD0000000139___Model_of_Calcium_handling_and_contraction_in_uterine_smooth_muscle_cell()
+  // Compartments and Species:
+  compartment cyt, SR;
+  species Ca_cyt in cyt, Ca_SR in SR, IP3 in cyt, R in cyt, IP3R in cyt, CaR in cyt, CaIP3R in cyt, Ca2R in cyt, Ca2IP3R in cyt;
+  species h in cyt, PLC in cyt, G in cyt, DAG in cyt, PKC in cyt, MLCK in cyt, MLCK_a in cyt, MLC in cyt, MLC_p in cyt;
+  species Force in cyt;
+
+  // Assignment Rules:
+  J_IP3R := (v1*(Ca2IP3R*(Ca_SR - Ca_cyt) + v2*(CaIP3R*(Ca_SR - Ca_cyt)) + v3*(IP3R*(Ca_SR - Ca_cyt))));
+  J_leak := v4*(Ca_SR - Ca_cyt);
+  J_out := v5;
+  J_pump := v6*Ca_cyt^2/(Ca_cyt^2 + k_pump^2);
+  k_h := k_minus + (k_plus - k_minus)*Ca_cyt^4/(Ca_cyt^4 + K_a^4);
+  k_1 := k1*IP3;
+  k_2 := k2*Ca_cyt;
+  k_3 := k3*IP3;
+  k_4 := k4*Ca_cyt;
+  PLC_star := PLC*G;
+  J_PLC := v7*PLC_star;
+  J_degr := v8*IP3;
+  k_PKC := k9*DAG;
+  k_PKC_minus := k10;
+  k_MLCK := k11*Ca_cyt^2/(Ca_cyt^2 + K_MLCK^2);
+  k_MLCK_minus := k12;
+  k_MLC := k13*MLCK_a;
+  k_MLC_minus := k14;
+  Force := F0 + (F_max - F0)*MLC_p/(MLC_p + K_force);
+
+  // Reactions:
+  R_binding_IP3: R + IP3 -> IP3R; k_1*R*IP3 - k_minus1*IP3R;
+  R_binding_Ca: R + Ca_cyt -> CaR; k_2*R*Ca_cyt - k_minus2*CaR;
+  IP3R_binding_Ca: IP3R + Ca_cyt -> CaIP3R; k_4*IP3R*Ca_cyt - k_minus4*CaIP3R;
+  CaR_binding_IP3: CaR + IP3 -> CaIP3R; k_3*CaR*IP3 - k_minus3*CaIP3R;
+  CaIP3R_binding_Ca: CaIP3R + Ca_cyt -> Ca2IP3R; k_2*CaIP3R*Ca_cyt - k_minus2*Ca2IP3R;
+  CaR_binding_Ca: CaR + Ca_cyt -> Ca2R; k_4*CaR*Ca_cyt - k_minus4*Ca2R;
+  Ca2R_binding_IP3: Ca2R + IP3 -> Ca2IP3R; k_1*Ca2R*IP3 - k_minus1*Ca2IP3R;
+  h_gate: h -> ; k_h*h;
+  IP3_production:  => IP3; J_PLC;
+  IP3_degradation: IP3 => ; J_degr;
+  G_activation: G -> ; k_G_act*G;
+  G_deactivation:  => G; k_G_inact*(G_tot - G);
+  PLC_activation: PLC -> ; k_PLC_act*PLC;
+  PLC_deactivation:  => PLC; k_PLC_inact*(PLC_tot - PLC);
+  DAG_production:  => DAG; k_DAG*PLC_star;
+  DAG_degradation: DAG => ; k_DAG_minus*DAG;
+  PKC_activation: PKC -> ; k_PKC*PKC;
+  PKC_deactivation:  => PKC; k_PKC_minus*(PKC_tot - PKC);
+  MLCK_activation: MLCK -> MLCK_a; k_MLCK*MLCK - k_MLCK_minus*MLCK_a;
+  MLC_phosphorylation: MLC -> MLC_p; k_MLC*MLC - k_MLC_minus*MLC_p;
+  Ca_cyt_flux:  => Ca_cyt; (J_IP3R + J_leak - J_pump + J_out)/cyt;
+  Ca_SR_flux:  => Ca_SR; (-J_IP3R - J_leak + J_pump)/SR;
+
+  // Species initializations:
+  Ca_cyt = 0.1;
+  Ca_SR = 10;
+  IP3 = 0;
+  R = 1;
+  IP3R = 0;
+  CaR = 0;
+  CaIP3R = 0;
+  Ca2R = 0;
+  Ca2IP3R = 0;
+  h = 1;
+  PLC = 0.1;
+  G = 0;
+  DAG = 0;
+  PKC = 0.1;
+  MLCK = 1;
+  MLCK_a = 0;
+  MLC = 1;
+  MLC_p = 0;
+  Force = 0;
+
+  // Compartment initializations:
+  cyt = 1;
+  SR = 0.1;
+
+  // Variable initializations:
+  v1 = 20;
+  v2 = 0.04;
+  v3 = 0.04;
+  v4 = 0.002;
+  v5 = 0.02;
+  v6 = 0.4;
+  k_pump = 0.2;
+  k_minus = 0.5;
+  k_plus = 10;
+  K_a = 0.35;
+  k1 = 100;
+  k2 = 100;
+  k3 = 100;
+  k4 = 100;
+  k_minus1 = 0.5;
+  k_minus2 = 0.5;
+  k_minus3 = 0.5;
+  k_minus4 = 0.5;
+  v7 = 0.05;
+  v8 = 0.1;
+  k_G_act = 0.5;
+  k_G_inact = 0.5;
+  G_tot = 1;
+  k_PLC_act = 0.5;
+  k_PLC_inact = 0.5;
+  PLC_tot = 0.1;
+  k_DAG = 0.1;
+  k_DAG_minus = 0.1;
+  k9 = 1;
+  k10 = 0.1;
+  PKC_tot = 0.1;
+  k11 = 1;
+  k12 = 0.1;
+  K_MLCK = 0.5;
+  k13 = 1;
+  k14 = 0.1;
+  F0 = 0;
+  F_max = 1;
+  K_force = 0.5;
+
+  // Other declarations:
+  var J_IP3R, J_leak, J_out, J_pump, k_h, k_1, k_2, k_3, k_4, PLC_star, J_PLC, J_degr, k_PKC, k_PKC_minus, k_MLCK, k_MLCK_minus, k_MLC, k_MLC_minus, Force;
+  const cyt, SR, v1, v2, v3, v4, v5, v6, k_pump, k_minus, k_plus, K_a, k1, k2, k3, k4, k_minus1, k_minus2, k_minus3, k_minus4, v7, v8, k_G_act, k_G_inact, G_tot, k_PLC_act, k_PLC_inact, PLC_tot, k_DAG, k_DAG_minus, k9, k10, PKC_tot, k11, k12, K_MLCK, k13, k14, F0, F_max, K_force;
+
+  // Unit definitions:
+  unit volume = 1e-15 litre;
+  unit substance = 1e-15 mole;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  cyt is "Cytosol";
+  SR is "Sarcoplasmic Reticulum";
+  Ca_cyt is "Cytosolic Calcium";
+  Ca_SR is "SR Calcium";
+  IP3 is "IP3";
+  R is "Inactive IP3 Receptor";
+  IP3R is "IP3-bound Receptor";
+  CaR is "Calcium-bound Receptor";
+  CaIP3R is "Calcium-IP3-bound Receptor";
+  Ca2R is "Dicalcium-bound Receptor";
+  Ca2IP3R is "Dicalcium-IP3-bound Receptor";
+  h is "Inactivation Gate";
+  PLC is "Phospholipase C";
+  G is "G-protein";
+  DAG is "Diacylglycerol";
+  PKC is "Protein Kinase C";
+  MLCK is "Myosin Light Chain Kinase";
+  MLCK_a is "Active MLCK";
+  MLC is "Myosin Light Chain";
+  MLC_p is "Phosphorylated MLC";
+  Force is "Force";
+  J_IP3R is "IP3 Receptor Flux";
+  J_leak is "SR Leak Flux";
+  J_out is "Extracellular Influx";
+  J_pump is "SERCA Pump Flux";
+  k_h is "Inactivation Rate";
+  k_1 is "IP3 Binding Rate";
+  k_2 is "Calcium Binding Rate";
+  k_3 is "IP3 Binding to CaR";
+  k_4 is "Calcium Binding to IP3R";
+  k_minus1 is "IP3 Unbinding Rate";
+  k_minus2 is "Calcium Unbinding Rate";
+  k_minus3 is "IP3 Unbinding from CaIP3R";
+  k_minus4 is "Calcium Unbinding from CaIP3R";
+  PLC_star is "Active PLC";
+  J_PLC is "IP3 Production Rate";
+  J_degr is "IP3 Degradation Rate";
+  k_PKC is "PKC Activation Rate";
+  k_PKC_minus is "PKC Deactivation Rate";
+  k_MLCK is "MLCK Activation Rate";
+  k_MLCK_minus is "MLCK Deactivation Rate";
+  k_MLC is "MLC Phosphorylation Rate";
+  k_MLC_minus is "MLC Dephosphorylation Rate";
+end

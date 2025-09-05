@@ -1,0 +1,115 @@
+The provided Antimony model is already syntactically correct and adheres to the rules outlined. Since the error report is **Empty**, no corrections are required. Here is the validated model:
+
+```antimony
+model *Malkov2020___A_mathematical_model_of_the_immune_response_to_SARS_CoV_2()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species V in compartment_, E in compartment_, I in compartment_;
+  species T in compartment_, C in compartment_, A in compartment_;
+  species M in compartment_, N in compartment_;
+
+  // Assignment Rules:
+  dV := (1 - epsilon)*p - c*V*E - u*V;
+  dE := k*V*E - m*E;
+  dI := c*V*E - a*I;
+  dT := r1*I - r2*T*C - r3*T*A - d1*T;
+  dC := r4*T*C - d2*C;
+  dA := r5*T*A - d3*A;
+  dM := r6*I - d4*M;
+  dN := r7*I - d5*N;
+
+  // Reactions:
+  Virus_Replication:  => V; compartment_*((1 - epsilon)*p);
+  Virus_Infection: V + E => I; compartment_*(c*V*E);
+  Virus_Clearance: V => ; compartment_*(u*V);
+  Immune_Cell_Activation: V + E => E; compartment_*(k*V*E);
+  Immune_Cell_Decay: E => ; compartment_*(m*E);
+  Infected_Cell_Death: I => ; compartment_*(a*I);
+  T_Cell_Activation: I => T; compartment_*(r1*I);
+  T_Cell_Inhibition_by_C: T + C => ; compartment_*(r2*T*C);
+  T_Cell_Inhibition_by_A: T + A => ; compartment_*(r3*T*A);
+  T_Cell_Decay: T => ; compartment_*(d1*T);
+  C_Cell_Activation: T + C => C; compartment_*(r4*T*C);
+  C_Cell_Decay: C => ; compartment_*(d2*C);
+  A_Cell_Activation: T + A => A; compartment_*(r5*T*A);
+  A_Cell_Decay: A => ; compartment_*(d3*A);
+  M_Cell_Activation: I => M; compartment_*(r6*I);
+  M_Cell_Decay: M => ; compartment_*(d4*M);
+  N_Cell_Activation: I => N; compartment_*(r7*I);
+  N_Cell_Decay: N => ; compartment_*(d5*N);
+
+  // Species initializations:
+  V = 1e-6;
+  E = 0;
+  I = 0;
+  T = 0;
+  C = 0;
+  A = 0;
+  M = 0;
+  N = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  p = 10000;
+  c = 0.0001;
+  u = 0.1;
+  k = 0.0001;
+  m = 0.1;
+  a = 0.1;
+  r1 = 0.01;
+  r2 = 0.0001;
+  r3 = 0.0001;
+  d1 = 0.1;
+  r4 = 0.001;
+  d2 = 0.1;
+  r5 = 0.001;
+  d3 = 0.1;
+  r6 = 0.001;
+  d4 = 0.1;
+  r7 = 0.001;
+  d5 = 0.1;
+  epsilon = 0.5;
+
+  // Other declarations:
+  var dV, dE, dI, dT, dC, dA, dM, dN;
+  const compartment_, p, c, u, k, m, a, r1, r2, r3, d1, r4, d2, r5, d3, r6, d4, r7, d5, epsilon;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+  V is "Virus";
+  E is "Epithelial cells";
+  I is "Infected cells";
+  T is "T cells";
+  C is "Cytotoxic T cells";
+  A is "Antibodies";
+  M is "Macrophages";
+  N is "Neutrophils";
+  p is "Virus production rate";
+  c is "Infection rate";
+  u is "Virus clearance rate";
+  k is "Immune cell activation rate";
+  m is "Immune cell decay rate";
+  a is "Infected cell death rate";
+  r1 is "T cell activation rate";
+  r2 is "T cell inhibition rate by C";
+  r3 is "T cell inhibition rate by A";
+  d1 is "T cell decay rate";
+  r4 is "C cell activation rate";
+  d2 is "C cell decay rate";
+  r5 is "A cell activation rate";
+  d3 is "A cell decay rate";
+  r6 is "M cell activation rate";
+  d4 is "M cell decay rate";
+  r7 is "N cell activation rate";
+  d5 is "N cell decay rate";
+  epsilon is "Efficacy of antiviral treatment";
+
+end
+```

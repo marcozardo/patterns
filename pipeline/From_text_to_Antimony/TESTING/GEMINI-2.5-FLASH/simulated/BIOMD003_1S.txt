@@ -1,0 +1,101 @@
+```
+model *YeastCellCycle()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Cln2 in Cell;
+  species Clb5 in Cell;
+  species Cdc28_active in Cell;
+  species CDK_inhibitor in Cell;
+  species Cln2_CDK in Cell;
+  species Clb5_CDK in Cell;
+  species MPF in Cell;
+  species $EmptySet in Cell;
+
+  // Assignment Rules:
+  Total_CDK := Cdc28_active + Cln2_CDK + Clb5_CDK;
+  Total_Cln2 := Cln2 + Cln2_CDK;
+  Total_Clb5 := Clb5 + Clb5_CDK;
+
+  // Reactions:
+  R1: $EmptySet => Cln2; k_syn_Cln2;
+  R2: Cln2 => $EmptySet; k_deg_Cln2 * Cln2;
+  R3: $EmptySet => Clb5; k_syn_Clb5;
+  R4: Clb5 => $EmptySet; k_deg_Clb5 * Clb5;
+  R5: Cln2 + Cdc28_active => Cln2_CDK; k_on_Cln2 * Cln2 * Cdc28_active;
+  R6: Cln2_CDK => Cln2 + Cdc28_active; k_off_Cln2 * Cln2_CDK;
+  R7: Clb5 + Cdc28_active => Clb5_CDK; k_on_Clb5 * Clb5 * Cdc28_active;
+  R8: Clb5_CDK => Clb5 + Cdc28_active; k_off_Clb5 * Clb5_CDK;
+  R9: Cln2_CDK + Clb5_CDK => MPF + Cdc28_active; k_MPF_act * Cln2_CDK * Clb5_CDK;
+  R10: MPF => $EmptySet; k_MPF_inact * MPF * CDK_inhibitor;
+
+  // Species initializations:
+  Cln2 = 0.0 nM;
+  Clb5 = 0.0 nM;
+  Cdc28_active = 100.0 nM;
+  CDK_inhibitor = 50.0 nM;
+  Cln2_CDK = 0.0 nM;
+  Clb5_CDK = 0.0 nM;
+  MPF = 0.0 nM;
+  $EmptySet = 0; // Boundary species initialized to zero
+
+  // Compartment initializations:
+  Cell = 1.0 pL;
+
+  // Variable initializations:
+  k_syn_Cln2 = 0.1 nM/min;
+  k_deg_Cln2 = 0.05 min^-1;
+  k_syn_Clb5 = 0.08 nM/min;
+  k_deg_Clb5 = 0.04 min^-1;
+  k_on_Cln2 = 0.01 nM^-1 min^-1;
+  k_off_Cln2 = 0.02 min^-1;
+  k_on_Clb5 = 0.015 nM^-1 min^-1;
+  k_off_Clb5 = 0.025 min^-1;
+  k_MPF_act = 0.005 nM^-1 min^-1;
+  k_MPF_inact = 0.003 nM^-1 min^-1;
+
+  // Other declarations:
+  const Cell, $EmptySet;
+  const k_syn_Cln2, k_deg_Cln2, k_syn_Clb5, k_deg_Clb5;
+  const k_on_Cln2, k_off_Cln2, k_on_Clb5, k_off_Clb5, k_MPF_act, k_MPF_inact;
+  var Total_CDK, Total_Cln2, Total_Clb5;
+
+  // Unit definitions:
+  unit nanomole = 1e-9 mole;
+  unit picolitre = 1e-12 litre;
+  unit minute = 60 second;
+
+  // Display Names:
+  Cell is "Intracellular compartment";
+  Cln2 is "Cyclin Cln2";
+  Clb5 is "Cyclin Clb5";
+  Cdc28_active is "Active CDK (Cdc28)";
+  CDK_inhibitor is "CDK Inhibitor (Sic1)";
+  Cln2_CDK is "Cln2-CDK Complex";
+  Clb5_CDK is "Clb5-CDK Complex";
+  MPF is "Maturation-Promoting Factor";
+  Total_CDK is "Total Cdc28";
+  Total_Cln2 is "Total Cln2";
+  Total_Clb5 is "Total Clb5";
+  R1 is "Cln2 Synthesis";
+  R2 is "Cln2 Degradation";
+  R3 is "Clb5 Synthesis";
+  R4 is "Clb5 Degradation";
+  R5 is "Cln2-CDK Complex Formation";
+  R6 is "Cln2-CDK Complex Dissociation";
+  R7 is "Clb5-CDK Complex Formation";
+  R8 is "Clb5-CDK Complex Dissociation";
+  R9 is "MPF Activation";
+  R10 is "MPF Inactivation";
+  k_syn_Cln2 is "Cln2 Synthesis Rate Constant";
+  k_deg_Cln2 is "Cln2 Degradation Rate Constant";
+  k_syn_Clb5 is "Clb5 Synthesis Rate Constant";
+  k_deg_Clb5 is "Clb5 Degradation Rate Constant";
+  k_on_Cln2 is "Cln2-CDK Association Rate Constant";
+  k_off_Cln2 is "Cln2-CDK Dissociation Rate Constant";
+  k_on_Clb5 is "Clb5-CDK Association Rate Constant";
+  k_off_Clb5 is "Clb5-CDK Dissociation Rate Constant";
+  k_MPF_act is "MPF Activation Rate Constant";
+  k_MPF_inact is "MPF Inactivation Rate Constant";
+end
+```

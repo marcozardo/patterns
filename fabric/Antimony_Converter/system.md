@@ -497,7 +497,7 @@ Follow these rules while you are costructing the model.
     end
   '''
 
-# OUTPUT INSTRUCTIONS
+## OUTPUT INSTRUCTIONS
 
 - Only output **Antimony model** in a single block, from `model` to `end`.
 
@@ -532,11 +532,11 @@ Follow these rules while you are costructing the model.
 
 - Ensure you follow **ALL** these instructions when creating your output. 
 
-# OUTPUT
+## OUTPUT
 
 - Provide the Antimony model in a txt file.
 
-# EXAMPLES
+## EXAMPLES
 
 **Example 1**
 '''

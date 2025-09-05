@@ -20,9 +20,14 @@ rule conversion:
         "workdir/fabric_output/{sample}.txt"
 
     shell:
-        "fabric -p Antimony_Converter \"{input}\" > \"{output}\""
+        """
+        Type {input[0]} | fabric -p Antimony_Converter > {output[0]},
+        shell = "powershell"
+        """
         
-        #"Type \"{input}\" | fabric -p Antimony_Converter > \"{output}\""
+        #"Type {input} | fabric -p Antimony_Converter > {output}"
+        #"fabric -p Antimony_Converter Type {input} > {output}"
+        
 
 rule first_simulation:
     input:
@@ -48,7 +53,7 @@ rule first_correction:
 
     shell:
         """ 
-        fabric -p Antimony_Editor Type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
+        Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model},
         shell = "powershell"
         
         """
@@ -77,10 +82,16 @@ rule Second_correction:
 
     shell:
         """ 
-        fabric -p Antimony_Editor Type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
+        Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model},
         shell = "powershell"
         
         """
+
+#Type {params.error} | fabric -p Antimony_Editor {input.model} > {output.corrected_model},
+#        shell = "powershell"
+
+#fabric -p Antimony_Editor Type {params.error} < {input.model} > {output.corrected_model},
+#        shell = "powershell"
 
 # third Simulation: the model will be copied in the ./final_model repository: it contains all tested model (corrected or not). In the end we are going to generate a final csv file with some info about each 
 # model simulation + final errors encountered.

@@ -1,0 +1,80 @@
+model *Glycolysis_Pathway()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species Glucose in cytosol, G6P in cytosol, F6P in cytosol, F1_6BP in cytosol;
+  species DHAP in cytosol, G3P in cytosol, PEP in cytosol, Pyruvate in cytosol;
+  species ATP in cytosol, ADP in cytosol;
+
+  // Assignment Rules:
+  ATP_total := ATP + ADP;
+  Energy_charge := ATP / ATP_total;
+
+  // Reactions:
+  R1: Glucose + ATP -> G6P + ADP; cytosol*(k1*Glucose*ATP);
+  R2: G6P -> F6P; cytosol*(k2*G6P);
+  R3: F6P + ATP -> F1_6BP + ADP; cytosol*(k3*F6P*ATP);
+  R4: F1_6BP -> DHAP + G3P; cytosol*(k4*F1_6BP);
+  R5: DHAP -> G3P; cytosol*(k5*DHAP);
+  R6: G3P -> PEP; cytosol*(k6*G3P*ADP/ATP);
+  R7: PEP -> Pyruvate; cytosol*(k7*PEP);
+  R8: ADP -> ATP; cytosol*(k8*ADP*Energy_charge);
+
+  // Species initializations:
+  Glucose = 5.0;
+  G6P = 0.1;
+  F6P = 0.1;
+  F1_6BP = 0.1;
+  DHAP = 0.1;
+  G3P = 0.1;
+  PEP = 0.1;
+  Pyruvate = 0.1;
+  ATP = 3.0;
+  ADP = 1.0;
+
+  // Compartment initializations:
+  cytosol = 1.0e-14;
+
+  // Variable initializations:
+  k1 = 50.0;
+  k2 = 20.0;
+  k3 = 100.0;
+  k4 = 60.0;
+  k5 = 20.0;
+  k6 = 30.0;
+  k7 = 40.0;
+  k8 = 10.0;
+
+  // Other declarations:
+  var ATP_total, Energy_charge;
+  const cytosol, k1, k2, k3, k4, k5, k6, k7, k8;
+
+  // Unit definitions:
+  unit volume = 1e-14 litre;
+  unit substance = 1e-15 mole;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  cytosol is "Cytosol";
+  Glucose is "Glucose";
+  G6P is "Glucose-6-Phosphate";
+  F6P is "Fructose-6-Phosphate";
+  F1_6BP is "Fructose-1,6-Bisphosphate";
+  DHAP is "Dihydroxyacetone Phosphate";
+  G3P is "Glyceraldehyde-3-Phosphate";
+  PEP is "Phosphoenolpyruvate";
+  Pyruvate is "Pyruvate";
+  ATP is "Adenosine Triphosphate";
+  ADP is "Adenosine Diphosphate";
+  ATP_total is "Total Adenine Nucleotides";
+  Energy_charge is "Energy Charge";
+  R1 is "Hexokinase Reaction";
+  R2 is "Phosphoglucose Isomerase";
+  R3 is "Phosphofructokinase";
+  R4 is "Aldolase";
+  R5 is "Triosephosphate Isomerase";
+  R6 is "Glyceraldehyde-3-Phosphate Dehydrogenase";
+  R7 is "Pyruvate Kinase";
+  R8 is "ATP Regeneration";
+
+end

@@ -1,0 +1,38 @@
+model *Glycolysis_Hexokinase_Step()
+  // Compartments and Species:
+  compartment cell;
+  species Glucose in cell, ATP in cell, Glucose6P in cell, ADP in cell, Hexokinase in cell;
+
+  // Reactions:
+  HK_reaction: Glucose + ATP => Glucose6P + ADP; (Vmax_HK * Glucose * ATP) / (Km_Glucose * Km_ATP + Km_ATP * Glucose + Km_Glucose * ATP + Glucose * ATP);
+  ATP_regeneration:  => ATP; k_regeneration;
+
+  // Species initializations:
+  Glucose = 5;
+  ATP = 2;
+  Glucose6P = 0;
+  ADP = 0;
+  Hexokinase = 0.001;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  Vmax_HK = 0.5;
+  Km_Glucose = 0.1;
+  Km_ATP = 0.2;
+  k_regeneration = 0.05;
+
+  // Other declarations:
+  const cell, Vmax_HK, Km_Glucose, Km_ATP, k_regeneration;
+
+  // Display Names:
+  cell is "Cell";
+  Glucose is "Glucose";
+  ATP is "ATP";
+  Glucose6P is "Glucose-6-phosphate";
+  ADP is "ADP";
+  Hexokinase is "Hexokinase";
+  HK_reaction is "Hexokinase reaction";
+  ATP_regeneration is "ATP regeneration";
+end

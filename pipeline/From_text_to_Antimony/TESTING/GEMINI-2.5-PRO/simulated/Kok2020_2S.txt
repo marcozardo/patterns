@@ -1,0 +1,80 @@
+model *Proctor2011_Mitochondrial_ROS_and_damage()
+
+  // Compartments and Species:
+  compartment Mitochondrion;
+  species ETC_e in Mitochondrion, O2 in Mitochondrion, O2_rad in Mitochondrion, H2O2 in Mitochondrion;
+  species OH_rad in Mitochondrion, Fe2 in Mitochondrion, Fe3 in Mitochondrion, H2O in Mitochondrion;
+  species D in Mitochondrion, D_ox in Mitochondrion, SOD in Mitochondrion, CAT in Mitochondrion;
+  species GPX in Mitochondrion, H in Mitochondrion;
+
+  // Reactions:
+  Electron_leakage: ETC_e + O2 -> O2_rad; k1 * ETC_e * O2;
+  SOD_catalysis: 2 O2_rad + 2 H -> H2O2 + O2; k2 * O2_rad * SOD;
+  Catalase_catalysis: 2 H2O2 -> 2 H2O + O2; k3 * H2O2 * CAT;
+  GPX_catalysis: 2 H2O2 -> 2 H2O; k4 * H2O2 * GPX;
+  Fenton_reaction: H2O2 + Fe2 -> OH_rad + Fe3; k5 * H2O2 * Fe2;
+  Haber_Weiss_reaction: O2_rad + H2O2 -> OH_rad + O2; k6 * O2_rad * H2O2;
+  Hydroxyl_radical_attack: OH_rad + D -> D_ox; k7 * OH_rad * D;
+
+  // Species initializations:
+  ETC_e = 100;
+  O2 = 100;
+  O2_rad = 0;
+  H2O2 = 0;
+  OH_rad = 0;
+  Fe2 = 100;
+  Fe3 = 0;
+  H2O = 0;
+  D = 100;
+  D_ox = 0;
+  SOD = 100;
+  CAT = 100;
+  GPX = 100;
+  H = 100;
+
+  // Compartment initializations:
+  Mitochondrion = 1;
+
+  // Variable initializations:
+  k1 = 0.001;
+  k2 = 0.01;
+  k3 = 0.01;
+  k4 = 0.01;
+  k5 = 0.01;
+  k6 = 0.001;
+  k7 = 0.01;
+
+  // Other declarations:
+  const Mitochondrion, k1, k2, k3, k4, k5, k6, k7;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  substance is "micromolar (uM)";
+  time_unit is "second (s)";
+  Mitochondrion is "Mitochondrion";
+  ETC_e is "Electron Transport Chain electron";
+  O2 is "Oxygen";
+  O2_rad is "Superoxide";
+  H2O2 is "Hydrogen peroxide";
+  OH_rad is "Hydroxyl radical";
+  Fe2 is "Ferrous iron";
+  Fe3 is "Ferric iron";
+  H2O is "Water";
+  D is "Undamaged mitochondrial components";
+  D_ox is "Oxidised (damaged) mitochondrial components";
+  SOD is "Superoxide dismutase";
+  CAT is "Catalase";
+  GPX is "Glutathione peroxidase";
+  H is "Proton";
+  Electron_leakage is "Electron leakage from ETC to O2";
+  SOD_catalysis is "Superoxide dismutase catalysis";
+  Catalase_catalysis is "Catalase catalysis";
+  GPX_catalysis is "Glutathione peroxidase catalysis";
+  Fenton_reaction is "Fenton reaction";
+  Haber_Weiss_reaction is "Haber-Weiss reaction";
+  Hydroxyl_radical_attack is "Hydroxyl radical attack on mitochondrial components";
+end
+

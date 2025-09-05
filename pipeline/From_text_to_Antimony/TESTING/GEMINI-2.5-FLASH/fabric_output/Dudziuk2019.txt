@@ -1,0 +1,243 @@
+```antimony
+model MetabolicPathwayModel()
+
+  // Compartments and Species:
+  compartment Cytosol;
+  compartment Mitochondrial_matrix;
+
+  // Species primarily in Cytosol
+  species Glucose in Cytosol;
+  species Glucose_6_phosphate in Cytosol;
+  species Fructose_6_phosphate in Cytosol;
+  species Fructose_1_6_bisphosphate in Cytosol;
+  species Glyceraldehyde_3_phosphate in Cytosol;
+  species Dihydroxyacetone_phosphate in Cytosol;
+  species 1_3_Bisphosphoglycerate in Cytosol;
+  species 3_Phosphoglycerate in Cytosol;
+  species 2_Phosphoglycerate in Cytosol;
+  species Phosphoenolpyruvate in Cytosol;
+  species Lactate in Cytosol;
+  species Ethanol in Cytosol;
+  species Acetaldehyde in Cytosol;
+
+  // Species primarily in Mitochondrial_matrix
+  species Acetyl_CoA in Mitochondrial_matrix;
+  species Citrate in Mitochondrial_matrix;
+  species Isocitrate in Mitochondrial_matrix;
+  species alpha_Ketoglutarate in Mitochondrial_matrix;
+  species Succinyl_CoA in Mitochondrial_matrix;
+  species Succinate in Mitochondrial_matrix;
+  species Fumarate in Mitochondrial_matrix;
+  species Malate in Mitochondrial_matrix;
+  species Oxaloacetate in Mitochondrial_matrix;
+  species Glutamate in Mitochondrial_matrix;
+  species NH3 in Mitochondrial_matrix;
+  species CoA in Mitochondrial_matrix;
+
+  // Global species (shared between compartments or in default compartment)
+  species Pyruvate;
+  species ATP;
+  species ADP;
+  species Pi;
+  species NADH;
+  species NAD+;
+  species H+;
+  species CO2;
+  const species H2O;
+  const species O2;
+
+  // Assignment Rules:
+  // No assignment rules explicitly provided in the input text.
+
+  // Reactions:
+  R1: Glucose in Cytosol + ATP => Glucose_6_phosphate in Cytosol + ADP; Cytosol * k1 * Glucose * ATP;
+  R2: Fructose_6_phosphate in Cytosol + ATP => Fructose_1_6_bisphosphate in Cytosol + ADP; Cytosol * k2 * Fructose_6_phosphate * ATP;
+  R3: Fructose_1_6_bisphosphate in Cytosol -> Glyceraldehyde_3_phosphate in Cytosol + Dihydroxyacetone_phosphate in Cytosol; Cytosol * (k3_f * Fructose_1_6_bisphosphate - k3_r * Glyceraldehyde_3_phosphate * Dihydroxyacetone_phosphate);
+  R4: Dihydroxyacetone_phosphate in Cytosol -> Glyceraldehyde_3_phosphate in Cytosol; Cytosol * (k4_f * Dihydroxyacetone_phosphate - k4_r * Glyceraldehyde_3_phosphate);
+  R5: Glyceraldehyde_3_phosphate in Cytosol + NAD+ + Pi => 1_3_Bisphosphoglycerate in Cytosol + NADH + H+; Cytosol * (k5_f * Glyceraldehyde_3_phosphate * NAD+ * Pi - k5_r * 1_3_Bisphosphoglycerate * NADH * H+);
+  R6: 1_3_Bisphosphoglycerate in Cytosol + ADP -> 3_Phosphoglycerate in Cytosol + ATP; Cytosol * (k6_f * 1_3_Bisphosphoglycerate * ADP - k6_r * 3_Phosphoglycerate * ATP);
+  R7: 3_Phosphoglycerate in Cytosol -> 2_Phosphoglycerate in Cytosol; Cytosol * (k7_f * 3_Phosphoglycerate - k7_r * 2_Phosphoglycerate);
+  R8: 2_Phosphoglycerate in Cytosol -> Phosphoenolpyruvate in Cytosol + H2O; Cytosol * (k8_f * 2_Phosphoglycerate - k8_r * Phosphoenolpyruvate);
+  R9: Phosphoenolpyruvate in Cytosol + ADP => Pyruvate + ATP; Cytosol * k9 * Phosphoenolpyruvate * ADP;
+  R10: Pyruvate in Mitochondrial_matrix + NAD+ => Acetyl_CoA in Mitochondrial_matrix + NADH + CO2 + H+; Mitochondrial_matrix * k10 * Pyruvate * NAD+;
+  R11: Pyruvate in Cytosol + NADH + H+ -> Lactate in Cytosol + NAD+; Cytosol * (k11_f * Pyruvate * NADH * H+ - k11_r * Lactate * NAD+);
+  R12: Pyruvate in Cytosol => Acetaldehyde in Cytosol + CO2; Cytosol * k12 * Pyruvate;
+  R13: Acetaldehyde in Cytosol + NADH + H+ => Ethanol in Cytosol + NAD+; Cytosol * k13 * Acetaldehyde * NADH * H+;
+  R14: Pyruvate in Mitochondrial_matrix + CO2 + ATP + H2O => Oxaloacetate in Mitochondrial_matrix + ADP + Pi + 2 H+; Mitochondrial_matrix * k14 * Pyruvate * CO2 * ATP;
+  R15: Acetyl_CoA in Mitochondrial_matrix + Oxaloacetate in Mitochondrial_matrix + H2O => Citrate in Mitochondrial_matrix + CoA in Mitochondrial_matrix + H+; Mitochondrial_matrix * k15 * Acetyl_CoA * Oxaloacetate;
+  R16: Citrate in Mitochondrial_matrix -> Isocitrate in Mitochondrial_matrix; Mitochondrial_matrix * (k16_f * Citrate - k16_r * Isocitrate);
+  R17: Isocitrate in Mitochondrial_matrix + NAD+ => alpha_Ketoglutarate in Mitochondrial_matrix + NADH + CO2 + H+; Mitochondrial_matrix * k17 * Isocitrate * NAD+;
+  R18: alpha_Ketoglutarate in Mitochondrial_matrix + NAD+ => Succinyl_CoA in Mitochondrial_matrix + NADH + CO2 + H+; Mitochondrial_matrix * k18 * alpha_Ketoglutarate * NAD+;
+  R19: Succinyl_CoA in Mitochondrial_matrix + ADP + Pi -> Succinate in Mitochondrial_matrix + ATP; Mitochondrial_matrix * (k19_f * Succinyl_CoA * ADP * Pi - k19_r * Succinate * ATP);
+  R20: Succinate in Mitochondrial_matrix -> Fumarate in Mitochondrial_matrix; Mitochondrial_matrix * (k20_f * Succinate - k20_r * Fumarate);
+  R21: Fumarate in Mitochondrial_matrix + H2O -> Malate in Mitochondrial_matrix; Mitochondrial_matrix * (k21_f * Fumarate - k21_r * Malate);
+  R22: Malate in Mitochondrial_matrix + NAD+ -> Oxaloacetate in Mitochondrial_matrix + NADH + H+; Mitochondrial_matrix * (k22_f * Malate * NAD+ - k22_r * Oxaloacetate * NADH * H+);
+  R23: Glutamate in Mitochondrial_matrix + NAD+ + H2O -> alpha_Ketoglutarate in Mitochondrial_matrix + NADH + NH3 in Mitochondrial_matrix + H+; Mitochondrial_matrix * (k23_f * Glutamate * NAD+ - k23_r * alpha_Ketoglutarate * NADH * NH3);
+
+  // Species initializations:
+  Glucose = 10;
+  ATP = 2;
+  ADP = 0.5;
+  Pi = 1;
+  NADH = 0.1;
+  NAD+ = 1;
+  H+ = 1e-7;
+  H2O = 55500; // 55.5 M converted to mM
+  CO2 = 0.01;
+  O2 = 0.2;
+
+  // Initialize other species to 0 if not specified
+  Glucose_6_phosphate = 0;
+  Fructose_6_phosphate = 0;
+  Fructose_1_6_bisphosphate = 0;
+  Glyceraldehyde_3_phosphate = 0;
+  Dihydroxyacetone_phosphate = 0;
+  1_3_Bisphosphoglycerate = 0;
+  3_Phosphoglycerate = 0;
+  2_Phosphoglycerate = 0;
+  Phosphoenolpyruvate = 0;
+  Pyruvate = 0;
+  Lactate = 0;
+  Ethanol = 0;
+  Acetaldehyde = 0;
+  Acetyl_CoA = 0;
+  Citrate = 0;
+  Isocitrate = 0;
+  alpha_Ketoglutarate = 0;
+  Succinyl_CoA = 0;
+  Succinate = 0;
+  Fumarate = 0;
+  Malate = 0;
+  Oxaloacetate = 0;
+  Glutamate = 0;
+  NH3 = 0;
+  CoA = 0;
+
+  // Compartment initializations:
+  Cytosol = cyto_vol;
+  Mitochondrial_matrix = mito_vol;
+
+  // Variable initializations:
+  mito_vol = 0.2;
+  cyto_vol = 0.8;
+  k1 = 0.1;
+  k2 = 0.2;
+  k3_f = 0.05;
+  k3_r = 0.01;
+  k4_f = 0.3;
+  k4_r = 0.1;
+  k5_f = 0.08;
+  k5_r = 0.02;
+  k6_f = 0.15;
+  k6_r = 0.03;
+  k7_f = 0.07;
+  k7_r = 0.015;
+  k8_f = 0.06;
+  k8_r = 0.01;
+  k9 = 0.25;
+  k10 = 0.1;
+  k11_f = 0.12;
+  k11_r = 0.04;
+  k12 = 0.09;
+  k13 = 0.11;
+  k14 = 0.08;
+  k15 = 0.13;
+  k16_f = 0.07;
+  k16_r = 0.02;
+  k17 = 0.1;
+  k18 = 0.09;
+  k19_f = 0.06;
+  k19_r = 0.01;
+  k20_f = 0.05;
+  k20_r = 0.01;
+  k21_f = 0.04;
+  k21_r = 0.01;
+  k22_f = 0.08;
+  k22_r = 0.02;
+  k23_f = 0.07;
+  k23_r = 0.01;
+
+  // Other declarations:
+  const Cytosol, Mitochondrial_matrix;
+  const mito_vol, cyto_vol;
+  const k1, k2, k3_f, k3_r, k4_f, k4_r, k5_f, k5_r, k6_f, k6_r, k7_f, k7_r;
+  const k8_f, k8_r, k9, k10, k11_f, k11_r, k12, k13, k14, k15, k16_f, k16_r;
+  const k17, k18, k19_f, k19_r, k20_f, k20_r, k21_f, k21_r, k22_f, k22_r;
+  const k23_f, k23_r;
+
+  // Unit definitions:
+  unit concentration_mM = 1e-3 mole / litre;
+  unit concentration_M = mole / litre;
+  unit time_s = second;
+
+  // Display Names:
+  Cytosol is "Cytosol";
+  Mitochondrial_matrix is "Mitochondrial matrix";
+  mito_vol is "Mitochondrial Volume";
+  cyto_vol is "Cytosolic Volume";
+
+  Glucose is "Glucose";
+  Glucose_6_phosphate is "Glucose-6-phosphate";
+  Fructose_6_phosphate is "Fructose-6-phosphate";
+  Fructose_1_6_bisphosphate is "Fructose-1,6-bisphosphate";
+  Glyceraldehyde_3_phosphate is "Glyceraldehyde-3-phosphate";
+  Dihydroxyacetone_phosphate is "Dihydroxyacetone phosphate";
+  1_3_Bisphosphoglycerate is "1,3-Bisphosphoglycerate";
+  3_Phosphoglycerate is "3-Phosphoglycerate";
+  2_Phosphoglycerate is "2-Phosphoglycerate";
+  Phosphoenolpyruvate is "Phosphoenolpyruvate";
+  Pyruvate is "Pyruvate";
+  Lactate is "Lactate";
+  Ethanol is "Ethanol";
+  Acetaldehyde is "Acetaldehyde";
+  Acetyl_CoA is "Acetyl-CoA";
+  Citrate is "Citrate";
+  Isocitrate is "Isocitrate";
+  alpha_Ketoglutarate is "alpha-Ketoglutarate";
+  Succinyl_CoA is "Succinyl-CoA";
+  Succinate is "Succinate";
+  Fumarate is "Fumarate";
+  Malate is "Malate";
+  Oxaloacetate is "Oxaloacetate";
+  Glutamate is "Glutamate";
+  ATP is "ATP";
+  ADP is "ADP";
+  Pi is "Inorganic Phosphate";
+  NADH is "NADH";
+  NAD+ is "NAD+";
+  H+ is "Proton";
+  CO2 is "Carbon Dioxide";
+  H2O is "Water";
+  O2 is "Oxygen";
+  NH3 is "Ammonia";
+  CoA is "Coenzyme A";
+
+  R1 is "Glycolysis: Hexokinase";
+  R2 is "Glycolysis: Phosphofructokinase";
+  R3 is "Glycolysis: Aldolase";
+  R4 is "Glycolysis: Triose phosphate isomerase";
+  R5 is "Glycolysis: Glyceraldehyde-3-phosphate dehydrogenase";
+  R6 is "Glycolysis: Phosphoglycerate kinase";
+  R7 is "Glycolysis: Phosphoglycerate mutase";
+  R8 is "Glycolysis: Enolase";
+  R9 is "Glycolysis: Pyruvate kinase";
+  R10 is "Pyruvate to Acetyl-CoA (PDH complex)";
+  R11 is "Lactate formation (LDH)";
+  R12 is "Ethanol fermentation: Pyruvate decarboxylase";
+  R13 is "Ethanol fermentation: Alcohol dehydrogenase";
+  R14 is "Gluconeogenesis: Pyruvate Carboxylase";
+  R15 is "TCA: Citrate synthase";
+  R16 is "TCA: Aconitase";
+  R17 is "TCA: Isocitrate dehydrogenase";
+  R18 is "TCA: alpha-Ketoglutarate dehydrogenase";
+  R19 is "TCA: Succinyl-CoA synthetase";
+  R20 is "TCA: Succinate dehydrogenase";
+  R21 is "TCA: Fumarase";
+  R22 is "TCA: Malate dehydrogenase";
+  R23 is "Glutamate to alpha-Ketoglutarate (GDH)";
+
+  concentration_mM is "millimolar (mM)";
+  concentration_M is "molar (M)";
+  time_s is "second (s)";
+end
+```

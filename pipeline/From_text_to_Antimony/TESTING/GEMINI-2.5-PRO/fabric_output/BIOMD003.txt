@@ -1,0 +1,168 @@
+```antimony
+model *Smallbone2007_YeastGlycolysis()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species $GLCo in cytosol, GLCi in cytosol, G6P in cytosol, F6P in cytosol;
+  species F16P in cytosol, DHAP in cytosol, GAP in cytosol, BPG in cytosol;
+  species P3G in cytosol, P2G in cytosol, PEP in cytosol, PYR in cytosol;
+  species ACE in cytosol, $ETOH in cytosol, ATP in cytosol, ADP in cytosol;
+  species AMP in cytosol, NAD in cytosol, NADH in cytosol, $Pi in cytosol;
+  species G3P in cytosol, $GLY in cytosol, F26P in cytosol, T6P in cytosol;
+  species $TRE in cytosol, $SUC in cytosol;
+
+  // Reactions:
+  vGLT: $GLCo => GLCi; (Vmax_GLT * (GLCo/K_GLT_GLCo - GLCi/K_GLT_GLCi)) / (1 + GLCo/K_GLT_GLCo + GLCi/K_GLT_GLCi + GLCo*GLCi/(K_GLT_GLCo*K_GLT_GLCi_i));
+  vHK: GLCi + ATP => G6P + ADP; (Vmax_HK * (GLCi*ATP/K_HK_GLCi/K_HK_ATP)) / ((1 + GLCi/K_HK_GLCi + T6P/K_HK_T6P_i) * (1 + ATP/K_HK_ATP));
+  vPGI: G6P <=> F6P; (Vmax_PGI * (G6P - F6P/Keq_PGI)) / (K_PGI_G6P * (1 + G6P/K_PGI_G6P + F6P/K_PGI_F6P));
+  vPFK: F6P + ATP => F16P + ADP; Vmax_PFK * F6P/K_PFK_F6P * ATP/K_PFK_ATP / ((1+F6P/K_PFK_F6P)*(1+ATP/K_PFK_ATP) * (1 + (ATP/K_PFK_ATP_i)^nH_PFK + L_PFK * (1 + F26P/K_PFK_F26P_a)^-nH_PFK * (1 + ATP/K_PFK_ATP_a)^nH_PFK));
+  vALD: F16P <=> DHAP + GAP; (Vmax_ALD * (F16P - (GAP*DHAP)/Keq_ALD)) / (K_ALD_F16P * (1 + F16P/K_ALD_F16P + GAP/K_ALD_GAP + DHAP/K_ALD_DHAP + (F16P*GAP)/(K_ALD_F16P*K_ALD_GAP_i)));
+  vTPI: DHAP <=> GAP; (Vmax_TPI * (DHAP - GAP/Keq_TPI)) / (K_TPI_DHAP * (1 + DHAP/K_TPI_DHAP + GAP/K_TPI_GAP));
+  vGAPDH: GAP + NAD + $Pi <=> BPG + NADH; (Vmax_GAPDH * (GAP*NAD*Pi - BPG*NADH/Keq_GAPDH)) / ((1 + GAP/K_GAPDH_GAP + BPG/K_GAPDH_BPG) * (1 + NAD/K_GAPDH_NAD + NADH/K_GAPDH_NADH) * (1 + Pi/K_GAPDH_Pi));
+  vPGK: BPG + ADP <=> P3G + ATP; (Vmax_PGK * (BPG*ADP - P3G*ATP/Keq_PGK)) / (K_PGK_BPG*K_PGK_ADP*(1+BPG/K_PGK_BPG+P3G/K_PGK_P3G)*(1+ADP/K_PGK_ADP+ATP/K_PGK_ATP));
+  vPGM: P3G <=> P2G; (Vmax_PGM * (P3G - P2G/Keq_PGM)) / (K_PGM_P3G * (1 + P3G/K_PGM_P3G + P2G/K_PGM_P2G));
+  vENO: P2G <=> PEP; (Vmax_ENO * (P2G - PEP/Keq_ENO)) / (K_ENO_P2G * (1 + P2G/K_ENO_P2G + PEP/K_ENO_PEP));
+  vPYK: PEP + ADP => PYR + ATP; Vmax_PYK * PEP/K_PYK_PEP * ADP/K_PYK_ADP / ((1+PEP/K_PYK_PEP)*(1+ADP/K_PYK_ADP)*(1 + (F16P/K_PYK_F16P_a)^nH_PYK + L_PYK * (1 + ATP/K_PYK_ATP_i)^-nH_PYK));
+  vPDC: PYR => ACE; (Vmax_PDC * PYR) / (K_PDC_PYR * (1 + (Pi/K_PDC_Pi_i)^nH_PDC));
+  vADH: ACE + NADH <=> $ETOH + NAD; (Vmax_ADH * (ACE*NADH - ETOH*NAD/Keq_ADH)) / (K_ADH_ACE*K_ADH_NADH*(1+ACE/K_ADH_ACE+ETOH/K_ADH_ETOH)*(1+NADH/K_ADH_NADH+NAD/K_ADH_NAD));
+  vG3PDH: DHAP + NADH => G3P + NAD; (Vmax_G3PDH * DHAP * NADH) / ((K_G3PDH_DHAP + DHAP) * (K_G3PDH_NADH + NADH));
+  vGLYCEROL: G3P => $GLY + $Pi; k_GLYCEROL * G3P;
+  vPFK26: F6P + ATP => F26P + ADP; Vmax_PFK26 * F6P / (K_PFK26_F6P + F6P);
+  vFBP26: F26P => F6P + $Pi; Vmax_FBP26 * F26P / (K_FBP26_F26P + F26P);
+  vTPS1: G6P + F6P => T6P + $Pi; k_TPS1 * G6P * F6P;
+  vTPS2: T6P => $TRE + $Pi; k_TPS2 * T6P;
+  vSUC: PYR => $SUC; k_SUC * PYR;
+  vATP_NGLY: ATP => ADP + $Pi; k_ATP_NGLY * ATP;
+  vADK: 2 ADP <=> ATP + AMP; k_ADK * (ADP^2 - ATP*AMP/Keq_ADK);
+
+  // Species initializations:
+  GLCo = 1;
+  GLCi = 0;
+  G6P = 0;
+  F6P = 0;
+  F16P = 0;
+  DHAP = 0;
+  GAP = 0;
+  BPG = 0;
+  P3G = 0;
+  P2G = 0;
+  PEP = 0;
+  PYR = 0;
+  ACE = 0;
+  ETOH = 0;
+  ATP = 3;
+  ADP = 1;
+  AMP = 0;
+  NAD = 0.5;
+  NADH = 0.5;
+  Pi = 10;
+  G3P = 0;
+  GLY = 0;
+  F26P = 0;
+  T6P = 0;
+  TRE = 0;
+  SUC = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+
+  // Variable initializations:
+  Vmax_GLT = 3.54; K_GLT_GLCo = 1.12; K_GLT_GLCi = 1.12; K_GLT_GLCi_i = 10;
+  Vmax_HK = 128.7; K_HK_GLCi = 0.08; K_HK_ATP = 0.12; K_HK_T6P_i = 0.05;
+  Vmax_PGI = 567; Keq_PGI = 0.29; K_PGI_G6P = 0.3; K_PGI_F6P = 0.08;
+  Vmax_PFK = 195; K_PFK_F6P = 0.11; K_PFK_ATP = 0.035; K_PFK_ATP_i = 1;
+  K_PFK_ATP_a = 0.035; K_PFK_F26P_a = 0.005; L_PFK = 2.5e5; nH_PFK = 4;
+  Vmax_ALD = 70.2; Keq_ALD = 1.1; K_ALD_F16P = 0.2; K_ALD_GAP = 2;
+  K_ALD_DHAP = 2; K_ALD_GAP_i = 5;
+  Vmax_TPI = 702; Keq_TPI = 0.045; K_TPI_DHAP = 0.7; K_TPI_GAP = 0.3;
+  Vmax_GAPDH = 321; Keq_GAPDH = 0.09; K_GAPDH_GAP = 0.15; K_GAPDH_BPG = 0.15;
+  K_GAPDH_NAD = 0.1; K_GAPDH_NADH = 0.1; K_GAPDH_Pi = 1;
+  Vmax_PGK = 993.6; Keq_PGK = 3367; K_PGK_BPG = 0.003; K_PGK_P3G = 0.06;
+  K_PGK_ADP = 0.1; K_PGK_ATP = 0.1;
+  Vmax_PGM = 171; Keq_PGM = 0.19; K_PGM_P3G = 0.25; K_PGM_P2G = 0.05;
+  Vmax_ENO = 120; Keq_ENO = 6.7; K_ENO_P2G = 0.03; K_ENO_PEP = 0.07;
+  Vmax_PYK = 578.4; K_PYK_PEP = 0.3; K_PYK_ADP = 0.25; K_PYK_F16P_a = 0.05;
+  K_PYK_ATP_i = 0.8; L_PYK = 10000; nH_PYK = 4;
+  Vmax_PDC = 125.4; K_PDC_PYR = 4; K_PDC_Pi_i = 1; nH_PDC = 4;
+  Vmax_ADH = 125.4; Keq_ADH = 4.03e-4; K_ADH_ACE = 0.44; K_ADH_ETOH = 13.6;
+  K_ADH_NADH = 0.024; K_ADH_NAD = 0.27;
+  Vmax_G3PDH = 125.4; K_G3PDH_DHAP = 0.2; K_G3PDH_NADH = 0.1;
+  k_GLYCEROL = 1;
+  Vmax_PFK26 = 1; K_PFK26_F6P = 0.1;
+  Vmax_FBP26 = 1; K_FBP26_F26P = 0.1;
+  k_TPS1 = 1;
+  k_TPS2 = 1;
+  k_SUC = 0.05;
+  k_ATP_NGLY = 1;
+  k_ADK = 1; Keq_ADK = 0.45;
+
+  // Other declarations:
+  const cytosol;
+  const Vmax_GLT, K_GLT_GLCo, K_GLT_GLCi, K_GLT_GLCi_i, Vmax_HK, K_HK_GLCi;
+  const K_HK_ATP, K_HK_T6P_i, Vmax_PGI, Keq_PGI, K_PGI_G6P, K_PGI_F6P;
+  const Vmax_PFK, K_PFK_F6P, K_PFK_ATP, K_PFK_ATP_i, K_PFK_ATP_a, K_PFK_F26P_a;
+  const L_PFK, nH_PFK, Vmax_ALD, Keq_ALD, K_ALD_F16P, K_ALD_GAP, K_ALD_DHAP;
+  const K_ALD_GAP_i, Vmax_TPI, Keq_TPI, K_TPI_DHAP, K_TPI_GAP, Vmax_GAPDH;
+  const Keq_GAPDH, K_GAPDH_GAP, K_GAPDH_BPG, K_GAPDH_NAD, K_GAPDH_NADH;
+  const K_GAPDH_Pi, Vmax_PGK, Keq_PGK, K_PGK_BPG, K_PGK_P3G, K_PGK_ADP;
+  const K_PGK_ATP, Vmax_PGM, Keq_PGM, K_PGM_P3G, K_PGM_P2G, Vmax_ENO;
+  const Keq_ENO, K_ENO_P2G, K_ENO_PEP, Vmax_PYK, K_PYK_PEP, K_PYK_ADP;
+  const K_PYK_F16P_a, K_PYK_ATP_i, L_PYK, nH_PYK, Vmax_PDC, K_PDC_PYR;
+  const K_PDC_Pi_i, nH_PDC, Vmax_ADH, Keq_ADH, K_ADH_ACE, K_ADH_ETOH;
+  const K_ADH_NADH, K_ADH_NAD, Vmax_G3PDH, K_G3PDH_DHAP, K_G3PDH_NADH;
+  const k_GLYCEROL, Vmax_PFK26, K_PFK26_F6P, Vmax_FBP26, K_FBP26_F26P;
+  const k_TPS1, k_TPS2, k_SUC, k_ATP_NGLY, k_ADK, Keq_ADK;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit volume = 1 litre;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  substance is "millimole";
+  time_unit is "minute";
+  GLCo is "extracellular glucose";
+  GLCi is "intracellular glucose";
+  G6P is "glucose-6-phosphate";
+  F6P is "fructose-6-phosphate";
+  F16P is "fructose-1,6-bisphosphate";
+  DHAP is "dihydroxyacetone phosphate";
+  GAP is "glyceraldehyde-3-phosphate";
+  BPG is "1,3-bisphosphoglycerate";
+  P3G is "3-phosphoglycerate";
+  P2G is "2-phosphoglycerate";
+  PEP is "phosphoenolpyruvate";
+  PYR is "pyruvate";
+  ACE is "acetaldehyde";
+  ETOH is "ethanol";
+  Pi is "inorganic phosphate";
+  G3P is "glycerol-3-phosphate";
+  GLY is "glycerol";
+  F26P is "fructose-2,6-bisphosphate";
+  T6P is "trehalose-6-phosphate";
+  TRE is "trehalose";
+  SUC is "succinate";
+  vGLT is "Glucose transport";
+  vHK is "Hexokinase";
+  vPGI is "Phosphoglucose isomerase";
+  vPFK is "Phosphofructokinase";
+  vALD is "Aldolase";
+  vTPI is "Triosephosphate isomerase";
+  vGAPDH is "Glyceraldehyde-3-phosphate dehydrogenase";
+  vPGK is "Phosphoglycerate kinase";
+  vPGM is "Phosphoglycerate mutase";
+  vENO is "Enolase";
+  vPYK is "Pyruvate kinase";
+  vPDC is "Pyruvate decarboxylase";
+  vADH is "Alcohol dehydrogenase";
+  vG3PDH is "Glycerol-3-phosphate dehydrogenase";
+  vGLYCEROL is "Glycerol synthesis";
+  vPFK26 is "Fructose-2,6-bisphosphate synthesis";
+  vFBP26 is "Fructose-2,6-bisphosphate degradation";
+  vTPS1 is "Trehalose-6-phosphate synthesis";
+  vTPS2 is "Trehalose synthesis";
+  vSUC is "Succinate production";
+  vATP_NGLY is "ATP consumption (non-glycolytic)";
+  vADK is "Adenylate kinase";
+end
+```

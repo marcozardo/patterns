@@ -1,0 +1,62 @@
+```antimony
+model *Kimmel2021_StemCellDifferentiation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, D in compartment_, A in compartment_;
+
+  // Assignment Rules:
+  alpha := alpha0 * (1 + alpha1 * A);
+  beta := beta0 * (1 + beta1 * A);
+  gamma := gamma0 * (1 + gamma1 * A);
+
+  // Reactions:
+  SelfRenewal: S => 2 S; compartment_ * alpha * S;
+  Differentiation: S => D; compartment_ * beta * S;
+  Apoptosis: S => ; compartment_ * gamma * S;
+  AProduction: S => A; compartment_ * delta * S;
+  ADecay: A => ; compartment_ * epsilon * A;
+
+  // Species initializations:
+  S = 1000;
+  D = 0;
+  A = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha0 = 0.01;
+  alpha1 = 0.005;
+  beta0 = 0.005;
+  beta1 = 0.002;
+  gamma0 = 0.001;
+  gamma1 = 0.001;
+  delta = 0.0001;
+  epsilon = 0.01;
+
+  // Other declarations:
+  var alpha, beta, gamma;
+  const compartment_, alpha0, alpha1, beta0, beta1, gamma0, gamma1, delta, epsilon;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  compartment_ is "Cell Culture";
+  S is "Stem Cells";
+  D is "Differentiated Cells";
+  A is "Autoinducer";
+  SelfRenewal is "Stem Cell Self-Renewal";
+  Differentiation is "Stem Cell Differentiation";
+  Apoptosis is "Stem Cell Apoptosis";
+  AProduction is "Autoinducer Production";
+  ADecay is "Autoinducer Decay";
+  alpha is "Self-Renewal Rate";
+  beta is "Differentiation Rate";
+  gamma is "Apoptosis Rate";
+  delta is "Autoinducer Production Rate";
+  epsilon is "Autoinducer Decay Rate";
+end
+```

@@ -1,0 +1,53 @@
+```antimony
+model *Yildirim2003_LacOperon()
+
+  compartment cell;
+  species M in cell, B in cell, A in cell;
+
+  J_M:      => M; cell * (alpha_M * (1 + K_1 * A^n) / (K + K_1 * A^n) + alpha_M_0);
+  J_M_deg:  M => ; cell * mu * M;
+  J_B:      => B; cell * alpha_B * M;
+  J_B_deg:  B => ; cell * mu * B;
+  J_A:      => A; cell * alpha_A * B * (L / (K_L + L));
+  J_A_deg:  A => ; cell * (beta_A * B * (A / (K_A + A)) + mu * A);
+
+  M = 0.0;
+  B = 0.0;
+  A = 0.0;
+
+  cell = 1.0;
+
+  alpha_M = 9.3e-4;
+  alpha_M_0 = 9.3e-8;
+  K = 2.6e-2;
+  K_1 = 7.2e-1;
+  n = 2;
+  mu = 4.8e-4;
+  alpha_B = 1.66e-2;
+  alpha_A = 2.8e3;
+  K_L = 1.81;
+  beta_A = 2.1e3;
+  K_A = 3.96e-2;
+  L = 0.0278;
+
+  const cell, alpha_M, alpha_M_0, K, K_1, n, mu, alpha_B, alpha_A, K_L, beta_A, K_A, L;
+
+  unit time_unit = 1 second;
+  unit substance = 1 mole;
+  unit volume = 1 litre;
+
+  time_unit is "seconds";
+  substance is "Molar";
+  cell is "Bacterial cell";
+  M is "mRNA for beta-galactosidase";
+  B is "beta-galactosidase";
+  A is "Allolactose (intracellular lactose)";
+  L is "Extracellular lactose";
+  J_M is "mRNA transcription";
+  J_M_deg is "mRNA degradation";
+  J_B is "beta-galactosidase synthesis";
+  J_B_deg is "beta-galactosidase degradation";
+  J_A is "Allolactose synthesis";
+  J_A_deg is "Allolactose degradation/consumption";
+end
+```
