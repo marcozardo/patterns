@@ -2,15 +2,19 @@
 import os
 import pandas as pd
 from pathlib import Path
+from snakemake.shell import shell
+
+shell.executable("powershell.exe")
 
 Papers = glob_wildcards("workdir/inputs/{text}.md").text
 
 rule all:
     input:
         expand("workdir/fabric_output/{sample}.txt", sample=Papers),
-        expand("workdir/csv_output/{sample}_result.csv", sample=Papers),
+        #expand("workdir/csv_output/{sample}_result.csv", sample=Papers),
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
-        "workdir/all_simulations.csv"
+        "workdir/all_simulations.csv",
+        "workdir/test_table.csv"
 
 rule conversion:
     input:
@@ -20,18 +24,27 @@ rule conversion:
         "workdir/fabric_output/{sample}.txt"
 
     shell:
-        """
-        Type {input[0]} | fabric -p Antimony_Converter > {output[0]},
-        shell = "powershell"
-        """
+        "Type {input} | fabric -p Antimony_Converter > {output}" 
+
         
         #"Type {input} | fabric -p Antimony_Converter > {output}"
         #"fabric -p Antimony_Converter Type {input} > {output}"
-        
+
+rule first_decode:
+    input:
+        "workdir/fabric_output/{sample}.txt"  
+    output:
+        "workdir/decoded/{sample}_1dec.txt"
+    run:
+        with open(input[0], 'rb') as source_file:
+            with open(output[0], 'w+b') as dest_file:
+                contents = source_file.read()
+                dest_file.write(contents.decode('utf-16').encode('utf-8'))
+          
 
 rule first_simulation:
     input:
-        "workdir/fabric_output/{sample}.txt" 
+        "workdir/decoded/{sample}_1dec.txt" 
 
     output: 
         "workdir/Error/{sample}_1er.txt",
@@ -40,7 +53,29 @@ rule first_simulation:
     script:
         "scripts/check_simulation.py"
 
-     
+rule first_Evaluation:
+    input:
+        "workdir/Error/{sample}_1er.txt"
+    
+    output:
+        "workdir/Evaluation/first/{sample}_1eval.csv"
+    
+    script:
+        "scripts/Error_Evaluation_1.py"
+
+rule first_aggregation:
+    input:
+        expand("workdir/Evaluation/first/{sample}_1eval.csv", sample=Papers)
+    output:
+        "workdir/CSV/first_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
+
 rule first_correction:
     input:
         model = "workdir/simulated/{sample}_1S.txt"
@@ -52,15 +87,23 @@ rule first_correction:
         error = "workdir/Error/{sample}_1er.txt"
 
     shell:
-        """ 
-        Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model},
-        shell = "powershell"
-        
-        """
+        "Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model}" 
+
+
+rule second_decode:
+   input:
+        "workdir/corrected/{sample}_1C.txt"  
+   output:
+        "workdir/decoded/{sample}_2dec.txt"
+   run:
+        with open(input[0], 'rb') as source_file:
+            with open(output[0], 'w+b') as dest_file:
+                contents = source_file.read()
+                dest_file.write(contents.decode('utf-16').encode('utf-8'))
 
 rule second_simulation:
     input:
-        "workdir/corrected/{sample}_1C.txt" 
+        "workdir/decoded/{sample}_2dec.txt" 
 
     output: 
         "workdir/Error/{sample}_2er.txt",
@@ -68,9 +111,31 @@ rule second_simulation:
     
     script:
         "scripts/check_simulation.py"
-        
 
-rule Second_correction:
+
+rule second_Evaluation:
+    input:
+        "workdir/Error/{sample}_2er.txt"
+    
+    output:
+        "workdir/Evaluation/second/{sample}_2eval.csv"
+    
+    script:
+        "scripts/Error_Evaluation_2.py"
+
+rule second_aggregation:
+    input:
+        expand("workdir/Evaluation/second/{sample}_2eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/second_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
+rule second_correction:
     input:
         model = "workdir/simulated/{sample}_2S.txt"
 
@@ -81,11 +146,18 @@ rule Second_correction:
         error = "workdir/Error/{sample}_2er.txt"
 
     shell:
-        """ 
-        Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model},
-        shell = "powershell"
-        
-        """
+        "Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model}" 
+
+rule third_decode:
+    input:
+        "workdir/corrected/{sample}_2C.txt"  
+    output:
+        "workdir/decoded/{sample}_3dec.txt"
+    run:
+        with open(input[0], 'rb') as source_file:
+            with open(output[0], 'w+b') as dest_file:
+                contents = source_file.read()
+                dest_file.write(contents.decode('utf-16').encode('utf-8'))
 
 #Type {params.error} | fabric -p Antimony_Editor {input.model} > {output.corrected_model},
 #        shell = "powershell"
@@ -93,40 +165,96 @@ rule Second_correction:
 #fabric -p Antimony_Editor Type {params.error} < {input.model} > {output.corrected_model},
 #        shell = "powershell"
 
-# third Simulation: the model will be copied in the ./final_model repository: it contains all tested model (corrected or not). In the end we are going to generate a final csv file with some info about each 
-# model simulation + final errors encountered.
+# third Simulation: the models coming from second correction will be copied in the ./final_model repository: it contains all tested model (corrected or not). In the end we are going to generate a final csv file with some info about each 
+# model simulation (% of compiled and simulated model from first simulation without correction until the last one after the second correction).
 
 rule third_simulation:
     input:
-        "workdir/corrected/{sample}_2C.txt"
+        "workdir/decoded/{sample}_3dec.txt" 
 
     output: 
-        result= "workdir/csv_output/{sample}_result.csv",
-        final_model = "workdir/final_models/{sample}_tested.txt"
-    
-    params:
-        file = lambda wc : wc.sample
+        "workdir/Error/{sample}_3er.txt",
+        "workdir/final_models/{sample}_tested.txt"
     
     script:
-        "scripts/csv_creation.py"
-     
+        "scripts/check_simulation.py"
 
-# aggregate the result of each model in a final csv file!
 
-rule aggregate_result:
+rule third_Evaluation:
     input:
-        expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
-
-    output: "workdir/all_simulations.csv"
+        "workdir/Error/{sample}_3er.txt"
     
+    output:
+        "workdir/Evaluation/third/{sample}_3eval.csv"
+    
+    script:
+        "scripts/Error_Evaluation_3.py"
+
+rule third_aggregation:
+    input:
+        expand("workdir/Evaluation/third/{sample}_3eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/third_evaluation.csv"
     run:
         import pandas as pd
+        
         dfs = [pd.read_csv(file) for file in input]
         df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output[0], index=False)
 
+rule aggregate_all:
+    input:
+        expand("workdir/CSV/{number}_evaluation.csv", number=["first","second","third"])
+
+    output:
+        "workdir/all_simulations.csv"
+
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=False, axis=1)
+        df.to_csv(output[0], index=False)
+
+rule evaluation_table:
+    input:
+        "workdir/all_simulations.csv"
+    
+    output:
+        "workdir/test_table.csv"
+    
+    script:
+        "scripts/test_table.py"
 
 
+#rule third_simulation:
+#    input:
+#        "workdir/decoded/{sample}_3dec.txt"
+
+#    output: 
+#        result= "workdir/csv_output/{sample}_result.csv",
+#        final_model = "workdir/final_models/{sample}_tested.txt"
+    
+#    params:
+#        file = lambda wc : wc.sample
+    
+#    script:
+#        "scripts/csv_creation.py"
+     
+
+# aggregate the result of each model in a final csv file!
+
+#rule aggregate_result:
+#    input:
+#        expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
+
+#    output: "workdir/all_simulations.csv"
+    
+#    run:
+#        import pandas as pd
+#        dfs = [pd.read_csv(file) for file in input]
+#        df = pd.concat(dfs, ignore_index=True)
+#        df.to_csv(output[0], index=False)
 
  #fabric -p Antimony_Editor type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
         #shell = "powershell" 
