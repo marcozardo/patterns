@@ -530,6 +530,8 @@ Follow these rules while you are costructing the model.
 
 - Always generate the Antimony model, even if it’s incomplete.
 
+- Generate an Antimony model without surrounding quotes or code fences.
+
 - Ensure you follow **ALL** these instructions when creating your output. 
 
 ## OUTPUT

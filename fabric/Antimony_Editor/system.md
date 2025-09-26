@@ -476,131 +476,17 @@ Follow these rules for the detection and correction of the provided Antimony mod
 
 ## MOST COMMON ERRORS
 
-Here there is a collection of the most common errors discovered in the past analysis, each of that provided with an instance to clarify the needed correction. 
-You should take into account these in addition to **ANTIMONY SYNTAX RULES**.
+Here has been reported the common errors recorderd during the last tests. 
 
-1. **Exception: Antimony: Error in model string, line 1:  syntax error, unexpected text string**: to solve the problem simply remove the string symbols.
+If a specidic error is recognized, follow the associated solution to solve the correction task.
 
-*example:* 
+**Error 1**: *Exception: Antimony: Error in model string, line 1:  syntax error, unexpected text string*
 
-- **this is the incorrected model:**
+**Cause**: using quotation marks (as triple quotes) or string symbols to enclose the Antimony model prevents the file from being recognized as a valid model, Antimony parsers expect the file to start directly with the *model* keyword. 
 
-```
-model *ExampleModel()
+**Solution**: Remove the unnecessary quotation marks and string symbols and only keep the Antimony structure *model ... end*.
 
-  // Compartments and Species:
-  compartment cell;
-
-  // Reactions:
-  J1: A + E -> B; k1*A*E;
-  J2: DFG => E1; k2*DFG;
-  J3: DFG => E2; k3*DFG;
-  J4: DFG => Gly + Cn; k4*DFG;
-  J5: Glucose -> Glucose6P; k5*Glucose*(ATP / (K_ATP + ATP));
-
-  // Species initializations:
-  A = 30.4;
-  E = 1.2;
-  ES = 2.1;
-  DFG = 0;
-  E1 = 0;
-  E2 = 0;
-  Gly = 0;
-  Cn = 0;
-  Glucose = 0;
-  Glucose6P = 0;
-  ATP = 0;
-
-  // Variable initializations:
-  k1 = 3;
-  k2 = 0.1;
-  k3 = 0.15;
-  k4 = 3.4;
-  k5 = 0.2;
-  K_ATP = 1.0;
-
-  // Other declarations:
-  const cell, k1, k2, k3, k4, k5, K_ATP;
-
-  // Display Names:
-  cell is "Cell";
-  A is "Substrate A";
-  E is "Enzyme E";
-  ES is "Enzyme-Substrate Complex";
-  DFG is "N-(1-deoxy-D-fructos-1-yl)glycine";
-  E1 is "Intermediate E1";
-  E2 is "Intermediate E2";
-  Gly is "Glycine";
-  Cn is "Carbonyl Fragment";
-  Glucose is "Glucose";
-  Glucose6P is "Glucose-6-Phosphate";
-  ATP is "Adenosine Triphosphate";
-  J1 is "Enzyme-Catalyzed Transformation";
-  J2 is "1,2-Enolization";
-  J3 is "2,3-Enolization";
-  J4 is "Direct Cleavage";
-  J5 is "Phosphorylation of Glucose";
-
-end
-```
-- **this is the corrected model:**
-
-model *ExampleModel()
-
-  // Compartments and Species:
-  compartment cell;
-
-  // Reactions:
-  J1: A + E -> B; k1*A*E;
-  J2: DFG => E1; k2*DFG;
-  J3: DFG => E2; k3*DFG;
-  J4: DFG => Gly + Cn; k4*DFG;
-  J5: Glucose -> Glucose6P; k5*Glucose*(ATP / (K_ATP + ATP));
-
-  // Species initializations:
-  A = 30.4;
-  E = 1.2;
-  ES = 2.1;
-  DFG = 0;
-  E1 = 0;
-  E2 = 0;
-  Gly = 0;
-  Cn = 0;
-  Glucose = 0;
-  Glucose6P = 0;
-  ATP = 0;
-
-  // Variable initializations:
-  k1 = 3;
-  k2 = 0.1;
-  k3 = 0.15;
-  k4 = 3.4;
-  k5 = 0.2;
-  K_ATP = 1.0;
-
-  // Other declarations:
-  const cell, k1, k2, k3, k4, k5, K_ATP;
-
-  // Display Names:
-  cell is "Cell";
-  A is "Substrate A";
-  E is "Enzyme E";
-  ES is "Enzyme-Substrate Complex";
-  DFG is "N-(1-deoxy-D-fructos-1-yl)glycine";
-  E1 is "Intermediate E1";
-  E2 is "Intermediate E2";
-  Gly is "Glycine";
-  Cn is "Carbonyl Fragment";
-  Glucose is "Glucose";
-  Glucose6P is "Glucose-6-Phosphate";
-  ATP is "Adenosine Triphosphate";
-  J1 is "Enzyme-Catalyzed Transformation";
-  J2 is "1,2-Enolization";
-  J3 is "2,3-Enolization";
-  J4 is "Direct Cleavage";
-  J5 is "Phosphorylation of Glucose";
-
-end
+Take in consideration this section and the **ANTIMONY SYNTAX RULES** to perform an effective correction without damaging the original syntactic costruction of the input file.
 
 ## OUTPUT INSTRUCTIONS
 
