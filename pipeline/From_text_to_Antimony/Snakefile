@@ -7,13 +7,16 @@ from snakemake.shell import shell
 shell.executable("powershell.exe")
 
 Papers = glob_wildcards("workdir/inputs/{text}.md").text
+original_paper = glob_wildcards("workdir/expected_output/or{antimony}.txt").antimony
 
 rule all:
     input:
         expand("workdir/fabric_output/{sample}.txt", sample=Papers),
+        expand("workdir/expected_output/or{model}.txt", model=original_paper),
         #expand("workdir/csv_output/{sample}_result.csv", sample=Papers),
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv",
+        "workdir/all_semantic_comparison.csv",
         "workdir/test_table.csv"
 
 rule conversion:
@@ -78,16 +81,14 @@ rule first_aggregation:
 
 rule first_correction:
     input:
-        model = "workdir/simulated/{sample}_1S.txt"
+        model = "workdir/simulated/{sample}_1S.txt",
+        error = "workdir/Error/{sample}_1er.txt"
 
     output:
         corrected_model = "workdir/corrected/{sample}_1C.txt"
 
-    params:
-        error = "workdir/Error/{sample}_1er.txt"
-
     shell:
-        "Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model}" 
+        "Cat {input.model}, {input.error} | fabric -p Antimony_Editor > {output.corrected_model}" 
 
 
 rule second_decode:
@@ -216,9 +217,66 @@ rule aggregate_all:
         df = pd.concat(dfs, ignore_index=False, axis=1)
         df.to_csv(output[0], index=False)
 
+rule semantic_evaluation_generated:
+    input:
+        "workdir/final_models/{sample}_tested.txt"
+    
+    output:
+        "workdir/semantic_evaluation/generated/{sample}_G_semantic.csv"
+    
+    script:
+        "scripts/semantic_evaluation.py"
+
+rule semantic_evaluation_originals:
+    input:
+        "workdir/expected_output/or{model}.txt"
+    
+    output:
+        "workdir/semantic_evaluation/original/{model}_O_semantic.csv"
+    
+    script:
+        "scripts/semantic_evaluation.py"
+
+rule merge_generated:
+    input:
+        expand("workdir/semantic_evaluation/generated/{sample}_G_semantic.csv",sample=Papers)
+    output:
+        "workdir/semantic_evaluation/Semantic_Outputs_generated.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=False, axis=0)
+        df.to_csv(output[0], index=False)
+
+rule merge_originals:
+    input:
+        expand("workdir/semantic_evaluation/original/{model}_O_semantic.csv", model=original_paper)
+    output:
+        "workdir/semantic_evaluation/Semantic_Outputs_original.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=False, axis=0)
+        df.to_csv(output[0], index=False)
+
+rule parameter_comparison:
+    input:
+        "workdir/semantic_evaluation/Semantic_Outputs_generated.csv",
+        "workdir/semantic_evaluation/Semantic_Outputs_original.csv"
+    
+    output:
+        "workdir/all_semantic_comparison.csv"
+    
+    script:
+        "scripts/final_comparison.py"
+
+
 rule evaluation_table:
     input:
-        "workdir/all_simulations.csv"
+        "workdir/all_simulations.csv",
+        "workdir/all_semantic_comparison.csv"
     
     output:
         "workdir/test_table.csv"

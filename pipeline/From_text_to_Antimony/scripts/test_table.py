@@ -1,7 +1,10 @@
 import pandas as pd
 
-in_csv = snakemake.input[0]
+in_csv1 = snakemake.input[0]
+in_csv2 = snakemake.input[1]
 out_csv= snakemake.output[0]
+
+df3 = pd.read_csv(in_csv2)
 
 data = {
     "N° paper": 10,
@@ -9,17 +12,17 @@ data = {
     "first simulation (ratio)": True,
     "second simulation (ratio)":True,
     "third simulation (ratio)":True,
-    "N° Boundary sp.(query/original)":True,
-    "N° Floating sp.(query/original)":True,
-    "N° Reactions(query/original)":True,
-    "N° Compartments(query/original)":True,
-    "N° Glob.Parameters(query/original)":True,
+    "N° Boundary sp.(query/original)":round(df3.iloc[0, 0], 2),
+    "N° Floating sp.(query/original)":round(df3.iloc[0, 1], 2),
+    "N° Reactions(query/original)":round(df3.iloc[0, 2], 2),
+    "N° Compartments(query/original)":round(df3.iloc[0, 3], 2),
+    "N° Glob.Parameters(query/original)":"TBD",
 }
 
 df = pd.DataFrame(data, index=[input()])
 
 
-df2 = pd.read_csv(in_csv)
+df2 = pd.read_csv(in_csv1)
 
 first_column = pd.Series(df2["first Simulation"])
 
@@ -47,5 +50,7 @@ df["second simulation (ratio)"] = ratio_2
 df["third simulation (ratio)"] = ratio_3
 
 print(df)
+
+
 
 df.to_csv(out_csv)
