@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+#from datetime import datetime
 
 ## Snakemake ##
 
@@ -7,14 +7,13 @@ in_csv1 = snakemake.input[0]
 in_csv2 = snakemake.input[1]
 out_csv= snakemake.output[0]
 
-current_dateTime = datetime.now()
+#current_dateTime = datetime.now()
 
 df3 = pd.read_csv(in_csv2)
 
 data = {
     "N° paper": 10,
     "Attempt": 1,
-    "Date":current_dateTime,
     "First simulation (ratio)": True,
     "Second simulation (ratio)":True,
     "Third simulation (ratio)":True,
@@ -24,6 +23,8 @@ data = {
     "N° Compartments(query/original)":round(df3.iloc[0, 3], 2),
     "N° Glob.Parameters(query/original)":round(df3.iloc[0, 4], 2)
 }
+
+#"Date":current_dateTime,
 
 print("which LLM model you are using:")
 df = pd.DataFrame(data, index=[input()])

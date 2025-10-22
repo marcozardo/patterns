@@ -4,7 +4,8 @@ import pandas as pd
 from pathlib import Path
 from snakemake.shell import shell
 
-shell.executable("powershell.exe")
+#shell.executable("powershell.exe")
+shell.executable("C:/Program Files/PowerShell/7/pwsh.exe")
 
 Papers = glob_wildcards("workdir/inputs/{text}.md").text
 original_paper = glob_wildcards("workdir/expected_output/or{antimony}.txt").antimony
@@ -17,7 +18,8 @@ rule all:
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv",
         "workdir/all_semantic_comparison.csv",
-        "workdir/test_table.csv"
+        "workdir/test_table.csv",
+        "workdir/commit_version.txt"
 
 rule conversion:
     input:
@@ -261,6 +263,7 @@ rule parameter_comparison:
     script:
         "scripts/final_comparison.py"
 
+print("Please log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=")
 
 rule evaluation_table:
     input:
@@ -273,4 +276,10 @@ rule evaluation_table:
     script:
         "scripts/test_table.py"
 
+# recording the commited version of prompts, py scripts and snakefile for each test.
 
+rule record_commit_version:
+    output:
+        "workdir/commit_version.txt"
+    shell:
+        "echo git-commit: (git rev-parse --short HEAD) > {output}"
