@@ -1,0 +1,91 @@
+model *Schmierer2010_Hypoxia_HIF_ARD_Interaction()
+
+  // Compartments and Species:
+  compartment cell;
+  species H_tot in cell, H in cell, H_OH in cell;
+  species A in cell, A_OH in cell;
+  species P_tot in cell, F_tot in cell, O2 in cell;
+
+  // Assignment Rules:
+  H_OH := H_tot - H;
+  A_OH := A_tot - A;
+  H_p := 0.5*(-(P_tot + K_D_P - H_tot) + sqrt((P_tot + K_D_P - H_tot)^2 + 4*K_D_P*H_tot));
+  H_F := 0.5*(-(F_tot + K_i_FH - H) + sqrt((F_tot + K_i_FH - H)^2 + 4*K_i_FH*H));
+  K_i_FH := K_D_FH*(1 + A/K_D_FA + gamma*A_OH/K_D_FA);
+
+  // Rate Rules:
+  H_tot' = k_s_H - k_d_H*H_tot - v_P;
+  H' = k_s_H - k_d_H*H - v_P - v_FH;
+  A' = k_s_A - k_d_A*A - v_FA;
+
+  // Reactions:
+  v_P: H_tot => ; cell*k_cat_P*P_tot*(1/(K_D_P + H_p + P_tot))*(O2/(1 + O2));
+  v_FH: H => H_OH; cell*k_cat_FH*F_tot*(1/(K_i_FH + H_F + F_tot))*(O2/(alpha + O2));
+  v_FA: A => A_OH; cell*k_cat_FA*F_tot*(1/(K_D_FA*(1 + H_F/K_D_FH) + A + gamma*A_OH))*(O2/(alpha + O2));
+
+  // Species initializations:
+  H_tot = 0;
+  H = 0;
+  A = 0;
+  P_tot = 0.2;
+  F_tot = 1;
+  O2 = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k_s_H = 1;
+  k_d_H = 1;
+  k_s_A = 1;
+  k_d_A = 1;
+  k_cat_P = 500;
+  k_cat_FH = 500;
+  k_cat_FA = 500;
+  K_D_P = 1;
+  K_D_FH = 1;
+  K_D_FA = 1;
+  alpha = 0.33;
+  gamma = 0.02;
+  A_tot = 100;
+  epsilon = 5;
+
+  // Other declarations:
+  var H_OH, A_OH, H_p, H_F, K_i_FH;
+  const cell, k_s_H, k_d_H, k_s_A, k_d_A, k_cat_P, k_cat_FH, k_cat_FA;
+  const K_D_P, K_D_FH, K_D_FA, alpha, gamma, A_tot, epsilon, P_tot, F_tot;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit time_unit = 1 second;
+  unit substance = 1 mole;
+
+  // Display Names:
+  cell is "Cell";
+  H_tot is "Total HIF?";
+  H is "Non-CAD-hydroxylated HIF?";
+  H_OH is "CAD-hydroxylated HIF?";
+  A is "Unhydroxylated ARD proteins";
+  A_OH is "Hydroxylated ARD proteins";
+  P_tot is "Total PHD";
+  F_tot is "Total FIH";
+  O2 is "Oxygen";
+  v_P is "PHD-dependent HIF? ODD-hydroxylation";
+  v_FH is "FIH-dependent HIF? CAD-hydroxylation";
+  v_FA is "FIH-dependent ARD protein hydroxylation";
+  k_s_H is "HIF? synthesis rate";
+  k_d_H is "HIF? degradation rate";
+  k_s_A is "ARD protein synthesis rate";
+  k_d_A is "ARD protein degradation rate";
+  k_cat_P is "Catalytic rate constant for PHD";
+  k_cat_FH is "Catalytic rate constant for FIH HIF? hydroxylation";
+  k_cat_FA is "Catalytic rate constant for FIH ARD hydroxylation";
+  K_D_P is "Dissociation constant for PHD/HIF? binding";
+  K_D_FH is "Dissociation constant for FIH/HIF? binding";
+  K_D_FA is "Dissociation constant for FIH/ARD binding";
+  alpha is "Ratio of FIH to PHD KM for oxygen";
+  gamma is "FIH affinity ratio hydroxylated/unhydroxylated ARDs";
+  A_tot is "Total FIH-target ankyrin repeats";
+  epsilon is "Timescale ratio HIF?/ARD protein turnover";
+
+end
