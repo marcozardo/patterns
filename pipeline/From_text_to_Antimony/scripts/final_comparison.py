@@ -19,8 +19,8 @@ df2 = pd.DataFrame(file2)
 df_fabric = df1.copy()
 df_original = df2.copy()
 
-df_fabric = df_fabric.drop("N° Glob.Parameters", axis=1)
-df_original= df_original.drop("N° Glob.Parameters", axis=1)
+#df_fabric = df_fabric.drop("N° Glob.Parameters", axis=1)
+#df_original= df_original.drop("N° Glob.Parameters", axis=1)
 
 
 df_ratio = pd.DataFrame(columns=df_fabric.columns, index=df_fabric.index)

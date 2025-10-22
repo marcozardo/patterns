@@ -29,10 +29,6 @@ rule conversion:
     shell:
         "Type {input} | fabric -p Antimony_Converter > {output}" 
 
-        
-        #"Type {input} | fabric -p Antimony_Converter > {output}"
-        #"fabric -p Antimony_Converter Type {input} > {output}"
-
 rule first_decode:
     input:
         "workdir/fabric_output/{sample}.txt"  
@@ -88,7 +84,7 @@ rule first_correction:
         corrected_model = "workdir/corrected/{sample}_1C.txt"
 
     shell:
-        "Cat {input.model}, {input.error} | fabric -p Antimony_Editor > {output.corrected_model}" 
+        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -p Antimony_Editor > {output.corrected_model}" 
 
 
 rule second_decode:
@@ -138,16 +134,15 @@ rule second_aggregation:
 
 rule second_correction:
     input:
-        model = "workdir/simulated/{sample}_2S.txt"
+        model = "workdir/simulated/{sample}_2S.txt",
+        error = "workdir/Error/{sample}_2er.txt"
 
     output:
         corrected_model = "workdir/corrected/{sample}_2C.txt"
 
-    params:
-        error = "workdir/Error/{sample}_2er.txt"
-
     shell:
-        "Type {input.model} | fabric -p Antimony_Editor {params.error} > {output.corrected_model}" 
+        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -p Antimony_Editor > {output.corrected_model}" 
+ 
 
 rule third_decode:
     input:
@@ -159,12 +154,6 @@ rule third_decode:
             with open(output[0], 'w+b') as dest_file:
                 contents = source_file.read()
                 dest_file.write(contents.decode('utf-16').encode('utf-8'))
-
-#Type {params.error} | fabric -p Antimony_Editor {input.model} > {output.corrected_model},
-#        shell = "powershell"
-
-#fabric -p Antimony_Editor Type {params.error} < {input.model} > {output.corrected_model},
-#        shell = "powershell"
 
 # third Simulation: the models coming from second correction will be copied in the ./final_model repository: it contains all tested model (corrected or not). In the end we are going to generate a final csv file with some info about each 
 # model simulation (% of compiled and simulated model from first simulation without correction until the last one after the second correction).
@@ -284,175 +273,4 @@ rule evaluation_table:
     script:
         "scripts/test_table.py"
 
-
-#rule third_simulation:
-#    input:
-#        "workdir/decoded/{sample}_3dec.txt"
-
-#    output: 
-#        result= "workdir/csv_output/{sample}_result.csv",
-#        final_model = "workdir/final_models/{sample}_tested.txt"
-    
-#    params:
-#        file = lambda wc : wc.sample
-    
-#    script:
-#        "scripts/csv_creation.py"
-     
-
-# aggregate the result of each model in a final csv file!
-
-#rule aggregate_result:
-#    input:
-#        expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
-
-#    output: "workdir/all_simulations.csv"
-    
-#    run:
-#        import pandas as pd
-#        dfs = [pd.read_csv(file) for file in input]
-#        df = pd.concat(dfs, ignore_index=True)
-#        df.to_csv(output[0], index=False)
-
- #fabric -p Antimony_Editor type \"{params.error}\" < \"{input.model}\" > \"{output.corrected_model}\",
-        #shell = "powershell" 
-
-        #"Type \"{params.error}\" < \"{input.model}\" | fabric -p Antimony_Editor > \'{output}\'"
-        
-        #"Type \"{input.model}\"; Type \"{input.error}\" | fabric -p Antimony_Editor > \"{output.corrected_model}\""
-
-"""
-rule aggregate_result:
-    input:
-        expand("workdir/Error/{sample}.sim{iter}.txt", sample=Papers, iter=range(0, Max_iter + 1))
-    output:
-        "workdir/all_simulations.csv"
-    run:
-        import os
-        import re
-        import pandas as pd
-
-        models = set()
-        results = []
-
-        for filename in os.listdir("workdir/Error"):
-            m = re.match(r"(.*)_sim(\d+)\.txt", filename)
-            if m:
-                models.add(m.group(1))
-
-        for model in models:
-            error_path = input[0] #f"errori/{model}_iter{MAX_ITER}.txt"
-            if os.path.exists(f"workdir/simulated_models/{sample}.txt"):
-                results.append({"nome_file": sample, "Simulation": True, "last_error": ""})
-            else:
-                last_error = open(error_path).read().strip() if os.path.exists(error_path) else "Unknown"
-                results.append({"file_name": model, "Simulation": False, "last_error": last_error})
-
-        df = pd.DataFrame(results)
-        df.to_csv(output[0], index=False)
-
-rule simulation:
-    input:
-        model="workdir/fabric_output/{sample}.txt",
-
-    output:
-        new_model="workdir/simulated/{sample}.txt",
-        result="workdir/csv_output/{sample}_result.csv",
-        attempt="workdir/attempt/{sample}_attempt.txt"  # se simula: generiamo un file csv che contenga (nome_modello, simulation = True)
-    
-    params:
-        file = lambda wildcards: wildcards.sample 
-                                                             # errore del modello quando non simula 
-    script:
-        "script/check_simulation.py"
-        "Move-Item -Path \"{input.model}\" -Destination > \"{output.new_model}\""
-         
-rule moving_model:
-    input:
-        csv ="workdir/csv_output/{sample}_result.csv",
-        model="workdir/simulated/{sample}.txt"
-        
-    output:
-        well="workdir/simulated/well_simulated/{sample}.txt",
-        wrong="workdir/simulated/wrong_simulated/{sample}.txt" 
-    run:
-        import os
-        import pandas as pd
-        import shutil
-        dfs = [pd.read_csv(file) for file in input.csv]
-
-        if dfs['simulation'].iloc[0] == True:
-            shutil.move({input.model}, {output.well})
-        else:
-            shutil.move({input.model}, {output.wrong})
-
-
-checkpoint check_number_simulation:
-    output:
-        rules.simulation.output.attempt
-
-def input_for_aggregate(wildcards):
-    with checkpoints.check_number_simulation.get(sample=wildcards.sample).output[0].open() as f:
-        if f.read().strip() == "4":
-            return rules.aggregate.output[0]
-        else:
-            return "workdir/csv_output/False/{sample}_result.csv"
-    
-rule check_false_simulation:
-    input:
-        "workdir/csv_output/{sample}_result.csv"
-    output:
-        false="workdir/csv_output/False/{sample}_result.csv"
-    run:
-        import os
-        import shutil
-        dfs = [pd.read_csv(file) for file in input]
-
-        if dfs['simulation'].iloc[0] == False:
-                shutil.move({input}, {output.false})
-
-
-rule get_error:
-    input:
-        "workdir/csv_output/False/{sample}_result.csv"   
-    output:
-        error = "workdir/Error/{sample}.error.txt" 
-    run:
-        dfs = pd.read_csv(input)
-
-        if dfs["error"].iloc[0]:
-            error_value = dfs["error"].iloc[0]
-
-        with open(output.error, "w") as f:
-            f.write(str(error_value))
-            f.close()
-
-rule correction:
-    input:
-        model = "workdir/simulated/wrong_simulated/{sample}.txt",
-        error = "workdir/Error/{sample}.error.txt",
-        wrong_csv = "workdir/csv_output/False/{sample}_result.csv"
-     
-    output:
-        correct_model = "workdir/fabric_output/{sample}.txt"
-
-    shell:
-        "Type \"{input.model}\" \"{input.error}\" | fabric -p Antimomy_Editor > \"{output.correct_model}\""
-        "Remove-Item  \"{input.model}\""
-        "Remove-Item \"{input.error}\""
-        "Remove-Item \"{input.wrong_csv}\""
-        
-rule aggregate:
-    input:
-        expand("workdir/csv_output/{sample}_result.csv", sample=Papers)
-
-    output: "workdir/all_simulations.csv"
-    
-    run:
-        import pandas as pd
-        dfs = [pd.read_csv(file) for file in input]
-        df = pd.concat(dfs, ignore_index=True)
-        df.to_csv(output[0], index=False)
-
-"""       
 
