@@ -4,8 +4,12 @@ import pandas as pd
 from pathlib import Path
 from snakemake.shell import shell
 
-#shell.executable("powershell.exe")
-shell.executable("C:/Program Files/PowerShell/7/pwsh.exe")
+shell.executable("powershell.exe")
+#shell.executable("C:/Program Files/PowerShell/7/pwsh.exe")
+
+# info to provide on each test:
+onstart:
+    print("In rule 'evaluation table' remind to log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=")
 
 Papers = glob_wildcards("workdir/inputs/{text}.md").text
 original_paper = glob_wildcards("workdir/expected_output/or{antimony}.txt").antimony
@@ -29,7 +33,11 @@ rule conversion:
         "workdir/fabric_output/{sample}.txt"
 
     shell:
-        "Type {input} | fabric -p Antimony_Converter > {output}" 
+        "Type {input} | fabric -p Antimony_Converter > {output}"
+        
+        
+#"Type {input} | fabric -p Antimony_Converter > {output}]" 
+#Get-Content {input} | fabric -p Antimony_Converter | Set-Content {output}
 
 rule first_decode:
     input:
@@ -263,7 +271,6 @@ rule parameter_comparison:
     script:
         "scripts/final_comparison.py"
 
-print("Please log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=")
 
 rule evaluation_table:
     input:

@@ -885,6 +885,8 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
 - All necessary information is provided in the section **Antimony Syntax Rules** — do not alter any sections, headers, keywords, or symbols; reproduce them exactly as defined there.
 
+- Include a section in the Antimony model only if the input text provides information for it; **omit** any section (e.g., rate rules, events) **not mentioned in the input text**.
+
 - Ensure all **species, compartments, reactions, and kinetic laws** are accurately translated from the input text.
 
 - Use **symbolic placeholders** for missing values and **generic rate constants** for unspecified kinetics.
