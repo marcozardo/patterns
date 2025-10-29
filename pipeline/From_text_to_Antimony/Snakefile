@@ -283,10 +283,3 @@ rule evaluation_table:
     script:
         "scripts/test_table.py"
 
-# recording the commited version of prompts, py scripts and snakefile for each test.
-
-rule record_commit_version:
-    output:
-        "workdir/commit_version.txt"
-    shell:
-        "echo git-commit: (git rev-parse --short HEAD) > {output}"

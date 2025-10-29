@@ -97,9 +97,13 @@ Follow these rules while you are costructing the model.
 
   Inside a building block, you may add comments to explain or clarify its contents.
   
-  - For **single-line comments**, it is **recommended to use** `#`.
-  - The `//` symbol may also be used for single-line comments, but prefer # for clarity and consistency.
-  - For **multi-line comments**, always surround your text using this structure:
+  - Use the `#` symbol to start all **single-line comments**:
+  
+    text following `#` on the same line is treated as a comment and ignored by the model interpreter.
+    
+    *Do not use `//` for comments, as it must be reserved for section markers.*
+
+  - For **multi-line comments**, surround your text using this structure:
   `/* [your comments] */`
 
   Multi-line comments can also appear **outside** the `model` / `end` block to enrich or describe the model at a higher level (e.g., for documentation or metadata). 
@@ -107,11 +111,11 @@ Follow these rules while you are costructing the model.
   **Strict rule:** Only use the comment formats described in this section. Do **not** use any other comment syntax, as it will make the model invalid.
   
   To declare or reference an Antimony model, always follow this exact syntax:
-  `model *ModelName()`
+  `model *ModelName()`, where `model` keyword initializes the model, while symbols `*` and `()` hold the chosen name of the model.
 
   **Example:**
   
-  The following example illustrates a valid Antimony model containing several core blocks (Reactions and Initialization blocks). These blocks are shown here for structural reference and will be fully defined and described in the following rules
+  The following example illustrates a valid Antimony model containing several core blocks (Reactions and Initialization blocks). These blocks are shown here **for structural reference** and will be fully defined and described in the following rules
 
   Input:
 
@@ -123,18 +127,18 @@ Follow these rules while you are costructing the model.
     /\* Fructose-1,6-bisphosphate aldolase step 
     in glycolysis \*/
     
-    model \*aldolase_step
+    model \*aldolase_step()
 
       // Reactions:
-      J0: F1_6BP -> G3P + DHAP; k_ald\*F1_6BP  // Aldolase mass-action kinetics
+      J0: F1_6BP -> G3P + DHAP; k_ald\*F1_6BP;  # Aldolase mass-action kinetics
 
       // Species initializations:
-      F1_6BP = 10   # Initial concentration of fructose-1,6-bisphosphate (µM)
-      G3P   = 0     # Initial concentration of glyceraldehyde-3-phosphate (µM)
-      DHAP  = 3     # Initial concentration of dihydroxyacetone phosphate (µM)
+      F1_6BP = 10;   # Initial concentration of fructose-1,6-bisphosphate (µM)
+      G3P   = 0;     # Initial concentration of glyceraldehyde-3-phosphate (µM)
+      DHAP  = 3;     # Initial concentration of dihydroxyacetone phosphate (µM)
 
       // Variable initializations:
-      k_ald = 0.1   # Rate constant for aldolase (s⁻¹)
+      k_ald = 0.1;   # Rate constant for aldolase (s⁻¹)
     end
 
   ## 2. Compartments and Species section
@@ -173,7 +177,7 @@ Follow these rules while you are costructing the model.
  
   **Example:**
 
-  as before, the Amtimony model example still includes other structural blocks besides the `// Compartments and Species:` section. These additional blocks are shown for context and will be defined in later rules
+  as before, the Amtimony model example **still includes other structural blocks** besides the `// Compartments and Species:` section. These additional blocks are shown **for context** and will be defined later.
 
   Input:
 
@@ -300,7 +304,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
   Output:
 
     // Reactions:
-    Glucose -> Glucose6P; k2\*Glucose\*(ATP / (K_ATP + ATP)) 
+    Glucose -> Glucose6P; k2\*Glucose\*(ATP / (K_ATP + ATP)); 
 
   ## 5. Naming Reactions 
   It is allowed to give a name of the reaction in order to properly define it, in particular if there are a complex system with many of them.
@@ -308,7 +312,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
  
   **First example:**
 
-  as in the previous rules, the following example displays a part of Antimony model with some section not already explained but present in this vademecum.
+  As in the previous rules, the following example **displays** a part of Antimony model with **some sections not already explained but present in this vademecum**.
 
   Input:
 
@@ -336,17 +340,17 @@ Under the assay conditions employed, namely initial concentrations of [A]=5 and 
 
   Output:
 
-    model cAMP Hydrolysis (M1)
+    model \*cAMP_Hydrolysis()
       
       // Reactions:
       M1: cAMP -> AMP; k1\*cAMP;
       
       // Species initializations:
-      cAMP = 10 µM
-      AMP = 0
+      cAMP = 10 µM;
+      AMP = 0;
 
       // Variable initializations:
-      k1 = 0.1 s⁻¹
+      k1 = 0.1 s⁻¹;
     end 
   
   ## 6. Species, Compartment & Variable initializations
@@ -408,11 +412,11 @@ Under the assay conditions employed, namely initial concentrations of [A]=5 and 
 
 > In this simple first-order reaction pathway, species A is converted into product B within the compartment mitochondrion, which has an initial volume of 2.5 litres.
 The rate of product formation is directly proportional to the concentration of A, following the rate law v = k₁[A], where k₁ = 0.1.
->Starting from initial conditions [A] = 5 and [B] = 0, this pathway represents a classic unidirectional decay process, analogous to the irreversible transformation of a metabolic intermediate into its downstream product, resulting in an exponential decrease of A and a corresponding accumulation of B over time.
+>Starting from initial conditions [A] = 5 and [B] = 0, this pathway represents a classic unidirectional decay process, analogous to the irreversible transformation of a metabolic intermediate into its downstream product, resulting in an exponential decrease of A and a corresponding accumulation of B over time. 
 
   Output:
   
-    model *FirstOrder_Conversion_Mito()
+    model \*FirstOrder_Conversion_Mito()
 
       // Compartments and Species:
       compartment mitochondrion;
@@ -426,7 +430,7 @@ The rate of product formation is directly proportional to the concentration of A
       B = 0;
 
       // Compartment initializations:
-      mitochondrion = 2.5
+      mitochondrion = 2.5;
 
       // Variable initializations:
       k1 = 0.1;
@@ -494,6 +498,45 @@ The rate of product formation is directly proportional to the concentration of A
     // Rate Rules:
     S1' =  V1*(1 - S1)/(K1 + (1 - S1)) - V2*S1/(K2 + S1);
 
+  There are several ways to define model elements that change over time in Antimony:
+
+  - **Assignment rules**: in `// Assignment Rules` section.
+    
+    Define a variable that is continuously calculated from other variables. by using `:=` symbol. 
+
+    Example:
+
+        // Assignment Rules:
+        voltage_scaled := voltage / 1000;
+
+  - **Rate rules**: in `// Rate Rules` section.
+   
+    Describe how a variable changes in time defining the variable name with the `'` symbol.
+    Remember to initialize the starting value (in the `// Variable initializations` section).
+
+    Example:
+
+        // Rate Rules:
+        V' = (I_app - I_leak) / C_m  # the variable V with the apostrophe, as expalined before.
+
+        // Variable initializations:
+        V' = -60
+
+  - **Piecewise assignment**: in `// Assignment Rules` section.
+
+    Define a variable whose value depends on time intervals or conditions using the `piecewise` keyword.
+
+    Example:
+
+        model \*path() 
+
+        /* the piecewise call will return 5 if time > 20, else 8 if S2 < 100, else 15 in other condition. */
+      
+          // Assignment Rules:
+          k1 := piecewise(5, time > 20, 8, S2 < 100, 15);
+        
+        end
+
   Events indicate discontinuities in model simulations: when a certain conditions turns out, it is expressed with an "event" that change the statements of one or more symbols.
   
   If it is the case, **define an event inside the proper section**: `// Events:`, then declare the name of the event and declare it by the keyword "at". As before, close the event declaration with a semicolon.
@@ -513,169 +556,131 @@ The rate of product formation is directly proportional to the concentration of A
 
   Finally, **pay particular attention to design these sections**, they are not immediately clear on detection and definition states.
 
-  **Example:**
+  In the following examples, it is important to **understand how the above sections are syntactically described and in what order they are showed**.
 
-  The given input text comes from the scientific article *"Effect of IL-1β-Blocking Therapies in Type 2 Diabetes Mellitus: A Quantitative Systems Pharmacology Modeling Approach to Explore Underlying Mechanisms"*. Since the length of the full text, it will be provided with the abstract of the article that clearly does not have all the necessary information to complete the Antimony model.
+  **First Example:**
 
-  In this case, it is important that you **understand how the above sections are syntactically described and in what order they are showed**.  
+  The given text comes from the scientific article: "*Gamma oscillation by synaptic inhibition in a hippocampal interneuronal network
+  model.*" Since the length of the full text, the input will contain the parts that clearly state the Assignment and the rate rules, in order to demostrate how they must be defined in the final Antimony model. Output Antimony model will get the information about Assignment and rate rules, plus the Compartments and Species sections.
 
   Input: 
 
-  > Recent clinical studies suggest sustained treatment effects of interleukin-1β (IL-1β) –blocking therapies in type 2 diabetes mellitus. The underlying mechanisms of these effects, however, remain underexplored. Using a quantitative systems pharmacology modeling approach, we combined ex vivo data of IL-1β effects on β-cell function and turnover with a disease progression model of the long-term interactions between insulin, glucose, and β-cell mass in type 2 diabetes mellitus. We then simulated treatment effects of the IL-1 receptor antagonist anakinra. The result was a substantial and partly sustained symptomatic improvement in β-cell function, and hence also in HbA1C, fasting plasma glucose, and proinsulin–insulin ratio, and a small increase in β-cell mass. We propose that improved β-cell function, rather than mass, is likely to explain the main IL-1β–blocking effects seen in current clinical data, but that improved β-cell mass might result in disease-modifying effects not clearly distinguishable until >1 year after treatment.
+  > Each interneuron is described by a single compartment
+    and obeys the current balance equation:
+  > $$C_m \frac{dV}{dt} = -I_{Na} - I_K - I_L - I_{syn} + I_{app}, \quad$$
+  > where C_m = 1 µF/cm² and I_app is the injected current (in µA/cm²).     The leak current I_L = g_L\*(V − E_L) has a conductance g_L = 0.1 mS/cm², so that the passive time constant τ_0 = C_m/g_L = 10 msec; E_L = −65 mV. The spike-generating Na⁺ and K⁺ voltage-dependent ion currents (I_Na and I_K) are of the Hodgkin–Huxley type (Hodgkin and Huxley, 1952). The transient sodium currentI_Na = g_Na\*m³_∞ h\*(V − E_Na), where the activation variable m is assumed fast and substituted by its steady-state function m_∞ = α_m/(α_m + β_m); α_m(V) = −0.1\*(V + 35)/(exp(−0.1\*(V + 35)) − 1), β_m(V) = 4\*exp(−(V + 60)/18). The inactivation variable h obeys a first-order kinetics:
+  > $$\frac{dh}{dt} = \phi(\alpha_h(1 - h) - \beta_h h), \quad$$
+  > where αh(V) = 0.07\*exp(-(V + 58)/20) and βh(V) = 1/(exp(-0.1\*(V + 28)) + 1). gNa = 35 mS/cm²; ENa = 55 mV, φ = 5.
+  The delayed rectifier IK = gK\*n⁴ \*(V – EK), where the activation variable n obeys the following equation:
+  > $$\frac{dn}{dt} = \phi(\alpha_n(1 - n) - \beta_n n), \quad$$
+  > with α_n(V) = -0.01\*(V + 34)/(exp(-0.1\*(V + 34)) - 1) and β_n(V) = 0.125\*exp(-(V + 44)/80); g_K = 9 mS/cm², and E_K = -90 mV.
+  > *Model synapse*. The synaptic current I_syn = g_syn\*s\*(V - E_syn), where g_syn is the maximal synaptic conductance and E_syn is the reversal potential. Typically, we set g_syn = 0.1 mS/cm² and E_syn = -75 mV (Buhl et al., 1995). The gating variable s represents the fraction of open synaptic ion channels. We assume that s obeys a first-order kinetics (Perkel et al., 1981; Wang and Rinzel 1993):
+  > $$\frac{ds}{dt} = \alpha F (V{pre})(1 - s) - \beta s, \quad$$
+  > where the normalized concentration of the postsynaptic    transmitter-receptor complex, F(Vpre), is assumed to be an instantaneous and sigmoid function of the presynaptic membrane potential, F(Vpre) = 1/(1 + exp(-(Vpre - θsyn)/2)), where θsyn (set to 0 mV) is high enough so that the transmitter release occurs only when the presynaptic cell emits a spike.
+  
+  > In this paper, we analyzed two different moment of neuron: the cell in a presynaptic phase and a cell n the postsynaptic one. 
+  > The presynaptic and postsynaptic cell have identical parameters and the variables, however the presynaptic cell influences the postsynaptic one via the synapse.
+  > The applied current to the presynaptic cell, I_app_pre, is set to 2 microA/cm2 for 10 ms. While the dependence of the postsynaptic cell on directly applied current
+  > can be investigated in isolation by setting I_app_pre to 0 and altering I_app_post.
 
   Output:
 
-    model *MODEL1604270002()
+    model *Wang1996_Single_Neuron()
 
       // Compartments and Species:
-      species IL1b, IL1Ra, Anakinra, Proinsulin, Insulin, TigB, B, f, Anakinrasc;
-      species Glucose, $a1c1, $rbc1, $a1c2, $rbc2, $a1c3, $rbc3, $a1c4, $rbc4;
-      species $a1c5, $rbc5, $a1c6, $rbc6, $a1c7, $rbc7, $a1c8, $rbc8, $a1c9, $rbc9;
-      species $a1c10, $rbc10, $a1c11, $rbc11, $a1c12, $rbc12, $hba1c;
+      compartment pre_synaptic_cell, post_synaptic_cell;
 
       // Assignment Rules:
-      hba1c := 100*(a1c1 + a1c2 + a1c3 + a1c4 + a1c5 + a1c6 + a1c7 + a1c8 + a1c9 + a1c10 + a1c11 + a1c12)/(a1c1 + a1c2 + a1c3 + a1c4 + a1c5 + a1c6 + a1c7 + a1c8 + a1c9 + a1c10 + a1c11 + a1c12 + rbc1 + rbc2 + rbc3 + rbc4 + rbc5 + rbc6 + rbc7 + rbc8 + rbc9 + rbc10 + rbc11 + rbc12);
-      apoptosis := ka*(1 + vha*IL1R^xha/(kmha^xha + IL1R^xha) - vla*IL1R^xla/(kmla^xla + IL1R^xla));
-      IL1R := IL1b/(IL1b + km*(1 + (IL1Ra + Anakinra)/ki));
-      replication := kr*((1 - vhr*IL1R^xhr/(kmhr^xhr + IL1R^xhr)) + vlr*IL1R^xlr/(kmlr^xlr + IL1R^xlr));
-      PI_I := Proinsulin/Insulin;
+      tau_0 := Cm/gL;
+      I_Na_post := gNa*m_inf_post^3*h_post*(V_post - E_Na);
+      m_inf_post := alpha_m_post/(alpha_m_post + beta_m_post);
+      alpha_m_post := -0.1*(V_post + 35)/(exp(-0.1*(V_post + 35)) - 1);
+      beta_m_post := 4*exp(-(V_post + 60)/18);
+      alpha_h_post := 0.07*exp(-(V_post + 58)/20);
+      beta_h_post := 1/(exp(-0.1*(V_post + 28)) + 1);
+      I_K_post := gK*n_post^4*(V_post - E_K);
+      I_L_post := gL*(V_post - E_L);
+      I_syn := g_syn*s*(V_post - E_syn);
+      alpha_n_post := -0.01*(V_post + 34)/(exp(-0.1*(V_post + 34)) - 1);
+      beta_n_post := 0.125*exp(-(V_post + 44)/80);
+      F := 1/(1 + exp(-(V_pre - theta_syn)/2));
+      I_app_pre := piecewise(2, (time >= 10) && (time <= 20), 0);
+      I_Na_pre := gNa*m_inf_pre^3*h_pre*(V_pre - E_Na);
+      I_K_pre := gK*n_pre^4*(V_pre - E_K);
+      I_L_pre := gL*(V_pre - E_L);
+      m_inf_pre := alpha_m_pre/(alpha_m_pre + beta_m_pre);
+      alpha_m_pre := -0.1*(V_pre + 35)/(exp(-0.1*(V_pre + 35)) - 1);
+      beta_m_pre := 4*exp(-(V_pre + 60)/18);
+      alpha_h_pre := 0.07*exp(-(V_pre + 58)/20);
+      beta_h_pre := 1/(exp(-0.1*(V_pre + 28)) + 1);
+      alpha_n_pre := -0.01*(V_pre + 34)/(exp(-0.1*(V_pre + 34)) - 1);
+      beta_n_pre := 0.125*exp(-(V_pre + 44)/80);
 
       // Rate Rules:
-      a1c1' = Kglucose*Glucose^lambda*rbc1 - Ktr*a1c1;
-      rbc1' = Kin - Ktr*rbc1 - Kglucose*Glucose^lambda*rbc1;
-      a1c2' = Kglucose*Glucose^lambda*rbc2 + Ktr*a1c1 - Ktr*a1c2;
-      rbc2' = Ktr*rbc1 - Ktr*rbc2 - Kglucose*Glucose^lambda*rbc2;
-      a1c3' = Kglucose*Glucose^lambda*rbc3 + Ktr*a1c2 - Ktr*a1c3;
-      rbc3' = Ktr*rbc2 - Ktr*rbc3 - Kglucose*Glucose^lambda*rbc3;
-      a1c4' = Kglucose*Glucose^lambda*rbc4 + Ktr*a1c3 - Ktr*a1c4;
-      rbc4' = Ktr*rbc3 - Ktr*rbc4 - Kglucose*Glucose^lambda*rbc4;
-      a1c5' = Kglucose*Glucose^lambda*rbc5 + Ktr*a1c4 - Ktr*a1c5;
-      rbc5' = Ktr*rbc4 - Ktr*rbc5 - Kglucose*Glucose^lambda*rbc5;
-      a1c6' = Kglucose*Glucose^lambda*rbc6 + Ktr*a1c5 - Ktr*a1c6;
-      rbc6' = Ktr*rbc5 - Ktr*rbc6 - Kglucose*Glucose^lambda*rbc6;
-      a1c7' = Kglucose*Glucose^lambda*rbc7 + Ktr*a1c6 - Ktr*a1c7;
-      rbc7' = Ktr*rbc6 - Ktr*rbc7 - Kglucose*Glucose^lambda*rbc7;
-      a1c8' = Kglucose*Glucose^lambda*rbc8 + Ktr*a1c7 - Ktr*a1c8;
-      rbc8' = Ktr*rbc7 - Ktr*rbc8 - Kglucose*Glucose^lambda*rbc8;
-      a1c9' = Kglucose*Glucose^lambda*rbc9 + Ktr*a1c8 - Ktr*a1c9;
-      rbc9' = Ktr*rbc8 - Ktr*rbc9 - Kglucose*Glucose^lambda*rbc9;
-      a1c10' = Kglucose*Glucose^lambda*rbc10 + Ktr*a1c9 - Ktr*a1c10;
-      rbc10' = Ktr*rbc9 - Ktr*rbc10 - Kglucose*Glucose^lambda*rbc10;
-      a1c11' = Kglucose*Glucose^lambda*rbc11 + Ktr*a1c10 - Ktr*a1c11;
-      rbc11' = Ktr*rbc10 - Ktr*rbc11 - Kglucose*Glucose^lambda*rbc11;
-      a1c12' = Kglucose*Glucose^lambda*rbc12 + Ktr*a1c11 - Ktr*a1c12;
-      rbc12' = Ktr*rbc11 - Ktr*rbc12 - Kglucose*Glucose^lambda*rbc12;
+      h_post' = phi*(alpha_h_post*(1 - h_post) - beta_h_post*h_post);
+      V_post' = (I_app_post - (I_Na_post + I_K_post + I_L_post + I_syn))/Cm;
+      n_post' = phi*(alpha_n_post*(1 - n_post) - beta_n_post*n_post);
+      s' = alpha*F*(1 - s) - beta*s;
+      V_pre' = (I_app_pre - (I_Na_pre + I_K_pre + I_L_pre))/Cm;
+      h_pre' = phi*(alpha_h_pre*(1 - h_pre) - beta_h_pre*h_pre);
+      n_pre' = phi*(alpha_n_pre*(1 - n_pre) - beta_n_pre*n_pre);
+    
+    end
+
+  **Second Example**
+
+  The given text comes from the scientific article: "*A Mathematical Model of the Pancreatic Duct Cell Generating High Bicarbonate Concentrations in Pancreatic Juice*".
+  Since the length of the full text, the input will contain a small part that provide in particular a **clear statement of the Events section**, in order to demostrate how it must be defined in the final Antimony model.
+  Instead, the output will be an antimony model that actually will get an ordered Antimony structure where the values and information will appear on the events sections and on the Variable initializations section only for some variable strongly related to time conditions.
+
+  Input:
+
+  > Results:
+  > Anion concentrations and flow in the complete duct cell model as a  function of CFTR. A, Concentrations of bicarbonate and chloride in the intracellular (i) and luminal (o) compartments as a function of time. Bicarbonate concentrations inside the duct cell (Bi) and in the lumen (Bo). The first arrow marks CFTR opening at 1 minute, the second arrow marks CFTR closing after 5 minutes (ie, at the 6-minute mark). Note that the luminal bicarbonate concentration quickly reaches the target concentration of >140 mM within about 1 minute under standard conditions. B, Chloride concentrations plotted as in A for bicarbonate. Note the relative low chloride concentrations inside the cell during active secretion. C, Flow of pancreatic juice in arbitrary units. The basal flow is due entirely to secretion of plasma-like fluid from the acinar cells. The fluid volume is closely associated with ion efflux from the duct cell.
+
+  > Appendix:
+  > par gcftron=1,
+  > par gcftrbase=7e-5,
+  > global 0 t {gcftr=gcftrbase},
+  > global 1 t-ton*60000 {gcftr=gcftron},
+  > global 1 t-toff*60000 {gcftr=gcftrbase},
+  > par ton=1,
+  > par toff=6.
+
+  >  In the model code, the variables gcftr, gcftron, and gcftrbase control the state of the CFTR channel over time. gcftr is the current value of the CFTR conductance used in the simulation. gcftron is the value assigned to gcftr when the CFTR channel is considered 'open' (stimulated state), and gcftrbase is the value assigned to gcftr when the CFTR channel is 'closed' (basal state). The code uses 'global' statements to change gcftr at specific times: at t=0, gcftr is set to gcftrbase (CFTR closed); at t=ton*60000 (ton=1, so at 1 minute), gcftr is set to gcftron (CFTR open); at t=toff*60000 (toff=6, so at 6 minutes), gcftr is set back to gcftrbase (CFTR closed again). The actual values are: gcftrbase=7e-5 (very low, representing closed), and gcftron=1 (high, representing open).
+
+  Output:
+
+    model *whitcomb04()
+
+      // Compartments and Species:
+      ...
+
+      // Assignment Rules:
+      ...
 
       // Reactions:
-      TigB_up:  => TigB; taus*ks*(1 - vs*IL1R/(kms + IL1R));
-      TigB_down: TigB => ; taus*TigB;
-      Bcell_replication:  => B; replication*B;
-      Bcell_apoptosis: B => ; apoptosis*B;
-      proinsulin_sec_up:  => f; tauf*kf*(1 + vfg*Glucose^xfg/(kmfg^xfg + Glucose^xfg))*(1 + vf*IL1R/(kmf + IL1R));
-      proinsulin_sec_down: f => ; tauf*f;
-      IL1b_treatment:  => IL1b; piecewise((1 - placebo_on)*k1*il1bH, time < 91, (1 - placebo_on)*k2*(il1b0 + kplacebo*time));
-      IL1b_degradation: IL1b => ; piecewise((1 - placebo_on)*k1*IL1b, time < 91, (1 - placebo_on)*k2*IL1b);
-      IL1b_placebo:  => IL1b; placebo_on*kplacebo;
-      AnakinraSC_elimination: Anakinrasc => ; kab*Anakinrasc;
-      Anakinra_absorption:  => Anakinra; kab*Anakinrasc/Vp;
-      Anakinra_elimination: Anakinra => ; (CL/Vp)*Anakinra;
-      Glucose_production:  => Glucose; Tgl;
-      Basal_glucose_uptake: Glucose => ; Kxg*Glucose;
-      Insulin_dependent_glucose_uptake: Glucose => ; Kxgi*Insulin*Glucose;
-      Proinsulin_dependent_glucose_uptake: Glucose => ; 0.1*Kxgi*Proinsulin*Glucose;
-      Glucose_dependent_insulin_secretion:  => Insulin; ((Glucose/Gh)^vh/(1 + (Glucose/Gh)^vh))*TigB*B;
-      Insulin_elimination: Insulin => ; Kxi*Insulin;
-      Glucose_dependent_proinsulin_secretion:  => Proinsulin; (f*(Glucose/Gh)^vh/(1 + (Glucose/Gh)^vh))*TigB*B;
-      Proinsulin_elimination: Proinsulin => ; 0.1*Kxi*Proinsulin;
-
+      ...
+  
       // Events:
-      Anakinra_Administration_event: at 0 after (time == Anakinra_dose_counter) && (Anakinra_dose_counter < 91): Anakinra_dose_counter = Anakinra_dose_counter + 1, Anakinrasc = Anakinrasc + 100000*Ana_on;
+      _E0: at time >= ton: gcftr = gcftron;
+      _E1: at time >= toff: gcftr = gcftrbase;
 
       // Species initializations:
-      IL1b = 5;
-      IL1Ra = 40;
-      Anakinra = 0;
-      Proinsulin = 43;
-      Insulin = 100;
-      TigB = 0.1865;
-      B = 40;
-      f = 0.0427776;
-      Anakinrasc = 0;
-      Glucose = 10.8;
-       = 0.122997;
-      rbc1 = 8.627;
-      a1c2 = 0.244266;
-      rbc2 = 8.50573;
-      a1c3 = 0.363829;
-      rbc3 = 8.38617;
-      a1c4 = 0.481712;
-      rbc4 = 8.26829;
-      a1c5 = 0.597938;
-      rbc5 = 8.15206;
-      a1c6 = 0.71253;
-      rbc6 = 8.03747;
-      a1c7 = 0.825512;
-      rbc7 = 7.92449;
-      a1c8 = 0.936905;
-      rbc8 = 7.8131;
-      a1c9 = 1.04673;
-      rbc9 = 7.70327;
-      a1c10 = 1.15502;
-      rbc10 = 7.59498;
-      a1c11 = 1.26178;
-      rbc11 = 7.48822;
-      a1c12 = 1.36704;
-      rbc12 = 7.38296;
+      ...
+
+      // Compartment initializations:
+      ...
 
       // Variable initializations:
-      Kglucose = 0.000292;
-      lambda = 0.743;
-      Ktr = 0.12;
-      Kin = 1.05;
-      Anakinra_dose_counter = 0.5;
-      Ana_on = 1;
-      Kxg = 1.6e-05;
-      Kxi = 0.05;
-      Gh = 9;
-      vh = 4;
-      vs = 0.7;
-      kms = 0.021;
-      taus = 0.5;
-      kmf = 0.021;
-      tauf = 0.5;
-      vfg = 4;
-      xfg = 4;
-      kmfg = 9;
-      vf = 0.4;
-      vlr = 1.8;
-      kmlr = 0.0011;
-      xlr = 3;
-      vhr = 2.7;
-      kmhr = 0.018;
-      xhr = 0.5;
-      vla = 0.65;
-      kmla = 0.00018;
-      xla = 3;
-      vha = 4.6;
-      kmha = 0.155;
-      xha = 0.6666666667;
-      km = 8.5;
-      ki = 1.7;
-      ka = 0.000552022;
-      kr = 0.000376393;
-      kf = 0.00957754;
-      ks = 0.291008;
-      Tgl = 0.025405;
-      Kxgi = 2.24e-05;
-      il1bH = 0.05;
-      il1b0 = 5;
-      kplacebo = 0.00137;
-      k1 = 0.2;
-      k2 = 0.0025;
-      kab = 3.94;
-      CL = 432;
-      Vp = 48;
-      placebo_on = 0;
+      ton = 60;
+      \# ton has second;
+      gcftr = gcftrbase;
+      gcftron = 1;
+      toff = 360;
+      \# toff has second;
+      gcftrbase = 7e-05;
+
     end
 
   ## 9. Other declarations, Unit definitions and Display names
@@ -816,7 +821,7 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
   ## 11. Constant and variable symbols
   Costant species, named also as boundary species, are those not affected by the model. 
   
-  To define them, the **recommended option** is writing a `$` symbol in front of the  specie. Optionally you can use `const` keyword 
+  To define them, the **recommended option** is writing a `$` symbol in front of the specie. Optionally you can use `const` keyword 
   
   On the other hand variable species, which are affected by the model, **are written without any symbol**.
 
@@ -868,6 +873,7 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 - Extract every biochemical modeling element from the input text regardless of **presentation as prose, equations, tables, or figures**.
 
 - The model must include all extracted components organized into the following sections:
+
   * // Compartments and Species:
   * // Assignment Rules:
   * // Rate Rules:
@@ -885,7 +891,7 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
 - All necessary information is provided in the section **Antimony Syntax Rules** — do not alter any sections, headers, keywords, or symbols; reproduce them exactly as defined there.
 
-- Include a section in the Antimony model only if the input text provides information for it; **omit** any section (e.g., rate rules, events) **not mentioned in the input text**.
+- **Do not include** any model sections or rules (e.g., Rate Rules, Events, or others) that are **not explicitly described in the input text**. Only represent the elements and relationships that are directly supported by the provided information.
 
 - Ensure all **species, compartments, reactions, and kinetic laws** are accurately translated from the input text.
 

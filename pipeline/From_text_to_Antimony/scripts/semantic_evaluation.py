@@ -31,17 +31,29 @@ all_init = reparams.findall(text)
 var_par = revarparams.findall(text)
 
 # Extraction of indexes to obtain the variable parameters
+if "// Variable" in all_init:
+     value1 = all_init.index("// Variable")
+else:
+     value1 = -1
 
-value1 = all_init.index("// Variable")
+if "// Other" in all_init:
+     value2 = all_init.index("// Other")
+else:
+     value2 = -1
 
-value2 = all_init.index("// Other")
-
+# initialize params safely
 params = []
 
-for k in all_init[value1+1:value2]:
-     cleaned = k.strip(" ;")
-     params.append(cleaned)
+if value1 != -1 and value2 != -1 and value2 > value1:
+     #both markers exist and in correct order
+     for k in all_init[value1+1:value2]:
+        cleaned = k.strip(" ;")
+        params.append(cleaned)
+else:
+     # One or both markers are missing (or order is invalid)
+     params = []
 
+# Build variable List
 variables = [item.strip(" ;") for s in var_par for item in s.split(",")]
 
 # Final list of Global Parameters = params list + variable list 
