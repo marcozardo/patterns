@@ -22,8 +22,7 @@ rule all:
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv",
         "workdir/all_semantic_comparison.csv",
-        "workdir/test_table.csv",
-        "workdir/commit_version.txt"
+        "workdir/test_table_5948e29.csv"
 
 rule conversion:
     input:
@@ -278,7 +277,7 @@ rule evaluation_table:
         "workdir/all_semantic_comparison.csv"
     
     output:
-        "workdir/test_table.csv"
+        "workdir/test_table_5948e29.csv"
     
     script:
         "scripts/test_table.py"

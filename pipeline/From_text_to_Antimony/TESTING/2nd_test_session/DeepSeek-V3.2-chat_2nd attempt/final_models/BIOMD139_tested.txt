@@ -1,0 +1,118 @@
+model *Hoffmann2002_NFkB_Signaling()
+
+  // Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFkB in cytoplasm, NFkBn in nucleus;
+  species IkBa in cytoplasm, IkBb in cytoplasm, IkBe in cytoplasm;
+  species IkBa_NFkB in cytoplasm, IkBb_NFkB in cytoplasm, IkBe_NFkB in cytoplasm;
+  species IKK in cytoplasm;
+
+  // Assignment Rules:
+  IkBa_mRNA_synthesis := k_syn_IkBa * NFkBn^h_IkBa / (K_IkBa^h_IkBa + NFkBn^h_IkBa);
+  IkBb_mRNA_synthesis := k_syn_IkBb * NFkBn^h_IkBb / (K_IkBb^h_IkBb + NFkBn^h_IkBb);
+  IkBe_mRNA_synthesis := k_syn_IkBe * NFkBn^h_IkBe / (K_IkBe^h_IkBe + NFkBn^h_IkBe);
+
+  // Reactions:
+  NFkB_change: -> NFkB; k_diss_IkBa * IkBa_NFkB + k_diss_IkBb * IkBb_NFkB + k_diss_IkBe * IkBe_NFkB + k_transport_NFkBn * NFkBn - k_assoc_IkBa * NFkB * IkBa - k_assoc_IkBb * NFkB * IkBb - k_assoc_IkBe * NFkB * IkBe - k_transport_NFkB * NFkB;
+  NFkBn_change: -> NFkBn; k_transport_NFkB * NFkB - k_transport_NFkBn * NFkBn;
+  IkBa_change: -> IkBa; k_syn_IkBa_protein * IkBa_mRNA_synthesis + k_diss_IkBa * IkBa_NFkB - k_deg_IkBa_free * IkBa - k_assoc_IkBa * NFkB * IkBa - k_phos_IkBa * IKK * IkBa;
+  IkBb_change: -> IkBb; k_syn_IkBb_protein * IkBb_mRNA_synthesis + k_diss_IkBb * IkBb_NFkB - k_deg_IkBb_free * IkBb - k_assoc_IkBb * NFkB * IkBb - k_phos_IkBb * IKK * IkBb;
+  IkBe_change: -> IkBe; k_syn_IkBe_protein * IkBe_mRNA_synthesis + k_diss_IkBe * IkBe_NFkB - k_deg_IkBe_free * IkBe - k_assoc_IkBe * NFkB * IkBe - k_phos_IkBe * IKK * IkBe;
+  IkBa_NFkB_change: -> IkBa_NFkB; k_assoc_IkBa * NFkB * IkBa - k_diss_IkBa * IkBa_NFkB - k_phos_IkBa_NFkB * IKK * IkBa_NFkB;
+  IkBb_NFkB_change: -> IkBb_NFkB; k_assoc_IkBb * NFkB * IkBb - k_diss_IkBb * IkBb_NFkB - k_phos_IkBb_NFkB * IKK * IkBb_NFkB;
+  IkBe_NFkB_change: -> IkBe_NFkB; k_assoc_IkBe * NFkB * IkBe - k_diss_IkBe * IkBe_NFkB - k_phos_IkBe_NFkB * IKK * IkBe_NFkB;
+  IKK_change: -> IKK; k_act_IKK * TNF_stimulus - k_inact_IKK * IKK;
+  IkBa_degradation: IkBa => ; k_deg_IkBa_free * IkBa;
+  IkBb_degradation: IkBb => ; k_deg_IkBb_free * IkBb;
+  IkBe_degradation: IkBe => ; k_deg_IkBe_free * IkBe;
+  IkBa_NFkB_degradation: IkBa_NFkB => NFkB; k_deg_IkBa_bound * IkBa_NFkB;
+  IkBb_NFkB_degradation: IkBb_NFkB => NFkB; k_deg_IkBb_bound * IkBb_NFkB;
+  IkBe_NFkB_degradation: IkBe_NFkB => NFkB; k_deg_IkBe_bound * IkBe_NFkB;
+
+  // Events:
+  TNF_stimulation: at time >= 0: TNF_stimulus = 1;
+  TNF_removal_5min: at time >= 5: TNF_stimulus = 0;
+  TNF_removal_15min: at time >= 15: TNF_stimulus = 0;
+  TNF_removal_30min: at time >= 30: TNF_stimulus = 0;
+  TNF_removal_60min: at time >= 60: TNF_stimulus = 0;
+
+  // Species initializations:
+  NFkB = 100;
+  NFkBn = 0;
+  IkBa = 50;
+  IkBb = 30;
+  IkBe = 20;
+  IkBa_NFkB = 50;
+  IkBb_NFkB = 30;
+  IkBe_NFkB = 20;
+  IKK = 0;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  k_assoc_IkBa = 0.1;
+  k_diss_IkBa = 0.01;
+  k_assoc_IkBb = 0.08;
+  k_diss_IkBb = 0.008;
+  k_assoc_IkBe = 0.12;
+  k_diss_IkBe = 0.012;
+  k_transport_NFkB = 0.05;
+  k_transport_NFkBn = 0.05;
+  k_syn_IkBa_protein = 1;
+  k_syn_IkBb_protein = 0.7;
+  k_syn_IkBe_protein = 0.5;
+  k_deg_IkBa_free = 0.02;
+  k_deg_IkBb_free = 0.015;
+  k_deg_IkBe_free = 0.01;
+  k_deg_IkBa_bound = 0.1;
+  k_deg_IkBb_bound = 0.08;
+  k_deg_IkBe_bound = 0.06;
+  k_phos_IkBa = 0.5;
+  k_phos_IkBb = 0.4;
+  k_phos_IkBe = 0.3;
+  k_phos_IkBa_NFkB = 0.5;
+  k_phos_IkBb_NFkB = 0.4;
+  k_phos_IkBe_NFkB = 0.3;
+  k_act_IKK = 0.1;
+  k_inact_IKK = 0.05;
+  k_syn_IkBa = 1;
+  k_syn_IkBb = 0.7;
+  k_syn_IkBe = 0.5;
+  K_IkBa = 10;
+  K_IkBb = 15;
+  K_IkBe = 20;
+  h_IkBa = 2;
+  h_IkBb = 2;
+  h_IkBe = 2;
+  TNF_stimulus = 0;
+
+  // Other declarations:
+  var IkBa_mRNA_synthesis, IkBb_mRNA_synthesis, IkBe_mRNA_synthesis;
+  const k_assoc_IkBa, k_diss_IkBa, k_assoc_IkBb, k_diss_IkBb, k_assoc_IkBe, k_diss_IkBe;
+  const k_transport_NFkB, k_transport_NFkBn, k_syn_IkBa_protein, k_syn_IkBb_protein, k_syn_IkBe_protein;
+  const k_deg_IkBa_free, k_deg_IkBb_free, k_deg_IkBe_free, k_deg_IkBa_bound, k_deg_IkBb_bound, k_deg_IkBe_bound;
+  const k_phos_IkBa, k_phos_IkBb, k_phos_IkBe, k_phos_IkBa_NFkB, k_phos_IkBb_NFkB, k_phos_IkBe_NFkB;
+  const k_act_IKK, k_inact_IKK, k_syn_IkBa, k_syn_IkBb, k_syn_IkBe, K_IkBa, K_IkBb, K_IkBe, h_IkBa, h_IkBb, h_IkBe;
+
+  // Unit definitions:
+  unit volume = 1e-15 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  NFkB is "NF-kB (cytoplasmic)";
+  NFkBn is "NF-kB (nuclear)";
+  IkBa is "I?B?";
+  IkBb is "I?B?";
+  IkBe is "I?B?";
+  IkBa_NFkB is "I?B?:NF-kB complex";
+  IkBb_NFkB is "I?B?:NF-kB complex";
+  IkBe_NFkB is "I?B?:NF-kB complex";
+  IKK is "IKK complex";
+  TNF_stimulus is "TNF-? stimulus";
+  time_unit is "minutes";
+end

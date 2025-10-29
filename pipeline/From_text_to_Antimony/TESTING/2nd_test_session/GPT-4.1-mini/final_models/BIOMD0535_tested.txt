@@ -1,0 +1,272 @@
+model *IL6_Multiscale_Crohn_Disease()
+
+  // Compartments and Species:
+  compartment liver, GI_tract, circulation;
+  species IL6_liver in liver, IL6_GI in GI_tract, IL6_circ in circulation;
+  species IL6R_liver in liver, IL6R_GI in GI_tract;
+  species sIL6R_liver in liver, sIL6R_GI in GI_tract, sIL6R_circ in circulation;
+  species gp130_liver in liver, gp130_GI in GI_tract, gp130_circ in circulation;
+  species sgp130_liver in liver, sgp130_GI in GI_tract, sgp130_circ in circulation;
+  species IL6_sIL6R_complex_liver in liver, IL6_sIL6R_complex_GI in GI_tract, IL6_sIL6R_complex_circ in circulation;
+  species IL6_sIL6R_sgp130_complex_liver in liver, IL6_sIL6R_sgp130_complex_GI in GI_tract, IL6_sIL6R_sgp130_complex_circ in circulation;
+  species STAT3_liver in liver, STAT3_GI in GI_tract;
+  species pSTAT3_liver in liver, pSTAT3_GI in GI_tract;
+  species GeneProducts_liver in liver, GeneProducts_GI in GI_tract;
+  species CRP_liver in liver;
+  species E1v1SD_liver in liver;  # pSTAT3:E1v1SD dimer
+  species E1v1SD_GI in GI_tract;
+
+  // Other declarations:
+  var pSTAT3_liver, pSTAT3_GI, GeneProducts_liver, GeneProducts_GI;
+  const liver, GI_tract, circulation;
+  const k_syn_IL6_liver, k_deg_IL6_liver, k_syn_IL6_GI, k_deg_IL6_GI, k_syn_IL6_circ, k_deg_IL6_circ;
+  const k_syn_IL6R_liver, k_deg_IL6R_liver, k_syn_IL6R_GI, k_deg_IL6R_GI;
+  const k_syn_gp130_liver, k_deg_gp130_liver, k_syn_gp130_GI, k_deg_gp130_GI, k_syn_gp130_circ, k_deg_gp130_circ;
+  const k_syn_sgp130_liver, k_deg_sgp130_liver, k_syn_sgp130_GI, k_deg_sgp130_GI, k_syn_sgp130_circ, k_deg_sgp130_circ;
+  const k_sIL6R_shed, k_deg_sIL6R_liver, k_deg_sIL6R_GI, k_deg_sIL6R_circ;
+  const k_on_IL6_sIL6R, k_off_IL6_sIL6R, k_on_complex_sgp130, k_off_complex_sgp130;
+  const k_ex_IL6_liver_circ, k_ex_IL6_circ_liver, k_ex_IL6_GI_circ, k_ex_IL6_circ_GI;
+  const k_ex_sIL6R_liver_circ, k_ex_sIL6R_circ_liver, k_ex_sIL6R_GI_circ, k_ex_sIL6R_circ_GI;
+  const k_ex_sgp130_liver_circ, k_ex_sgp130_circ_liver, k_ex_sgp130_GI_circ, k_ex_sgp130_circ_GI;
+  const k_ex_complex_liver_circ, k_ex_complex_circ_liver, k_ex_complex_GI_circ, k_ex_complex_circ_GI;
+  const k_CRP_prod, k_deg_CRP;
+
+  // Rate Rules:
+  pSTAT3_liver' = 0;
+  pSTAT3_GI' = 0;
+  GeneProducts_liver' = 0;
+  GeneProducts_GI' = 0;
+
+  sIL6R_liver' = 0;
+  sIL6R_GI' = 0;
+  sIL6R_circ' = 0;
+
+  IL6_liver' = 0;
+  IL6_GI' = 0;
+  IL6_circ' = 0;
+
+  IL6R_liver' = 0;
+  IL6R_GI' = 0;
+
+  gp130_liver' = 0;
+  gp130_GI' = 0;
+  gp130_circ' = 0;
+
+  sgp130_liver' = 0;
+  sgp130_GI' = 0;
+  sgp130_circ' = 0;
+
+  IL6_sIL6R_complex_liver' = 0;
+  IL6_sIL6R_complex_GI' = 0;
+  IL6_sIL6R_complex_circ' = 0;
+
+  IL6_sIL6R_sgp130_complex_liver' = 0;
+  IL6_sIL6R_sgp130_complex_GI' = 0;
+  IL6_sIL6R_sgp130_complex_circ' = 0;
+
+  // Reactions:
+  # Exchange of molecules between compartments (circulation)
+  Exchange_IL6_liver_to_circ: IL6_liver -> IL6_circ; k_ex_IL6_liver_circ*IL6_liver;
+  Exchange_IL6_circ_to_liver: IL6_circ -> IL6_liver; k_ex_IL6_circ_liver*IL6_circ;
+  Exchange_IL6_GI_to_circ: IL6_GI -> IL6_circ; k_ex_IL6_GI_circ*IL6_GI;
+  Exchange_IL6_circ_to_GI: IL6_circ -> IL6_GI; k_ex_IL6_circ_GI*IL6_circ;
+
+  Exchange_sIL6R_liver_to_circ: sIL6R_liver -> sIL6R_circ; k_ex_sIL6R_liver_circ*sIL6R_liver;
+  Exchange_sIL6R_circ_to_liver: sIL6R_circ -> sIL6R_liver; k_ex_sIL6R_circ_liver*sIL6R_circ;
+  Exchange_sIL6R_GI_to_circ: sIL6R_GI -> sIL6R_circ; k_ex_sIL6R_GI_circ*sIL6R_GI;
+  Exchange_sIL6R_circ_to_GI: sIL6R_circ -> sIL6R_GI; k_ex_sIL6R_circ_GI*sIL6R_circ;
+
+  Exchange_sgp130_liver_to_circ: sgp130_liver -> sgp130_circ; k_ex_sgp130_liver_circ*sgp130_liver;
+  Exchange_sgp130_circ_to_liver: sgp130_circ -> sgp130_liver; k_ex_sgp130_circ_liver*sgp130_circ;
+  Exchange_sgp130_GI_to_circ: sgp130_GI -> sgp130_circ; k_ex_sgp130_GI_circ*sgp130_GI;
+  Exchange_sgp130_circ_to_GI: sgp130_circ -> sgp130_GI; k_ex_sgp130_circ_GI*sgp130_circ;
+
+  Exchange_IL6_sIL6R_complex_liver_to_circ: IL6_sIL6R_complex_liver -> IL6_sIL6R_complex_circ; k_ex_complex_liver_circ*IL6_sIL6R_complex_liver;
+  Exchange_IL6_sIL6R_complex_circ_to_liver: IL6_sIL6R_complex_circ -> IL6_sIL6R_complex_liver; k_ex_complex_circ_liver*IL6_sIL6R_complex_circ;
+  Exchange_IL6_sIL6R_complex_GI_to_circ: IL6_sIL6R_complex_GI -> IL6_sIL6R_complex_circ; k_ex_complex_GI_circ*IL6_sIL6R_complex_GI;
+  Exchange_IL6_sIL6R_complex_circ_to_GI: IL6_sIL6R_complex_circ -> IL6_sIL6R_complex_GI; k_ex_complex_circ_GI*IL6_sIL6R_complex_circ;
+
+  # Basal production and decay reactions for species
+  Prod_IL6_liver: => IL6_liver; k_syn_IL6_liver;
+  Decay_IL6_liver: IL6_liver => ; k_deg_IL6_liver*IL6_liver;
+
+  Prod_IL6_GI: => IL6_GI; k_syn_IL6_GI;
+  Decay_IL6_GI: IL6_GI => ; k_deg_IL6_GI*IL6_GI;
+
+  Prod_IL6_circ: => IL6_circ; k_syn_IL6_circ;
+  Decay_IL6_circ: IL6_circ => ; k_deg_IL6_circ*IL6_circ;
+
+  Prod_IL6R_liver: => IL6R_liver; k_syn_IL6R_liver;
+  Decay_IL6R_liver: IL6R_liver => ; k_deg_IL6R_liver*IL6R_liver;
+
+  Prod_IL6R_GI: => IL6R_GI; k_syn_IL6R_GI;
+  Decay_IL6R_GI: IL6R_GI => ; k_deg_IL6R_GI*IL6R_GI;
+
+  Prod_gp130_liver: => gp130_liver; k_syn_gp130_liver;
+  Decay_gp130_liver: gp130_liver => ; k_deg_gp130_liver*gp130_liver;
+
+  Prod_gp130_GI: => gp130_GI; k_syn_gp130_GI;
+  Decay_gp130_GI: gp130_GI => ; k_deg_gp130_GI*gp130_GI;
+
+  Prod_gp130_circ: => gp130_circ; k_syn_gp130_circ;
+  Decay_gp130_circ: gp130_circ => ; k_deg_gp130_circ*gp130_circ;
+
+  Prod_sgp130_liver: => sgp130_liver; k_syn_sgp130_liver;
+  Decay_sgp130_liver: sgp130_liver => ; k_deg_sgp130_liver*sgp130_liver;
+
+  Prod_sgp130_GI: => sgp130_GI; k_syn_sgp130_GI;
+  Decay_sgp130_GI: sgp130_GI => ; k_deg_sgp130_GI*sgp130_GI;
+
+  Prod_sgp130_circ: => sgp130_circ; k_syn_sgp130_circ;
+  Decay_sgp130_circ: sgp130_circ => ; k_deg_sgp130_circ*sgp130_circ;
+
+  Prod_sIL6R_liver: => sIL6R_liver; k_sIL6R_shed*CRP_liver;
+  Decay_sIL6R_liver: sIL6R_liver => ; k_deg_sIL6R_liver*sIL6R_liver;
+
+  Prod_sIL6R_GI: => sIL6R_GI; k_sIL6R_shed*CRP_liver; # systemic influence
+  Decay_sIL6R_GI: sIL6R_GI => ; k_deg_sIL6R_GI*sIL6R_GI;
+
+  Prod_sIL6R_circ: => sIL6R_circ; k_sIL6R_shed*CRP_liver; # systemic influence
+  Decay_sIL6R_circ: sIL6R_circ => ; k_deg_sIL6R_circ*sIL6R_circ;
+
+  # CRP production induced by IL-6 signaling in liver
+  CRP_synthesis: => CRP_liver; k_CRP_prod * GeneProducts_liver;
+  CRP_degradation: CRP_liver => ; k_deg_CRP * CRP_liver;
+
+  // Species initializations:
+  IL6_liver = 1e-4;      # nmol/l approximate basal
+  IL6_GI = 1e-4;         # nmol/l approximate basal
+  IL6_circ = 1e-4;       # nmol/l approximate basal
+  IL6R_liver = 1;        # nmol/l
+  IL6R_GI = 1;           # nmol/l
+  sIL6R_liver = 1;       # nmol/l
+  sIL6R_GI = 1;          # nmol/l
+  sIL6R_circ = 1;        # nmol/l
+  gp130_liver = 1;       # nmol/l
+  gp130_GI = 1;          # nmol/l
+  gp130_circ = 1;        # nmol/l
+  sgp130_liver = 3;      # nmol/l
+  sgp130_GI = 3;         # nmol/l
+  sgp130_circ = 3;       # nmol/l
+  IL6_sIL6R_complex_liver = 0;
+  IL6_sIL6R_complex_GI = 0;
+  IL6_sIL6R_complex_circ = 0;
+  IL6_sIL6R_sgp130_complex_liver = 0;
+  IL6_sIL6R_sgp130_complex_GI = 0;
+  IL6_sIL6R_sgp130_complex_circ = 0;
+  STAT3_liver = 1;
+  STAT3_GI = 1;
+  pSTAT3_liver = 0;
+  pSTAT3_GI = 0;
+  GeneProducts_liver = 0;
+  GeneProducts_GI = 0;
+  CRP_liver = 1;          # mg/l baseline approx 1 mg/l healthy
+  E1v1SD_liver = 0;
+  E1v1SD_GI = 0;
+
+  // Compartment initializations:
+  liver = 1;        # arbitrary volume units
+  GI_tract = 1;     # arbitrary volume units
+  circulation = 1;  # arbitrary volume units
+
+  // Variable initializations:
+  k_syn_IL6_liver = 1e-4;       # nmol/l/hr basal IL-6 synthesis in liver
+  k_deg_IL6_liver = 0.1;        # 1/hr IL-6 degradation in liver
+  k_syn_IL6_GI = 1e-4;          # nmol/l/hr basal IL-6 synthesis in GI
+  k_deg_IL6_GI = 0.1;           # 1/hr IL-6 degradation in GI
+  k_syn_IL6_circ = 1e-4;        # nmol/l/hr basal IL-6 synthesis in circulation
+  k_deg_IL6_circ = 0.1;         # 1/hr IL-6 degradation in circulation
+
+  k_syn_IL6R_liver = 1;         # nmol/l/hr IL-6R synthesis liver
+  k_deg_IL6R_liver = 0.05;      # 1/hr IL-6R degradation liver
+  k_syn_IL6R_GI = 1;            # nmol/l/hr IL-6R synthesis GI
+  k_deg_IL6R_GI = 0.05;         # 1/hr IL-6R degradation GI
+
+  k_syn_gp130_liver = 1;        # nmol/l/hr gp130 synthesis liver
+  k_deg_gp130_liver = 0.05;     # 1/hr gp130 degradation liver
+  k_syn_gp130_GI = 1;           # nmol/l/hr gp130 synthesis GI
+  k_deg_gp130_GI = 0.05;        # 1/hr gp130 degradation GI
+  k_syn_gp130_circ = 1;         # nmol/l/hr gp130 synthesis circulation
+  k_deg_gp130_circ = 0.05;      # 1/hr gp130 degradation circulation
+
+  k_syn_sgp130_liver = 3;       # nmol/l/hr sgp130 synthesis liver
+  k_deg_sgp130_liver = 0.05;    # 1/hr sgp130 degradation liver
+  k_syn_sgp130_GI = 3;          # nmol/l/hr sgp130 synthesis GI
+  k_deg_sgp130_GI = 0.05;       # 1/hr sgp130 degradation GI
+  k_syn_sgp130_circ = 3;        # nmol/l/hr sgp130 synthesis circulation
+  k_deg_sgp130_circ = 0.05;     # 1/hr sgp130 degradation circulation
+
+  k_sIL6R_shed = 0.1;           # 1/hr CRP-mediated shedding rate of sIL6R
+  k_deg_sIL6R_liver = 0.05;     # 1/hr sIL6R degradation liver
+  k_deg_sIL6R_GI = 0.05;        # 1/hr sIL6R degradation GI
+  k_deg_sIL6R_circ = 0.05;      # 1/hr sIL6R degradation circulation
+
+  k_on_IL6_sIL6R = 1e6;         # l/(nmol*hr) association rate
+  k_off_IL6_sIL6R = 0.1;        # 1/hr dissociation rate
+
+  k_on_complex_sgp130 = 1e6;    # l/(nmol*hr) association rate
+  k_off_complex_sgp130 = 0.1;   # 1/hr dissociation rate
+
+  k_ex_IL6_liver_circ = 0.01;   # 1/hr exchange liver to circulation IL6
+  k_ex_IL6_circ_liver = 0.01;   # 1/hr exchange circulation to liver IL6
+  k_ex_IL6_GI_circ = 0.01;      # 1/hr exchange GI to circulation IL6
+  k_ex_IL6_circ_GI = 0.01;      # 1/hr exchange circulation to GI IL6
+
+  k_ex_sIL6R_liver_circ = 0.01; # 1/hr exchange liver to circulation sIL6R
+  k_ex_sIL6R_circ_liver = 0.01; # 1/hr exchange circulation to liver sIL6R
+  k_ex_sIL6R_GI_circ = 0.01;    # 1/hr exchange GI to circulation sIL6R
+  k_ex_sIL6R_circ_GI = 0.01;    # 1/hr exchange circulation to GI sIL6R
+
+  k_ex_sgp130_liver_circ = 0.01;# 1/hr exchange liver to circulation sgp130
+  k_ex_sgp130_circ_liver = 0.01;# 1/hr exchange circulation to liver sgp130
+  k_ex_sgp130_GI_circ = 0.01;   # 1/hr exchange GI to circulation sgp130
+  k_ex_sgp130_circ_GI = 0.01;   # 1/hr exchange circulation to GI sgp130
+
+  k_ex_complex_liver_circ = 0.01;# 1/hr exchange liver to circulation complex
+  k_ex_complex_circ_liver = 0.01;# 1/hr exchange circulation to liver complex
+  k_ex_complex_GI_circ = 0.01;   # 1/hr exchange GI to circulation complex
+  k_ex_complex_circ_GI = 0.01;   # 1/hr exchange circulation to GI complex
+
+  k_CRP_prod = 0.1;             # 1/hr CRP production rate per gene product
+  k_deg_CRP = 0.05;             # 1/hr CRP degradation rate
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;    # nmol units
+  unit time_unit = 1 hour;
+  unit volume = 1 litre;
+
+  // Display Names:
+  liver is "Liver compartment";
+  GI_tract is "Gastrointestinal tract compartment";
+  circulation is "Circulation compartment";
+  IL6_liver is "Interleukin-6 in liver";
+  IL6_GI is "Interleukin-6 in GI tract";
+  IL6_circ is "Interleukin-6 in circulation";
+  IL6R_liver is "Membrane-bound IL-6 receptor in liver";
+  IL6R_GI is "Membrane-bound IL-6 receptor in GI tract";
+  sIL6R_liver is "Soluble IL-6 receptor in liver";
+  sIL6R_GI is "Soluble IL-6 receptor in GI tract";
+  sIL6R_circ is "Soluble IL-6 receptor in circulation";
+  gp130_liver is "Membrane-bound gp130 in liver";
+  gp130_GI is "Membrane-bound gp130 in GI tract";
+  gp130_circ is "Membrane-bound gp130 in circulation";
+  sgp130_liver is "Soluble gp130 in liver";
+  sgp130_GI is "Soluble gp130 in GI tract";
+  sgp130_circ is "Soluble gp130 in circulation";
+  IL6_sIL6R_complex_liver is "IL-6:sIL-6R complex in liver";
+  IL6_sIL6R_complex_GI is "IL-6:sIL-6R complex in GI tract";
+  IL6_sIL6R_complex_circ is "IL-6:sIL-6R complex in circulation";
+  IL6_sIL6R_sgp130_complex_liver is "IL-6:sIL-6R:sgp130 complex in liver";
+  IL6_sIL6R_sgp130_complex_GI is "IL-6:sIL-6R:sgp130 complex in GI tract";
+  IL6_sIL6R_sgp130_complex_circ is "IL-6:sIL-6R:sgp130 complex in circulation";
+  STAT3_liver is "STAT3 in liver";
+  STAT3_GI is "STAT3 in GI tract";
+  pSTAT3_liver is "Phosphorylated STAT3 in liver";
+  pSTAT3_GI is "Phosphorylated STAT3 in GI tract";
+  GeneProducts_liver is "Gene products induced by pSTAT3 in liver";
+  GeneProducts_GI is "Gene products induced by pSTAT3 in GI tract";
+  CRP_liver is "C-reactive protein in liver";
+  E1v1SD_liver is "pSTAT3:E1v1SD dimer in liver";
+  E1v1SD_GI is "pSTAT3:E1v1SD dimer in GI tract";
+
+end

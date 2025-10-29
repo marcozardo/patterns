@@ -1,0 +1,11 @@
+Unnamed: 0,N° Boundary sp.,N° Floating sp.,N° Reactions,N° Compartments,N° Glob.Parameters
+BIOMD003_tested.txt,0,5,0,1,18
+BIOMD0300_tested.txt,4,5,0,1,31
+BIOMD0409_tested.txt,0,13,4,1,27
+BIOMD0535_tested.txt,3,15,22,2,44
+BIOMD105_tested.txt,0,36,94,1,0
+BIOMD139_tested.txt,0,9,15,2,38
+Dudziuk2019_tested.txt,0,10,15,1,35
+Kimmel2021_tested.txt,0,3,0,1,11
+Kok2020_tested.txt,0,31,0,2,63
+Malkov2020_tested.txt,0,4,4,1,17

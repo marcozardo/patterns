@@ -1,0 +1,141 @@
+model *Mitotic_Exit_in_Budding_Yeast()
+
+  // Compartments and Species:
+  compartment nucleus, nucleolus, cytoplasm;
+  species Cdk in nucleus;
+  species Polo in cytoplasm;
+  species APC_Cdc20 in cytoplasm;
+  species APC_Cdh1 in cytoplasm;
+  species Clb2_Cdk in nucleus;
+  species Cdc20 in cytoplasm;
+  species Securin in cytoplasm;
+  species Separase_inactive in cytoplasm;
+  species Separase_active in cytoplasm;
+  species Net1_unphosphorylated in nucleolus;
+  species Net1_phosphorylated in nucleolus;
+  species Cdc14_inactive in nucleolus;
+  species Cdc14_active in nucleolus;
+  species PP2A_Cdc55_active in nucleolus;
+  species PP2A_Cdc55_inactive in nucleolus;
+  species Bfa1_Bub2_complex in cytoplasm;
+  species Tem1_Cdc15_complex in cytoplasm;
+  species MEN_active in cytoplasm;
+
+  // Assignment Rules:
+  # Net1 total is sum of phosphorylated and unphosphorylated
+  Net1_total := Net1_unphosphorylated + Net1_phosphorylated;
+  # Cdc14 total is sum of inactive and active
+  Cdc14_total := Cdc14_inactive + Cdc14_active;
+  # Separase total is sum of inactive and active
+  Separase_total := Separase_inactive + Separase_active;
+
+  // Reactions:
+  # Activation of APC by Cdc20
+  APC_Cdc20_activation:  => APC_Cdc20; k_APC_activation * Cdc20;
+  # APC_Cdc20 promotes degradation of Securin
+  Securin_degradation: Securin => ; k_Securin_deg * APC_Cdc20 * Securin;
+  # Release of Separase by degradation of Securin
+  Separase_activation: Separase_inactive => Separase_active; k_sep_activation * (1 - Securin);
+  # Clb2-Cdk activity formation (simplified)
+  Clb2_Cdk_formation:  => Clb2_Cdk; k_Clb2_Cdk_synthesis - k_Clb2_Cdk_degradation * APC_Cdh1 * Clb2_Cdk;
+  # Phosphorylation of Net1 by Clb2_Cdk
+  Net1_phosphorylation: Net1_unphosphorylated -> Net1_phosphorylated; k_Cdk_phospho * Clb2_Cdk * Net1_unphosphorylated;
+  # Dephosphorylation of Net1 by PP2A_Cdc55 and Cdc14
+  Net1_dephosphorylation_PP2A: Net1_phosphorylated -> Net1_unphosphorylated; k_PP2A_dephospho * PP2A_Cdc55_active * Net1_phosphorylated;
+  Net1_dephosphorylation_Cdc14: Net1_phosphorylated -> Net1_unphosphorylated; k_Cdc14_dephospho * Cdc14_active * Net1_phosphorylated;
+  # Release of Cdc14 from Net1 upon Net1 phosphorylation
+  Cdc14_release: Cdc14_inactive -> Cdc14_active; k_release * Net1_phosphorylated * Cdc14_inactive;
+  # Sequestration of Cdc14 back to nucleolus
+  Cdc14_sequestration: Cdc14_active -> Cdc14_inactive; k_sequestration * Cdc14_active;
+  # Downregulation of PP2A_Cdc55 by active Separase
+  PP2A_downregulation: PP2A_Cdc55_active -> PP2A_Cdc55_inactive; k_PP2A_downreg * Separase_active * PP2A_Cdc55_active;
+  # Reactivation of PP2A_Cdc55
+  PP2A_reactivation: PP2A_Cdc55_inactive -> PP2A_Cdc55_active; k_PP2A_reactivation * PP2A_Cdc55_inactive;
+  # Activation of MEN by Bfa1 phosphorylation status
+  MEN_activation:  => MEN_active; k_MEN_activation_Bfa1 * Bfa1_Bub2_complex;
+  # Inactivation of MEN
+  MEN_inactivation: MEN_active => ; k_MEN_inactivation * MEN_active;
+  # Phosphorylation of Bfa1 by Polo kinase
+  Bfa1_phosphorylation: Bfa1_Bub2_complex -> ; k_Bfa1_phospho * Polo * Bfa1_Bub2_complex;
+  # Dephosphorylation of Bfa1 by PP2A_Cdc55
+  Bfa1_dephosphorylation:  => Bfa1_Bub2_complex; k_Bfa1_dephospho * PP2A_Cdc55_active * (1 - Bfa1_Bub2_complex);
+
+  // Species initializations:
+  Cdk = 1;                   # Initial Cdk activity
+  Polo = 1;                  # Initial Polo kinase level
+  APC_Cdc20 = 0;
+  APC_Cdh1 = 0;
+  Clb2_Cdk = 1;              # Initial mitotic cyclin-Cdk complex
+  Cdc20 = 0;
+  Securin = 1;               # Initial securin bound to separase
+  Separase_inactive = 1;     # Initial inactive separase bound to securin
+  Separase_active = 0;
+  Net1_unphosphorylated = 1; # Net1 initially unphosphorylated
+  Net1_phosphorylated = 0;
+  Cdc14_inactive = 1;        # Cdc14 initially inactive and sequestered
+  Cdc14_active = 0;
+  PP2A_Cdc55_active = 1;     # PP2A^Cdc55 active initially
+  PP2A_Cdc55_inactive = 0;
+  Bfa1_Bub2_complex = 1;     # Bfa1-Bub2 initially active complex
+  Tem1_Cdc15_complex = 0;
+  MEN_active = 0;
+
+  // Compartment initializations:
+  nucleus = 1;
+  nucleolus = 0.1;
+  cytoplasm = 1;
+
+  // Variable initializations:
+  k_sep_activation = 0.1;
+  k_sep_inactivation = 0.01;
+  k_PP2A_downreg = 0.2;
+  k_PP2A_reactivation = 0.05;
+  k_Cdk_phospho = 0.5;
+  k_PP2A_dephospho = 0.3;
+  k_Cdc14_dephospho = 0.2;
+  k_release = 0.4;
+  k_sequestration = 0.1;
+  k_MEN_activation = 0.3;
+  k_MEN_activation_Bfa1 = 0.2;
+  k_MEN_inactivation = 0.1;
+  k_Bfa1_phospho = 0.4;
+  k_Bfa1_dephospho = 0.3;
+  k_APC_activation = 0.5;
+  k_Securin_deg = 0.5;
+  k_Clb2_Cdk_synthesis = 0.1;
+  k_Clb2_Cdk_degradation = 0.1;
+
+  // Other declarations:
+  const Cdk, Polo, APC_Cdc20, APC_Cdh1, Clb2_Cdk, Cdc20, Securin, Separase_inactive, Tem1_Cdc15_complex;
+  const k_sep_activation, k_sep_inactivation, k_PP2A_downreg, k_PP2A_reactivation;
+  const k_Cdk_phospho, k_PP2A_dephospho, k_Cdc14_dephospho, k_release, k_sequestration;
+  const k_MEN_activation, k_MEN_activation_Bfa1, k_MEN_inactivation, k_Bfa1_phospho, k_Bfa1_dephospho;
+  const k_APC_activation, k_Securin_deg, k_Clb2_Cdk_synthesis, k_Clb2_Cdk_degradation;
+  var Separase_active, PP2A_Cdc55_active, PP2A_Cdc55_inactive, Net1_phosphorylated, Net1_unphosphorylated;
+  var Cdc14_active, Cdc14_inactive, MEN_active, Bfa1_Bub2_complex;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = mole;
+
+  // Display Names:
+  Cdk is "Cyclin-dependent kinase (Cdk)";
+  Polo is "Polo kinase";
+  APC_Cdc20 is "Anaphase-promoting complex activated by Cdc20";
+  APC_Cdh1 is "Anaphase-promoting complex activated by Cdh1";
+  Clb2_Cdk is "Mitotic cyclin-Cdk complex (Clb2-Cdk)";
+  Cdc20 is "APC activator Cdc20";
+  Securin is "Securin (inhibitor of separase)";
+  Separase_inactive is "Inactive separase bound to securin";
+  Separase_active is "Active separase";
+  Net1_unphosphorylated is "Unphosphorylated Net1";
+  Net1_phosphorylated is "Phosphorylated Net1";
+  Cdc14_inactive is "Inactive Cdc14 phosphatase (sequestered)";
+  Cdc14_active is "Active Cdc14 phosphatase (released)";
+  PP2A_Cdc55_active is "Active PP2A^Cdc55 phosphatase";
+  PP2A_Cdc55_inactive is "Inactive PP2A^Cdc55 phosphatase";
+  Bfa1_Bub2_complex is "Bfa1-Bub2 complex (MEN inhibitor)";
+  MEN_active is "Active Mitotic Exit Network (MEN)";
+  Tem1_Cdc15_complex is "Tem1-Cdc15 complex (MEN activator)";
+
+end

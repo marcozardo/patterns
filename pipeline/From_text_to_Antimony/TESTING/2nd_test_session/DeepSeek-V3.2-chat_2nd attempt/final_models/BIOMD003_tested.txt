@@ -1,0 +1,72 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  // Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+  species M_inactive in cell, X_inactive in cell;
+
+  // Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  // Rate Rules:
+  C' = vi - (vd*X*(C/(Kd + C))) - kd*C;
+  M' = V1*((1 - M)/(K1 + (1 - M))) - V2*(M/(K2 + M));
+  X' = V3*((1 - X)/(K3 + (1 - X))) - V4*(X/(K4 + X));
+
+  // Species initializations:
+  C = 0;
+  M = 0;
+  X = 0;
+  M_inactive = 1;
+  X_inactive = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  vi = 0.023;
+  vd = 0.1;
+  kd = 3.33e-3;
+  VM1 = 0.5;
+  V2 = 0.167;
+  VM3 = 0.2;
+  V4 = 0.1;
+  Kc = 0.3;
+  Kd = 0.02;
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  // Other declarations:
+  var C, M, X, M_inactive, X_inactive;
+  const cell, vi, vd, kd, VM1, V2, VM3, V4, Kc, Kd, K1, K2, K3, K4;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  C is "Cyclin";
+  M is "Active cdc2 kinase";
+  X is "Active cyclin protease";
+  M_inactive is "Inactive cdc2 kinase";
+  X_inactive is "Inactive cyclin protease";
+  cell is "Cell compartment";
+  vi is "Cyclin synthesis rate";
+  vd is "Maximum cyclin degradation rate";
+  kd is "Non-specific degradation rate";
+  VM1 is "Maximum phosphatase rate (cdc2 activation)";
+  V2 is "Kinase rate (cdc2 inactivation)";
+  VM3 is "Maximum kinase rate (protease activation)";
+  V4 is "Phosphatase rate (protease inactivation)";
+  Kc is "Michaelis constant for cyclin activation";
+  Kd is "Michaelis constant for cyclin degradation";
+  K1 is "Michaelis constant for cdc2 activation";
+  K2 is "Michaelis constant for cdc2 inactivation";
+  K3 is "Michaelis constant for protease activation";
+  K4 is "Michaelis constant for protease inactivation";
+
+end

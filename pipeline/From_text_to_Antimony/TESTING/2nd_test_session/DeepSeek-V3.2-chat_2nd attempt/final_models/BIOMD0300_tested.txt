@@ -1,0 +1,85 @@
+model *Schmierer2010_Hypoxia_HIF_FIH_ARD()
+
+  // Compartments and Species:
+  compartment cell;
+  species $O2 in cell;
+  species H_tot in cell, H in cell, H_OH in cell;
+  species A in cell, A_OH in cell;
+  species $P_tot in cell, $F_tot in cell;
+  species $A_tot in cell;
+
+  // Assignment Rules:
+  H_p := (-0.5)*(A_tot - P_tot - K_D_P + sqrt((K_D_P + P_tot - A_tot)^2 + 4*K_D_P*A_tot));
+  H_F := (0.5)*(A - F_tot - K_i_FH + sqrt((K_i_FH + F_tot - A)^2 + 4*K_i_FH*A));
+  K_i_FH := K_D_FH*(1 + A/K_D_FA + gamma*A_OH/K_D_FA);
+  v_P := k_cat_P*P_tot*(1/(K_D_P + H_p + P_tot))*(O2_tilde/(1 + O2_tilde));
+  v_FH := k_cat_FH*F_tot*(1/(K_i_FH + H_F + F_tot))*(O2_tilde/(alpha + O2_tilde));
+  v_FA := (k_cat_FA*F_tot)/(K_D_FA*(1 + H_F/K_D_FH) + A + gamma*A_OH)*(O2_tilde/(alpha + O2_tilde));
+  HRE_CAD := H/(K_D_HRE + H_tot);
+  HRE_CADOH := H_OH/(K_D_HRE + H_tot);
+  F_free := 1/(1 + kappa*A);
+  kappa := A_tot/K_D_FA;
+  beta := (k_cat_FA*F_tot)/(k_d_A*A_tot);
+
+  // Rate Rules:
+  H_tot' = 1 - H_tot*(1 + v_P);
+  H' = 1 - H*(1 + v_P + v_FH);
+  epsilon*A' = A_tot - A*(1 + epsilon*v_FA);
+
+  // Reactions:
+  // Note: Hydroxylation reactions are implemented via rate rules above
+  // The model focuses on the differential equations governing the system
+
+  // Species initializations:
+  O2 = 1;
+  H_tot = 0;
+  H = 0;
+  H_OH = 0;
+  A = 0;
+  A_OH = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  P_tot = 0.2;
+  K_D_P = 1;
+  k_cat_P = 500;
+  F_tot = 1;
+  K_D_FH = 1;
+  k_cat_FH = 500;
+  alpha = 0.33;
+  A_tot = 100;
+  K_D_FA = 1;
+  gamma = 0.02;
+  epsilon = 1;
+  K_D_HRE = 0.3;
+  k_d_A = 1;
+  k_cat_FA = 500;
+  O2_tilde = 1;
+
+  // Other declarations:
+  const O2, P_tot, F_tot, A_tot, cell;
+  var H_tot, H, H_OH, A, A_OH, H_p, H_F, K_i_FH, v_P, v_FH, v_FA, HRE_CAD, HRE_CADOH, F_free, kappa, beta;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit time_unit = 1 second;
+  unit substance = 1 mole;
+
+  // Display Names:
+  cell is "Cell";
+  O2 is "Oxygen";
+  H_tot is "Total HIF?";
+  H is "Non-CAD-hydroxylated HIF?";
+  H_OH is "CAD-hydroxylated HIF?";
+  A is "Unhydroxylated ARD proteins";
+  A_OH is "Hydroxylated ARD proteins";
+  P_tot is "Total PHD";
+  F_tot is "Total FIH";
+  A_tot is "Total ARD proteins";
+  v_P is "PHD-dependent HIF? ODD-hydroxylation rate";
+  v_FH is "FIH-dependent HIF? CAD-hydroxylation rate";
+  v_FA is "FIH-dependent ARD hydroxylation rate";
+
+end

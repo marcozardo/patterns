@@ -1,0 +1,77 @@
+model *Schmierer2010_Hypoxia_Oxygen_Sensor_Sequestration()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species Htot in cytosol, H in cytosol, H_OH in cytosol;
+  species A in cytosol, A_OH in cytosol;
+  species Atot, Ptot, Ftot, O2;
+
+  // Assignment Rules:
+  v_dot_p := kcat_p * Ptot * (1 / (KD_p + Hp + Ptot)) * (O2 / (1 + O2));
+  v_dot_FH := kcat_FH * Ftot * (1 / (Ki_FH + HF + Ftot)) * (O2 / (alpha + O2));
+  Ki_FH := KD_FH * (1 + (A / KD_FA) + (gamma * A_OH / KD_FA));
+  v_dot_FA := (kcat_FA * Ftot) / (KD_FA * (1 + (FF / KD_FH)) + A + gamma * A_OH) * (O2 / (alpha + O2));
+  Hp := Htot - Hp_bound;  # Hp free to bind PHD (implied)
+  HF := H - HF_bound;     # HF free to bind FIH (implied)
+  FF := Ftot - FF_bound;  # free FIH (implied)
+
+  // Rate Rules:
+  Htot' = 1 - Htot * (1 + v_dot_p);
+  H' = 1 - H * (1 + v_dot_p + v_dot_FH);
+  A' = (1 / epsilon) * (Atot - A * (1 + epsilon * v_dot_FA));
+
+  // Species initializations:
+  Htot = 0;
+  H = 0;
+  H_OH = 0;
+  A = 0;
+  A_OH = 0;
+  Atot = 100;
+  Ptot = 0.2;
+  Ftot = 1;
+  O2 = 1;
+
+  // Compartment initializations:
+  cytosol = 1;
+
+  // Variable initializations:
+  kcat_p = 500;
+  KD_p = 1;
+  kcat_FH = 500;
+  KD_FH = 1;
+  KD_FA = 1;
+  kcat_FA = 500;
+  gamma = 0;       # adjustable between 0 and 0.1
+  alpha = 0.33;
+  KD_HRE = 0.3;
+  epsilon = 1;     # small parameter for A dynamics
+
+  // Other declarations:
+  var Htot, H, H_OH, A, A_OH;
+  const Atot, Ptot, Ftot, O2;
+  var v_dot_p, v_dot_FH, v_dot_FA;
+  const kcat_p, KD_p, kcat_FH, KD_FH, KD_FA, kcat_FA, gamma, alpha, KD_HRE, epsilon;
+
+  // Display Names:
+  cytosol is "Intracellular compartment";
+  Htot is "Total HIF-alpha";
+  H is "Non-CAD-hydroxylated HIF-alpha";
+  H_OH is "CAD-hydroxylated HIF-alpha";
+  A is "Unhydroxylated FIH target ankyrin repeats";
+  A_OH is "Hydroxylated FIH target ankyrin repeats";
+  Atot is "Total FIH target ankyrin repeats";
+  Ptot is "Total PHD";
+  Ftot is "Total FIH";
+  O2 is "Intracellular oxygen";
+  v_dot_p is "PHD-dependent HIF-alpha ODD-hydroxylation rate";
+  v_dot_FH is "FIH-dependent HIF-alpha CAD-hydroxylation rate";
+  v_dot_FA is "FIH-dependent ankyrin hydroxylation rate";
+  KD_p is "Dissociation constant of PHD/HIF-alpha binding";
+  KD_FH is "Dissociation constant of FIH/HIF-alpha binding";
+  KD_FA is "Dissociation constant of FIH/ankyrin binding (unhydroxylated)";
+  gamma is "Relative affinity of FIH for hydroxylated ankyrin repeats";
+  alpha is "Ratio of KM of FIH to KM of PHD for oxygen";
+  KD_HRE is "Dissociation constant of HIF/HRE binding";
+  epsilon is "Small parameter for ankyrin dynamics";
+
+end

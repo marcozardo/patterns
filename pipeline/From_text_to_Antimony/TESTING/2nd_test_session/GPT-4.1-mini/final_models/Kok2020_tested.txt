@@ -1,0 +1,218 @@
+model *Kok2020_IFNa_Signal_Transduction()
+
+  // Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IFNa in cytoplasm, Rec in cytoplasm, aRecIFN in cytoplasm;
+  species STAT1c in cytoplasm, STAT2c in cytoplasm, IRF9c in cytoplasm;
+  species pSTAT1dimc in cytoplasm, pSTAT1pSTAT2c in cytoplasm, ISGF3c in cytoplasm;
+  species SOCS3mRNA in cytoplasm, USP18mRNA in cytoplasm, SOCS1mRNA in cytoplasm, IRF2mRNA in cytoplasm;
+  species SOCS3 in cytoplasm, USP18 in cytoplasm, SOCS1 in cytoplasm, IRF2 in cytoplasm;
+  species STAT1n in nucleus, STAT2n in nucleus, IRF9n in nucleus;
+  species pSTAT1dimn in nucleus, pSTAT1pSTAT2n in nucleus, ISGF3n in nucleus;
+  species OccGASbs in nucleus, OccISREbs in nucleus, OccGASbs_ISREbs in nucleus;
+  species IRF9mRNA in cytoplasm, STAT1mRNA in cytoplasm, STAT2mRNA in cytoplasm;
+
+  // Assignment Rules:
+  m_inf_STAT1 := alpha_m_STAT1/(alpha_m_STAT1 + beta_m_STAT1);
+  alpha_m_STAT1 := -0.1*(V + 35)/(exp(-0.1*(V + 35)) - 1);
+  beta_m_STAT1 := 4*exp(-(V + 60)/18);
+  alpha_h_STAT1 := 0.07*exp(-(V + 58)/20);
+  beta_h_STAT1 := 1/(exp(-0.1*(V + 28)) + 1);
+  m_inf_STAT2 := alpha_m_STAT2/(alpha_m_STAT2 + beta_m_STAT2);
+  alpha_m_STAT2 := -0.1*(V + 35)/(exp(-0.1*(V + 35)) - 1);
+  beta_m_STAT2 := 4*exp(-(V + 60)/18);
+  alpha_h_STAT2 := 0.07*exp(-(V + 58)/20);
+  beta_h_STAT2 := 1/(exp(-0.1*(V + 28)) + 1);
+  alpha_n_STAT1 := -0.01*(V + 34)/(exp(-0.1*(V + 34)) - 1);
+  beta_n_STAT1 := 0.125*exp(-(V + 44)/80);
+  F := 1/(1 + exp(-(V_pre - theta_syn)/2));
+  tau_0 := Cm/gL;
+  I_Na := gNa*m_inf_STAT1^3*h*(V - E_Na);
+  I_K := gK*n^4*(V - E_K);
+  I_L := gL*(V - E_L);
+  I_syn := g_syn*s*(V - E_syn);
+
+  // Rate Rules:
+  h' = phi*(alpha_h_STAT1*(1 - h) - beta_h_STAT1*h);
+  n' = phi*(alpha_n_STAT1*(1 - n) - beta_n_STAT1*n);
+  s' = alpha*F*(1 - s) - beta*s;
+  V' = (I_app - (I_Na + I_K + I_L + I_syn))/Cm;
+
+  // Reactions:
+  R1: IFNa + Rec -> aRecIFN; k1*IFNa*Rec;
+  R2: aRecIFN + STAT1c -> pSTAT1dimc; k2*aRecIFN*STAT1c;
+  R3: aRecIFN + STAT2c -> pSTAT1pSTAT2c; k3*aRecIFN*STAT2c;
+  R4: pSTAT1pSTAT2c + IRF9c -> ISGF3c; k4*pSTAT1pSTAT2c*IRF9c;
+  R5: pSTAT1dimc -> STAT1n; k5*pSTAT1dimc;
+  R6: pSTAT1pSTAT2c -> STAT2n; k6*pSTAT1pSTAT2c;
+  R7: ISGF3c -> ISGF3n; k7*ISGF3c;
+  R8: ISGF3n -> SOCS3mRNA; k8*ISGF3n;
+  R9: ISGF3n -> USP18mRNA; k9*ISGF3n;
+  R10: ISGF3n -> SOCS1mRNA; k10*ISGF3n;
+  R11: ISGF3n -> IRF2mRNA; k11*ISGF3n;
+  R12: SOCS3mRNA -> SOCS3; k12*SOCS3mRNA;
+  R13: USP18mRNA -> USP18; k13*USP18mRNA;
+  R14: SOCS1mRNA -> SOCS1; k14*SOCS1mRNA;
+  R15: IRF2mRNA -> IRF2; k15*IRF2mRNA;
+  R16: SOCS1 + aRecIFN -> ; k16*SOCS1*aRecIFN;  # SOCS1-mediated degradation
+  R17: USP18 + SOCS1 + aRecIFN -> ; k17*USP18*SOCS1*aRecIFN;  # USP18 acts as cofactor for SOCS1
+  R18: STAT1n -> STAT1c; k18*STAT1n;
+  R19: STAT2n -> STAT2c; k19*STAT2n;
+  R20: IRF9n -> IRF9c; k20*IRF9n;
+
+  // Species initializations:
+  IFNa = 0;
+  Rec = 1;
+  aRecIFN = 0;
+  STAT1c = 1;
+  STAT2c = 1;
+  IRF9c = 1;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  SOCS3mRNA = 0;
+  USP18mRNA = 0;
+  SOCS1mRNA = 0;
+  IRF2mRNA = 0;
+  SOCS3 = 0;
+  USP18 = 0;
+  SOCS1 = 0;
+  IRF2 = 0;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  OccGASbs = 0;
+  OccISREbs = 0;
+  OccGASbs_ISREbs = 0;
+  IRF9mRNA = 0;
+  STAT1mRNA = 0;
+  STAT2mRNA = 0;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  k2 = 1;
+  k3 = 1;
+  k4 = 1;
+  k5 = 1;
+  k6 = 1;
+  k7 = 1;
+  k8 = 1;
+  k9 = 1;
+  k10 = 1;
+  k11 = 1;
+  k12 = 1;
+  k13 = 1;
+  k14 = 1;
+  k15 = 1;
+  k16 = 1;
+  k17 = 1;
+  k18 = 1;
+  k19 = 1;
+  k20 = 1;
+
+  Cm = 1; 
+  gL = 0.1; 
+  gNa = 35; 
+  gK = 9; 
+  E_Na = 55; 
+  E_K = -90; 
+  E_L = -65; 
+  g_syn = 0.1; 
+  E_syn = -75;
+  phi = 5; 
+  alpha = 1; 
+  beta = 1; 
+  V = 0; 
+  V_pre = 0; 
+  h = 0; 
+  n = 0; 
+  s = 0; 
+  I_app = 0; 
+  theta_syn = 0;
+
+  // Other declarations:
+  var IFNa, aRecIFN, pSTAT1dimc, pSTAT1pSTAT2c, ISGF3c, SOCS3mRNA, USP18mRNA, SOCS1mRNA, IRF2mRNA;
+  var SOCS3, USP18, SOCS1, IRF2;
+  var pSTAT1dimn, pSTAT1pSTAT2n, ISGF3n, OccGASbs, OccISREbs, OccGASbs_ISREbs;
+  var IRF9mRNA, STAT1mRNA, STAT2mRNA;
+  var m_inf_STAT1, alpha_m_STAT1, beta_m_STAT1, alpha_h_STAT1, beta_h_STAT1;
+  var m_inf_STAT2, alpha_m_STAT2, beta_m_STAT2, alpha_h_STAT2, beta_h_STAT2;
+  var alpha_n_STAT1, beta_n_STAT1, F, tau_0, I_Na, I_K, I_L, I_syn;
+  const cytoplasm, nucleus, Rec, STAT1c, STAT2c, IRF9c, STAT1n, STAT2n, IRF9n;
+  const k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19, k20;
+  const Cm, gL, gNa, gK, E_Na, E_K, E_L, g_syn, E_syn;
+  const phi, alpha, beta, theta_syn;
+
+  // Unit definitions:
+  unit substance = 1 mole;
+  unit volume = 1 litre;
+  unit time_unit = 1 second;
+
+  // Display Names:
+  IFNa is "Interferon alpha";
+  Rec is "IFNAR1/2 receptor complex";
+  aRecIFN is "Activated receptor-IFN complex";
+  STAT1c is "Cytoplasmic STAT1";
+  STAT2c is "Cytoplasmic STAT2";
+  IRF9c is "Cytoplasmic IRF9";
+  pSTAT1dimc is "Cytoplasmic phosphorylated STAT1 homodimer";
+  pSTAT1pSTAT2c is "Cytoplasmic phosphorylated STAT1-STAT2 heterodimer";
+  ISGF3c is "Cytoplasmic ISGF3 complex";
+  SOCS3mRNA is "SOCS3 mRNA";
+  USP18mRNA is "USP18 mRNA";
+  SOCS1mRNA is "SOCS1 mRNA";
+  IRF2mRNA is "IRF2 mRNA";
+  SOCS3 is "SOCS3 protein";
+  USP18 is "USP18 protein";
+  SOCS1 is "SOCS1 protein";
+  IRF2 is "IRF2 protein";
+  STAT1n is "Nuclear STAT1";
+  STAT2n is "Nuclear STAT2";
+  IRF9n is "Nuclear IRF9";
+  pSTAT1dimn is "Nuclear phosphorylated STAT1 homodimer";
+  pSTAT1pSTAT2n is "Nuclear phosphorylated STAT1-STAT2 heterodimer";
+  ISGF3n is "Nuclear ISGF3 complex";
+  OccGASbs is "Occupied GAS-binding sites";
+  OccISREbs is "Occupied ISRE-binding sites";
+  OccGASbs_ISREbs is "Occupied GAS+ISRE-binding sites";
+  IRF9mRNA is "IRF9 mRNA";
+  STAT1mRNA is "STAT1 mRNA";
+  STAT2mRNA is "STAT2 mRNA";
+
+  // SBO terms:
+  model.sboTerm = SBO:0000375;
+  IFNa.sboTerm = SBO:0000657;
+  Rec.sboTerm = SBO:0000252;
+  aRecIFN.sboTerm = SBO:0000216;
+  STAT1c.sboTerm = SBO:0000234;
+  STAT2c.sboTerm = SBO:0000234;
+  IRF9c.sboTerm = SBO:0000234;
+  pSTAT1dimc.sboTerm = SBO:0000253;
+  pSTAT1pSTAT2c.sboTerm = SBO:0000253;
+  ISGF3c.sboTerm = SBO:0000253;
+  SOCS3.sboTerm = SBO:0000234;
+  USP18.sboTerm = SBO:0000234;
+  SOCS1.sboTerm = SBO:0000234;
+  IRF2.sboTerm = SBO:0000234;
+  SOCS3mRNA.sboTerm = SBO:0000276;
+  USP18mRNA.sboTerm = SBO:0000276;
+  SOCS1mRNA.sboTerm = SBO:0000276;
+  IRF2mRNA.sboTerm = SBO:0000276;
+  STAT1n.sboTerm = SBO:0000234;
+  STAT2n.sboTerm = SBO:0000234;
+  IRF9n.sboTerm = SBO:0000234;
+  pSTAT1dimn.sboTerm = SBO:0000253;
+  pSTAT1pSTAT2n.sboTerm = SBO:0000253;
+  ISGF3n.sboTerm = SBO:0000253;
+  OccGASbs.sboTerm = SBO:0000244;
+  OccISREbs.sboTerm = SBO:0000244;
+  OccGASbs_ISREbs.sboTerm = SBO:0000244;
+
+end

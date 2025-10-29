@@ -1,0 +1,233 @@
+model *Kok2020_IFNalpha_Signal_Transduction()
+  // Compartments and Species:
+  compartment cell;
+  species IFN in cell, Rec in cell, aRecIFN in cell;
+  species STAT1c in cell, STAT2c in cell, IRF9c in cell;
+  species pSTAT1dimc in cell, pSTAT1pSTAT2c in cell, ISGF3c in cell;
+  species STAT1n in cell, STAT2n in cell, IRF9n in cell;
+  species pSTAT1dimn in cell, pSTAT1pSTAT2n in cell, ISGF3n in cell;
+  species OccGASbs in cell, OccISREbs in cell;
+  species STAT1mRNA in cell, STAT2mRNA in cell, IRF9mRNA in cell;
+  species USP18mRNA in cell, SOCS1mRNA in cell, SOCS3mRNA in cell, IRF2mRNA in cell;
+  species USP18 in cell, SOCS1 in cell, SOCS3 in cell, IRF2 in cell;
+  species CXCL10mRNA in cell, MX1mRNA in cell, IFI6mRNA in cell;
+  species DDX58mRNA in cell, HERC5mRNA in cell, IFI44LmRNA in cell;
+  species IRF1mRNA in cell;
+
+  // Assignment Rules:
+  OccGASbs := pSTAT1dimn;
+  OccISREbs := ISGF3n;
+
+  // Reactions:
+  // Receptor binding and activation
+  R1: IFN + Rec -> aRecIFN; k_bind*IFN*Rec;
+  R2: aRecIFN -> IFN + Rec; k_off*aRecIFN;
+  
+  // STAT phosphorylation and complex formation
+  R3: STAT1c + aRecIFN -> pSTAT1dimc; k_pSTAT1*STAT1c*aRecIFN;
+  R4: STAT1c + STAT2c + aRecIFN -> pSTAT1pSTAT2c; k_pSTAT1pSTAT2*STAT1c*STAT2c*aRecIFN;
+  R5: pSTAT1pSTAT2c + IRF9c -> ISGF3c; k_ISGF3c*pSTAT1pSTAT2c*IRF9c;
+  
+  // Nuclear translocation
+  R6: pSTAT1dimc -> pSTAT1dimn; k_import_pSTAT1dim*pSTAT1dimc;
+  R7: pSTAT1pSTAT2c -> pSTAT1pSTAT2n; k_import_pSTAT1pSTAT2*pSTAT1pSTAT2c;
+  R8: ISGF3c -> ISGF3n; k_import_ISGF3*ISGF3c;
+  
+  // Nuclear export
+  R9: pSTAT1dimn -> pSTAT1dimc; k_export_pSTAT1dim*pSTAT1dimn;
+  R10: pSTAT1pSTAT2n -> pSTAT1pSTAT2c; k_export_pSTAT1pSTAT2*pSTAT1pSTAT2n;
+  R11: ISGF3n -> ISGF3c; k_export_ISGF3*ISGF3n;
+  
+  // STAT shuttling
+  R12: STAT1c -> STAT1n; k_import_STAT1*STAT1c;
+  R13: STAT1n -> STAT1c; k_export_STAT1*STAT1n;
+  R14: STAT2c -> STAT2n; k_import_STAT2*STAT2c;
+  R15: STAT2n -> STAT2c; k_export_STAT2*STAT2n;
+  R16: IRF9c -> IRF9n; k_import_IRF9*IRF9c;
+  R17: IRF9n -> IRF9c; k_export_IRF9*IRF9n;
+  
+  // Transcription (positive feedback)
+  R18:  -> STAT1mRNA; (v_synth_STAT1mRNA_basal + v_synth_STAT1mRNA_induced*(OccGASbs + OccISREbs));
+  R19:  -> STAT2mRNA; (v_synth_STAT2mRNA_basal + v_synth_STAT2mRNA_induced*(OccGASbs + OccISREbs));
+  R20:  -> IRF9mRNA; (v_synth_IRF9mRNA_basal + v_synth_IRF9mRNA_induced*(OccGASbs + OccISREbs));
+  
+  // Transcription (negative feedback)
+  R21:  -> USP18mRNA; (v_synth_USP18mRNA_basal + v_synth_USP18mRNA_induced*(OccGASbs + OccISREbs));
+  R22:  -> SOCS1mRNA; (v_synth_SOCS1mRNA_basal + v_synth_SOCS1mRNA_induced*(OccGASbs + OccISREbs));
+  R23:  -> SOCS3mRNA; (v_synth_SOCS3mRNA_basal + v_synth_SOCS3mRNA_induced*OccGASbs);
+  R24:  -> IRF2mRNA; (v_synth_IRF2mRNA_basal + v_synth_IRF2mRNA_induced*(OccGASbs + OccISREbs));
+  
+  // Target gene transcription
+  R25:  -> CXCL10mRNA; v_synth_CXCL10mRNA*OccGASbs;
+  R26:  -> MX1mRNA; v_synth_MX1mRNA*(OccGASbs + OccISREbs);
+  R27:  -> IFI6mRNA; v_synth_IFI6mRNA*(OccGASbs + OccISREbs);
+  R28:  -> DDX58mRNA; v_synth_DDX58mRNA*OccISREbs;
+  R29:  -> HERC5mRNA; v_synth_HERC5mRNA*OccISREbs;
+  R30:  -> IFI44LmRNA; v_synth_IFI44LmRNA*OccISREbs;
+  R31:  -> IRF1mRNA; v_synth_IRF1mRNA*OccGASbs;
+  
+  // mRNA degradation
+  R32: STAT1mRNA -> ; k_deg_STAT1mRNA*STAT1mRNA;
+  R33: STAT2mRNA -> ; k_deg_STAT2mRNA*STAT2mRNA;
+  R34: IRF9mRNA -> ; k_deg_IRF9mRNA*IRF9mRNA;
+  R35: USP18mRNA -> ; k_deg_USP18mRNA*USP18mRNA;
+  R36: SOCS1mRNA -> ; k_deg_SOCS1mRNA*SOCS1mRNA;
+  R37: SOCS3mRNA -> ; k_deg_SOCS3mRNA*SOCS3mRNA;
+  R38: IRF2mRNA -> ; k_deg_IRF2mRNA*IRF2mRNA;
+  R39: CXCL10mRNA -> ; k_deg_CXCL10mRNA*CXCL10mRNA;
+  R40: MX1mRNA -> ; k_deg_MX1mRNA*MX1mRNA;
+  R41: IFI6mRNA -> ; k_deg_IFI6mRNA*IFI6mRNA;
+  R42: DDX58mRNA -> ; k_deg_DDX58mRNA*DDX58mRNA;
+  R43: HERC5mRNA -> ; k_deg_HERC5mRNA*HERC5mRNA;
+  R44: IFI44LmRNA -> ; k_deg_IFI44LmRNA*IFI44LmRNA;
+  R45: IRF1mRNA -> ; k_deg_IRF1mRNA*IRF1mRNA;
+  
+  // Translation
+  R46: STAT1mRNA -> STAT1c; k_tl_STAT1*STAT1mRNA;
+  R47: STAT2mRNA -> STAT2c; k_tl_STAT2*STAT2mRNA;
+  R48: IRF9mRNA -> IRF9c; k_tl_IRF9*IRF9mRNA;
+  R49: USP18mRNA -> USP18; k_tl_USP18*USP18mRNA;
+  R50: SOCS1mRNA -> SOCS1; k_tl_SOCS1*SOCS1mRNA;
+  R51: SOCS3mRNA -> SOCS3; k_tl_SOCS3*SOCS3mRNA;
+  R52: IRF2mRNA -> IRF2; k_tl_IRF2*IRF2mRNA;
+  
+  // Protein degradation
+  R53: STAT1c -> ; k_deg_STAT1*STAT1c;
+  R54: STAT2c -> ; k_deg_STAT2*STAT2c;
+  R55: IRF9c -> ; k_deg_IRF9*IRF9c;
+  R56: USP18 -> ; k_deg_USP18*USP18;
+  R57: SOCS1 -> ; k_deg_SOCS1*SOCS1;
+  R58: SOCS3 -> ; k_deg_SOCS3*SOCS3;
+  R59: IRF2 -> ; k_deg_IRF2*IRF2;
+  
+  // Negative feedback actions
+  R60: aRecIFN + USP18 -> Rec; k_USP18*aRecIFN*USP18;
+  R61: aRecIFN + SOCS1 -> Rec; k_SOCS1*aRecIFN*SOCS1;
+  R62: aRecIFN + SOCS1 + USP18 -> Rec; k_SOCS1_USP18*aRecIFN*SOCS1*USP18;
+  R63: aRecIFN + SOCS3 -> Rec; k_SOCS3*aRecIFN*SOCS3;
+
+  // Species initializations:
+  IFN = 0;
+  Rec = 10000;
+  aRecIFN = 0;
+  STAT1c = 500000;
+  STAT2c = 50000;
+  IRF9c = 5000;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  STAT1mRNA = 100;
+  STAT2mRNA = 50;
+  IRF9mRNA = 10;
+  USP18mRNA = 5;
+  SOCS1mRNA = 5;
+  SOCS3mRNA = 5;
+  IRF2mRNA = 5;
+  USP18 = 1000;
+  SOCS1 = 1000;
+  SOCS3 = 1000;
+  IRF2 = 1000;
+  CXCL10mRNA = 0;
+  MX1mRNA = 0;
+  IFI6mRNA = 0;
+  DDX58mRNA = 0;
+  HERC5mRNA = 0;
+  IFI44LmRNA = 0;
+  IRF1mRNA = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k_bind = 0.001;
+  k_off = 0.1;
+  k_pSTAT1 = 0.0001;
+  k_pSTAT1pSTAT2 = 0.0001;
+  k_ISGF3c = 0.001;
+  k_import_pSTAT1dim = 0.1;
+  k_import_pSTAT1pSTAT2 = 0.1;
+  k_import_ISGF3 = 0.1;
+  k_export_pSTAT1dim = 0.01;
+  k_export_pSTAT1pSTAT2 = 0.01;
+  k_export_ISGF3 = 0.01;
+  k_import_STAT1 = 0.05;
+  k_export_STAT1 = 0.05;
+  k_import_STAT2 = 0.05;
+  k_export_STAT2 = 0.05;
+  k_import_IRF9 = 0.05;
+  k_export_IRF9 = 0.05;
+  v_synth_STAT1mRNA_basal = 10;
+  v_synth_STAT1mRNA_induced = 1;
+  v_synth_STAT2mRNA_basal = 5;
+  v_synth_STAT2mRNA_induced = 1;
+  v_synth_IRF9mRNA_basal = 2;
+  v_synth_IRF9mRNA_induced = 1;
+  v_synth_USP18mRNA_basal = 1;
+  v_synth_USP18mRNA_induced = 1;
+  v_synth_SOCS1mRNA_basal = 1;
+  v_synth_SOCS1mRNA_induced = 1;
+  v_synth_SOCS3mRNA_basal = 1;
+  v_synth_SOCS3mRNA_induced = 2;
+  v_synth_IRF2mRNA_basal = 1;
+  v_synth_IRF2mRNA_induced = 1;
+  v_synth_CXCL10mRNA = 10;
+  v_synth_MX1mRNA = 5;
+  v_synth_IFI6mRNA = 3;
+  v_synth_DDX58mRNA = 5;
+  v_synth_HERC5mRNA = 5;
+  v_synth_IFI44LmRNA = 5;
+  v_synth_IRF1mRNA = 8;
+  k_deg_STAT1mRNA = 0.1;
+  k_deg_STAT2mRNA = 0.1;
+  k_deg_IRF9mRNA = 0.1;
+  k_deg_USP18mRNA = 0.1;
+  k_deg_SOCS1mRNA = 0.1;
+  k_deg_SOCS3mRNA = 0.2;
+  k_deg_IRF2mRNA = 0.1;
+  k_deg_CXCL10mRNA = 0.2;
+  k_deg_MX1mRNA = 0.1;
+  k_deg_IFI6mRNA = 0.05;
+  k_deg_DDX58mRNA = 0.1;
+  k_deg_HERC5mRNA = 0.1;
+  k_deg_IFI44LmRNA = 0.1;
+  k_deg_IRF1mRNA = 0.2;
+  k_tl_STAT1 = 0.1;
+  k_tl_STAT2 = 0.1;
+  k_tl_IRF9 = 0.1;
+  k_tl_USP18 = 0.1;
+  k_tl_SOCS1 = 0.1;
+  k_tl_SOCS3 = 0.1;
+  k_tl_IRF2 = 0.1;
+  k_deg_STAT1 = 0.01;
+  k_deg_STAT2 = 0.01;
+  k_deg_IRF9 = 0.01;
+  k_deg_USP18 = 0.01;
+  k_deg_SOCS1 = 0.01;
+  k_deg_SOCS3 = 0.05;
+  k_deg_IRF2 = 0.01;
+  k_USP18 = 0.001;
+  k_SOCS1 = 0.001;
+  k_SOCS1_USP18 = 0.002;
+  k_SOCS3 = 0.0005;
+
+  // Other declarations:
+  var OccGASbs, OccISREbs;
+  const cell, k_bind, k_off, k_pSTAT1, k_pSTAT1pSTAT2, k_ISGF3c, k_import_pSTAT1dim;
+  const k_import_pSTAT1pSTAT2, k_import_ISGF3, k_export_pSTAT1dim, k_export_pSTAT1pSTAT2;
+  const k_export_ISGF3, k_import_STAT1, k_export_STAT1, k_import_STAT2, k_export_STAT2;
+  const k_import_IRF9, k_export_IRF9, v_synth_STAT1mRNA_basal, v_synth_STAT1mRNA_induced;
+  const v_synth_STAT2mRNA_basal, v_synth_STAT2mRNA_induced, v_synth_IRF9mRNA_basal;
+  const v_synth_IRF9mRNA_induced, v_synth_USP18mRNA_basal, v_synth_USP18mRNA_induced;
+  const v_synth_SOCS1mRNA_basal, v_synth_SOCS1mRNA_induced, v_synth_SOCS3mRNA_basal;
+  const v_synth_SOCS3mRNA_induced, v_synth_IRF2mRNA_basal, v_synth_IRF2mRNA_induced;
+  const v_synth_CXCL10mRNA, v_synth_MX1mRNA, v_synth_IFI6mRNA, v_synth_DDX58mRNA;
+  const v_synth_HERC5mRNA, v_synth_IFI44LmRNA, v_synth_IRF1mRNA, k_deg_STAT1mRNA;
+  const k_deg_STAT2mRNA, k_deg_IRF9mRNA, k_deg_USP18mRNA, k_deg_SOCS1mRNA;
+  const k_deg_SOCS3mRNA, k_deg_IRF2mRNA, k_deg_CXCL10mRNA, k_deg_MX1mRNA, k_deg_IFI6mRNA;
+  const k_deg_DDX58mRNA, k_deg_HERC5mRNA, k_deg_IFI44LmRNA, k_deg_

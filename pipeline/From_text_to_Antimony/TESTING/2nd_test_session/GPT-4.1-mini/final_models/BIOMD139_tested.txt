@@ -1,0 +1,179 @@
+model *Hoffmann2002_IkB_NFkB_Signaling_Module()
+
+  // Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IKB_alpha in cytoplasm, IKB_beta in cytoplasm, IKB_epsilon in cytoplasm;
+  species NFkB_free_cyt in cytoplasm, NFkB_free_nuc in nucleus;
+  species IKK_active in cytoplasm;
+  species Complex_alpha in cytoplasm, Complex_beta in cytoplasm, Complex_epsilon in cytoplasm;
+  species mRNA_alpha in nucleus, mRNA_beta in nucleus, mRNA_epsilon in nucleus;
+
+  // Assignment Rules:
+  # Negative feedback parameters (placeholders)
+  k_synthesis_alpha := k_s_alpha;
+  k_synthesis_beta := k_s_beta;
+  k_synthesis_epsilon := k_s_epsilon;
+
+  # Degradation rates (placeholders)
+  k_deg_alpha := d_alpha;
+  k_deg_beta := d_beta;
+  k_deg_epsilon := d_epsilon;
+
+  # NF-kB nuclear import/export rates (placeholders)
+  k_import := k_imp;
+  k_export := k_exp;
+
+  # IKK activation input signal (generic placeholder)
+  # Removed conflicting assignment to IKK_active here to avoid syntax error
+
+  // Rate Rules:
+  # IKB_alpha protein dynamics
+  IKB_alpha' = k_synthesis_alpha*mRNA_alpha - k_deg_alpha*IKB_alpha - k_phos_alpha*IKK_active*IKB_alpha - k_bind_alpha*IKB_alpha*NFkB_free_cyt + k_unbind_alpha*Complex_alpha;
+
+  # IKB_beta protein dynamics
+  IKB_beta' = k_synthesis_beta*mRNA_beta - k_deg_beta*IKB_beta - k_phos_beta*IKK_active*IKB_beta - k_bind_beta*IKB_beta*NFkB_free_cyt + k_unbind_beta*Complex_beta;
+
+  # IKB_epsilon protein dynamics
+  IKB_epsilon' = k_synthesis_epsilon*mRNA_epsilon - k_deg_epsilon*IKB_epsilon - k_phos_epsilon*IKK_active*IKB_epsilon - k_bind_epsilon*IKB_epsilon*NFkB_free_cyt + k_unbind_epsilon*Complex_epsilon;
+
+  # NFkB free cytoplasmic concentration dynamics
+  NFkB_free_cyt' = - k_bind_alpha*IKB_alpha*NFkB_free_cyt + k_unbind_alpha*Complex_alpha
+                   - k_bind_beta*IKB_beta*NFkB_free_cyt + k_unbind_beta*Complex_beta
+                   - k_bind_epsilon*IKB_epsilon*NFkB_free_cyt + k_unbind_epsilon*Complex_epsilon
+                   + k_export*NFkB_free_nuc - k_import*NFkB_free_cyt;
+
+  # NFkB free nuclear concentration dynamics
+  NFkB_free_nuc' = k_import*NFkB_free_cyt - k_export*NFkB_free_nuc;
+
+  # Complexes dynamics (binding of NFkB and IKB)
+  Complex_alpha' = k_bind_alpha*IKB_alpha*NFkB_free_cyt - k_unbind_alpha*Complex_alpha - k_deg_complex_alpha*IKK_active*Complex_alpha;
+  Complex_beta' = k_bind_beta*IKB_beta*NFkB_free_cyt - k_unbind_beta*Complex_beta - k_deg_complex_beta*IKK_active*Complex_beta;
+  Complex_epsilon' = k_bind_epsilon*IKB_epsilon*NFkB_free_cyt - k_unbind_epsilon*Complex_epsilon - k_deg_complex_epsilon*IKK_active*Complex_epsilon;
+
+  # mRNA synthesis dynamics driven by NFkB nuclear concentration (simplified placeholders)
+  mRNA_alpha' = k_transcription_alpha*NFkB_free_nuc - k_mRNA_deg_alpha*mRNA_alpha;
+  mRNA_beta' = k_transcription_beta*NFkB_free_nuc - k_mRNA_deg_beta*mRNA_beta;
+  mRNA_epsilon' = k_transcription_epsilon*NFkB_free_nuc - k_mRNA_deg_epsilon*mRNA_epsilon;
+
+  // Reactions:
+  # No explicit reactions defined as all dynamics captured by rate rules
+
+  // Species initializations:
+  IKB_alpha = IKB_alpha_0;
+  IKB_beta = IKB_beta_0;
+  IKB_epsilon = IKB_epsilon_0;
+  NFkB_free_cyt = NFkB_cyt_0;
+  NFkB_free_nuc = NFkB_nuc_0;
+  IKK_active = IKK_input;
+  Complex_alpha = 0;
+  Complex_beta = 0;
+  Complex_epsilon = 0;
+  mRNA_alpha = mRNA_alpha_0;
+  mRNA_beta = mRNA_beta_0;
+  mRNA_epsilon = mRNA_epsilon_0;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  k_s_alpha = 1;        # placeholder for IKB_alpha synthesis rate constant
+  k_s_beta = 1;         # placeholder for IKB_beta synthesis rate constant
+  k_s_epsilon = 1;      # placeholder for IKB_epsilon synthesis rate constant;
+
+  d_alpha = 0.1;        # placeholder for IKB_alpha degradation rate
+  d_beta = 0.1;         # placeholder for IKB_beta degradation rate
+  d_epsilon = 0.1;      # placeholder for IKB_epsilon degradation rate
+
+  k_phos_alpha = 1;     # phosphorylation rate by IKK for IKB_alpha
+  k_phos_beta = 1;      # phosphorylation rate by IKK for IKB_beta
+  k_phos_epsilon = 1;   # phosphorylation rate by IKK for IKB_epsilon
+
+  k_bind_alpha = 1;     # binding rate of IKB_alpha and NFkB
+  k_bind_beta = 1;      # binding rate of IKB_beta and NFkB
+  k_bind_epsilon = 1;   # binding rate of IKB_epsilon and NFkB
+
+  k_unbind_alpha = 0.1; # unbinding rate of complex alpha
+  k_unbind_beta = 0.1;  # unbinding rate of complex beta
+  k_unbind_epsilon = 0.1; # unbinding rate of complex epsilon
+
+  k_deg_complex_alpha = 1; # degradation rate of complex alpha by IKK
+  k_deg_complex_beta = 1;  # degradation rate of complex beta by IKK
+  k_deg_complex_epsilon = 1; # degradation rate of complex epsilon by IKK
+
+  k_transcription_alpha = 1;  # transcription rate of IKB_alpha mRNA induced by NFkB
+  k_transcription_beta = 1;   # transcription rate of IKB_beta mRNA induced by NFkB
+  k_transcription_epsilon = 1;# transcription rate of IKB_epsilon mRNA induced by NFkB
+
+  k_mRNA_deg_alpha = 0.1;    # degradation rate of IKB_alpha mRNA
+  k_mRNA_deg_beta = 0.1;     # degradation rate of IKB_beta mRNA
+  k_mRNA_deg_epsilon = 0.1;  # degradation rate of IKB_epsilon mRNA
+
+  k_imp = 1;                 # NFkB nuclear import rate
+  k_exp = 0.5;               # NFkB nuclear export rate
+
+  IKB_alpha_0 = 1;
+  IKB_beta_0 = 1;
+  IKB_epsilon_0 = 1;
+  NFkB_cyt_0 = 1;
+  NFkB_nuc_0 = 0;
+  mRNA_alpha_0 = 0.1;
+  mRNA_beta_0 = 0.1;
+  mRNA_epsilon_0 = 0.1;
+
+  IKK_input = 0;             # initial inactive IKK
+
+  // Other declarations:
+  var IKB_alpha, IKB_beta, IKB_epsilon, NFkB_free_cyt, NFkB_free_nuc;
+  var IKK_active, Complex_alpha, Complex_beta, Complex_epsilon;
+  var mRNA_alpha, mRNA_beta, mRNA_epsilon;
+  const cytoplasm, nucleus;
+  const k_s_alpha, k_s_beta, k_s_epsilon;
+  const d_alpha, d_beta, d_epsilon;
+  const k_phos_alpha, k_phos_beta, k_phos_epsilon;
+  const k_bind_alpha, k_bind_beta, k_bind_epsilon;
+  const k_unbind_alpha, k_unbind_beta, k_unbind_epsilon;
+  const k_deg_complex_alpha, k_deg_complex_beta, k_deg_complex_epsilon;
+  const k_transcription_alpha, k_transcription_beta, k_transcription_epsilon;
+  const k_mRNA_deg_alpha, k_mRNA_deg_beta, k_mRNA_deg_epsilon;
+  const k_imp, k_exp;
+  const IKB_alpha_0, IKB_beta_0, IKB_epsilon_0, NFkB_cyt_0, NFkB_nuc_0;
+  var IKK_input;
+
+  // Unit definitions:
+  unit substance = 1 mole;
+  unit time = 1 second;
+  unit volume = 1 litre;
+
+  // Display Names:
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  IKB_alpha is "I?B? protein";
+  IKB_beta is "I?B? protein";
+  IKB_epsilon is "I?B? protein";
+  NFkB_free_cyt is "Free NF-?B in cytoplasm";
+  NFkB_free_nuc is "Free NF-?B in nucleus";
+  IKK_active is "Active IKK kinase";
+  Complex_alpha is "I?B?-NF-?B complex";
+  Complex_beta is "I?B?-NF-?B complex";
+  Complex_epsilon is "I?B?-NF-?B complex";
+  mRNA_alpha is "I?B? mRNA";
+  mRNA_beta is "I?B? mRNA";
+  mRNA_epsilon is "I?B? mRNA";
+
+  // SBO terms:
+  model.sboTerm = SBO:0000064;  # biological model
+  IKB_alpha.sboTerm = SBO:0000252; # protein
+  IKB_beta.sboTerm = SBO:0000252;
+  IKB_epsilon.sboTerm = SBO:0000252;
+  NFkB_free_cyt.sboTerm = SBO:0000252;
+  NFkB_free_nuc.sboTerm = SBO:0000252;
+  IKK_active.sboTerm = SBO:0000450; # kinase active form
+  Complex_alpha.sboTerm = SBO:0000176; # protein complex
+  Complex_beta.sboTerm = SBO:0000176;
+  Complex_epsilon.sboTerm = SBO:0000176;
+  mRNA_alpha.sboTerm = SBO:0000276; # mRNA
+  mRNA_beta.sboTerm = SBO:0000276;
+  mRNA_epsilon.sboTerm = SBO:0000276;
+
+end

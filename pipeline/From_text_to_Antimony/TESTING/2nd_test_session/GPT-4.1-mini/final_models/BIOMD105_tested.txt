@@ -1,0 +1,179 @@
+model *Proctor2007_Ubiquitin_Proteasome_System()
+
+  // Compartments and Species:
+  compartment cell;
+  species NatP in cell, MisP in cell, Ub in cell;
+  species E1 in cell, E2 in cell, E3 in cell, DUB in cell;
+  species Proteasome in cell, ROS in cell;
+  species ATP in cell, ADP in cell, AMP in cell;
+  species E3_MisP in cell, E1_Ub in cell, E2_Ub in cell;
+  species MisP_Ub in cell;
+  species MisP_Ub2 in cell, MisP_Ub3 in cell, MisP_Ub4 in cell, MisP_Ub5 in cell, MisP_Ub6 in cell, MisP_Ub7 in cell, MisP_Ub8 in cell;
+  species MisP_Ub4_Proteasome in cell, MisP_Ub5_Proteasome in cell, MisP_Ub6_Proteasome in cell, MisP_Ub7_Proteasome in cell, MisP_Ub8_Proteasome in cell;
+  species AggP in cell, SeqAggP in cell, AggP_Proteasome in cell;
+  species degUb4 in cell, degUb5 in cell, degUb6 in cell, degUb7 in cell, degUb8 in cell;
+
+  // Reactions:
+  ProteinSynthesis:  => NatP; k1;
+  Misfolding: NatP + ROS -> MisP + ROS; k2*NatP*ROS;
+  Refolding: MisP -> NatP; k3*MisP;
+  E3Binding: E3 + MisP -> E3_MisP; k61*E3*MisP;
+  E3Unbinding: E3_MisP -> E3 + MisP; k61r*E3_MisP;
+  E1UbBinding: E1 + Ub + ATP -> E1_Ub + AMP; k62*E1*Ub*ATP/(5000+ATP);
+  E2UbBinding: E2 + E1_Ub -> E2_Ub + E1; k63*E2*E1_Ub;
+  Monoubiquitination: E2_Ub + E3_MisP -> MisP_Ub + E2 + E3; k64*E2_Ub*E3_MisP;
+  Polyubiquitination1: MisP_Ub + E2_Ub -> MisP_Ub2 + E2; k65*MisP_Ub*E2_Ub;
+  Polyubiquitination2: MisP_Ub2 + E2_Ub -> MisP_Ub3 + E2; k65*MisP_Ub2*E2_Ub;
+  Polyubiquitination3: MisP_Ub3 + E2_Ub -> MisP_Ub4 + E2; k65*MisP_Ub3*E2_Ub;
+  Polyubiquitination4: MisP_Ub4 + E2_Ub -> MisP_Ub5 + E2; k65*MisP_Ub4*E2_Ub;
+  Polyubiquitination5: MisP_Ub5 + E2_Ub -> MisP_Ub6 + E2; k65*MisP_Ub5*E2_Ub;
+  Polyubiquitination6: MisP_Ub6 + E2_Ub -> MisP_Ub7 + E2; k65*MisP_Ub6*E2_Ub;
+  Polyubiquitination7: MisP_Ub7 + E2_Ub -> MisP_Ub8 + E2; k65*MisP_Ub7*E2_Ub;
+  Deubiquitination1: MisP_Ub8 + DUB -> MisP_Ub7 + DUB + Ub; k66*DUB*MisP_Ub8;
+  Deubiquitination2: MisP_Ub7 + DUB -> MisP_Ub6 + DUB + Ub; k66*DUB*MisP_Ub7;
+  Deubiquitination3: MisP_Ub6 + DUB -> MisP_Ub5 + DUB + Ub; k66*DUB*MisP_Ub6;
+  Deubiquitination4: MisP_Ub5 + DUB -> MisP_Ub4 + DUB + Ub; k66*DUB*MisP_Ub5;
+  Deubiquitination5: MisP_Ub4 + DUB -> MisP_Ub3 + DUB + Ub; k66*DUB*MisP_Ub4;
+  Deubiquitination6: MisP_Ub3 + DUB -> MisP_Ub2 + DUB + Ub; k66*DUB*MisP_Ub3;
+  Deubiquitination7: MisP_Ub2 + DUB -> MisP_Ub + DUB + Ub; k66*DUB*MisP_Ub2;
+  Deubiquitination8: MisP_Ub + DUB -> MisP + DUB + Ub; k66*DUB*MisP_Ub;
+  ProteasomeBinding4: MisP_Ub4 + Proteasome -> MisP_Ub4_Proteasome; k67*MisP_Ub4*Proteasome;
+  ProteasomeBinding5: MisP_Ub5 + Proteasome -> MisP_Ub5_Proteasome; k67*MisP_Ub5*Proteasome;
+  ProteasomeBinding6: MisP_Ub6 + Proteasome -> MisP_Ub6_Proteasome; k67*MisP_Ub6*Proteasome;
+  ProteasomeBinding7: MisP_Ub7 + Proteasome -> MisP_Ub7_Proteasome; k67*MisP_Ub7*Proteasome;
+  ProteasomeBinding8: MisP_Ub8 + Proteasome -> MisP_Ub8_Proteasome; k67*MisP_Ub8*Proteasome;
+  DeubiquitinationBound8: MisP_Ub8_Proteasome + DUB -> MisP_Ub7_Proteasome + Ub + DUB; k68*DUB*MisP_Ub8_Proteasome;
+  DeubiquitinationBound7: MisP_Ub7_Proteasome + DUB -> MisP_Ub6_Proteasome + Ub + DUB; k68*DUB*MisP_Ub7_Proteasome;
+  DeubiquitinationBound6: MisP_Ub6_Proteasome + DUB -> MisP_Ub5_Proteasome + Ub + DUB; k68*DUB*MisP_Ub6_Proteasome;
+  DeubiquitinationBound5: MisP_Ub5_Proteasome + DUB -> MisP_Ub4_Proteasome + Ub + DUB; k68*DUB*MisP_Ub5_Proteasome;
+  DeubiquitinationBound4: MisP_Ub4_Proteasome + DUB -> MisP_Ub3 + Proteasome + Ub + DUB; k68*DUB*MisP_Ub4_Proteasome;
+  ProteasomalDissociation: MisP_Ub4_Proteasome + DUB -> MisP_Ub3 + Proteasome + DUB; kdss*DUB*MisP_Ub4_Proteasome;
+  ProteasomalDegradation4: MisP_Ub4_Proteasome + ATP -> 4 Ub + Proteasome + ADP; k69*MisP_Ub4_Proteasome*ATP/(5000+ATP);
+  ProteasomalDegradation5: MisP_Ub5_Proteasome + ATP -> 5 Ub + Proteasome + ADP; k69*MisP_Ub5_Proteasome*ATP/(5000+ATP);
+  ProteasomalDegradation6: MisP_Ub6_Proteasome + ATP -> 6 Ub + Proteasome + ADP; k69*MisP_Ub6_Proteasome*ATP/(5000+ATP);
+  ProteasomalDegradation7: MisP_Ub7_Proteasome + ATP -> 7 Ub + Proteasome + ADP; k69*MisP_Ub7_Proteasome*ATP/(5000+ATP);
+  ProteasomalDegradation8: MisP_Ub8_Proteasome + ATP -> 8 Ub + Proteasome + ADP; k69*MisP_Ub8_Proteasome*ATP/(5000+ATP);
+  Aggregation1: 2 MisP -> AggP; k71*MisP*(MisP-1)/2.0;
+  Aggregation2: MisP + AggP -> 2 AggP; k71*MisP*AggP;
+  Aggregation3: 2 MisP_Ub -> AggP; k72*MisP_Ub*(MisP_Ub-1)/2.0;
+  Aggregation4: MisP_Ub + AggP -> 2 AggP; k72*MisP_Ub*AggP;
+  Aggregation5: 2 MisP_Ub2 -> AggP; k72*MisP_Ub2*(MisP_Ub2-1)/2.0;
+  Aggregation6: MisP_Ub2 + AggP -> 2 AggP; k72*MisP_Ub2*AggP;
+  Aggregation7: 2 MisP_Ub3 -> AggP; k72*MisP_Ub3*(MisP_Ub3-1)/2.0;
+  Aggregation8: MisP_Ub3 + AggP -> 2 AggP; k72*MisP_Ub3*AggP;
+  Aggregation9: 2 MisP_Ub8 -> AggP; k72*MisP_Ub8*(MisP_Ub8-1)/2.0;
+  Aggregation10: MisP_Ub8 + AggP -> 2 AggP; k72*MisP_Ub8*AggP;
+  Aggregation11: MisP + MisP_Ub -> AggP; k72*MisP*MisP_Ub;
+  Aggregation12: MisP + MisP_Ub8 -> AggP; k72*MisP*MisP_Ub8;
+  Aggregation13: MisP_Ub7 + MisP_Ub8 -> AggP; k72*MisP_Ub7*MisP_Ub8;
+  SequesteringOfAggregates: AggP -> SeqAggP; k73*AggP;
+  ProteasomeInhibition: AggP + Proteasome -> AggP_Proteasome; k74*AggP*Proteasome;
+
+  // Species initializations:
+  NatP = 500;
+  MisP = 0;
+  Ub = 500;
+  E1 = 100;
+  E2 = 100;
+  E3 = 100;
+  DUB = 200;
+  Proteasome = 100;
+  ROS = 10;
+  ATP = 10000;
+  ADP = 1000;
+  AMP = 1000;
+  E3_MisP = 0;
+  E1_Ub = 0;
+  E2_Ub = 0;
+  MisP_Ub = 0;
+  MisP_Ub2 = 0;
+  MisP_Ub3 = 0;
+  MisP_Ub4 = 0;
+  MisP_Ub5 = 0;
+  MisP_Ub6 = 0;
+  MisP_Ub7 = 0;
+  MisP_Ub8 = 0;
+  MisP_Ub4_Proteasome = 0;
+  MisP_Ub5_Proteasome = 0;
+  MisP_Ub6_Proteasome = 0;
+  MisP_Ub7_Proteasome = 0;
+  MisP_Ub8_Proteasome = 0;
+  AggP = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+  degUb4 = 0;
+  degUb5 = 0;
+  degUb6 = 0;
+  degUb7 = 0;
+  degUb8 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 0.01;          # Protein synthesis rate (mol s^-1)
+  k2 = 2.0E-6;        # Misfolding rate (mol^-1 s^-1)
+  k3 = 4.0E-6;        # Refolding rate (s^-1)
+  k61 = 1.7E-5;       # E3/MisP binding rate (mol^-1 s^-1)
+  k61r = 2.0E-4;      # E3/MisP dissociation rate (s^-1)
+  k62 = 2.0E-4;       # E1/Ub binding rate (mol^-1 s^-1)
+  k63 = 1.0E-3;       # E2/Ub binding rate (mol^-1 s^-1)
+  k64 = 1.0E-3;       # Monoubiquitination rate (mol^-1 s^-1)
+  k65 = 1.0E-2;       # Polyubiquitination rate (mol^-1 s^-1)
+  k66 = 1.0E-5;       # Deubiquitination rate (mol^-1 s^-1)
+  k67 = 1.0E-5;       # Proteasome binding rate (mol^-1 s^-1)
+  k68 = 1.0E-5;       # Deubiquitination of proteasome-bound substrates rate (mol^-1 s^-1)
+  kdss = k68;          # Proteasomal dissociation rate (assumed equal to k68)
+  k69 = 1.0E-3;       # Proteasome activity rate (s^-1)
+  k71 = 1.0E-8;       # Aggregation rate for MisP (mol^-1 s^-1)
+  k72 = 1.0E-8;       # Aggregation rate for MisP_Ub (mol^-1 s^-1)
+  k73 = 1.0E-3;       # Sequestering aggregates rate (s^-1)
+  k74 = 1.0E-5;       # Proteasome inhibition by aggregates rate (s^-1)
+
+  // Other declarations:
+  var E3_MisP, E1_Ub, E2_Ub, MisP_Ub, MisP_Ub2, MisP_Ub3, MisP_Ub4, MisP_Ub5, MisP_Ub6, MisP_Ub7, MisP_Ub8;
+  var MisP_Ub4_Proteasome, MisP_Ub5_Proteasome, MisP_Ub6_Proteasome, MisP_Ub7_Proteasome, MisP_Ub8_Proteasome;
+  var AggP_Proteasome;
+  const NatP, MisP, Ub, E1, E2, E3, DUB, Proteasome, ROS, ATP, ADP, AMP;
+  const k1, k2, k3, k61, k61r, k62, k63, k64, k65, k66, k67, k68, kdss, k69, k71, k72, k73, k74;
+
+  // Unit definitions:
+  unit substance = 1 mole;
+  unit time_unit = 1 second;
+  unit volume = 1 litre;
+
+  // Display Names:
+  cell is "Cellular Compartment";
+  NatP is "Native Protein";
+  MisP is "Misfolded Protein";
+  Ub is "Ubiquitin";
+  E1 is "Ubiquitin Activating Enzyme (E1)";
+  E2 is "Ubiquitin Conjugating Enzyme (E2)";
+  E3 is "Ubiquitin Ligase (HECT E3)";
+  DUB is "De-ubiquitinating Enzyme";
+  Proteasome is "Proteasome";
+  ROS is "Reactive Oxygen Species";
+  ATP is "Adenosine Triphosphate";
+  ADP is "Adenosine Diphosphate";
+  AMP is "Adenosine Monophosphate";
+  E3_MisP is "E3 bound to Misfolded Protein";
+  E1_Ub is "E1 bound to Ubiquitin";
+  E2_Ub is "E2 bound to Ubiquitin";
+  MisP_Ub is "Monoubiquitinated Misfolded Protein";
+  MisP_Ub2 is "Diubiquitinated Misfolded Protein";
+  MisP_Ub3 is "Triubiquitinated Misfolded Protein";
+  MisP_Ub4 is "Tetraubiquitinated Misfolded Protein";
+  MisP_Ub5 is "Pentaubiquitinated Misfolded Protein";
+  MisP_Ub6 is "Hexaubiquitinated Misfolded Protein";
+  MisP_Ub7 is "Heptaubiquitinated Misfolded Protein";
+  MisP_Ub8 is "Octaubiquitinated Misfolded Protein";
+  MisP_Ub4_Proteasome is "Tetraubiquitinated Misfolded Protein bound to Proteasome";
+  MisP_Ub5_Proteasome is "Pentaubiquitinated Misfolded Protein bound to Proteasome";
+  MisP_Ub6_Proteasome is "Hexaubiquitinated Misfolded Protein bound to Proteasome";
+  MisP_Ub7_Proteasome is "Heptaubiquitinated Misfolded Protein bound to Proteasome";
+  MisP_Ub8_Proteasome is "Octaubiquitinated Misfolded Protein bound to Proteasome";
+  AggP is "Aggregated Protein";
+  SeqAggP is "Sequestered Aggregated Protein";
+  AggP_Proteasome is "Aggregated Protein bound to Proteasome";
+
+end

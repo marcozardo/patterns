@@ -1,0 +1,132 @@
+model *Dudziuk2019_Hsp70_Heat_Induction()
+
+  // Compartments and Species:
+  compartment Cell;
+  species HSP in Cell, HSF in Cell, S in Cell, HSP_HSF in Cell, HSP_S in Cell;
+  species HSF3 in Cell, HSE in Cell, HSE_HSF3 in Cell, mRNA in Cell, P in Cell;
+
+  // Assignment Rules:
+  V_den_T := 1 - (1 + ((T - T_0)/(T_05 - T_0))^n_V)^(-1);
+  k_11_T := k_10 * V_den_T/(1 - V_den_T);
+  k_8_T := k_8_max * (1 - 1/(1 + exp(-R_k8 * (T - T_k8))));
+  l_7_T := piecewise(l_7_37, T == 37, l_7_41, T == 41, l_7_42, T == 42, l_7_43, T == 43, l_7_44, T == 44, l_7_45, T == 45, l_7_37);
+  P_tot := P + S + HSP_S;
+  HSF_tot := HSF + HSP_HSF + 3*HSF3 + 3*HSE_HSF3;
+  HSE_tot := HSE + HSE_HSF3;
+
+  // Rate Rules:
+  T' = 0;  # Temperature can be set as constant or changed via events
+
+  // Reactions:
+  R1: 3 HSF -> HSF3; k_3*HSF^3;
+  R2: HSF3 + HSE -> HSE_HSF3; k_7*HSF3*HSE;
+  R3: HSE_HSF3 -> HSF3 + HSE; l_7_T*HSE_HSF3;
+  R4: HSE_HSF3 -> HSE_HSF3 + mRNA; k_8_T*HSE_HSF3;
+  R5: HSP + HSF3 -> HSP_HSF + 2 HSF; l_3*HSP*HSF3;
+  R6: HSP + S -> HSP_S; k_1*HSP*S;
+  R7: HSP_S -> HSP + S; l_1*HSP_S;
+  R8: HSP + HSF -> HSP_HSF; k_2*HSP*HSF;
+  R9: HSP_HSF -> HSP + HSF; l_2*HSP_HSF;
+  R10: HSP -> ; k_9*HSP;
+  R11: HSP_S -> HSP + P; k_10*HSP_S;
+  R12: P -> S; k_11_T*P;
+  R13: mRNA -> mRNA + HSP; k_4*mRNA;
+  R14: mRNA -> ; k_5*mRNA;
+  R15:  -> HSP; k_6;
+
+  // Events:
+  E1: at time >= 0: T = 37;
+  E2: at time >= heat_shock_start: T = heat_shock_temp;
+  E3: at time >= recovery_start: T = 37;
+
+  // Species initializations:
+  HSP = 52.077;
+  HSF = 1.363e-03;
+  S = 8.122e-08;
+  HSP_HSF = 1.429e-02;
+  HSP_S = 5.268e-04;
+  HSF3 = 9.082e-06;
+  HSE = 3.996e-06;
+  HSE_HSF3 = 4.484e-09;
+  mRNA = 4.946e-04;
+  P = 1.297e+03;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  k_1 = 12.6;
+  l_1 = 3.028e-03;
+  k_2 = 0.218;
+  l_2 = 1.162;
+  k_3 = 4.465e+05;
+  l_3 = 2.392;
+  k_4 = 18.85;
+  k_5 = 8.709e-04;
+  k_6 = 8.899e-02;
+  k_7 = 5.892e+03;
+  l_7_37 = 47.68;
+  l_7_41 = 1.233;
+  l_7_42 = 0.6628;
+  l_7_43 = 0.01639;
+  l_7_44 = 50.01;
+  l_7_45 = 84.27;
+  k_8_max = 96.07;
+  R_k8 = 15.93;
+  T_k8 = 42.89;
+  k_9 = 1.888e-03;
+  k_10 = 0.09813;
+  T_0 = 35.81;
+  T_05 = 47.13;
+  n_V = 6.522;
+  heat_shock_start = 60;
+  heat_shock_temp = 42;
+  recovery_start = 420;
+  T = 37;
+
+  // Other declarations:
+  var V_den_T, k_11_T, k_8_T, l_7_T, P_tot, HSF_tot, HSE_tot;
+  const Cell, k_1, l_1, k_2, l_2, k_3, l_3, k_4, k_5, k_6, k_7;
+  const l_7_37, l_7_41, l_7_42, l_7_43, l_7_44, l_7_45, k_8_max, R_k8, T_k8;
+  const k_9, k_10, T_0, T_05, n_V, heat_shock_start, heat_shock_temp, recovery_start;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "minute";
+  substance is "micromole";
+  Cell is "Cell";
+  HSP is "Heat shock proteins";
+  HSF is "Heat shock factor 1";
+  S is "Denatured proteins";
+  HSP_HSF is "HSP:HSF complexes";
+  HSP_S is "HSP:S complexes";
+  HSF3 is "HSF trimers";
+  HSE is "Heat shock elements";
+  HSE_HSF3 is "Transcriptional complexes";
+  mRNA is "Hsp70 mRNA";
+  P is "Native proteins";
+  k_11_T is "Protein denaturation rate constant";
+  k_8_T is "Transcription rate constant";
+  l_7_T is "HSE:HSF3 dissociation rate constant";
+  V_den_T is "Fraction of denatured proteins";
+  R1 is "HSF activation";
+  R2 is "HSE:HSF3 association";
+  R3 is "HSE:HSF3 dissociation";
+  R4 is "Transcription";
+  R5 is "HSF inactivation";
+  R6 is "HSP:S association";
+  R7 is "HSP:S dissociation";
+  R8 is "HSP:HSF association";
+  R9 is "HSP:HSF dissociation";
+  R10 is "HSP degradation";
+  R11 is "Protein refolding";
+  R12 is "Protein denaturation";
+  R13 is "Translation";
+  R14 is "mRNA degradation";
+  R15 is "Constitutive HSP production";
+
+end

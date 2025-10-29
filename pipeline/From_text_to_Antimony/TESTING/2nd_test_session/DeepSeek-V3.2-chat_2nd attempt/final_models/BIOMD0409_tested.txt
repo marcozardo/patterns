@@ -1,0 +1,108 @@
+model *Queralt2006_MitoticExit()
+
+  // Compartments and Species:
+  compartment nucleus;
+  species Cdc14 in nucleus, Net1 in nucleus, PP2A_Cdc55 in nucleus, Separase in nucleus, Securin in nucleus;
+  species Cdk_Clb2 in nucleus, Cdc20 in nucleus, Cdh1 in nucleus, MEN in nucleus, Polo in nucleus;
+  species Bfa1 in nucleus, Bub2 in nucleus, Sic1 in nucleus;
+
+  // Assignment Rules:
+  Net1_phospho := Cdk_Clb2 * Net1 / (K_Net1 + Net1) * (1 - PP2A_Cdc55/K_PP2A);  # Net1 phosphorylation depends on Cdk and PP2A
+  Cdc14_release := Net1_phospho * (1 - Cdc14_inhibited);  # Cdc14 release proportional to Net1 phosphorylation
+  MEN_activation := Cdc14_release * (1 - Bub2/K_Bub2) * Bfa1_phospho;  # MEN activation depends on Cdc14 and Bfa1 phosphorylation
+  Cdh1_activation := Cdc14_release / (K_Cdh1 + Cdk_Clb2);  # Cdh1 activation inversely related to Cdk activity
+
+  // Rate Rules:
+  Net1' = -k_phospho * Cdk_Clb2 * Net1 + k_dephospho * PP2A_Cdc55 * Net1_phospho;
+  PP2A_Cdc55' = -k_separase * Separase * PP2A_Cdc55 + k_basal * (1 - PP2A_Cdc55);
+  Separase' = k_securin_degradation * Cdc20 * Securin - k_separase_inactivation * Separase;
+  Cdc14' = k_release * Cdc14_release - k_sequestration * (1 - Cdc14_release) * Cdc14;
+  Cdk_Clb2' = -k_ubiquitination * Cdc20 * Cdk_Clb2 - k_ubiquitination * Cdh1 * Cdk_Clb2;
+  MEN' = k_MEN_activation * MEN_activation - k_MEN_inactivation * MEN;
+
+  // Reactions:
+  Securin_degradation: Securin => ; k_securin_degradation * Cdc20 * Securin;
+  Cohesin_cleavage: $EmptySet => $EmptySet; k_separase * Separase;  # Separase proteolytic activity
+  Cyclin_degradation: Cdk_Clb2 => ; k_ubiquitination * Cdc20 * Cdk_Clb2 + k_ubiquitination * Cdh1 * Cdk_Clb2;
+  Bfa1_phosphorylation: Bfa1 => Bfa1_P; k_polo * Polo * Bfa1 * (1 - PP2A_Cdc55/K_PP2A);
+
+  // Events:
+  Anaphase_onset: at time >= t_anaphase: Separase = Separase_max;
+  MEN_engagement: at Cdc14_release > threshold: MEN = MEN_max;
+
+  // Species initializations:
+  Cdc14 = 1.0;
+  Net1 = 1.0;
+  PP2A_Cdc55 = 1.0;
+  Separase = 0.0;
+  Securin = 1.0;
+  Cdk_Clb2 = 1.0;
+  Cdc20 = 0.1;
+  Cdh1 = 0.0;
+  MEN = 0.0;
+  Polo = 0.5;
+  Bfa1 = 1.0;
+  Bub2 = 1.0;
+  Sic1 = 0.0;
+
+  // Compartment initializations:
+  nucleus = 1.0;
+
+  // Variable initializations:
+  k_phospho = 0.5;
+  k_dephospho = 0.3;
+  k_separase = 0.7;
+  k_basal = 0.1;
+  k_securin_degradation = 0.8;
+  k_separase_inactivation = 0.2;
+  k_release = 1.0;
+  k_sequestration = 0.5;
+  k_ubiquitination = 0.6;
+  k_MEN_activation = 0.4;
+  k_MEN_inactivation = 0.3;
+  k_polo = 0.5;
+  K_Net1 = 0.5;
+  K_PP2A = 0.5;
+  K_Bub2 = 0.5;
+  K_Cdh1 = 0.5;
+  Cdc14_inhibited = 1.0;
+  Bfa1_phospho = 0.0;
+  t_anaphase = 10.0;
+  Separase_max = 1.0;
+  threshold = 0.7;
+  MEN_max = 1.0;
+
+  // Other declarations:
+  var Net1_phospho, Cdc14_release, MEN_activation, Cdh1_activation, Bfa1_phospho;
+  const nucleus, k_phospho, k_dephospho, k_separase, k_basal, k_securin_degradation;
+  const k_separase_inactivation, k_release, k_sequestration, k_ubiquitination;
+  const k_MEN_activation, k_MEN_inactivation, k_polo, K_Net1, K_PP2A, K_Bub2;
+  const K_Cdh1, Cdc14_inhibited, t_anaphase, Separase_max, threshold, MEN_max;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  nucleus is "Nucleus";
+  Cdc14 is "Cdc14 Phosphatase";
+  Net1 is "Net1/Cfi1";
+  PP2A_Cdc55 is "PP2A-Cdc55 Phosphatase";
+  Separase is "Separase/Esp1";
+  Securin is "Securin/Pds1";
+  Cdk_Clb2 is "Cdk-Clb2 Kinase";
+  Cdc20 is "Cdc20";
+  Cdh1 is "Cdh1";
+  MEN is "Mitotic Exit Network";
+  Polo is "Polo/Cdc5 Kinase";
+  Bfa1 is "Bfa1";
+  Bub2 is "Bub2";
+  Sic1 is "Sic1";
+  Securin_degradation is "Securin Degradation";
+  Cohesin_cleavage is "Cohesin Cleavage";
+  Cyclin_degradation is "Cyclin Degradation";
+  Bfa1_phosphorylation is "Bfa1 Phosphorylation";
+  Anaphase_onset is "Anaphase Onset";
+  MEN_engagement is "MEN Engagement";
+
+end

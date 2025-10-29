@@ -1,0 +1,164 @@
+model *Dwivedi2014_Multiscale_IL6_Crohns_Model()
+
+  // Compartments and Species:
+  compartment Liver, GI_tract, Serum;
+  species IL6 in Serum, sIL6R in Serum, CRP in Serum, sgp130 in Serum;
+  species IL6_sIL6R_complex in Serum, IL6_sIL6R_sgp130_complex in Serum;
+  species IL6_GI in GI_tract, pSTAT3_GI in GI_tract;
+  species IL6_Liver in Liver, pSTAT3_Liver in Liver;
+  species STAT3_GI in GI_tract, STAT3_Liver in Liver;
+  species $EmptySet in Serum, $EmptySet_GI in GI_tract, $EmptySet_Liver in Liver;
+  species Anti_IL6 in Serum, Anti_IL6R in Serum, sgp130Fc in Serum;
+
+  // Assignment Rules:
+  IL6_synthesis_total := ksynfIL6Gut + ksynfIL6Liver;
+  CRP_synthesis := kCRPSecretion * pSTAT3_Liver;
+  sIL6R_shedding := kdegSR * CRP;
+  IL6_binding_equilibrium := kon_IL6_sIL6R * IL6 * sIL6R - koff_IL6_sIL6R * IL6_sIL6R_complex;
+  trans_signaling_inhibition := kon_IL6_sIL6R_sgp130 * IL6_sIL6R_complex * sgp130 - koff_IL6_sIL6R_sgp130 * IL6_sIL6R_sgp130_complex;
+  STAT3_phosphorylation_GI := kRAct * IL6_GI * STAT3_GI;
+  STAT3_phosphorylation_Liver := kRAct * IL6_Liver * STAT3_Liver;
+  pSTAT3_dephosphorylation_GI := VmnDephos * pSTAT3_GI / (KrmDephos + pSTAT3_GI);
+  pSTAT3_dephosphorylation_Liver := VmnDephos * pSTAT3_Liver / (KrmDephos + pSTAT3_Liver);
+  gene_expression_GI := VmnProSynth * pSTAT3_GI / (KrmProSynth + pSTAT3_GI);
+  gene_expression_Liver := VmnProSynth * pSTAT3_Liver / (KrmProSynth + pSTAT3_Liver);
+
+  // Reactions:
+  IL6_synthesis: $EmptySet => IL6; ksynfIL6;
+  IL6_degradation: IL6 => $EmptySet; kdegIL6 * IL6;
+  sIL6R_synthesis: $EmptySet => sIL6R; ksynfsIL6R;
+  sIL6R_degradation: sIL6R => $EmptySet; kdegSR * sIL6R;
+  CRP_synthesis_reaction: $EmptySet => CRP; kCRPSecretion * pSTAT3_Liver;
+  CRP_degradation: CRP => $EmptySet; kdegCRP * CRP;
+  sgp130_synthesis: $EmptySet => sgp130; ksynfsgp130;
+  sgp130_degradation: sgp130 => $EmptySet; kdegsgp130 * sgp130;
+  IL6_sIL6R_binding: IL6 + sIL6R -> IL6_sIL6R_complex; kon_IL6_sIL6R * IL6 * sIL6R - koff_IL6_sIL6R * IL6_sIL6R_complex;
+  IL6_sIL6R_sgp130_binding: IL6_sIL6R_complex + sgp130 -> IL6_sIL6R_sgp130_complex; kon_IL6_sIL6R_sgp130 * IL6_sIL6R_complex * sgp130 - koff_IL6_sIL6R_sgp130 * IL6_sIL6R_sgp130_complex;
+  IL6_GI_synthesis: $EmptySet_GI => IL6_GI; ksynfIL6Gut;
+  IL6_GI_degradation: IL6_GI => $EmptySet_GI; kdegIL6 * IL6_GI;
+  STAT3_phosphorylation_GI_reaction: STAT3_GI -> pSTAT3_GI; kRAct * IL6_GI * STAT3_GI;
+  pSTAT3_dephosphorylation_GI_reaction: pSTAT3_GI -> STAT3_GI; VmnDephos * pSTAT3_GI / (KrmDephos + pSTAT3_GI);
+  IL6_Liver_synthesis: $EmptySet_Liver => IL6_Liver; ksynfIL6Liver;
+  IL6_Liver_degradation: IL6_Liver => $EmptySet_Liver; kdegIL6 * IL6_Liver;
+  STAT3_phosphorylation_Liver_reaction: STAT3_Liver -> pSTAT3_Liver; kRAct * IL6_Liver * STAT3_Liver;
+  pSTAT3_dephosphorylation_Liver_reaction: pSTAT3_Liver -> STAT3_Liver; VmnDephos * pSTAT3_Liver / (KrmDephos + pSTAT3_Liver);
+  Anti_IL6_binding: IL6 + Anti_IL6 -> IL6_Anti_IL6_complex; kon_Anti_IL6 * IL6 * Anti_IL6 - koff_Anti_IL6 * IL6_Anti_IL6_complex;
+  Anti_IL6R_binding: sIL6R + Anti_IL6R -> sIL6R_Anti_IL6R_complex; kon_Anti_IL6R * sIL6R * Anti_IL6R - koff_Anti_IL6R * sIL6R_Anti_IL6R_complex;
+  Anti_IL6_complex_binding: IL6_sIL6R_complex + Anti_IL6 -> IL6_sIL6R_Anti_IL6_complex; kon_Anti_IL6_complex * IL6_sIL6R_complex * Anti_IL6 - koff_Anti_IL6_complex * IL6_sIL6R_Anti_IL6_complex;
+  sgp130Fc_binding: IL6_sIL6R_complex + sgp130Fc -> IL6_sIL6R_sgp130Fc_complex; kon_sgp130Fc * IL6_sIL6R_complex * sgp130Fc - koff_sgp130Fc * IL6_sIL6R_sgp130Fc_complex;
+
+  // Events:
+  Anti_IL6_dosing: at time >= 0: Anti_IL6 = Anti_IL6 + dose_Anti_IL6;
+  Anti_IL6R_dosing: at time >= 0: Anti_IL6R = Anti_IL6R + dose_Anti_IL6R;
+  sgp130Fc_dosing: at time >= 0: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+
+  // Species initializations:
+  IL6 = 0.00042;
+  sIL6R = 1.6;
+  CRP = 0.04;
+  sgp130 = 3.9;
+  IL6_sIL6R_complex = 0;
+  IL6_sIL6R_sgp130_complex = 0;
+  IL6_GI = 0.00059;
+  pSTAT3_GI = 1;
+  IL6_Liver = 0.00042;
+  pSTAT3_Liver = 1;
+  STAT3_GI = 100;
+  STAT3_Liver = 100;
+  $EmptySet = 0;
+  $EmptySet_GI = 0;
+  $EmptySet_Liver = 0;
+  Anti_IL6 = 0;
+  Anti_IL6R = 0;
+  sgp130Fc = 0;
+
+  // Compartment initializations:
+  Liver = 1;
+  GI_tract = 1;
+  Serum = 1;
+
+  // Variable initializations:
+  ksynfIL6 = 0.001;
+  kdegIL6 = 0.1;
+  ksynfsIL6R = 0.01;
+  kdegSR = 0.05;
+  kCRPSecretion = 0.1;
+  kdegCRP = 0.01;
+  ksynfsgp130 = 0.05;
+  kdegsgp130 = 0.01;
+  kon_IL6_sIL6R = 1;
+  koff_IL6_sIL6R = 0.1;
+  kon_IL6_sIL6R_sgp130 = 1;
+  koff_IL6_sIL6R_sgp130 = 0.1;
+  ksynfIL6Gut = 0.002;
+  ksynfIL6Liver = 0.001;
+  kRAct = 0.1;
+  VmnDephos = 1;
+  KrmDephos = 1;
+  VmnProSynth = 1;
+  KrmProSynth = 1;
+  kint = 0.01;
+  kon_Anti_IL6 = 1;
+  koff_Anti_IL6 = 0.1;
+  kon_Anti_IL6R = 1;
+  koff_Anti_IL6R = 0.1;
+  kon_Anti_IL6_complex = 1;
+  koff_Anti_IL6_complex = 0.1;
+  kon_sgp130Fc = 1;
+  koff_sgp130Fc = 0.1;
+  kdegAnti = 0.01;
+  kdeg_sgp130Fc = 0.01;
+  dose_Anti_IL6 = 0;
+  dose_Anti_IL6R = 0;
+  dose_sgp130Fc = 0;
+
+  // Other declarations:
+  var IL6_synthesis_total, CRP_synthesis, sIL6R_shedding, IL6_binding_equilibrium;
+  var trans_signaling_inhibition, STAT3_phosphorylation_GI, STAT3_phosphorylation_Liver;
+  var pSTAT3_dephosphorylation_GI, pSTAT3_dephosphorylation_Liver;
+  var gene_expression_GI, gene_expression_Liver;
+  const Liver, GI_tract, Serum, ksynfIL6, kdegIL6, ksynfsIL6R, kdegSR, kCRPSecretion;
+  const kdegCRP, ksynfsgp130, kdegsgp130, kon_IL6_sIL6R, koff_IL6_sIL6R;
+  const kon_IL6_sIL6R_sgp130, koff_IL6_sIL6R_sgp130, ksynfIL6Gut, ksynfIL6Liver;
+  const kRAct, VmnDephos, KrmDephos, VmnProSynth, KrmProSynth, kint, kon_Anti_IL6;
+  const koff_Anti_IL6, kon_Anti_IL6R, koff_Anti_IL6R, kon_Anti_IL6_complex;
+  const koff_Anti_IL6_complex, kon_sgp130Fc, koff_sgp130Fc, kdegAnti, kdeg_sgp130Fc;
+
+  // Unit definitions:
+  unit volume = 1 litre;
+  unit time_unit = 1 hour;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  Liver is "Liver compartment";
+  GI_tract is "Gastrointestinal tract compartment";
+  Serum is "Blood serum compartment";
+  IL6 is "Interleukin-6";
+  sIL6R is "Soluble IL-6 receptor";
+  CRP is "C-reactive protein";
+  sgp130 is "Soluble gp130";
+  IL6_sIL6R_complex is "IL-6/sIL-6R complex";
+  IL6_sIL6R_sgp130_complex is "IL-6/sIL-6R/sgp130 complex";
+  IL6_GI is "IL-6 in GI tract";
+  pSTAT3_GI is "Phosphorylated STAT3 in GI tract";
+  IL6_Liver is "IL-6 in liver";
+  pSTAT3_Liver is "Phosphorylated STAT3 in liver";
+  STAT3_GI is "STAT3 in GI tract";
+  STAT3_Liver is "STAT3 in liver";
+  Anti_IL6 is "Anti-IL-6 antibody";
+  Anti_IL6R is "Anti-IL-6R antibody";
+  sgp130Fc is "sgp130Fc fusion protein";
+  IL6_synthesis is "IL-6 synthesis";
+  sIL6R_synthesis is "sIL-6R synthesis";
+  CRP_synthesis_reaction is "CRP synthesis";
+  sgp130_synthesis is "sgp130 synthesis";
+  IL6_sIL6R_binding is "IL-6/sIL-6R complex formation";
+  IL6_sIL6R_sgp130_binding is "IL-6/sIL-6R/sgp130 complex formation";
+  STAT3_phosphorylation_GI_reaction is "STAT3 phosphorylation in GI tract";
+  STAT3_phosphorylation_Liver_reaction is "STAT3 phosphorylation in liver";
+  Anti_IL6_binding is "Anti-IL-6 antibody binding";
+  Anti_IL6R_binding is "Anti-IL-6R antibody binding";
+  Anti_IL6_complex_binding is "Anti-IL-6 complex binding";
+  sgp130Fc_binding is "sgp130Fc binding";
+
+end

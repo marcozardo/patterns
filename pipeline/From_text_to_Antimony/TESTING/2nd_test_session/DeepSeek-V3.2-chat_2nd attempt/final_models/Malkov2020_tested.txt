@@ -1,0 +1,61 @@
+model *Malkov2020_COVID19_SEIRS_Reinfection()
+
+  // Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  // Assignment Rules:
+  beta := gamma*R_tilde;
+  R_tilde := (R_tilde1 + R_tilde2)/2;
+  R_tilde1 := exp(-eta1*time)*R_tilde1_0 + (1 - exp(-eta1*time))*R1_star;
+  R_tilde2 := exp(-eta2*time)*R_tilde2_0 + (1 - exp(-eta2*time))*R2_star;
+
+  // Reactions:
+  Infection: S + I => E + I; beta*S*I;
+  Progression: E => I; sigma*E;
+  Recovery: I => R; gamma*I;
+  Immunity_Loss: R => S; omega*R;
+
+  // Species initializations:
+  S = 1 - 0.001 - 0.04375;
+  E = 0.04375;
+  I = 0.001;
+  R = 0;
+
+  // Compartment initializations:
+  population = 1;
+
+  // Variable initializations:
+  sigma = 1/5.2;
+  gamma = 1/18;
+  omega = 0;
+  R_tilde1_0 = 3;
+  R_tilde2_0 = 3;
+  R1_star = 1.6;
+  R2_star = 1.6;
+  eta1 = 1/20;
+  eta2 = 1/20;
+
+  // Other declarations:
+  const population, sigma, gamma;
+  var S, E, I, R, beta, R_tilde, R_tilde1, R_tilde2;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "day";
+  population is "Total population";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant";
+  beta is "Transmission rate";
+  R_tilde is "Time-varying reproduction number";
+  R_tilde1 is "First component of reproduction number";
+  R_tilde2 is "Second component of reproduction number";
+  Infection is "Infection process";
+  Progression is "Disease progression";
+  Recovery is "Recovery process";
+  Immunity_Loss is "Immunity waning";
+end
