@@ -1,0 +1,68 @@
+model *Kimmel2021_CART_Gompertz()
+
+  // Compartments and Species:
+  compartment system;
+  species N in system, C in system, B in system;
+
+  // Assignment Rules:
+  T := N + C;
+  rC := rho_C + b*(T - K_N)^2/(a*T^2 + (T - K_N)^2);
+
+  // Rate Rules:
+  N' = -r_N*N*ln((N + C)/K_N);
+  C' = -rC*C*ln((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*(C/(k_B + C));
+
+  // Reactions:
+
+  // Events:
+
+  // Species initializations:
+  N = 3e9;
+  C = 1.8e8;
+  B = 9.486e10;
+
+  // Compartment initializations:
+  system = 1;
+
+  // Variable initializations:
+  K_N = 2.5e11;
+  K_C = 6.96e10;
+  r_N = 0.17;
+  rho_C = 0.0251;
+  a = 0.423;
+  b = 0.525;
+  r_B = 0.19;
+  gamma_B = 1.15;
+  k_B = 2.024e9;
+
+  // Other declarations:
+  var T, rC;
+  const system, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  system is "patient system (volume set to 1)";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "CD19+ tumour cells";
+  T is "Total lymphocyte count";
+  rC is "Effective CAR T net growth rate r_C(T)";
+  K_N is "Normal T cell carrying capacity (cells)";
+  K_C is "CAR T cell carrying capacity (cells)";
+  r_N is "Normal T net growth rate (per day)";
+  rho_C is "Baseline CAR T net growth rate (per day)";
+  a is "Signalling inefficiency factor in r_C";
+  b is "Immune reconstitution impact in r_C (per day)";
+  r_B is "Tumour net growth rate (per day)";
+  gamma_B is "Max tumour-killing rate by CAR T (per day)";
+  k_B is "Killing rate saturation parameter (cells)";
+  time_unit is "day (1 day = 86400 s)";
+  substance is "item";
+
+  // SBO terms:
+
+end

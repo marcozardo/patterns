@@ -1,0 +1,75 @@
+model *Malkov2020_SEIRS_Reinfection()
+
+  // Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  // Assignment Rules:
+  R_tilde := 0.5*(R1 + R2);
+  beta := gamma_*R_tilde;
+
+  // Rate Rules:
+  S' = -(beta*(S/N))*I + omega*R;
+  E' = (beta*(S/N))*I - sigma*E;
+  I' = sigma*E - gamma_*I;
+  R' = gamma_*I - omega*R;
+  R1' = -eta1*(R1 - R1_star);
+  R2' = -eta2*(R2 - R2_star);
+
+  // Reactions:
+
+  // Events:
+  one_time_reinfection: at (time >= t_star): S = S + R, R = 0;
+
+  // Species initializations:
+  I = 1/1000;
+  E = 43.75*I;
+  R = 0;
+  S = 1 - E - I - R;
+
+  // Compartment initializations:
+  population = 1;
+
+  // Variable initializations:
+  N = 1;
+  sigma = 1/5.2;
+  gamma_ = 1/18;
+  omega = 0;
+  R1 = 3;
+  R2 = 3;
+  R1_star = 1.6;
+  R2_star = 1.6;
+  eta1 = 1/20;
+  eta2 = 1/20;
+  t_star = 120;
+
+  // Other declarations:
+  var R_tilde, beta, R1, R2;
+  const population, N, sigma, gamma_, omega, R1_star, R2_star, eta1, eta2, t_star;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  population is "Population (normalized to 1)";
+  S is "Susceptible fraction";
+  E is "Exposed fraction";
+  I is "Infected fraction";
+  R is "Resistant (recovered) fraction";
+  beta is "Transmission rate beta(t)";
+  R_tilde is "Time-varying reproduction number R~(t)";
+  R1 is "Component R~_1(t)";
+  R2 is "Component R~_2(t)";
+  R1_star is "Long-run value R1*";
+  R2_star is "Long-run value R2*";
+  eta1 is "Convergence rate eta1";
+  eta2 is "Convergence rate eta2";
+  sigma is "Incubation rate (1/latent period)";
+  gamma_ is "Recovery rate (1/infectious period)";
+  omega is "Immunity waning rate";
+  t_star is "One-time reinfection time t* (days)";
+  one_time_reinfection is "One-time reinfection event";
+
+  // SBO terms:
+end

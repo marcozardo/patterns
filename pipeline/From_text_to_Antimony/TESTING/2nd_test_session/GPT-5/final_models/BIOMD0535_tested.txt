@@ -1,0 +1,217 @@
+model *Dwivedi2014_IL6_Crohns_Multiscale()
+
+  // Compartments and Species:
+  compartment Serum, Liver, GI;
+  species IL6_serum in Serum, sIL6R_serum in Serum, sgp130_serum in Serum;
+  species IL6_sIL6R_serum in Serum, IL6_sIL6R_sgp130_serum in Serum, CRP_serum in Serum;
+  species STAT3_Liver in Liver, pSTAT3_Liver in Liver;
+  species IL6_GI in GI, STAT3_GI in GI, pSTAT3_GI in GI;
+  species anti_IL6_Ab_serum in Serum, anti_IL6_Ab_liver in Liver, anti_IL6_Ab_GI in GI;
+  species anti_IL6R_Ab_serum in Serum, anti_IL6R_Ab_liver in Liver, anti_IL6R_Ab_GI in GI;
+  species AntiIL6_IL6_serum in Serum, AntiIL6_Complex_serum in Serum, AntiIL6R_sIL6R_serum in Serum;
+
+  // Assignment Rules:
+  v_CRPsynth := Vmax_CRPsynth*pSTAT3_Liver/(Km_CRPsynth + pSTAT3_Liver);  # Michaelis?Menten: pSTAT3-driven CRP production
+  v_Shed := k_shed*CRP_serum + k_syn_sIL6R_basal;                         # sIL-6R production: basal + CRP-mediated shedding
+  Signal_GI := k_sig1_GI*IL6_GI + k_sig2_GI*IL6_sIL6R_serum;             # Effective IL-6 signaling drive in GI (classical + trans)
+  Signal_Liver := k_sig1_Liver*IL6_serum + k_sig2_Liver*IL6_sIL6R_serum; # Effective IL-6 signaling drive in Liver (classical + trans)
+  v_phos_GI := Vmax_phos_GI*Signal_GI/(Kact_GI + Signal_GI);              # Reduced MM activation term
+  v_dephos_GI := Vmax_dephos_GI*pSTAT3_GI/(Km_dephos_GI + pSTAT3_GI);     # MM dephosphorylation
+  v_phos_Liver := Vmax_phos_Liver*Signal_Liver/(Kact_Liver + Signal_Liver);
+  v_dephos_Liver := Vmax_dephos_Liver*pSTAT3_Liver/(Km_dephos_Liver + pSTAT3_Liver);
+
+  // Rate Rules:
+  # (none explicitly specified beyond reactions)
+
+  // Reactions:
+  # IL-6 binding and sequestration in serum
+  R1_bind_IL6_sIL6R: IL6_serum + sIL6R_serum -> IL6_sIL6R_serum; k_on_cplx*IL6_serum*sIL6R_serum - k_off_cplx*IL6_sIL6R_serum;
+  R2_sequester_sgp130: IL6_sIL6R_serum + sgp130_serum -> IL6_sIL6R_sgp130_serum; k_on_sgp*IL6_sIL6R_serum*sgp130_serum - k_off_sgp*IL6_sIL6R_sgp130_serum;
+  R3_clear_sequestered: IL6_sIL6R_sgp130_serum => ; k_deg_complex*IL6_sIL6R_sgp130_serum;
+
+  # Basal production and degradation, transport/exchange
+  U1_IL6_GI_prod:  => IL6_GI; k_syn_IL6_GI;
+  U2_IL6_GI_deg: IL6_GI => ; k_deg_IL6_GI*IL6_GI;
+  U3_IL6_transport_GI_to_Serum: IL6_GI => IL6_serum; k_tr_GI_to_Serum*IL6_GI;
+  U4_IL6_transport_Serum_to_GI: IL6_serum => IL6_GI; k_tr_Serum_to_GI*IL6_serum;
+  U5_sIL6R_prod:  => sIL6R_serum; v_Shed;
+  U6_sIL6R_deg: sIL6R_serum => ; k_deg_sIL6R*sIL6R_serum;
+  U7_sgp130_prod:  => sgp130_serum; k_syn_sgp130;
+  U8_sgp130_deg: sgp130_serum => ; k_deg_sgp130*sgp130_serum;
+  U9_CRP_prod_Liver_to_Serum:  => CRP_serum; v_CRPsynth;
+  U10_CRP_deg: CRP_serum => ; k_deg_CRP*CRP_serum;
+
+  # Reduced STAT3 phosphorylation cycles (GI and Liver)
+  S1_phos_GI: STAT3_GI => pSTAT3_GI; v_phos_GI;
+  S2_dephos_GI: pSTAT3_GI => STAT3_GI; v_dephos_GI;
+  S3_phos_Liver: STAT3_Liver => pSTAT3_Liver; v_phos_Liver;
+  S4_dephos_Liver: pSTAT3_Liver => STAT3_Liver; v_dephos_Liver;
+
+  # Antibody PK: distribution and clearance (generic target-mediated disposition structure)
+  D1_dist_antiIL6_S_to_L: anti_IL6_Ab_serum => anti_IL6_Ab_liver; k_dist_S_to_L*anti_IL6_Ab_serum;
+  D2_dist_antiIL6_L_to_S: anti_IL6_Ab_liver => anti_IL6_Ab_serum; k_dist_L_to_S*anti_IL6_Ab_liver;
+  D3_dist_antiIL6_S_to_GI: anti_IL6_Ab_serum => anti_IL6_Ab_GI; k_dist_S_to_GI*anti_IL6_Ab_serum;
+  D4_dist_antiIL6_GI_to_S: anti_IL6_Ab_GI => anti_IL6_Ab_serum; k_dist_GI_to_S*anti_IL6_Ab_GI;
+  D5_cl_antiIL6_S: anti_IL6_Ab_serum => ; k_cl_antiIL6*anti_IL6_Ab_serum;
+
+  E1_bind_antiIL6_IL6: anti_IL6_Ab_serum + IL6_serum -> AntiIL6_IL6_serum; k_on_antiIL6_IL6*anti_IL6_Ab_serum*IL6_serum - k_off_antiIL6_IL6*AntiIL6_IL6_serum;
+  E2_bind_antiIL6_complex: anti_IL6_Ab_serum + IL6_sIL6R_serum -> AntiIL6_Complex_serum; k_on_antiIL6_Complex*anti_IL6_Ab_serum*IL6_sIL6R_serum - k_off_antiIL6_Complex*AntiIL6_Complex_serum;
+  E3_clear_antiIL6_complex1: AntiIL6_IL6_serum => ; k_deg_antiIL6_complex*AntiIL6_IL6_serum;
+  E4_clear_antiIL6_complex2: AntiIL6_Complex_serum => ; k_deg_antiIL6_complex*AntiIL6_Complex_serum;
+
+  D6_dist_antiIL6R_S_to_L: anti_IL6R_Ab_serum => anti_IL6R_Ab_liver; k_dist_S_to_L*anti_IL6R_Ab_serum;
+  D7_dist_antiIL6R_L_to_S: anti_IL6R_Ab_liver => anti_IL6R_Ab_serum; k_dist_L_to_S*anti_IL6R_Ab_liver;
+  D8_dist_antiIL6R_S_to_GI: anti_IL6R_Ab_serum => anti_IL6R_Ab_GI; k_dist_S_to_GI*anti_IL6R_Ab_serum;
+  D9_dist_antiIL6R_GI_to_S: anti_IL6R_Ab_GI => anti_IL6R_Ab_serum; k_dist_GI_to_S*anti_IL6R_Ab_GI;
+  D10_cl_antiIL6R_S: anti_IL6R_Ab_serum => ; k_cl_antiIL6R*anti_IL6R_Ab_serum;
+
+  E5_bind_antiIL6R_sIL6R: anti_IL6R_Ab_serum + sIL6R_serum -> AntiIL6R_sIL6R_serum; k_on_antiIL6R_sIL6R*anti_IL6R_Ab_serum*sIL6R_serum - k_off_antiIL6R_sIL6R*AntiIL6R_sIL6R_serum;
+  E6_clear_antiIL6R_complex: AntiIL6R_sIL6R_serum => ; k_deg_antiIL6R_complex*AntiIL6R_sIL6R_serum;
+
+  // Events:
+  Dose0: at time >= 0: anti_IL6_Ab_serum = anti_IL6_Ab_serum + Dose_IL6_Ab, anti_IL6R_Ab_serum = anti_IL6R_Ab_serum + Dose_IL6R_Ab;
+  Dose1: at time >= 672: anti_IL6_Ab_serum = anti_IL6_Ab_serum + Dose_IL6_Ab, anti_IL6R_Ab_serum = anti_IL6R_Ab_serum + Dose_IL6R_Ab;   # 4 weeks in hours
+  Dose2: at time >= 1344: anti_IL6_Ab_serum = anti_IL6_Ab_serum + Dose_IL6_Ab, anti_IL6R_Ab_serum = anti_IL6R_Ab_serum + Dose_IL6R_Ab; # 8 weeks in hours
+
+  // Species initializations:
+  IL6_serum = 0.0004;             # ~4e-4 nmol/l (~10 pg/ml)
+  sIL6R_serum = 7.8;              # ~390 ng/ml (MW ~50 kDa)
+  sgp130_serum = 3;               # ~300 ng/ml (MW ~100 kDa)
+  IL6_sIL6R_serum = 0;
+  IL6_sIL6R_sgp130_serum = 0;
+  CRP_serum = 40;                 # ~1 mg/l (MW ~25 kDa)
+  STAT3_Liver = 1;
+  pSTAT3_Liver = 0;
+  IL6_GI = 0.00059;               # ~14 pg/ml in gut
+  STAT3_GI = 1;
+  pSTAT3_GI = 1;                  # gut pSTAT3 baseline (au)
+  anti_IL6_Ab_serum = 0;
+  anti_IL6_Ab_liver = 0;
+  anti_IL6_Ab_GI = 0;
+  anti_IL6R_Ab_serum = 0;
+  anti_IL6R_Ab_liver = 0;
+  anti_IL6R_Ab_GI = 0;
+  AntiIL6_IL6_serum = 0;
+  AntiIL6_Complex_serum = 0;
+  AntiIL6R_sIL6R_serum = 0;
+
+  // Compartment initializations:
+  Serum = 1;    # litre
+  Liver = 1;    # litre
+  GI = 1;       # litre
+
+  // Variable initializations:
+  k_on_cplx = 1;              # l/(nmol*hr)
+  k_off_cplx = 0.1;           # 1/hr
+  k_on_sgp = 1;               # l/(nmol*hr)
+  k_off_sgp = 0.1;            # 1/hr
+  k_deg_complex = 0.01;       # 1/hr
+
+  k_syn_IL6_GI = 1e-4;        # nmol/(l*hr)
+  k_deg_IL6_GI = 0.1;         # 1/hr
+  k_tr_GI_to_Serum = 0.01;    # 1/hr
+  k_tr_Serum_to_GI = 0.01;    # 1/hr
+
+  k_syn_sIL6R_basal = 0.1;    # nmol/(l*hr)
+  k_shed = 0.01;              # 1/hr per nmol/l CRP
+  k_deg_sIL6R = 0.05;         # 1/hr
+
+  k_syn_sgp130 = 0.01;        # nmol/(l*hr)
+  k_deg_sgp130 = 0.005;       # 1/hr
+
+  Vmax_CRPsynth = 10;         # nmol/(l*hr)
+  Km_CRPsynth = 1;            # nmol/l
+  k_deg_CRP = 0.05;           # 1/hr
+
+  k_sig1_GI = 1;              # 1
+  k_sig2_GI = 1;              # 1
+  k_sig1_Liver = 1;           # 1
+  k_sig2_Liver = 1;           # 1
+
+  Vmax_phos_GI = 0.5;         # nmol/(l*hr)
+  Kact_GI = 1;                # nmol/l
+  Vmax_dephos_GI = 0.5;       # nmol/(l*hr)
+  Km_dephos_GI = 1;           # nmol/l
+
+  Vmax_phos_Liver = 0.5;      # nmol/(l*hr)
+  Kact_Liver = 1;             # nmol/l
+  Vmax_dephos_Liver = 0.5;    # nmol/(l*hr)
+  Km_dephos_Liver = 1;        # nmol/l
+
+  k_dist_S_to_L = 0.1;        # 1/hr
+  k_dist_L_to_S = 0.05;       # 1/hr
+  k_dist_S_to_GI = 0.1;       # 1/hr
+  k_dist_GI_to_S = 0.05;      # 1/hr
+  k_cl_antiIL6 = 0.01;        # 1/hr
+  k_cl_antiIL6R = 0.01;       # 1/hr
+
+  k_on_antiIL6_IL6 = 1;       # l/(nmol*hr)
+  k_off_antiIL6_IL6 = 0.1;    # 1/hr
+  k_on_antiIL6_Complex = 1;   # l/(nmol*hr)
+  k_off_antiIL6_Complex = 0.1;# 1/hr
+  k_deg_antiIL6_complex = 0.01;# 1/hr
+
+  k_on_antiIL6R_sIL6R = 1;    # l/(nmol*hr)
+  k_off_antiIL6R_sIL6R = 0.1; # 1/hr
+  k_deg_antiIL6R_complex = 0.01; # 1/hr
+
+  Dose_IL6_Ab = 0;            # nmol/l per dose (set >0 to simulate dosing)
+  Dose_IL6R_Ab = 0;           # nmol/l per dose
+
+  // Other declarations:
+  var v_CRPsynth, v_Shed, Signal_GI, Signal_Liver, v_phos_GI, v_dephos_GI, v_phos_Liver, v_dephos_Liver;
+  const Serum, Liver, GI;
+  const k_on_cplx, k_off_cplx, k_on_sgp, k_off_sgp, k_deg_complex;
+  const k_syn_IL6_GI, k_deg_IL6_GI, k_tr_GI_to_Serum, k_tr_Serum_to_GI;
+  const k_syn_sIL6R_basal, k_shed, k_deg_sIL6R, k_syn_sgp130, k_deg_sgp130;
+  const Vmax_CRPsynth, Km_CRPsynth, k_deg_CRP;
+  const k_sig1_GI, k_sig2_GI, k_sig1_Liver, k_sig2_Liver;
+  const Vmax_phos_GI, Kact_GI, Vmax_dephos_GI, Km_dephos_GI;
+  const Vmax_phos_Liver, Kact_Liver, Vmax_dephos_Liver, Km_dephos_Liver;
+  const k_dist_S_to_L, k_dist_L_to_S, k_dist_S_to_GI, k_dist_GI_to_S, k_cl_antiIL6, k_cl_antiIL6R;
+  const k_on_antiIL6_IL6, k_off_antiIL6_IL6, k_on_antiIL6_Complex, k_off_antiIL6_Complex, k_deg_antiIL6_complex;
+  const k_on_antiIL6R_sIL6R, k_off_antiIL6R_sIL6R, k_deg_antiIL6R_complex;
+  const Dose_IL6_Ab, Dose_IL6R_Ab;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = 1e-9 mole;       # nmol
+  unit time_unit = 3600 second;     # hour
+
+  // Display Names:
+  Serum is "Circulation (Serum)";
+  Liver is "Liver";
+  GI is "Gastrointestinal tract";
+  IL6_serum is "IL-6 (serum)";
+  sIL6R_serum is "sIL-6R (serum)";
+  sgp130_serum is "sgp130 (serum)";
+  IL6_sIL6R_serum is "IL-6:sIL-6R (serum)";
+  IL6_sIL6R_sgp130_serum is "IL-6:sIL-6R:sgp130 (serum)";
+  CRP_serum is "C-reactive protein (serum)";
+  STAT3_Liver is "STAT3 (liver)";
+  pSTAT3_Liver is "pSTAT3 (liver)";
+  IL6_GI is "IL-6 (GI)";
+  STAT3_GI is "STAT3 (GI)";
+  pSTAT3_GI is "pSTAT3 (GI)";
+  anti_IL6_Ab_serum is "Anti-IL-6 antibody (serum)";
+  anti_IL6_Ab_liver is "Anti-IL-6 antibody (liver)";
+  anti_IL6_Ab_GI is "Anti-IL-6 antibody (GI)";
+  anti_IL6R_Ab_serum is "Anti-IL-6R antibody (serum)";
+  anti_IL6R_Ab_liver is "Anti-IL-6R antibody (liver)";
+  anti_IL6R_Ab_GI is "Anti-IL-6R antibody (GI)";
+  AntiIL6_IL6_serum is "Anti-IL-6:IL-6 complex (serum)";
+  AntiIL6_Complex_serum is "Anti-IL-6:IL-6:sIL-6R complex (serum)";
+  AntiIL6R_sIL6R_serum is "Anti-IL-6R:sIL-6R complex (serum)";
+  R1_bind_IL6_sIL6R is "IL-6 binds sIL-6R";
+  R2_sequester_sgp130 is "sgp130 sequesters IL-6:sIL-6R";
+  U9_CRP_prod_Liver_to_Serum is "CRP production (liver to serum)";
+  S1_phos_GI is "STAT3 phosphorylation (GI)";
+  S3_phos_Liver is "STAT3 phosphorylation (liver)";
+  Dose0 is "IV dose at week 0";
+  Dose1 is "IV dose at week 4";
+  Dose2 is "IV dose at week 8";
+
+  // SBO terms:
+  # (no explicit SBO annotations provided)
+
+end

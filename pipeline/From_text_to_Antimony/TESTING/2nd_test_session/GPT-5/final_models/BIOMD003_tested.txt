@@ -1,0 +1,73 @@
+model *Goldbeter1991_Minimal_Mitotic_Oscillator()
+
+  // Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  // Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  // Rate Rules:
+  C' = vi - vd*X*C/(Kd + C) - kd*C;
+  M' = V1*(1 - M)/(K1 + (1 - M)) - V2*M/(K2 + M);
+  X' = V3*(1 - X)/(K3 + (1 - X)) - V4*X/(K4 + X);
+
+  // Reactions:
+
+  // Events:
+
+  // Species initializations:
+  C = 0;
+  M = 0;
+  X = 0.01;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  vi = 0.023;     # ?M/min
+  vd = 0.1;       # ?M/min
+  kd = 0;         # 1/min
+  Kd = 0.02;      # ?M
+  Kc = 0.3;       # ?M
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+  VM1 = 0.5;      # 1/min
+  V2  = 0.167;    # 1/min
+  VM3 = 0.2;      # 1/min
+  V4  = 0.1;      # 1/min
+
+  // Other declarations:
+  var V1, V3, C, M, X;
+  const cell, vi, vd, kd, Kd, Kc, K1, K2, K3, K4, VM1, V2, VM3, V4;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration = 1e-6 mole/litre;
+
+  // Display Names:
+  time_unit is "minute (default)";
+  concentration is "micromolar (default)";
+  cell is "cell";
+  C is "Cyclin concentration";
+  M is "Active cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  vi is "Cyclin synthesis rate";
+  vd is "Max protease-mediated cyclin degradation rate";
+  kd is "Nonspecific cyclin degradation rate constant";
+  Kd is "Michaelis constant for cyclin degradation";
+  Kc is "Michaelis constant for cyclin activation of E1";
+  K1 is "Reduced Michaelis constant for E1 (cdc2 phosphatase)";
+  K2 is "Reduced Michaelis constant for E2 (cdc2 kinase)";
+  K3 is "Reduced Michaelis constant for E3 (cdc2-dependent protease activation)";
+  K4 is "Reduced Michaelis constant for E4 (protease phosphatase)";
+  VM1 is "Max rate of E1 (cdc2 phosphatase)";
+  V2 is "Effective max rate of E2 (cdc2 kinase)";
+  VM3 is "Max rate of E3 (cdc2-dependent protease activation)";
+  V4 is "Effective max rate of E4 (protease phosphatase)";
+  V1 is "Effective max rate for cdc2 activation";
+  V3 is "Effective max rate for protease activation";
+end

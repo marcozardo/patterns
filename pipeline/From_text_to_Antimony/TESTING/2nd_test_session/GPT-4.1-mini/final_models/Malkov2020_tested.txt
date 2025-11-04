@@ -1,0 +1,126 @@
+model *Malkov2020_COVID19_SEIRS_with_Reinfection()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, E in compartment_, I in compartment_, R in compartment_;
+  species Sp in compartment_, Ss in compartment_, Ep in compartment_, Es in compartment_;
+  species Ip in compartment_, Is in compartment_, R2 in compartment_;
+
+  // Assignment Rules:
+  N := 1;
+  Rt := (Rt1 + Rt2)/2;
+  beta := gamma*Rt;
+
+  // Rate Rules:
+  S' = -beta*S*I + omega*R;
+  E' = beta*S*I - sigma*E;
+  I' = sigma*E - gamma*I;
+  R' = gamma*I - omega*R;
+
+  Sp' = - (beta_p*Ip + beta_s*Is)*Sp;
+  Ss' = - (beta_p*Ip + beta_s*Is)*Ss + omega*R2;
+  Ep' = (beta_p*Ip + beta_s*Is)*Sp - sigma_p*Ep;
+  Es' = (beta_p*Ip + beta_s*Is)*Ss - sigma_s*Es;
+  Ip' = sigma_p*Ep - gamma_p*Ip;
+  Is' = sigma_s*Es - gamma_s*Is;
+  R2' = gamma_p*Ip + gamma_s*Is - omega*R2;
+
+  Rt1' = -eta1*(Rt1 - R1_star);
+  Rt2' = -eta2*(Rt2 - R2_star);
+
+  // Reactions:
+  // No explicit reactions, dynamics given by rate rules.
+
+  // Events:
+  at (time == tstar1): S = S + R; R = 0;
+  at (time == tstar2): S = S + R; R = 0;
+
+  // Species initializations:
+  S = 1 - E0 - I0 - R0;
+  E = E0;
+  I = I0;
+  R = R0;
+
+  Sp = 1 - Ep0 - Ip0 - Ss0 - Es0 - Is0 - R20;
+  Ss = Ss0;
+  Ep = Ep0;
+  Es = Es0;
+  Ip = Ip0;
+  Is = Is0;
+  R2 = R20;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  sigma = 1/5.2;
+  gamma = 1/18;
+  omega = 0;      # immunity waning rate (can be varied, e.g., 0, 1/365, 1/183, 1/120, 1/60)
+  beta_p = 1/6;   # primary transmission rate, corresponds to R0=3.0 baseline
+  beta_s = beta_p/2;
+  sigma_p = sigma;
+  sigma_s = sigma;
+  gamma_p = gamma;
+  gamma_s = 2*gamma;
+  eta1 = 0.0;     # rate of change for Rt1, can be varied for mitigation speed
+  eta2 = 0.0;     # rate of change for Rt2
+  R1_star = 1.6;  # long-run reproduction number for Rt1
+  R2_star = 1.6;  # long-run reproduction number for Rt2
+  Rt1 = 3.0;      # initial Rt1
+  Rt2 = 3.0;      # initial Rt2
+  tstar1 = 120;   # reinfection time threshold 1 (days)
+  tstar2 = 30;    # reinfection time threshold 2 (days)
+
+  E0 = 0.04375 * 0.001;  # initial exposed fraction (43.75 * I0)
+  I0 = 0.001;            # initial infected fraction
+  R0 = 0;                # initial recovered fraction
+
+  Ep0 = 0.04375 * 0.001; # initial primary exposed fraction
+  Ip0 = 0.001;           # initial primary infected fraction
+  Ss0 = 0;               # initial secondary susceptible fraction
+  Es0 = 0;               # initial secondary exposed fraction
+  Is0 = 0;               # initial secondary infected fraction
+  R20 = 0;               # initial recovered fraction for second infection group
+
+  // Other declarations:
+  var Rt, Rt1, Rt2;
+  var S, E, I, R;
+  var Sp, Ss, Ep, Es, Ip, Is, R2;
+  const compartment_, sigma, gamma, omega, beta_p, beta_s, sigma_p, sigma_s, gamma_p, gamma_s;
+  const eta1, eta2, R1_star, R2_star, tstar1, tstar2;
+  const E0, I0, R0, Ep0, Ip0, Ss0, Es0, Is0, R20;
+
+  // Unit definitions:
+  unit substance = 1;
+  unit time_unit = day;
+  unit volume = 1;
+
+  // Display Names:
+  compartment_ is "Population (normalized)";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infectious";
+  R is "Recovered";
+  Sp is "Primary Susceptible";
+  Ss is "Secondary Susceptible";
+  Ep is "Primary Exposed";
+  Es is "Secondary Exposed";
+  Ip is "Primary Infectious";
+  Is is "Secondary Infectious";
+  R2 is "Recovered (secondary)";
+  Rt is "Effective reproduction number";
+  Rt1 is "Reproduction number component 1";
+  Rt2 is "Reproduction number component 2";
+  sigma is "Incubation rate";
+  gamma is "Recovery rate";
+  omega is "Immunity waning rate";
+  beta_p is "Primary transmission rate";
+  beta_s is "Secondary transmission rate";
+  eta1 is "Mitigation speed parameter 1";
+  eta2 is "Mitigation speed parameter 2";
+  R1_star is "Long-run reproduction number 1";
+  R2_star is "Long-run reproduction number 2";
+  tstar1 is "Reinfection time threshold 1";
+  tstar2 is "Reinfection time threshold 2";
+
+end

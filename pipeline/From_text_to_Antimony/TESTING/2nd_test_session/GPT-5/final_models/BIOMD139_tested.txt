@@ -1,0 +1,123 @@
+model *Hoffmann2002_NFkB_Module()
+
+  // Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species $EmptySet in cytoplasm;
+  species NFkB_c in cytoplasm, IkBa in cytoplasm, IkBb in cytoplasm, IkBe in cytoplasm;
+  species IkBa_NFkB in cytoplasm, IkBb_NFkB in cytoplasm, IkBe_NFkB in cytoplasm;
+  species NFkB_n in nucleus;
+
+  // Assignment Rules:
+  IKK := piecewise(IKK_on, (time >= ton) && (time < toff), IKK_base);  # stimulus-controlled IKK activity (pulse from ton to toff)
+
+  // Rate Rules:
+
+  // Reactions:
+  # Cytoplasmic binding/unbinding (inhibition) of NF-kB by I?B isoforms
+  R_bind_a: NFkB_c + IkBa -> IkBa_NFkB; cytoplasm*(k_bind_a*NFkB_c*IkBa - k_unbind_a*IkBa_NFkB);
+  R_bind_b: NFkB_c + IkBb -> IkBb_NFkB; cytoplasm*(k_bind_b*NFkB_c*IkBb - k_unbind_b*IkBb_NFkB);
+  R_bind_e: NFkB_c + IkBe -> IkBe_NFkB; cytoplasm*(k_bind_e*NFkB_c*IkBe - k_unbind_e*IkBe_NFkB);
+
+  # IKK-driven phosphorylation and proteolysis of I?B in complexes, releasing NF-kB
+  R_deg_cplx_a: IkBa_NFkB => NFkB_c; cytoplasm*k_deg_cplx_a*IKK*IkBa_NFkB;
+  R_deg_cplx_b: IkBb_NFkB => NFkB_c; cytoplasm*k_deg_cplx_b*IKK*IkBb_NFkB;
+  R_deg_cplx_e: IkBe_NFkB => NFkB_c; cytoplasm*k_deg_cplx_e*IKK*IkBe_NFkB;
+
+  # Constitutive turnover of free I?B isoforms
+  R_deg_free_a: IkBa => ; cytoplasm*k_deg_free_a*IkBa;
+  R_deg_free_b: IkBb => ; cytoplasm*k_deg_free_b*IkBb;
+  R_deg_free_e: IkBe => ; cytoplasm*k_deg_free_e*IkBe;
+
+  # NF-kB nucleocytoplasmic shuttling
+  R_transloc: NFkB_c -> NFkB_n; k_import*NFkB_c - k_export*NFkB_n;
+
+  # NF-kB?induced synthesis of I?B isoforms (negative feedback)
+  R_syn_a: $EmptySet => IkBa; cytoplasm*(k_basal_a + k_syn_a*NFkB_n);
+  R_syn_b: $EmptySet => IkBb; cytoplasm*(k_basal_b + k_syn_b*NFkB_n);
+  R_syn_e: $EmptySet => IkBe; cytoplasm*(k_basal_e + k_syn_e*NFkB_n);
+
+  // Events:
+
+  // Species initializations:
+  EmptySet = 0;
+  NFkB_c = 0;
+  NFkB_n = 0;
+  IkBa = 100;
+  IkBb = 100;
+  IkBe = 100;
+  IkBa_NFkB = 100;
+  IkBb_NFkB = 50;
+  IkBe_NFkB = 50;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  ton = 0;        # stimulation onset time
+  toff = 15;      # stimulation offset time (pulse duration)
+  IKK_base = 0;   # basal IKK activity
+  IKK_on = 1;     # stimulated IKK activity
+
+  k_bind_a = 0.01;
+  k_unbind_a = 0.001;
+  k_bind_b = 0.01;
+  k_unbind_b = 0.001;
+  k_bind_e = 0.01;
+  k_unbind_e = 0.001;
+
+  k_deg_cplx_a = 0.1;
+  k_deg_cplx_b = 0.08;
+  k_deg_cplx_e = 0.08;
+
+  k_deg_free_a = 0.001;
+  k_deg_free_b = 0.001;
+  k_deg_free_e = 0.001;
+
+  k_import = 0.5;
+  k_export = 0.1;
+
+  k_basal_a = 0.01;
+  k_basal_b = 0.01;
+  k_basal_e = 0.01;
+
+  k_syn_a = 0.1;
+  k_syn_b = 0.05;
+  k_syn_e = 0.05;
+
+  // Other declarations:
+  var IKK;
+  const cytoplasm, nucleus, ton, toff, IKK_base, IKK_on;
+  const k_bind_a, k_unbind_a, k_bind_b, k_unbind_b, k_bind_e, k_unbind_e;
+  const k_deg_cplx_a, k_deg_cplx_b, k_deg_cplx_e, k_deg_free_a, k_deg_free_b, k_deg_free_e;
+  const k_import, k_export, k_basal_a, k_basal_b, k_basal_e, k_syn_a, k_syn_b, k_syn_e;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+
+  // Display Names:
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  NFkB_c is "NF-kB (cytoplasm)";
+  NFkB_n is "NF-kB (nucleus)";
+  IkBa is "IkB-alpha";
+  IkBb is "IkB-beta";
+  IkBe is "IkB-epsilon";
+  IkBa_NFkB is "IkB-alpha:NF-kB complex";
+  IkBb_NFkB is "IkB-beta:NF-kB complex";
+  IkBe_NFkB is "IkB-epsilon:NF-kB complex";
+  IKK is "IKK activity";
+  R_bind_a is "Binding of NF-kB by IkB-alpha";
+  R_bind_b is "Binding of NF-kB by IkB-beta";
+  R_bind_e is "Binding of NF-kB by IkB-epsilon";
+  R_deg_cplx_a is "IKK-mediated degradation of IkB-alpha in complex";
+  R_deg_cplx_b is "IKK-mediated degradation of IkB-beta in complex";
+  R_deg_cplx_e is "IKK-mediated degradation of IkB-epsilon in complex";
+  R_deg_free_a is "Constitutive degradation of IkB-alpha";
+  R_deg_free_b is "Constitutive degradation of IkB-beta";
+  R_deg_free_e is "Constitutive degradation of IkB-epsilon";
+  R_transloc is "NF-kB nucleocytoplasmic shuttling";
+  R_syn_a is "NF-kB?induced synthesis of IkB-alpha";
+  R_syn_b is "NF-kB?induced synthesis of IkB-beta";
+  R_syn_e is "NF-kB?induced synthesis of IkB-epsilon";
+end

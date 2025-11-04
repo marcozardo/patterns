@@ -9,7 +9,7 @@ shell.executable("powershell.exe")
 
 # info to provide on each test:
 onstart:
-    print("In rule 'evaluation table' remind to log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=")
+    print("In rule 'evaluation table' remind to log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=\n")
 
 Papers = glob_wildcards("workdir/inputs/{text}.md").text
 original_paper = glob_wildcards("workdir/expected_output/or{antimony}.txt").antimony
@@ -32,11 +32,10 @@ rule conversion:
         "workdir/fabric_output/{sample}.txt"
 
     shell:
-        "Type {input} | fabric -p Antimony_Converter > {output}"
+        "Type {input} | fabric -t 0.2 -p Antimony_Converter > {output}; Start-Sleep -Seconds 1.5"
         
-        
-#"Type {input} | fabric -p Antimony_Converter > {output}]" 
-#Get-Content {input} | fabric -p Antimony_Converter | Set-Content {output}
+# PS command for GPT models (like gpt-5) : Type {input} | fabric -t 1 -T 1 -p Antimony_Converter > {output}; Start-Sleep -Seconds 1.5
+# PS command for claude models (like claude-sonnet-4.*) : Type {input} | fabric -t 0.2 -p Antimony_Converter > {output}; Start-Sleep -Seconds 1.5
 
 rule first_decode:
     input:
@@ -93,8 +92,10 @@ rule first_correction:
         corrected_model = "workdir/corrected/{sample}_1C.txt"
 
     shell:
-        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -p Antimony_Editor > {output.corrected_model}" 
+        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 0.2 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5" 
 
+# PS command for GPT models (like gpt-5) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 1 -T 1 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5
+# PS command for claude models (like claude-sonnet-4.*) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 0.2 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5
 
 rule second_decode:
    input:
@@ -150,8 +151,10 @@ rule second_correction:
         corrected_model = "workdir/corrected/{sample}_2C.txt"
 
     shell:
-        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -p Antimony_Editor > {output.corrected_model}" 
- 
+        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 0.2 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5" 
+
+# PS command for GPT models (like gpt-5) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 1 -T 1 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5
+# PS command for claude models (like claude-sonnet-4.*) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 0.2 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5 
 
 rule third_decode:
     input:

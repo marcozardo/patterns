@@ -1,0 +1,159 @@
+model *Queralt2006_MitoticExit_BuddingYeast()
+
+  // Compartments and Species:
+  compartment cell;
+  species $EmptySet in cell;
+  species Clb2 in cell, Cdc20 in cell, Securin in cell;
+  species Net1 in cell, Net1_P in cell;
+  species Cdc14 in cell, Cdc14_Net1 in cell;
+  species Cdh1_i in cell, Cdh1_a in cell;
+  species MEN_i in cell, MEN in cell;
+  species Bfa1 in cell, Bfa1_P in cell;
+
+  // Assignment Rules:
+  Cdk := Clb2;  # proxy for Clb2-Cdk activity
+  Sep_active := Sep_total/(1 + Securin/K_sec);  # separase activity increases as securin declines
+  PP2A_eff := PP2A_base/(1 + k_sep_pp2a*Sep_active);  # separase-dependent downregulation of PP2A^Cdc55
+
+  // Rate Rules:
+
+  // Reactions:
+  # APC^Cdc20-dependent securin degradation frees separase
+  R_sec_deg: Securin => ; cell*k_apc20_sec*Cdc20*Securin;
+
+  # Cyclin (Clb2) turnover: synthesis and APC-mediated degradation (Cdc20 and Cdh1)
+  R_clb2_syn: $EmptySet => Clb2; cell*k_syn_clb2;
+  R_clb2_deg: Clb2 => ; cell*(k_apc20_clb2*Cdc20*Clb2 + k_cdh1_clb2*Cdh1_a*Clb2);
+
+  # Cdc20 synthesis induction (simulation starts with deprivation, then induced)
+  R_cdc20_syn: $EmptySet => Cdc20; cell*ksyn_Cdc20;
+  R_cdc20_deg: Cdc20 => ; cell*k_deg_cdc20*Cdc20;
+
+  # Net1 phosphorylation (by Cdk and MEN) and dephosphorylation (by PP2A^Cdc55 and Cdc14)
+  R_net1_phos: Net1 -> Net1_P; cell*(k_cdk_net1*Cdk*Net1 + k_men_net1*MEN*Net1);
+  R_net1_deph: Net1_P -> Net1; cell*(k_pp2a_net1*PP2A_eff*Net1_P + k_cdc14_net1*Cdc14*Net1_P);
+
+  # Cdc14 release from and resequestration to Net1
+  R_cdc14_release: Cdc14_Net1 -> Cdc14; cell*k_release*Cdc14_Net1*Net1_P;
+  R_cdc14_bind: Cdc14 -> Cdc14_Net1; cell*k_bind*Cdc14*Net1;
+
+  # Cdh1 activation by Cdc14 and inhibition by Cdk
+  R_cdh1_act: Cdh1_i -> Cdh1_a; cell*k_act_cdh1*Cdc14*Cdh1_i;
+  R_cdh1_inact: Cdh1_a -> Cdh1_i; cell*k_inact_cdh1*Cdk*Cdh1_a;
+
+  # MEN activation by Cdc14 and Bfa1 phosphorylation state; inhibition by high Cdk
+  R_men_act: MEN_i -> MEN; cell*(k_act_men*Cdc14*MEN_i + k_bfa1_men*Bfa1_P*MEN_i);
+  R_men_inh: MEN -> MEN_i; cell*k_inh_men*Cdk*MEN;
+
+  # Bfa1 phosphorylation by Polo (Cdc5) and dephosphorylation by PP2A^Cdc55
+  R_bfa1_phos: Bfa1 -> Bfa1_P; cell*k_polo_bfa1*Cdc5*Bfa1;
+  R_bfa1_deph: Bfa1_P -> Bfa1; cell*k_bfa1_deph*PP2A_eff*Bfa1_P;
+
+  // Events:
+  _E0: at time >= t_on: ksyn_Cdc20 = ksyn_Cdc20_on;  # induction of Cdc20 synthesis at anaphase onset
+
+  // Species initializations:
+  EmptySet = 0;
+  Clb2 = 1;
+  Cdc20 = 0;
+  Securin = 1;
+  Net1 = 1;
+  Net1_P = 0;
+  Cdc14 = 0;
+  Cdc14_Net1 = 1;
+  Cdh1_i = 1;
+  Cdh1_a = 0;
+  MEN_i = 1;
+  MEN = 0;
+  Bfa1 = 1;
+  Bfa1_P = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  # Kinetic parameters (generic placeholders)
+  k_apc20_sec = 1;
+  k_syn_clb2 = 0.0;
+  k_apc20_clb2 = 1;
+  k_cdh1_clb2 = 1;
+  k_deg_cdc20 = 0.1;
+  k_cdk_net1 = 1;
+  k_men_net1 = 0.5;
+  k_pp2a_net1 = 1;
+  k_cdc14_net1 = 1;
+  k_release = 1;
+  k_bind = 1;
+  k_act_cdh1 = 1;
+  k_inact_cdh1 = 1;
+  k_act_men = 1;
+  k_bfa1_men = 0.5;
+  k_inh_men = 0.5;
+  k_polo_bfa1 = 1;
+  k_bfa1_deph = 1;
+
+  # Modulators and baseline activities
+  Sep_total = 1;
+  K_sec = 0.5;
+  k_sep_pp2a = 1;
+  PP2A_base = 1;
+  Cdc5 = 1;
+
+  # Induction controls
+  ksyn_Cdc20 = 0;
+  ksyn_Cdc20_on = 0.2;
+  t_on = 0;
+
+  // Other declarations:
+  var Cdk, Sep_active, PP2A_eff, ksyn_Cdc20;
+  const cell, k_apc20_sec, k_syn_clb2, k_apc20_clb2, k_cdh1_clb2, k_deg_cdc20;
+  const k_cdk_net1, k_men_net1, k_pp2a_net1, k_cdc14_net1, k_release, k_bind;
+  const k_act_cdh1, k_inact_cdh1, k_act_men, k_bfa1_men, k_inh_men;
+  const k_polo_bfa1, k_bfa1_deph, Sep_total, K_sec, k_sep_pp2a, PP2A_base, Cdc5;
+  const ksyn_Cdc20_on, t_on;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  cell is "Cell";
+  substance is "item (default)";
+  time_unit is "minute (default)";
+  Clb2 is "Mitotic cyclin (Clb2)";
+  Cdc20 is "APC activator Cdc20";
+  Securin is "Pds1/securin";
+  Cdk is "Clb2-Cdk activity";
+  Sep_active is "Active separase";
+  Net1 is "Net1 (unphosphorylated)";
+  Net1_P is "Net1-P (phosphorylated)";
+  PP2A_eff is "PP2A^Cdc55 effective activity";
+  Cdc14 is "Cdc14 (released)";
+  Cdc14_Net1 is "Cdc14 bound to Net1 (nucleolar)";
+  Cdh1_i is "Cdh1 (inactive)";
+  Cdh1_a is "Cdh1 (active)";
+  MEN_i is "Mitotic Exit Network (inactive)";
+  MEN is "Mitotic Exit Network (active)";
+  Bfa1 is "Bfa1 (unphosphorylated)";
+  Bfa1_P is "Bfa1 (phosphorylated)";
+  Cdc5 is "Polo kinase (Cdc5)";
+  R_sec_deg is "Securin degradation by APC^Cdc20";
+  R_clb2_syn is "Clb2 synthesis";
+  R_clb2_deg is "Clb2 degradation (APC^Cdc20/APC^Cdh1)";
+  R_cdc20_syn is "Cdc20 synthesis";
+  R_cdc20_deg is "Cdc20 degradation";
+  R_net1_phos is "Net1 phosphorylation (Cdk, MEN)";
+  R_net1_deph is "Net1 dephosphorylation (PP2A^Cdc55, Cdc14)";
+  R_cdc14_release is "Cdc14 release from Net1";
+  R_cdc14_bind is "Cdc14 resequestration to Net1";
+  R_cdh1_act is "Cdh1 activation by Cdc14";
+  R_cdh1_inact is "Cdh1 inhibition by Cdk";
+  R_men_act is "MEN activation (Cdc14, Bfa1_P)";
+  R_men_inh is "MEN inhibition by Cdk";
+  R_bfa1_phos is "Bfa1 phosphorylation by Polo (Cdc5)";
+  R_bfa1_deph is "Bfa1 dephosphorylation by PP2A^Cdc55";
+  _E0 is "Cdc20 induction at t=0";
+
+  // SBO terms:
+
+end

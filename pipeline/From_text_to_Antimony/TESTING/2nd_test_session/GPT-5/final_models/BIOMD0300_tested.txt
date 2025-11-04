@@ -1,0 +1,92 @@
+model *Schmierer2010_FIH_HIF_FullModel_Simplified()
+
+  // Compartments and Species:
+  compartment compartment_;
+
+  // Assignment Rules:
+  HOH_hat := Htot_hat - H_hat;                                   # CAD-hydroxylated HIF? (dimensionless)
+  AOH_hat := A_tot_hat - A_hat;                                   # Hydroxylated AR repeats (dimensionless)
+  nu_p := kcatp_hat*Ptot_hat/(KDp_hat + Htot_hat)*(O2_tilde/(1 + O2_tilde));                              # PHD-dependent ODD-hydroxylation rate (dimensionless)
+  nu_FH := kcatFH_hat*Ftot_hat/(KDFH_hat + H_hat)*(O2_tilde/(alpha + O2_tilde));                          # FIH-dependent HIF? CAD-hydroxylation rate (dimensionless)
+  nu_FA := kcatFA_hat*Ftot_hat/(KDFA_hat + A_hat)*(O2_tilde/(alpha + O2_tilde));                          # FIH-dependent AR hydroxylation rate (dimensionless)
+  HRE_CAD := H_hat/(KDHRE_hat + Htot_hat);                         # Fraction (probability) of HRE bound by non-CAD-hydroxylated HIF?
+  HRE_CADOH := HOH_hat/(KDHRE_hat + Htot_hat);                     # Fraction (probability) of HRE bound by CAD-hydroxylated HIF?
+  HRE_any := (H_hat + HOH_hat)/(KDHRE_hat + Htot_hat);             # Fraction (probability) of HRE bound by any HIF? form
+  kappa := A_tot_hat/KDFA_hat;                                     # Sequestration capacity (SKM2)
+  F_free := 1/(1 + kappa*A_hat);                                   # Free FIH fraction (SKM2)
+
+  // Rate Rules:
+  Htot_hat' = 1 - Htot_hat*(1 + nu_p);                             # d?_tot/d? = 1 - ?_tot(1 + ?_p)
+  H_hat' = 1 - H_hat*(1 + nu_p + nu_FH);                           # d?/d? = 1 - ?(1 + ?_p + ?_FH)
+  A_hat' = (A_tot_hat - A_hat*(1 + epsilon*nu_FA))/epsilon;        # ? d?/d? = ?_tot - ?(1 + ??_FA)
+
+  // Reactions:
+
+  // Events:
+
+  // Species initializations:
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Htot_hat = 0;            # initial total HIF? (dimensionless, scaled to H_tot^max)
+  H_hat = 0;               # initial non-CAD-hydroxylated HIF? (dimensionless)
+  A_hat = 100;             # initial unhydroxylated AR repeats (dimensionless)
+
+  Ptot_hat = 0.2;          # total PHD (dimensionless)
+  Ftot_hat = 1;            # total FIH (dimensionless)
+  KDp_hat = 1;             # dissociation constant PHD/HIF? (dimensionless)
+  KDFH_hat = 1;            # dissociation constant FIH/HIF? (dimensionless)
+  KDFA_hat = 1;            # dissociation constant FIH/ARD (dimensionless)
+  kcatp_hat = 500;         # catalytic term for ODD-hydroxylation scaled by basal HIF? degradation
+  kcatFH_hat = 500;        # catalytic term for HIF? CAD-hydroxylation
+  kcatFA_hat = 500;        # catalytic term for AR hydroxylation
+  alpha = 0.33;            # KM^F / KM^P (oxygen Michaelis ratio)
+  A_tot_hat = 100;         # total FIH target AR repeats (dimensionless)
+  epsilon = 5;             # timescale ratio (? k_d^H / k_d^A)
+  KDHRE_hat = 0.3;         # dissociation constant of HIF/HRE (dimensionless)
+  O2_tilde = 0.1;          # oxygen relative to KM^P (dimensionless)
+
+  // Other declarations:
+  var Htot_hat, H_hat, A_hat;
+  var HOH_hat, AOH_hat, nu_p, nu_FH, nu_FA, HRE_CAD, HRE_CADOH, HRE_any, kappa, F_free;
+  const compartment_, Ptot_hat, Ftot_hat, KDp_hat, KDFH_hat, KDFA_hat, kcatp_hat, kcatFH_hat, kcatFA_hat;
+  const alpha, A_tot_hat, epsilon, KDHRE_hat, O2_tilde;
+
+  // Unit definitions:
+  unit time_unit = 1 second;
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "well-mixed compartment";
+  Htot_hat is "Total HIF? (dimensionless, ?_tot)";
+  H_hat is "Non-CAD-hydroxylated HIF? (dimensionless, ?)";
+  HOH_hat is "CAD-hydroxylated HIF? (dimensionless, ?^OH)";
+  A_hat is "Unhydroxylated AR repeats (dimensionless, ?)";
+  AOH_hat is "Hydroxylated AR repeats (dimensionless, ?^OH)";
+  nu_p is "PHD-dependent ODD-hydroxylation rate (?_p)";
+  nu_FH is "FIH-dependent HIF? CAD-hydroxylation rate (?_FH)";
+  nu_FA is "FIH-dependent AR hydroxylation rate (?_FA)";
+  HRE_CAD is "HRE occupancy by non-CAD-hydroxylated HIF?";
+  HRE_CADOH is "HRE occupancy by CAD-hydroxylated HIF?";
+  HRE_any is "HRE occupancy by any HIF?";
+  Ptot_hat is "Total PHD (?-independent, dimensionless)";
+  Ftot_hat is "Total FIH (?-independent, dimensionless)";
+  KDp_hat is "K_D of PHD/HIF? (dimensionless)";
+  KDFH_hat is "K_D of FIH/HIF? (dimensionless)";
+  KDFA_hat is "K_D of FIH/ARD (dimensionless)";
+  kcatp_hat is "Scaled kcat for ODD-hydroxylation";
+  kcatFH_hat is "Scaled kcat for HIF? CAD-hydroxylation";
+  kcatFA_hat is "Scaled kcat for AR hydroxylation";
+  alpha is "KM^F / KM^P for oxygen (?)";
+  A_tot_hat is "Total FIH-target AR repeats (?_tot)";
+  epsilon is "Timescale ratio ? ? k_d^H / k_d^A";
+  KDHRE_hat is "K_D for HIF/HRE binding (dimensionless)";
+  O2_tilde is "Oxygen relative to KM^P (?2)";
+  kappa is "Sequestration capacity ? = ?_tot / K_D^FA";
+  F_free is "Free FIH fraction (SKM2)";
+  time_unit is "time";
+
+  // SBO terms:
+end
