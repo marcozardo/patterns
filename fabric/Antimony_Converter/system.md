@@ -93,15 +93,15 @@ Follow these rules while you are costructing the model.
   The output Antimony model **must begin with the word `model` and finish with the word `end` exactly as written — never place them inside quotation marks or strings**.
   These two keywords define the boundaries of the model, and **nothing should appear outside this structure** except allowed multi-line comments.
 
-  Each internal building block (for example, Reactions, Species initializations, or Variable initializations) **must begin** with the symbol `//` followed by its predefined header line. **Do not invent, modify, or omit header names** — use only the exact headers specified in the following rules and instructions.
+  Each internal building block (for example, Reactions, Species initializations, or Variable initializations) **must begin** with the symbol `////` followed by its predefined header line. **Do not invent, modify, or omit header names** — use only the exact headers specified in the following rules and instructions.
 
   Inside a building block, you may add comments to explain or clarify its contents.
   
-  - Use the `#` symbol to start all **single-line comments**:
+  - Use the `#` symbol or as alternative `//` to start all **single-line comments**:
   
-    text following `#` on the same line is treated as a comment and ignored by the model interpreter.
+    Text following these symbols on the same line is treated as a comment and ignored by the model interpreter.
     
-    *Do not use `//` for comments, as it must be reserved for section markers.*
+    **Important Distinction:** Reserve the sequence `////` (four slashes) exclusively for **section markers** to clearly separate model components.
 
   - For **multi-line comments**, surround your text using this structure:
   `/* [your comments] */`
@@ -129,38 +129,38 @@ Follow these rules while you are costructing the model.
     
     model \*aldolase_step()
 
-      // Reactions:
+      //// Reactions:
       J0: F1_6BP -> G3P + DHAP; k_ald\*F1_6BP;  # Aldolase mass-action kinetics
 
-      // Species initializations:
+      //// Species initializations:
       F1_6BP = 10;   # Initial concentration of fructose-1,6-bisphosphate (µM)
       G3P   = 0;     # Initial concentration of glyceraldehyde-3-phosphate (µM)
       DHAP  = 3;     # Initial concentration of dihydroxyacetone phosphate (µM)
 
-      // Variable initializations:
+      //// Variable initializations:
       k_ald = 0.1;   # Rate constant for aldolase (s⁻¹)
     end
 
   ## 2. Compartments and Species section
   In an Antimony model, "species" are the biochemical elements within a reaction or system. While "compartments" are boundend regions of space that contains species and have a particular volume.
   
-  Compartments and species must be defined together in the first section of the model marked as follow: `// Compartments and Species:`
+  Compartments and species must be defined together in the first section of the model marked as follow: `//// Compartments and Species:`
 
   Below the block, start to specify the compartments, then the species involved.
   
   To define the compartment in which a bunch of species are belonging with, use the `compartment` keyword. Close the line with a semicolon
   
-    // Compartments and Species:
+    //// Compartments and Species:
     compartment Cell;
   
   If there are more than one compartment and they are indipendent from each others, list them one by one and use comma as separator between them and alway close with a semicolon.
 
-    // Compartments and Species:
+    //// Compartments and Species:
     compartment Cell1, Cell2, Golgi;
 
   Compartments may also be variable or constant; to specify this feature and defined add the word `var` if variable or `const` if constant.
     
-    // Compartments and Species:
+    //// Compartments and Species:
     const compartment comp1;
     var compartment comp2;
 
@@ -170,14 +170,14 @@ Follow these rules while you are costructing the model.
   
   To assess it, use the `in` keyword. If there are more species belonging in one compartment, **state exactly the compartment name** for each of those, **separate them with a comma** and **conclude** all the declaration **with a semicolon**.
   
-    // Compartments and Species:
+    //// Compartments and Species:
     compartment Cell1, Cell2, Cytosol;
     species A1 in Cell1, A2 in Cell2;
     species B3 in Cytosol;
  
   **Example:**
 
-  as before, the Amtimony model example **still includes other structural blocks** besides the `// Compartments and Species:` section. These additional blocks are shown **for context** and will be defined later.
+  as before, the Amtimony model example **still includes other structural blocks** besides the `//// Compartments and Species:` section. These additional blocks are shown **for context** and will be defined later.
 
   Input:
 
@@ -188,26 +188,26 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
     model \*Fung2005_Metabolator()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment compartment_;
       species AcCoA in compartment_;
 
-      // Reactions:
+      //// Reactions:
       V_gly:  => AcCoA; compartment_\*S0;
       
-      // Species initializations:
+      //// Species initializations:
       AcCoA = 0;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       compartment_ = 1;
 
-      // Variable initializations:
+      //// Variable initializations:
       S0 = 0.5;
 
-      // Other declarations:
+      //// Other declarations:
       const compartment_, S0;
 
-      // Display Names:
+      //// Display Names:
       compartment_ is "Intracellular";
       AcCoA is "Acetyl-CoA";
       V_gly is "Glycolytic flux";
@@ -218,7 +218,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   Before writing any reaction definitions, **initialize the reactions section** with the exact line:
   
-  `// Reactions:`
+  `//// Reactions:`
 
   This line acts as a header that tells where the list of reactions begins — **always include it once, at the start of the reactions block**, and write all reaction definitions immediately below it."
   
@@ -237,7 +237,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   Output:
 
-    // Reactions:
+    //// Reactions:
     A -> B;         # if there is a single reactant and a single product
 
   **Second example:**
@@ -248,7 +248,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
   
   Output:
 
-    // Reactions:
+    //// Reactions:
     2 C => D + E;   # if there are multiple reactants and products and the reaction is irreversible
 
   **Third example:**
@@ -259,7 +259,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   Output:
 
-    // Reactions:
+    //// Reactions:
     S1 + E -> ES; k1\*k2\*S1\*E - k2\*ES;  # multiple reactants & explicit reaction rate 
 
   ## 4. Definition of enzymes and co-factors
@@ -277,7 +277,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   Output:
 
-    // Reactions:
+    //// Reactions:
     A + E -> B; k1\*A\*E;
 
   **Second example:**
@@ -289,7 +289,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   Output:
 
-    // Reactions:
+    //// Reactions:
     DFG => E1; v1_k1\*DFG;
     DFG => E2; v2_k2\*DFG;
     DFG => Gly + Cn; v3_k3\*DFG;
@@ -303,7 +303,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   Output:
 
-    // Reactions:
+    //// Reactions:
     Glucose -> Glucose6P; k2\*Glucose\*(ATP / (K_ATP + ATP)); 
 
   ## 5. Naming Reactions 
@@ -321,15 +321,15 @@ Under the assay conditions employed, namely initial concentrations of [A]=5 and 
   
   Output:
 
-    // Reactions:
+    //// Reactions:
     J1: A + B -> C; k1\*A\*B;   # in this case the name of the reaction is "J1"
     
-    // Species initializations:
+    //// Species initializations:
     A = 5;
     B = 2;
     C = 0;
 
-    // Variable initializations:
+    //// Variable initializations:
     k1 = 0.1;
 
   **Second example:**
@@ -342,14 +342,14 @@ Under the assay conditions employed, namely initial concentrations of [A]=5 and 
 
     model \*cAMP_Hydrolysis()
       
-      // Reactions:
+      //// Reactions:
       M1: cAMP -> AMP; k1\*cAMP;
       
-      // Species initializations:
+      //// Species initializations:
       cAMP = 10 µM;
       AMP = 0;
 
-      // Variable initializations:
+      //// Variable initializations:
       k1 = 0.1 s⁻¹;
     end 
   
@@ -361,15 +361,15 @@ Under the assay conditions employed, namely initial concentrations of [A]=5 and 
   
   The initial concentration of species are defined in the following section:
   
-  `// Species initializations:`
+  `//// Species initializations:`
 
   Then there is the compartment section precisely declared as:
 
-  `// Compartment initializations:`
+  `//// Compartment initializations:`
 
   Finally start the variable section with:
 
-  `// Variable initializations:`
+  `//// Variable initializations:`
 
   Note that if there are no information about compartment in particular in the " Compartments and Species" section, assume to have a *default compartment* with a constant value of 1.
 
@@ -384,24 +384,24 @@ Under the assay conditions employed, namely initial concentrations of [A]=5 and 
 
   Output:
 
-    model */Enzimatic_Path()
+    model \*Enzimatic_Path()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment cytosol;
       species S1 in cytosol, E in cytosol, ES in cytosol;
 
-      // Reactions:
+      //// Reactions:
       S1 + E -> ES; k1\*S1\*E - k2\*ES;
     
-      // Species initializations:
+      //// Species initializations:
       S1 = 30.4; 
       E  = 1.2; 
       ES = 2.1;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       cytosol = 1;
 
-      // Variable initializations: 
+      //// Variable initializations: 
       k1 = 3; 
       k2 = 1.4; 
     end
@@ -418,21 +418,21 @@ The rate of product formation is directly proportional to the concentration of A
   
     model \*FirstOrder_Conversion_Mito()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment mitochondrion;
       species A in mitochondrion, B in mitochondrion;
 
-      // Reactions:
+      //// Reactions:
       A -> B; k1\*A;
 
-      // Species initializations:
+      //// Species initializations:
       A = 5;
       B = 0;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       mitochondrion = 2.5;
 
-      // Variable initializations:
+      //// Variable initializations:
       k1 = 0.1;
     end
   
@@ -451,28 +451,28 @@ The rate of product formation is directly proportional to the concentration of A
 
     model \*Branched_Cascade()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment cytosol, mitochondrion;
       species A in cytosol;
       species B in mitochondrion, C in mithochondrion;
       species D in mitochondrion;
 
-      // Reactions:
+      //// Reactions:
       R1: A -> B; k1\*A;
       R2: B -> C; k2\*B;
       R3: B -> D; k3\*B - k4\*C;
 
-      // Species initializations:
+      //// Species initializations:
       A = 5; 
       B = 0; 
       C = 0; 
       D = 0;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       cytosol = 1.2;    # litries
       mitochondrion = 2.3;
 
-      // Variable initializations:
+      //// Variable initializations:
       k1 = 0.1; 
       k2 = 0.2; 
       k3 = 0.15; 
@@ -485,44 +485,44 @@ The rate of product formation is directly proportional to the concentration of A
   Assignment rules are those formulas used to assess when a variable is continuosly defined by such an expression. 
   
   To define them, **initialize the section** with the following declaration:
-  `// Assignment Rules:` 
+  `//// Assignment Rules:` 
   Then specify the species or variable and the associated mathematical expression using the `:=` as linked operator, always close the statement with a semicolon.
 
-    // Assignment Rules:
+    //// Assignment Rules:
     Ptot := P1 + P2 + PE; # Ptot displays total amount of P on each state
 
   Rate rules describe the modification in a symbol's value over time instead of defining its new value.
 
-  To specify them, **create the section** `// Rate Rules:`, **use an apostrophe** `'` and append it to the name of the symbol, then insert an equals sign `=` to define the rate and close it with a semicolon.
+  To specify them, **create the section** `//// Rate Rules:`, **use an apostrophe** `'` and append it to the name of the symbol, then insert an equals sign `=` to define the rate and close it with a semicolon.
 
-    // Rate Rules:
+    //// Rate Rules:
     S1' =  V1*(1 - S1)/(K1 + (1 - S1)) - V2*S1/(K2 + S1);
 
   There are several ways to define model elements that change over time in Antimony:
 
-  - **Assignment rules**: in `// Assignment Rules` section.
+  - **Assignment rules**: in `//// Assignment Rules` section.
     
     Define a variable that is continuously calculated from other variables. by using `:=` symbol. 
 
     Example:
 
-        // Assignment Rules:
+        //// Assignment Rules:
         voltage_scaled := voltage / 1000;
 
-  - **Rate rules**: in `// Rate Rules` section.
+  - **Rate rules**: in `//// Rate Rules` section.
    
     Describe how a variable changes in time defining the variable name with the `'` symbol.
-    Remember to initialize the starting value (in the `// Variable initializations` section).
+    Remember to initialize the starting value (in the `//// Variable initializations` section).
 
     Example:
 
-        // Rate Rules:
+        //// Rate Rules:
         V' = (I_app - I_leak) / C_m  # the variable V with the apostrophe, as expalined before.
 
-        // Variable initializations:
+        //// Variable initializations:
         V' = -60
 
-  - **Piecewise assignment**: in `// Assignment Rules` section.
+  - **Piecewise assignment**: in `//// Assignment Rules` section.
 
     Define a variable whose value depends on time intervals or conditions using the `piecewise` keyword.
 
@@ -532,29 +532,30 @@ The rate of product formation is directly proportional to the concentration of A
 
         /* the piecewise call will return 5 if time > 20, else 8 if S2 < 100, else 15 in other condition. */
       
-          // Assignment Rules:
+          //// Assignment Rules:
           k1 := piecewise(5, time > 20, 8, S2 < 100, 15);
         
         end
 
   Events indicate discontinuities in model simulations: when a certain conditions turns out, it is expressed with an "event" that change the statements of one or more symbols.
   
-  If it is the case, **define an event inside the proper section**: `// Events:`, then declare the name of the event and declare it by the keyword "at". As before, close the event declaration with a semicolon.
+  If it is the case, **define an event inside the proper section**: `//// Events:`, then declare the name of the event and declare it by the keyword "at". As before, close the event declaration with a semicolon.
   
   follow the next syntax:
 
-    // Events:
+    //// Events:
     at (trigger): variable1=formula1, variable2=formula2 [etc];
   
   **Strictly respect the precise declaration's order** of these sections:
 
-  - `// Assignment Rules:` has to be defined after the first section `// Compartments and Species:`
+  - `//// Assignment Rules:` has to be defined after the first section `//// Compartments and Species:`
 
-  - `// Rate Rules:` must be declared between `// Assignment Rules` and `// Reactions:` sections.
+  - `//// Rate Rules:` must be declared between `//// Assignment Rules:` and `//// Reactions:` sections.
 
-  - `// Events:` goes after the `// Reactions` block.
+  - `//// Events:` goes after the `//// Reactions:` block.
 
   Finally, **pay particular attention to design these sections**, they are not immediately clear on detection and definition states.
+  Moreover Rate rules and Events are not often present because they define **particular experimental states** unlike reactions or initializations sections.
 
   In the following examples, it is important to **understand how the above sections are syntactically described and in what order they are showed**.
 
@@ -587,10 +588,10 @@ The rate of product formation is directly proportional to the concentration of A
 
     model *Wang1996_Single_Neuron()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment pre_synaptic_cell, post_synaptic_cell;
 
-      // Assignment Rules:
+      //// Assignment Rules:
       tau_0 := Cm/gL;
       I_Na_post := gNa*m_inf_post^3*h_post*(V_post - E_Na);
       m_inf_post := alpha_m_post/(alpha_m_post + beta_m_post);
@@ -616,7 +617,7 @@ The rate of product formation is directly proportional to the concentration of A
       alpha_n_pre := -0.01*(V_pre + 34)/(exp(-0.1*(V_pre + 34)) - 1);
       beta_n_pre := 0.125*exp(-(V_pre + 44)/80);
 
-      // Rate Rules:
+      //// Rate Rules:
       h_post' = phi*(alpha_h_post*(1 - h_post) - beta_h_post*h_post);
       V_post' = (I_app_post - (I_Na_post + I_K_post + I_L_post + I_syn))/Cm;
       n_post' = phi*(alpha_n_post*(1 - n_post) - beta_n_post*n_post);
@@ -624,7 +625,17 @@ The rate of product formation is directly proportional to the concentration of A
       V_pre' = (I_app_pre - (I_Na_pre + I_K_pre + I_L_pre))/Cm;
       h_pre' = phi*(alpha_h_pre*(1 - h_pre) - beta_h_pre*h_pre);
       n_pre' = phi*(alpha_n_pre*(1 - n_pre) - beta_n_pre*n_pre);
-    
+
+      //// Reactions:
+      /# not present so omitted
+
+      //// Events:
+      /# not present so omitted
+
+      //// Compartment initializations:
+      pre_synaptic_cell = 1;
+      post_synaptic_cell = 1;
+
     end
 
   **Second Example**
@@ -653,26 +664,26 @@ The rate of product formation is directly proportional to the concentration of A
 
     model *whitcomb04()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       ...
 
-      // Assignment Rules:
+      //// Assignment Rules:
       ...
 
-      // Reactions:
+      //// Reactions:
       ...
   
-      // Events:
+      //// Events:
       _E0: at time >= ton: gcftr = gcftron;
       _E1: at time >= toff: gcftr = gcftrbase;
 
-      // Species initializations:
+      //// Species initializations:
       ...
 
-      // Compartment initializations:
+      //// Compartment initializations:
       ...
 
-      // Variable initializations:
+      //// Variable initializations:
       ton = 60;
       \# ton has second;
       gcftr = gcftrbase;
@@ -685,27 +696,27 @@ The rate of product formation is directly proportional to the concentration of A
 
   ## 9. Other declarations, Unit definitions and Display names
   "Other declaration" is a section which contains further information that describe in particular wethever the species/elements defined are constant "const" or variable "var". 
-  Initialize the section with the following declaration: `// Other declarations:`, then list the variables indicating at the beginning of the line if they are changing variable, using the term `var` or costant with the term `const`.
+  Initialize the section with the following declaration: `//// Other declarations:`, then list the variables indicating at the beginning of the line if they are changing variable, using the term `var` or costant with the term `const`.
   Separate each variable with a comma and close each line with a semicolon.
 
-    // Other declarations:
+    //// Other declarations:
     var A, B, V;
     const Kg, KH;
 
   The units of measurement are defined in the "Unit definitions".
-  Here simply start the section with the line `// Unit definitions:`, specify the units by using the `unit` keyword at the beginnig of each line, then use the link term `=` to assign to each term (like volume) it associated measurement; finally close the line with a semicolon. 
+  Here simply start the section with the line `//// Unit definitions:`, specify the units by using the `unit` keyword at the beginnig of each line, then use the link term `=` to assign to each term (like volume) it associated measurement; finally close the line with a semicolon. 
   
   This allows to specify the unit of volume, time or substance used in the model.
 
-    // Unit definitions:
+    //// Unit definitions:
     unit substance = 1e-9 mole;
     unit time_unit = 8.64e4 second;
 
   Last, "Display Names" section set the "names" of the species, reactions and/or units.
 
-  Remember to start the section with the as follows: `// Display Names:`, then insert the names used in the model, the `is` keyword and a description name surrounded by double quotes. Close each line with a semicolon.
+  Remember to start the section with the as follows: `//// Display Names:`, then insert the names used in the model, the `is` keyword and a description name surrounded by double quotes. Close each line with a semicolon.
 
-    // Display Names:
+    //// Display Names:
     time_unit is "time";
     C is "Cyclin";
     reaction1 is "creation of cyclin";
@@ -722,43 +733,43 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
     model \*Ataullahkhanov1996_Adenylate()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment cell;
       species I in cell, E in cell, A in cell;
 
-      // Assignment Rules:
+      //// Assignment Rules:
       T := (A + 3\*E - ((6\*A\*E - 3\*E^2) + A^2)^0.5)/6;
       M := (7\*A - 3\*E - ((6\*A\*E - 3\*E^2) + A^2)^0.5)/6;
 
-      // Reactions:
+      //// Reactions:
       U1:  => I; cell\*P\*J;
       U2: 3 I + E => ; cell\*W2\*I\*T;
       U3:  => E; cell\*W3\*T^0.52\*M^0.41;
   
 
-      // Species initializations:
+      //// Species initializations:
       I = 10;
       E = 2.1;
       A = 1.11;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       cell = 1;
 
-      // Variable initializations:
+      //// Variable initializations:
       P = 0.121;
       J = 100;
       W2 = 0.2;
       W3 = 13.48;
      
-      // Other declarations:
+      //// Other declarations:
       var T, M;
       const cell, P, J, W2, W3;
 
-      // Unit definitions:
+      //// Unit definitions:
       unit substance = 1e-3 mole;
       unit time_unit = 3600 second;
 
-      // Display Names:
+      //// Display Names:
       substance is "millimole (default)";
       time_unit is "hour (default)";
       cell is "Erythrocyte";
@@ -780,11 +791,11 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
   SBO stands for "Systems Biology Ontology": it is a collection of checked vocabularies of terms widely used in System Biology.
 
-  **if there are complete information** inside the input file, annotate them inside the section `// SBO terms:` using the following syntax.
+  **if there are complete information** inside the input file, annotate them inside the section `//// SBO terms:` using the following syntax.
 
   In this case, "A" is any model ID or the word "model" for the model itself.
 
-    // SBO terms:
+    //// SBO terms:
     A.sboTerm = 236 or A.sboTerm = SBO:00000236
     A identity "cvterm" or A biological_entity_is "cvterm"
     A hasPart "cvterm" or A part "cvterm"
@@ -811,7 +822,7 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
   If there are multiple creators or mofification times, distinguish them adding a number:
 
-    // SBO terms:
+    //// SBO terms:
     A creator1.name "Hugh Barrett"
     A creator2.name "Nancy Smalls"
     A modified1 "2012-12-11T15:30:15Z"
@@ -837,27 +848,27 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
     model \*BIOMD0000000005()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment cell;
       species $EmptySet in cell;
       species Y in cell;
 
-      // Reactions:
+      //// Reactions:
       ...
       Reaction6: $EmptySet => Y; cell\*Reaction6_k1aa;
       ...
 
-      // Species initializations:
+      //// Species initializations:
       EmptySet = 0;
       Y = 0;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       cell = 1;
 
-      // Variable initializations:
+      //// Variable initializations:
       Reaction6_k1aa = 0.015;
 
-      // Display Names:
+      //// Display Names:
       Y is "cyclin";
       Reaction6 is "cyclin biosynthesis";
     end
@@ -874,18 +885,18 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
 - The model must include all extracted components organized into the following sections:
 
-  * // Compartments and Species:
-  * // Assignment Rules:
-  * // Rate Rules:
-  * // Reactions:
-  * // Events:
-  * // Species initializations:
-  * // Compartment initializations:
-  * // Variable initializations:
-  * // Other declarations:
-  * // Unit definitions:
-  * // Display Names
-  * // SBO terms:
+  * //// Compartments and Species:
+  * //// Assignment Rules:
+  * //// Rate Rules:
+  * //// Reactions:
+  * //// Events:
+  * //// Species initializations:
+  * //// Compartment initializations:
+  * //// Variable initializations:
+  * //// Other declarations:
+  * //// Unit definitions:
+  * //// Display Names
+  * //// SBO terms:
 
 - **Keep the exact order of the sections** provided before.
 
@@ -925,12 +936,12 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
 
     model *Andersen2017___Mathematical_modelling_as_a_proof_of_concept_for_MPNs_as_a_human_inflammation_model_for_cancer_development()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment compartment_;
       species x0 in compartment_, x1 in compartment_, y0 in compartment_, y1 in compartment_;
       species a in compartment_, s in compartment_;
 
-      // Assignment Rules:
+      //// Assignment Rules:
       cxy := ModelValue_5;
       ay := ModelValue_1;
       Ay := ModelValue_2;
@@ -947,7 +958,7 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
       y1_e10 := y1/10000000000;
       x1_y1 := x1_e10 + y1_e10;
 
-      // Reactions:
+      //// Reactions:
       HSC_Self_Renewal:  => x0; compartment_*(x0*rx*psi_x*s);
       HSC_Death: x0 => a; compartment_*dx0*x0;
       HSC_Proliferation: x0 => ; compartment_*ax*x0;
@@ -964,7 +975,7 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
       Cytokine_Elimination: s => ; compartment_*es*s;
       Cytokines_Inflammation:  => s; compartment_*inflammation;
 
-      // Species initializations:
+      //// Species initializations:
       x0 = 10100;
       x1 = 38400000000;
       y0 = 0;
@@ -972,10 +983,10 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
       a = 699;
       s = 3.61;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       compartment_ = 1;
 
-      // Variable initializations:
+      //// Variable initializations:
       rx = 0.00087;
       ax = 1.1e-05;
       Ax = 47000000000000;
@@ -997,19 +1008,19 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
       ModelValue_15 = cyx;
       ModelValue_16 = cyy;
 
-      // Other declarations:
+      //// Other declarations:
       var cxy, ay, Ay, dy0, dy1, cyx, cyy, psi_x, psi_y, x0_y0, x0_e4, y0_e4;
       var x1_e10, y1_e10, x1_y1;
       const compartment_, rx, ax, Ax, dx0, dx1, cxx, ModelValue_5, es, rm, inflammation;
       const ry, ModelValue_1, ModelValue_2, ModelValue_3, ModelValue_4, rs, ea;
       const ModelValue_6, ModelValue_15, ModelValue_16;
 
-      // Unit definitions:
+      //// Unit definitions:
       unit volume = 1e-3 litre;
       unit time_unit = 86400 second;
       unit substance = item;
 
-      // Display Names:
+      //// Display Names:
       time_unit is "time";
       compartment_ is "compartment";
       ModelValue_5 is "Initial for cxx";
@@ -1026,15 +1037,15 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
 
     model *Alvarez2019___A_nonlinear_mathematical_model_of_cell_mediated_immune_response_for_tumor_phenotypic_heterogeneity()
 
-      // Compartments and Species:
+      //// Compartments and Species:
       compartment compartment_;
       species T_1 in compartment_, T_2 in compartment_, E_1_Innate in compartment_;
       species E_2_Adaptive in compartment_;
 
-      // Assignment Rules:
+      //// Assignment Rules:
       T_Total := T_1 + T_2;
 
-      // Reactions:
+      //// Reactions:
       Tumor_Growth_1:  => T_1; compartment_*(a*T_1*(1 - b*T_1));
       Tumor_Growth_2:  => T_2; compartment_*(a*p*T_2*(1 - b*T_2));
       Tumor_Killing_T1_E1: T_1 => ; compartment_*(mu*E_1_Innate*T_1);
@@ -1050,16 +1061,16 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
       E2_Depletion: E_2_Adaptive => ; compartment_*(d_2*T_1*E_2_Adaptive);
       E2_Death: E_2_Adaptive => ; compartment_*d_3*E_2_Adaptive;
 
-      // Species initializations:
+      //// Species initializations:
       T_1 = 80000000;
       T_2 = 20000000;
       E_1_Innate = 10500000;
       E_2_Adaptive = 0;
 
-      // Compartment initializations:
+      //// Compartment initializations:
       compartment_ = 1;
 
-      // Variable initializations:
+      //// Variable initializations:
       a = 0.514;
       b = 2e-09;
       mu = 1.101e-07;
@@ -1078,16 +1089,16 @@ Use them as a concrete guide to learn the correct syntax, structure, and modelin
       r = 1.5;
       s = 1;
 
-      // Other declarations:
+      //// Other declarations:
       var T_Total;
       const compartment_, a, b, mu, beta, nu, c_1, c_2, c_3, c_4, c_5, d_1, d_2;
       const d_3, p, q, r, s;
 
-      // Unit definitions:
+      //// Unit definitions:
       unit volume = 1e-3 litre;
       unit substance = item;
 
-      // Display Names:
+      //// Display Names:
       compartment_ is "compartment";
     end
 

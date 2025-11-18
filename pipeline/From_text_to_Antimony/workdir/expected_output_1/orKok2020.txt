@@ -323,5 +323,6 @@ model *Kok2020___IFNalpha_induced_signaling_in_Huh7_5_cells()
   USP18_chain_step_2 is "USP18 chain step 2";
   Linear_chain_for_time_delay_in_SOCS1_translation is "Linear chain for time delay in SOCS1 translation";
   SOCS1_chain_step_1 is "SOCS1 chain step 1";
+
 end
 
