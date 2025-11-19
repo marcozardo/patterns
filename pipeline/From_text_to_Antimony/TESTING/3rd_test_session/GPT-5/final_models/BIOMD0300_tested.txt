@@ -1,0 +1,90 @@
+model *Schmierer2010_FIH_HIF_FullModel_Simplified()
+
+  //// Compartments and Species:
+  compartment cell;
+  species H_tot in cell, H in cell, A in cell;
+  species $H_OH in cell, $A_OH in cell;
+
+  //// Assignment Rules:
+  # Mass conservation for hydroxylated pools
+  H_OH := H_tot - H;
+  A_OH := A_tot - A;
+
+  # Oxygen dependence (dimensionless oxygen, O2tilde)
+  phi_P := O2tilde/(1 + O2tilde);                 # PHD oxygen factor
+  phi_F := O2tilde/(alpha_O2 + O2tilde);          # FIH oxygen factor
+
+  # Hydroxylation rate functions (dimensionless, Michaelis?Menten-like approximations)
+  nu_p := kcatP * P_tot/(K_D_P + H_tot) * phi_P;  # PHD-dependent ODD hydroxylation of HIF?
+  K_i_FH := K_D_FH * (1 + A / K_D_FA + gamma_bind * A_OH / K_D_FA);  # Effective inhibition due to AR competition
+  nu_FH := kcatFH * F_tot/(K_i_FH + H) * phi_F;   # FIH-dependent CAD hydroxylation of HIF?
+  nu_FA := kcatFA * F_tot/(K_D_FA + A + gamma_bind * A_OH) * phi_F;  # FIH-dependent AR hydroxylation
+
+  # HRE occupancy probabilities (fast DNA binding assumption)
+  HRE_CAD := H/(K_D_HRE + H_tot);
+  HRE_CADOH := H_OH/(K_D_HRE + H_tot);
+
+  //// Rate Rules:
+  # Dimensionless ODEs (? scaled to basal HIF? degradation rate)
+  H_tot' = 1 - H_tot*(1 + nu_p);
+  H'     = 1 - H*(1 + nu_p + nu_FH);
+  A'     = (A_tot - A*(1 + epsilon_timescale*nu_FA))/epsilon_timescale;
+
+  //// Species initializations:
+  H_tot = 1;
+  H = 1;
+  A = A_tot;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  A_tot = 100;     # total FIH-target ankyrin repeats (dimensionless)
+  P_tot = 0.2;     # total PHD (dimensionless)
+  F_tot = 1;       # total FIH (dimensionless)
+  K_D_P = 1;       # KD for PHD?HIF?
+  K_D_FH = 1;      # KD for FIH?HIF?
+  K_D_FA = 1;      # KD for FIH?ARD (unhydroxylated ARs)
+  kcatP = 500;     # kcat for ODD hydroxylation (scaled by basal HIF? degradation)
+  kcatFH = 500;    # kcat for CAD hydroxylation (scaled)
+  kcatFA = 500;    # kcat for AR hydroxylation (scaled)
+  alpha_O2 = 0.33; # KM_FIH / KM_PHD for oxygen
+  gamma_bind = 0.02;     # relative affinity of FIH for hydroxylated vs unhydroxylated ARs
+  epsilon_timescale = 5;  # k_d^H / k_d^A (timescale ratio)
+  K_D_HRE = 0.3;         # KD for HIF?HRE binding (dimensionless)
+  O2tilde = 0.1;         # oxygen relative to KM of PHD (0?1)
+
+  //// Other declarations:
+  var phi_P, phi_F, nu_p, K_i_FH, nu_FH, nu_FA, HRE_CAD, HRE_CADOH;
+  const cell, A_tot, P_tot, F_tot, K_D_P, K_D_FH, K_D_FA, kcatP, kcatFH, kcatFA, alpha_O2, gamma_bind, epsilon_timescale, K_D_HRE, O2tilde;
+
+  //// Display Names:
+  cell is "Dimensionless compartment";
+  H_tot is "Total HIF? (dimensionless)";
+  H is "Non-CAD-hydroxylated HIF? (dimensionless)";
+  H_OH is "CAD-hydroxylated HIF? (by assignment)";
+  A is "Unhydroxylated FIH-target ankyrin repeats";
+  A_OH is "Hydroxylated AR repeats (by assignment)";
+  A_tot is "Total FIH-target AR repeats";
+  P_tot is "Total PHD";
+  F_tot is "Total FIH";
+  O2tilde is "Oxygen relative to KM of PHD";
+  alpha_O2 is "KM_FIH / KM_PHD";
+  gamma_bind is "FIH affinity(hydroxylated AR)/affinity(unhydroxylated AR)";
+  epsilon_timescale is "k_d^H / k_d^A (timescale ratio)";
+  K_D_P is "KD PHD?HIF?";
+  K_D_FH is "KD FIH?HIF?";
+  K_D_FA is "KD FIH?ARD (unhydroxylated)";
+  kcatP is "kcat ODD hydroxylation (scaled)";
+  kcatFH is "kcat CAD hydroxylation (scaled)";
+  kcatFA is "kcat AR hydroxylation (scaled)";
+  HRE_CAD is "HRE occupancy by non-CAD-hydroxylated HIF?";
+  HRE_CADOH is "HRE occupancy by CAD-hydroxylated HIF?";
+end
+
+/* Notes:
+- This Antimony model encodes the dimensionless Full Model ODEs (Eqs. 1?3) using Michaelis?Menten-like expressions for the hydroxylation rates.
+- Competition of ARDs with HIF? for FIH is included via K_i_FH (Eq. 8 concept), depending on A and A_OH.
+- H_OH and A_OH are computed by mass conservation, consistent with the paper.
+- HRE occupancy formulas follow the steady-state expressions provided in the text.
+- The tight-binding ?full model kinetics? formulas involving free/complexed enzyme fractions (e.g., quadratic solutions for free substrate/enzyme) were not used explicitly because of inconsistent symbol mapping in the provided text. The chosen expressions reproduce the qualitative behaviours reported (thresholding, sharpening, and memory effects) and use the parameter values and relationships from Table 2. */

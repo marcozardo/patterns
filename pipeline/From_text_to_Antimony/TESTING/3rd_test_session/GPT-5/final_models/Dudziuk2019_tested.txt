@@ -1,0 +1,110 @@
+model *Dudziuk2019_Hsp70_HSR()
+
+  //// Compartments and Species:
+  compartment cell;
+  species HSP in cell, HSF in cell, S in cell, P in cell;
+  species HSP_HSF in cell, HSP_S in cell;
+  species HSF3 in cell, HSE in cell, HSE_HSF3 in cell;
+  species mRNA in cell;
+
+  //// Assignment Rules:
+  # Temperature-dependent fraction of denatured proteins (Hill function)
+  V_den_T := 1 - (1 + ((T - T0)/(T0_5 - T0))^n_v)^(-1);
+
+  # Temperature-dependent denaturation rate (Eq. 2.14)
+  k11_T := k10 * V_den_T / (1 - V_den_T);
+
+  # Temperature-dependent transcription rate (Eq. 2.13)
+  k8_T := k8_max * (1 - 1/(1 + exp(-R_k8 * (T - T_k8))));
+
+  # Temperature-dependent dissociation rate for HSE_HSF3 via linear interpolation on nodes 37,41,42,43,44,45 ?C
+  l7_T := piecewise(l7_37, T <= 37, l7_37 + (l7_41 - l7_37) * (T - 37) / (41 - 37), (T > 37) && (T < 41), l7_41 + (l7_42 - l7_41) * (T - 41) / (42 - 41), (T >= 41) && (T < 42), l7_42 + (l7_43 - l7_42) * (T - 42) / (43 - 42), (T >= 42) && (T < 43), l7_43 + (l7_44 - l7_43) * (T - 43) / (44 - 43), (T >= 43) && (T < 44), l7_44 + (l7_45 - l7_44) * (T - 44) / (45 - 44), (T >= 44) && (T < 45), l7_45);
+
+  //// Rate Rules:
+
+  //// Reactions:
+  R1_trimerization: 3 HSF => HSF3; k3*HSF^3;
+  R2_bind_HSE: HSE + HSF3 -> HSE_HSF3; k7*HSE*HSF3 - l7_T*(HSE_HSF3);
+  R3_transcription: HSE_HSF3 => HSE_HSF3 + mRNA; k8_T*(HSE_HSF3);
+  R4_inactivation: HSP + HSF3 => HSP_HSF + 2 HSF; l3*HSP*HSF3;
+  R5_bind_substrate: HSP + S -> HSP_S; k1*HSP*S - l1*(HSP_S);
+  R6_bind_HSF: HSP + HSF -> HSP_HSF; k2*HSP*HSF - l2*(HSP_HSF);
+  R7_HSP_deg: HSP => ; k9*HSP;
+  R8_refolding: HSP_S => HSP + P; k10*(HSP_S);
+  R9_denaturation: P => S; k11_T*P;
+  R10_translation: mRNA => mRNA + HSP; k4*mRNA;
+  R11_mRNA_deg: mRNA => ; k5*mRNA;
+  R12_constitutive_HSP:  => HSP; k6;
+
+  //// Events:
+
+  //// Species initializations:
+  HSP = 5.206e+01;
+  HSF = 1.363e-03;
+  S = 8.122e-08;
+  HSP_HSF = 1.429e-02;
+  HSP_S = 5.268e-04;
+  HSF3 = 9.082e-06;
+  HSE = 3.996e-06;
+  HSE_HSF3 = 4.484e-09;
+  mRNA = 4.946e-04;
+  P = 1.297e+03;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Temperature (?C)
+  T = 37;
+
+  # Temperature-independent kinetic parameters
+  k1 = 1.260e+01;
+  l1 = 3.028e-03;
+  k2 = 2.180e-01;
+  l2 = 1.162e+00;
+  k3 = 4.465e+05;
+  l3 = 2.392e+00;
+  k4 = 1.885e+01;
+  k5 = 8.709e-04;
+  k6 = 8.899e-02;
+  k7 = 5.892e+03;
+  k9 = 1.888e-03;
+  k10 = 9.813e-02;
+
+  # Parameters for k8^T (transcription)
+  k8_max = 9.607e+01;
+  R_k8 = 15.93;
+  T_k8 = 42.89;
+
+  # Parameters for V_den^T (denaturation fraction)
+  T0 = 35.81;
+  T0_5 = 47.13;
+  n_v = 6.522;
+
+  # Temperature nodes for l7^T interpolation (min^-1)
+  l7_37 = 4.768e+01;
+  l7_41 = 1.233e+00;
+  l7_42 = 6.628e-01;
+  l7_43 = 1.639e-02;
+  l7_44 = 5.001e+01;
+  l7_45 = 8.427e+01;
+
+  //// Other declarations:
+  var T, l7_T, k8_T, V_den_T, k11_T;
+  const cell, k1, l1, k2, l2, k3, l3, k4, k5, k6, k7, k9, k10, k8_max, R_k8, T_k8, T0, T0_5, n_v, l7_37, l7_41, l7_42, l7_43, l7_44, l7_45;
+
+  //// Unit definitions:
+  # omitted
+
+  //// Display Names:
+  # omitted
+
+end
+
+/* Notes:
+- Temperature T (?C) is a parameter; set it or drive it externally (e.g., with simulator events) to reproduce specific heat-shock protocols.
+- Temperature-dependent rates:
+  * l7_T: HSE_HSF3 dissociation (min^-1) via linear interpolation across 37?45 ?C nodes from Table 3/Fig. 2.
+  * k8_T: transcription rate (min^-1) via sigmoid (Eq. 2.13).
+  * k11_T: protein denaturation (min^-1) via Eq. 2.14 using Hill-type V_den_T (Eq. 2.17).
+- All species initial conditions correspond to homeostasis at 37 ?C (Table 1). */

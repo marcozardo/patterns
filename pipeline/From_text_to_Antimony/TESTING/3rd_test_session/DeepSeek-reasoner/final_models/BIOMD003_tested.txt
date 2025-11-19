@@ -1,0 +1,77 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell;
+  species $M in cell;
+  species $X in cell;
+
+  //// Assignment Rules:
+  V1 := (C / (Kc + C)) * VM1;
+  V3 := M * VM3;
+
+  //// Rate Rules:
+  M' = V1 * (1 - M) / (K1 + (1 - M)) - V2 * M / (K2 + M);
+  X' = V3 * (1 - X) / (K3 + (1 - X)) - V4 * X / (K4 + X);
+
+  //// Reactions:
+  J_syn: => C; vi;
+  J_deg: C => ; vd * X * C / (Kd + C);
+  J_nonspec: C => ; kd * C;
+
+  //// Species initializations:
+  C = 0.01;
+  M = 0.01;
+  X = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  vi = 0.023;
+  vd = 0.1;
+  Kd = 0.02;
+  kd = 0.00333;
+  VM1 = 0.5;
+  VM3 = 0.2;
+  Kc = 0.3;
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+  V2 = 0.167;
+  V4 = 0.1;
+
+  //// Other declarations:
+  var V1, V3;
+  const vi, vd, Kd, kd, VM1, VM3, Kc, K1, K2, K3, K4, V2, V4;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration_unit = 1e-6 mole / liter;
+
+  //// Display Names:
+  C is "Cyclin";
+  M is "Active cdc2 kinase";
+  X is "Active cyclin protease";
+  V1 is "Effective rate of cdc2 activation";
+  V3 is "Effective rate of protease activation";
+  J_syn is "Cyclin synthesis";
+  J_deg is "Cyclin degradation";
+  J_nonspec is "Nonspecific cyclin degradation";
+  cell is "Cell compartment";
+  vi is "Cyclin synthesis rate";
+  vd is "Max cyclin degradation rate";
+  Kd is "Michaelis constant for cyclin degradation";
+  kd is "Nonspecific degradation rate constant";
+  VM1 is "Max rate of cdc2 activase";
+  VM3 is "Max rate of protease kinase";
+  Kc is "Michaelis constant for cyclin activation";
+  K1 is "Michaelis constant for cdc2 activation";
+  K2 is "Michaelis constant for cdc2 inactivation";
+  K3 is "Michaelis constant for protease activation";
+  K4 is "Michaelis constant for protease inactivation";
+  V2 is "Rate constant for cdc2 inactivation";
+  V4 is "Rate constant for protease inactivation";
+
+end

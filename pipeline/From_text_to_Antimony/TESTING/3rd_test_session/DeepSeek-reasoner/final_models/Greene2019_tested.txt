@@ -1,0 +1,71 @@
+model *Greene2019_Resistance_Model()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species $S in tumor, $R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;
+  T := Delta_t_on + Delta_t_off;
+  phase := piecewise(0, time < t_d, (time - t_d) - T * floor((time - t_d) / T));
+  u := piecewise(0, time < t_d, piecewise(U_on, constant_flag == 1, piecewise(U_on, phase < Delta_t_on, 0)));
+
+  //// Rate Rules:
+  S' = S * (1 - V) - (epsilon + alpha * u) * S - d * u * S;
+  R' = p_r * R * (1 - V) + (epsilon + alpha * u) * S;
+
+  //// Reactions:
+  // No reactions defined
+
+  //// Events:
+  E1: at (V >= V_d && t_d > 999): t_d = time;
+
+  //// Species initializations:
+  S = 0.01;
+  R = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  epsilon = 1e-6;
+  alpha = 0;  # Can be set to 0.01 for induced resistance
+  d = 1;
+  p_r = 0.2;
+  U_on = 1.5;
+  Delta_t_on = 1;
+  Delta_t_off = 3;
+  constant_flag = 1;  # 1 for constant therapy, 0 for pulsed therapy
+  t_d = 1000;  # Initialized to a large value
+  phase = 0;
+  V_d = 0.5;
+
+  //// Other declarations:
+  const tumor, epsilon, alpha, d, p_r, U_on, Delta_t_on, Delta_t_off, constant_flag, V_d;
+  var V, T, phase, u, t_d;
+
+  //// Unit definitions:
+  unit volume = 1;
+  unit time_unit = 1;
+  unit substance = 1;
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  V is "Total tumor volume";
+  u is "Drug concentration";
+  epsilon is "Background mutation rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Cytotoxicity of sensitive cells";
+  p_r is "Relative growth rate of resistant cells";
+  U_on is "Treatment magnitude";
+  Delta_t_on is "Pulsed treatment window";
+  Delta_t_off is "Pulsed holiday length";
+  constant_flag is "Therapy type flag (1=constant, 0=pulsed)";
+  t_d is "Treatment start time";
+  phase is "Phase for pulsed therapy";
+  T is "Pulsing period";
+  E1 is "Start treatment when volume reaches V_d";
+
+end

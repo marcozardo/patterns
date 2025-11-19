@@ -1,0 +1,68 @@
+model *Goldbeter1991_Minimal_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  //// Rate Rules:
+  M' = V1*((1 - M)/(K1 + (1 - M))) - V2*(M/(K2 + M));
+  X' = V3*((1 - X)/(K3 + (1 - X))) - V4*(X/(K4 + X));
+
+  //// Reactions:
+  J1:  => C; vi;
+  J2: C => ; vd*X*(C/(Kd + C));
+  J3: C => ; kd*C;
+
+  //// Species initializations:
+  C = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+  VM1 = 0.5;
+  V2 = 0.167;
+  VM3 = 0.2;
+  V4 = 0.1;
+  vi = 0.023;
+  vd = 0.1;
+  Kc = 0.3;
+  Kd = 0.02;
+  kd = 0;     # facultative nonspecific cyclin decay (set to 0 per text)
+  M = 0.01;   # fraction of active cdc2 kinase (initial)
+  X = 0.01;   # fraction of active cyclin protease (initial)
+
+  //// Other declarations:
+  var V1, V3, M, X;
+  const cell, K1, K2, K3, K4, VM1, V2, VM3, V4, vi, vd, Kc, Kd, kd;
+
+  //// Unit definitions:
+  unit substance = 1e-6 mole / liter;
+  unit time_unit = 60 second;
+
+  //// Display Names:
+  cell is "Cell";
+  C is "Cyclin concentration";
+  M is "Active cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  V1 is "Cyclin-activated phosphatase rate on cdc2";
+  V3 is "Protease-activating kinase rate (proportional to M)";
+  J1 is "Cyclin synthesis";
+  J2 is "Cyclin degradation by protease X";
+  J3 is "Nonspecific cyclin decay";
+
+end
+
+/* Notes on parameter mapping from the paper text and figure caption:
+- Ki = 0.1 (i = 1..4) mapped to K1 = K2 = K3 = K4 = 0.1.
+- VM1 = 0.5 min^-1, V2 = 0.167 min^-1, VM3 = 0.2 min^-1, V4 = 0.1 min^-1.
+- vi = 0.023 ?M min^-1, vd = 0.1 ?M min^-1, Kc = 0.3 ?M, Kd = 0.02 ?M.
+- The caption text shows "Ka = 3.33 ? 10?? min??" ambiguously; this was interpreted as the optional nonspecific decay kd, which is set to 0 here per the text noting it is not required for oscillations. Adjust kd if a precise value is available. */

@@ -1,0 +1,89 @@
+model *Minimal_Model_Tumor_OV_DC()
+
+  //// Compartments and Species:
+  compartment tumor_site;
+  species U in tumor_site, I in tumor_site, V in tumor_site, T in tumor_site, D in tumor_site;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Rate Rules:
+
+  //// Reactions:
+  R_growth: -> U; r*U;
+  R_infection: U -> I; beta*U*V/N;
+  R_kill_U: U -> ; (kappa0 + c_kill*I)*U*T/N;
+  R_lysis: I -> ; delta_I*I;
+  R_kill_I: I -> ; (kappa0 + c_kill*I)*I*T/N;
+  R_virus_release: -> V; alpha*delta_I*I;
+  R_virus_decay: V -> ; delta_V*V;
+  R_T_activation: -> T; c_T*I;
+  R_T_DC_activation: -> T; chi_D*D;
+  R_T_decay: T -> ; delta_T*T;
+  R_D_decay: D -> ; delta_D*D;
+
+  //// Events:
+  E_virus1: at time == 0: V = V + dose_V;
+  E_virus2: at time == 2: V = V + dose_V;
+  E_virus3: at time == 4: V = V + dose_V;
+  E_DC1: at time == 1: D = D + dose_D;
+  E_DC2: at time == 3: D = D + dose_D;
+  E_DC3: at time == 5: D = D + dose_D;
+
+  //// Species initializations:
+  U = 50;  # Initial tumor volume (mm?)
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor_site = 1;
+
+  //// Variable initializations:
+  r = 0.3198;          # Tumor growth rate (day??)
+  beta = 0.00100854;   # Infection rate parameter
+  kappa0 = 0.1;        # Baseline killing rate by T cells
+  c_kill = 6.234e7;    # Enhanced killing rate coefficient
+  delta_I = 0.5;       # Infected cell death rate (day??)
+  alpha = 100;         # Virions released per cell lysed
+  delta_V = 10;        # Virus decay rate (day??)
+  c_T = 1.428064;      # T cell activation rate
+  chi_D = 0.1;         # DC-induced T cell activation rate
+  delta_T = 0.1;       # T cell death rate (day??)
+  delta_D = 4.901894;  # DC death rate (day??)
+  dose_V = 5e9;        # Virus dose (PFU)
+  dose_D = 1e6;        # DC dose (cells)
+
+  //// Other declarations:
+  const r, beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, dose_V, dose_D;
+
+  //// Unit definitions:
+  unit volume = 1 mm^3;
+  unit time_unit = 1 day;
+  unit virus_unit = 1 PFU;
+  unit cell_unit = 1 cell;
+
+  //// Display Names:
+  tumor_site is "Tumor site";
+  U is "Uninfected tumor cells";
+  I is "Infected tumor cells";
+  V is "Free virus";
+  T is "Tumor-targeting T cells";
+  D is "Dendritic cells";
+  N is "Total cell volume";
+  r is "Tumor growth rate";
+  beta is "Infection rate";
+  kappa0 is "Baseline killing rate";
+  c_kill is "Enhanced killing coefficient";
+  delta_I is "Infected cell death rate";
+  alpha is "Virions per cell";
+  delta_V is "Virus decay rate";
+  c_T is "T cell activation rate";
+  chi_D is "DC activation rate";
+  delta_T is "T cell death rate";
+  delta_D is "DC death rate";
+  dose_V is "Virus dose";
+  dose_D is "DC dose";
+
+end

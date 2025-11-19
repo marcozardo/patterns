@@ -1,0 +1,282 @@
+model *Dwivedi2014_IL6_Crohn_Multiscale()
+
+  //// Compartments and Species:
+  compartment Serum, Liver, GI;
+
+  species IL6_s in Serum, sIL6R_s in Serum, sgp130_s in Serum, CRP_s in Serum;
+  species IL6_sIL6R_s in Serum, IL6_sIL6R_s_sgp130 in Serum;
+
+  species IL6_l_ext in Liver, IL6R_l in Liver, gp130_l in Liver;
+  species C_IL6_IL6R_l in Liver, RC_l in Liver, IL6_sIL6R_l in Liver, RC_trans_l in Liver;
+  species STAT3_l in Liver, pSTAT3_l in Liver;
+
+  species IL6_g_ext in GI, IL6R_g in GI, gp130_g in GI;
+  species C_IL6_IL6R_g in GI, RC_g in GI, IL6_sIL6R_g in GI, RC_trans_g in GI;
+  species STAT3_g in GI, pSTAT3_g in GI, GeneProd_g in GI;
+
+  //// Assignment Rules:
+  RCtot_l := RC_l + RC_trans_l;
+  RCtot_g := RC_g + RC_trans_g;
+
+  //// Reactions:
+  # Serum: ligand-receptor complex formation and sequestration
+  R1f: IL6_s + sIL6R_s => IL6_sIL6R_s; k_on_s*IL6_s*sIL6R_s;
+  R1r: IL6_sIL6R_s => IL6_s + sIL6R_s; k_off_s*IL6_sIL6R_s;
+
+  R2f: IL6_sIL6R_s + sgp130_s => IL6_sIL6R_s_sgp130; k_on_sgp*IL6_sIL6R_s*sgp130_s;
+  R2r: IL6_sIL6R_s_sgp130 => IL6_sIL6R_s + sgp130_s; k_off_sgp*IL6_sIL6R_s_sgp130;
+
+  # Serum: basal production and degradation
+  R3:  => IL6_s; ksyn_IL6_s;
+  R4: IL6_s => ; kdeg_IL6_s*IL6_s;
+
+  R5:  => sIL6R_s; ksyn_sIL6R + k_shed_CRPs*CRP_s;
+  R6: sIL6R_s => ; kdeg_sIL6R*sIL6R_s;
+
+  R7:  => sgp130_s; ksyn_sgp130;
+  R8: sgp130_s => ; kdeg_sgp130*sgp130_s;
+
+  R9:  => CRP_s; k_crp_basal + V_crp*pSTAT3_l/(K_crp + pSTAT3_l);
+  R10: CRP_s => ; kdeg_CRP*CRP_s;
+
+  # Exchange between Serum and Liver
+  R11: IL6_s => IL6_l_ext; k_in_IL6_S_to_L*IL6_s;
+  R12: IL6_l_ext => IL6_s; k_ex_IL6_L_to_S*IL6_l_ext;
+
+  R13: IL6_sIL6R_s => IL6_sIL6R_l; k_in_complex_S_to_L*IL6_sIL6R_s;
+  R14: IL6_sIL6R_l => IL6_sIL6R_s; k_ex_complex_L_to_S*IL6_sIL6R_l;
+
+  # Exchange between Serum and GI
+  R15: IL6_s => IL6_g_ext; k_in_IL6_S_to_GI*IL6_s;
+  R16: IL6_g_ext => IL6_s; k_ex_IL6_GI_to_S*IL6_g_ext;
+
+  R17: IL6_sIL6R_s => IL6_sIL6R_g; k_in_complex_S_to_GI*IL6_sIL6R_s;
+  R18: IL6_sIL6R_g => IL6_sIL6R_s; k_ex_complex_GI_to_S*IL6_sIL6R_g;
+
+  # Liver: receptor binding and STAT3 signaling (classical and trans-signaling)
+  L1f: IL6_l_ext + IL6R_l => C_IL6_IL6R_l; k_on_R*IL6_l_ext*IL6R_l;
+  L1r: C_IL6_IL6R_l => IL6_l_ext + IL6R_l; k_off_R*C_IL6_IL6R_l;
+
+  L2f: C_IL6_IL6R_l + gp130_l => RC_l; k_on_RC*C_IL6_IL6R_l*gp130_l;
+  L2r: RC_l => C_IL6_IL6R_l + gp130_l; k_off_RC*RC_l;
+
+  L3f: IL6_sIL6R_l + gp130_l => RC_trans_l; k_on_trans*IL6_sIL6R_l*gp130_l;
+  L3r: RC_trans_l => IL6_sIL6R_l + gp130_l; k_off_trans*RC_trans_l;
+
+  L4: STAT3_l -> pSTAT3_l; Vphos_l*RCtot_l*STAT3_l/(Km_STAT3 + STAT3_l);
+  L5: pSTAT3_l -> STAT3_l; Vdeph_l*pSTAT3_l/(Km_deph + pSTAT3_l);
+
+  # Liver: receptor turnover and complex degradation
+  L6:  => IL6R_l; ksyn_IL6R_l;
+  L7: IL6R_l => ; kdeg_IL6R_l*IL6R_l;
+  L8:  => gp130_l; ksyn_gp130_l;
+  L9: gp130_l => ; kdeg_gp130_l*gp130_l;
+
+  L10: C_IL6_IL6R_l => ; kdeg_Cplx_l*C_IL6_IL6R_l;
+  L11: RC_l => ; kdeg_RC_l*RC_l;
+  L12: RC_trans_l => ; kdeg_RCtrans_l*RC_trans_l;
+
+  # GI: IL-6 production, receptor binding and STAT3 signaling (classical and trans-signaling)
+  G1:  => IL6_g_ext; ksyn_IL6_GI;
+  G2: IL6_g_ext => ; kdeg_IL6_GI*IL6_g_ext;
+
+  G3f: IL6_g_ext + IL6R_g => C_IL6_IL6R_g; k_on_R*IL6_g_ext*IL6R_g;
+  G3r: C_IL6_IL6R_g => IL6_g_ext + IL6R_g; k_off_R*C_IL6_IL6R_g;
+
+  G4f: C_IL6_IL6R_g + gp130_g => RC_g; k_on_RC*C_IL6_IL6R_g*gp130_g;
+  G4r: RC_g => C_IL6_IL6R_g + gp130_g; k_off_RC*RC_g;
+
+  G5f: IL6_sIL6R_g + gp130_g => RC_trans_g; k_on_trans*IL6_sIL6R_g*gp130_g;
+  G5r: RC_trans_g => IL6_sIL6R_g + gp130_g; k_off_trans*RC_trans_g;
+
+  G6: STAT3_g -> pSTAT3_g; Vphos_g*RCtot_g*STAT3_g/(Km_STAT3 + STAT3_g);
+  G7: pSTAT3_g -> STAT3_g; Vdeph_g*pSTAT3_g/(Km_deph + pSTAT3_g);
+
+  # GI: receptor turnover, complex degradation, and generic pSTAT3-induced gene product
+  G8:  => IL6R_g; ksyn_IL6R_g;
+  G9: IL6R_g => ; kdeg_IL6R_g*IL6R_g;
+  G10:  => gp130_g; ksyn_gp130_g;
+  G11: gp130_g => ; kdeg_gp130_g*gp130_g;
+
+  G12: C_IL6_IL6R_g => ; kdeg_Cplx_g*C_IL6_IL6R_g;
+  G13: RC_g => ; kdeg_RC_g*RC_g;
+  G14: RC_trans_g => ; kdeg_RCtrans_g*RC_trans_g;
+
+  G15:  => GeneProd_g; k_gene_basal + V_gene*pSTAT3_g/(K_gene + pSTAT3_g);
+  G16: GeneProd_g => ; kdeg_gene*GeneProd_g;
+
+  //// Species initializations:
+  IL6_s = 0.000422;        # Serum IL-6 ~10 pg/ml -> ~4.22e-4 nmol/L (Crohn's baseline)
+  sIL6R_s = 2.8;           # Serum sIL-6R ~140 ng/ml -> ~2.8 nmol/L
+  sgp130_s = 2.8;          # Serum sgp130 ~280 ng/ml -> ~2.8 nmol/L
+  CRP_s = 280;             # Serum CRP ~7 mg/L -> ~280 nmol/L
+  IL6_sIL6R_s = 0;
+  IL6_sIL6R_s_sgp130 = 0;
+
+  IL6_l_ext = 0.000422;    # Assume initial equal to serum
+  IL6R_l = 1;
+  gp130_l = 1.5;
+  C_IL6_IL6R_l = 0;
+  RC_l = 0;
+  IL6_sIL6R_l = 0;
+  RC_trans_l = 0;
+  STAT3_l = 100;
+  pSTAT3_l = 1;
+
+  IL6_g_ext = 0.01055;     # Gut IL-6 ~250 pg/ml -> ~0.01055 nmol/L
+  IL6R_g = 1;
+  gp130_g = 1.5;
+  C_IL6_IL6R_g = 0;
+  RC_g = 0;
+  IL6_sIL6R_g = 0;
+  RC_trans_g = 0;
+  STAT3_g = 100;
+  pSTAT3_g = 3;            # Gut pSTAT3 ~3 (arbitrary units)
+  GeneProd_g = 0;
+
+  //// Compartment initializations:
+  Serum = 1;
+  Liver = 1;
+  GI = 1;
+
+  //// Variable initializations:
+  # Binding and unbinding rates (mass-action)
+  k_on_s = 0.01;
+  k_off_s = 0.1;
+  k_on_sgp = 0.01;
+  k_off_sgp = 0.1;
+
+  k_on_R = 0.01;
+  k_off_R = 0.1;
+  k_on_RC = 0.01;
+  k_off_RC = 0.1;
+  k_on_trans = 0.01;
+  k_off_trans = 0.1;
+
+  # Production and degradation rates
+  ksyn_IL6_s = 0.0;          # optional basal serum IL-6 synthesis
+  kdeg_IL6_s = 0.05;
+
+  ksyn_sIL6R = 0.01;
+  k_shed_CRPs = 0.001;
+  kdeg_sIL6R = 0.02;
+
+  ksyn_sgp130 = 0.01;
+  kdeg_sgp130 = 0.01;
+
+  k_crp_basal = 0.1;
+  V_crp = 5;
+  K_crp = 10;
+  kdeg_CRP = 0.02;
+
+  # Exchange rates between compartments
+  k_in_IL6_S_to_L = 0.2;
+  k_ex_IL6_L_to_S = 0.2;
+  k_in_complex_S_to_L = 0.1;
+  k_ex_complex_L_to_S = 0.1;
+
+  k_in_IL6_S_to_GI = 0.2;
+  k_ex_IL6_GI_to_S = 0.2;
+  k_in_complex_S_to_GI = 0.1;
+  k_ex_complex_GI_to_S = 0.1;
+
+  # Liver receptor turnover and complex degradation
+  ksyn_IL6R_l = 0.05;
+  kdeg_IL6R_l = 0.01;
+  ksyn_gp130_l = 0.05;
+  kdeg_gp130_l = 0.01;
+  kdeg_Cplx_l = 0.02;
+  kdeg_RC_l = 0.02;
+  kdeg_RCtrans_l = 0.02;
+
+  # Liver STAT3 kinetics (Michaelis?Menten)
+  Vphos_l = 10;
+  Vdeph_l = 5;
+  Km_STAT3 = 10;
+  Km_deph = 10;
+
+  # GI IL-6 production and turnover
+  ksyn_IL6_GI = 0.5;
+  kdeg_IL6_GI = 0.05;
+
+  # GI receptor turnover and complex degradation
+  ksyn_IL6R_g = 0.05;
+  kdeg_IL6R_g = 0.01;
+  ksyn_gp130_g = 0.05;
+  kdeg_gp130_g = 0.01;
+  kdeg_Cplx_g = 0.02;
+  kdeg_RC_g = 0.02;
+  kdeg_RCtrans_g = 0.02;
+
+  # GI STAT3 kinetics (Michaelis?Menten)
+  Vphos_g = 10;
+  Vdeph_g = 5;
+
+  # GI pSTAT3-induced gene expression (generic)
+  k_gene_basal = 0.05;
+  V_gene = 2;
+  K_gene = 10;
+  kdeg_gene = 0.02;
+
+  //// Other declarations:
+  const Serum, Liver, GI;
+  var RCtot_l, RCtot_g;
+  const k_on_s, k_off_s, k_on_sgp, k_off_sgp, k_on_R, k_off_R, k_on_RC, k_off_RC, k_on_trans, k_off_trans;
+  const ksyn_IL6_s, kdeg_IL6_s, ksyn_sIL6R, k_shed_CRPs, kdeg_sIL6R, ksyn_sgp130, kdeg_sgp130;
+  const k_crp_basal, V_crp, K_crp, kdeg_CRP;
+  const k_in_IL6_S_to_L, k_ex_IL6_L_to_S, k_in_complex_S_to_L, k_ex_complex_L_to_S;
+  const k_in_IL6_S_to_GI, k_ex_IL6_GI_to_S, k_in_complex_S_to_GI, k_ex_complex_GI_to_S;
+  const ksyn_IL6R_l, kdeg_IL6R_l, ksyn_gp130_l, kdeg_gp130_l, kdeg_Cplx_l, kdeg_RC_l, kdeg_RCtrans_l;
+  const Vphos_l, Vdeph_l, Km_STAT3, Km_deph;
+  const ksyn_IL6_GI, kdeg_IL6_GI, ksyn_IL6R_g, kdeg_IL6R_g, ksyn_gp130_g, kdeg_gp130_g, kdeg_Cplx_g, kdeg_RC_g, kdeg_RCtrans_g;
+  const Vphos_g, Vdeph_g, k_gene_basal, V_gene, K_gene, kdeg_gene;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;      # nmol
+  unit volume = liter;
+  unit time_unit = 3600 second;    # hour
+
+  //// Display Names:
+  Serum is "Blood serum/circulation";
+  Liver is "Liver compartment";
+  GI is "Gastrointestinal tract compartment";
+
+  IL6_s is "Interleukin-6 (serum)";
+  sIL6R_s is "Soluble IL-6 receptor (serum)";
+  sgp130_s is "Soluble gp130 (serum)";
+  CRP_s is "C-reactive protein (serum)";
+  IL6_sIL6R_s is "IL-6:sIL-6R complex (serum)";
+  IL6_sIL6R_s_sgp130 is "IL-6:sIL-6R:sgp130 ternary complex (serum)";
+
+  IL6_l_ext is "Extracellular IL-6 near liver";
+  IL6R_l is "Membrane IL-6R (liver)";
+  gp130_l is "Membrane gp130 (liver)";
+  C_IL6_IL6R_l is "IL-6:IL-6R complex (liver)";
+  RC_l is "Active receptor complex (classical, liver)";
+  IL6_sIL6R_l is "IL-6:sIL-6R complex (liver)";
+  RC_trans_l is "Active receptor complex (trans, liver)";
+  STAT3_l is "STAT3 (liver)";
+  pSTAT3_l is "pSTAT3 (liver)";
+
+  IL6_g_ext is "Extracellular IL-6 in GI";
+  IL6R_g is "Membrane IL-6R (GI)";
+  gp130_g is "Membrane gp130 (GI)";
+  C_IL6_IL6R_g is "IL-6:IL-6R complex (GI)";
+  RC_g is "Active receptor complex (classical, GI)";
+  IL6_sIL6R_g is "IL-6:sIL-6R complex (GI)";
+  RC_trans_g is "Active receptor complex (trans, GI)";
+  STAT3_g is "STAT3 (GI)";
+  pSTAT3_g is "pSTAT3 (GI)";
+  GeneProd_g is "Generic pSTAT3-induced gene product (GI)";
+
+end
+
+/* Notes:
+- Structure reflects the paper?s reduced IL-6 signaling (binding to IL-6R or sIL-6R; recruitment of gp130; STAT3 phosphorylation) embedded in liver and GI compartments, plus circulation (Serum).
+- sgp130 sequesters IL-6:sIL-6R in Serum.
+- CRP is produced (in Serum compartment) as a Michaelis?Menten function of liver pSTAT3; sIL-6R production is accelerated by CRP (shedding), consistent with text.
+- All major soluble species have basal production and first-order degradation; membrane receptors have turnover.
+- Exchange between Serum and organs is modeled by bidirectional linear transport.
+- Enzymatic steps (STAT3 phosphorylation/dephosphorylation and pSTAT3-driven expression) use Michaelis?Menten; all other processes are mass action, as specified.
+- Initial biomarker levels in nmol/L were converted from Table 1 (Crohn?s baseline) using the reported MWs.
+- Parameter values provided here are placeholders to ensure an executable model; the paper reports fitting/optimization details in supplementary material not included in the input. */

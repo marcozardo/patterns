@@ -1,0 +1,108 @@
+model *Hoffmann2002_NFkB_Signaling()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFkB in cytoplasm, NFkB_nuc in nucleus;
+  species IkBa in cytoplasm, IkBb in cytoplasm, IkBe in cytoplasm;
+  species IkBa_mRNA in cytoplasm, IkBb_mRNA in cytoplasm, IkBe_mRNA in cytoplasm;
+  species IKK in cytoplasm;
+  $TNF in cytoplasm;
+  species NFkB_IkB_cyto in cytoplasm, NFkB_IkB_nuc in nucleus;
+
+  //// Assignment Rules:
+  IkBa_synthesis := k_syn_IkBa * NFkB_nuc^2 / (Kd_IkBa^2 + NFkB_nuc^2);
+  IkBb_synthesis := k_syn_IkBb * NFkB_nuc^2 / (Kd_IkBb^2 + NFkB_nuc^2);
+  IkBe_synthesis := k_syn_IkBe * NFkB_nuc^2 / (Kd_IkBe^2 + NFkB_nuc^2);
+  IKK_activity := piecewise(k_IKK_max, TNF > 0, k_IKK_basal);
+
+  //// Rate Rules:
+  NFkB_nuc' = k_transport_in * NFkB - k_transport_out * NFkB_nuc - k_assoc_nuc * NFkB_nuc * (IkBa + IkBb + IkBe) + k_dissoc_nuc * NFkB_IkB_nuc;
+  IkBa_mRNA' = IkBa_synthesis - k_deg_mRNA * IkBa_mRNA;
+  IkBb_mRNA' = IkBb_synthesis - k_deg_mRNA * IkBb_mRNA;
+  IkBe_mRNA' = IkBe_synthesis - k_deg_mRNA * IkBe_mRNA;
+  IkBa' = k_translation * IkBa_mRNA - k_deg_IkBa * IkBa - k_phospho_IkBa * IKK_activity * IkBa - k_assoc_cyto * NFkB * IkBa + k_dissoc_cyto * NFkB_IkB_cyto;
+  IkBb' = k_translation * IkBb_mRNA - k_deg_IkBb * IkBb - k_phospho_IkBb * IKK_activity * IkBb - k_assoc_cyto * NFkB * IkBb + k_dissoc_cyto * NFkB_IkB_cyto;
+  IkBe' = k_translation * IkBe_mRNA - k_deg_IkBe * IkBe - k_phospho_IkBe * IKK_activity * IkBe - k_assoc_cyto * NFkB * IkBe + k_dissoc_cyto * NFkB_IkB_cyto;
+  NFkB' = -k_transport_in * NFkB + k_transport_out * NFkB_nuc - k_assoc_cyto * NFkB * (IkBa + IkBb + IkBe) + k_dissoc_cyto * NFkB_IkB_cyto;
+  NFkB_IkB_cyto' = k_assoc_cyto * NFkB * (IkBa + IkBb + IkBe) - k_dissoc_cyto * NFkB_IkB_cyto - k_transport_complex_in * NFkB_IkB_cyto;
+  NFkB_IkB_nuc' = k_transport_complex_in * NFkB_IkB_cyto - k_dissoc_nuc * NFkB_IkB_nuc + k_assoc_nuc * NFkB_nuc * (IkBa + IkBb + IkBe);
+
+  //// Events:
+  TNF_pulse: at time >= pulse_start: TNF = 1;
+  TNF_end: at time >= pulse_end: TNF = 0;
+
+  //// Species initializations:
+  NFkB = 100;
+  NFkB_nuc = 0;
+  IkBa = 50;
+  IkBb = 30;
+  IkBe = 20;
+  IkBa_mRNA = 5;
+  IkBb_mRNA = 3;
+  IkBe_mRNA = 2;
+  IKK = 0;
+  TNF = 0;
+  NFkB_IkB_cyto = 150;
+  NFkB_IkB_nuc = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  k_transport_in = 0.1;
+  k_transport_out = 0.05;
+  k_assoc_cyto = 0.01;
+  k_dissoc_cyto = 0.1;
+  k_assoc_nuc = 0.005;
+  k_dissoc_nuc = 0.05;
+  k_transport_complex_in = 0.02;
+  k_syn_IkBa = 10;
+  k_syn_IkBb = 3;
+  k_syn_IkBe = 2;
+  Kd_IkBa = 10;
+  Kd_IkBb = 15;
+  Kd_IkBe = 12;
+  k_translation = 1;
+  k_deg_mRNA = 0.1;
+  k_deg_IkBa = 0.05;
+  k_deg_IkBb = 0.03;
+  k_deg_IkBe = 0.04;
+  k_phospho_IkBa = 0.5;
+  k_phospho_IkBb = 0.3;
+  k_phospho_IkBe = 0.4;
+  k_IKK_basal = 0;
+  k_IKK_max = 1;
+  pulse_start = 0;
+  pulse_end = 60;
+
+  //// Other declarations:
+  var IkBa_synthesis, IkBb_synthesis, IkBe_synthesis, IKK_activity;
+  const k_transport_in, k_transport_out, k_assoc_cyto, k_dissoc_cyto, k_assoc_nuc, k_dissoc_nuc, k_transport_complex_in;
+  const k_syn_IkBa, k_syn_IkBb, k_syn_IkBe, Kd_IkBa, Kd_IkBb, Kd_IkBe, k_translation, k_deg_mRNA;
+  const k_deg_IkBa, k_deg_IkBb, k_deg_IkBe, k_phospho_IkBa, k_phospho_IkBb, k_phospho_IkBe;
+  const k_IKK_basal, k_IKK_max, pulse_start, pulse_end;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration = 1e-9 mole / liter;
+
+  //// Display Names:
+  time_unit is "minute";
+  concentration is "nanomolar";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  NFkB is "NF-?B (cytoplasmic)";
+  NFkB_nuc is "NF-?B (nuclear)";
+  IkBa is "I?B?";
+  IkBb is "I?B?";
+  IkBe is "I?B?";
+  IkBa_mRNA is "I?B? mRNA";
+  IkBb_mRNA is "I?B? mRNA";
+  IkBe_mRNA is "I?B? mRNA";
+  IKK is "I?B Kinase";
+  TNF is "TNF-?";
+  NFkB_IkB_cyto is "NF-?B:I?B Complex (cyto)";
+  NFkB_IkB_nuc is "NF-?B:I?B Complex (nuc)";
+
+end

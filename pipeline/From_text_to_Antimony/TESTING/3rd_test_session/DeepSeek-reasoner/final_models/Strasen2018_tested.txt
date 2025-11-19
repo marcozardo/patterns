@@ -1,0 +1,104 @@
+model *Strasen2018_TGFb_Signaling()
+
+  //// Compartments and Species:
+  compartment extracellular, cytoplasm, nucleus;
+  species TGFb in extracellular, 
+          $TGFbR1 in cytoplasm, $TGFbR2 in cytoplasm,
+          TGFbR1_TGFbR2_complex in cytoplasm,
+          $SMAD2 in cytoplasm, $pSMAD2 in cytoplasm,
+          $SMAD4 in cytoplasm, 
+          pSMAD2_SMAD4_complex in cytoplasm,
+          pSMAD2_SMAD4_complex_nuc in nucleus,
+          $SMAD7_mRNA in nucleus, $SMAD7 in cytoplasm,
+          $Feedback_Protein in cytoplasm;
+
+  //// Assignment Rules:
+  SMAD7_production_rate := k_SMAD7_basal + k_SMAD7_induced * pSMAD2_SMAD4_complex_nuc;
+  Receptor_inhibition := k_inhibition * SMAD7 * TGFbR1_TGFbR2_complex;
+  Nuclear_translocation_rate := k_import * pSMAD2_SMAD4_complex - k_export * pSMAD2_SMAD4_complex_nuc;
+  Phosphorylation_rate := k_phospho * TGFbR1_TGFbR2_complex * SMAD2;
+  Dephosphorylation_rate := k_dephospho * pSMAD2;
+  Complex_formation_rate := k_complex_form * pSMAD2 * SMAD4 - k_complex_dissoc * pSMAD2_SMAD4_complex;
+
+  //// Rate Rules:
+  TGFb' = -k_binding * TGFb * TGFbR2 + k_unbinding * TGFbR1_TGFbR2_complex - k_degradation * TGFb;
+  TGFbR1_TGFbR2_complex' = k_binding * TGFb * TGFbR2 - k_unbinding * TGFbR1_TGFbR2_complex - k_internalization * TGFbR1_TGFbR2_complex - Receptor_inhibition;
+  pSMAD2' = Phosphorylation_rate - Dephosphorylation_rate - Complex_formation_rate;
+  pSMAD2_SMAD4_complex' = Complex_formation_rate - Nuclear_translocation_rate;
+  pSMAD2_SMAD4_complex_nuc' = Nuclear_translocation_rate - k_nuclear_dephospho * pSMAD2_SMAD4_complex_nuc;
+  SMAD7_mRNA' = SMAD7_production_rate - k_mRNA_degradation * SMAD7_mRNA;
+  SMAD7' = k_translation * SMAD7_mRNA - k_protein_degradation * SMAD7;
+
+  //// Reactions:
+  Receptor_binding: TGFb + TGFbR2 -> TGFbR1_TGFbR2_complex; k_binding * TGFb * TGFbR2;
+  Receptor_unbinding: TGFbR1_TGFbR2_complex -> TGFb + TGFbR2; k_unbinding * TGFbR1_TGFbR2_complex;
+  Internalization: TGFbR1_TGFbR2_complex -> ; k_internalization * TGFbR1_TGFbR2_complex;
+
+  //// Events:
+  TGFb_stimulus: at time >= 0: TGFb = TGFb_stimulus_value;
+
+  //// Species initializations:
+  TGFb = 0;
+  TGFbR1 = 1000;
+  TGFbR2 = 1000;
+  TGFbR1_TGFbR2_complex = 0;
+  SMAD2 = 5000;
+  pSMAD2 = 0;
+  SMAD4 = 3000;
+  pSMAD2_SMAD4_complex = 0;
+  pSMAD2_SMAD4_complex_nuc = 0;
+  SMAD7_mRNA = 10;
+  SMAD7 = 100;
+  Feedback_Protein = 50;
+
+  //// Compartment initializations:
+  extracellular = 1;
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  k_binding = 0.001;
+  k_unbinding = 0.01;
+  k_internalization = 0.05;
+  k_phospho = 0.1;
+  k_dephospho = 0.2;
+  k_complex_form = 0.005;
+  k_complex_dissoc = 0.01;
+  k_import = 0.1;
+  k_export = 0.05;
+  k_nuclear_dephospho = 0.1;
+  k_SMAD7_basal = 0.1;
+  k_SMAD7_induced = 0.01;
+  k_mRNA_degradation = 0.1;
+  k_translation = 1.0;
+  k_protein_degradation = 0.05;
+  k_inhibition = 0.001;
+  k_degradation = 0.01;
+  TGFb_stimulus_value = 100;
+
+  //// Other declarations:
+  var TGFb, TGFbR1_TGFbR2_complex, pSMAD2, pSMAD2_SMAD4_complex, pSMAD2_SMAD4_complex_nuc, SMAD7_mRNA, SMAD7;
+  const TGFbR1, TGFbR2, SMAD2, SMAD4, Feedback_Protein;
+
+  //// Unit definitions:
+  unit concentration = 1e-9 mole;
+  unit time_unit = 3600 second;
+
+  //// Display Names:
+  TGFb is "TGF-beta ligand";
+  TGFbR1 is "TGF-beta receptor I";
+  TGFbR2 is "TGF-beta receptor II";
+  TGFbR1_TGFbR2_complex is "Active receptor complex";
+  SMAD2 is "SMAD2";
+  pSMAD2 is "Phosphorylated SMAD2";
+  SMAD4 is "SMAD4";
+  pSMAD2_SMAD4_complex is "SMAD2-SMAD4 complex";
+  pSMAD2_SMAD4_complex_nuc is "Nuclear SMAD complex";
+  SMAD7_mRNA is "SMAD7 mRNA";
+  SMAD7 is "SMAD7 protein";
+  Feedback_Protein is "Generic feedback regulator";
+  extracellular is "Extracellular space";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+
+end

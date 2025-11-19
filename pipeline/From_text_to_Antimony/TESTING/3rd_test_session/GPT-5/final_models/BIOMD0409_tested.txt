@@ -1,0 +1,112 @@
+model *Queralt2006_MitoticExit_Core()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Cdc20 in cell, Securin in cell, PP2A in cell, Net1P in cell, Cdc14 in cell, MEN in cell, Cdh1 in cell, Clb2 in cell;
+
+  //// Assignment Rules:
+  Cdk := Clb2;                                  // Clb2-Cdk activity proxy
+  Sepa := Sep_tot/(1 + (Securin/Ki_sec));       // separase activity increases as securin declines (inhibitory Hill-like form)
+
+  //// Rate Rules:
+  Cdc20' = k_syn20 - k_deg20*Cdc20;                                                                                              // Cdc20 synthesis is induced at t=0 (metaphase release), then turns over
+  Securin' = k_synSec - k_apc20*Cdc20*Securin - k_bdeg_sec*Securin;                                                                // APC^Cdc20-dependent securin destruction
+  PP2A' = k_Prec*(PP2A0 - PP2A) - k_Pdown*Sepa*PP2A;                                                                              // separase-dependent downregulation of PP2A^Cdc55 at anaphase onset
+  Net1P' = k_cdk_net1*Cdk*(1 - Net1P) + k_men_net1*MEN*(1 - Net1P) - k_pp2a_net1*PP2A*Net1P - k_cdc14_net1*Cdc14*Net1P;          // Net1 phosphorylation by Cdk and MEN; dephosphorylation by PP2A^Cdc55 and Cdc14
+  Cdc14' = k_release*(Net1P + k_men_c14*MEN)*(1 - Cdc14) - k_sequestration*(1 - Net1P)*Cdc14;                                     // Cdc14 release upon Net1 phosphorylation; resequestration when Net1 is unphosphorylated; MEN sustains release
+  MEN' = k_act_men*(Cdc14/(1 + k_inh_cdk*Clb2))*(1 - MEN) + k_bfa1*(1 - PP2A)*(1 - MEN) - k_inact_men*MEN;                        // MEN activated by Cdc14 and by Bfa1-P (favored when PP2A is low); inhibited by high Cdk; inactivates otherwise
+  Cdh1' = k_act_cdh1*Cdc14*(1 - Cdh1) - k_inh_cdh1*Clb2*Cdh1;                                                                      // Cdc14 activates Cdh1; Cdk inhibits Cdh1
+  Clb2' = k_syn_clb2 - (k_apc20_cyc*Cdc20 + k_apc_cdh1*Cdh1)*Clb2;                                                                 // Cyclin destruction by APC^Cdc20 early and APC^Cdh1 later
+
+  //// Reactions:
+  // (No explicit mass-balance reactions provided in the source text; dynamics are encoded by rate rules above.)
+
+  //// Events:
+  // (Not required; Cdc20 induction at time 0 is represented by constant synthesis with initial Cdc20 = 0.)
+
+  //// Species initializations:
+  Cdc20 = 0;        // metaphase deprivation of Cdc20
+  Securin = 1;      // securin high in metaphase
+  PP2A = 1;         // PP2A^Cdc55 high in metaphase
+  Net1P = 0.05;     // Net1 largely unphosphorylated in metaphase
+  Cdc14 = 0;        // Cdc14 sequestered/inactive
+  MEN = 0;          // MEN inactive
+  Cdh1 = 0;         // Cdh1 inactive
+  Clb2 = 1;         // mitotic cyclin high in metaphase
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Separase regulation
+  Sep_tot = 1;
+  Ki_sec = 0.2;
+
+  // Cdc20 dynamics
+  k_syn20 = 0.05;
+  k_deg20 = 0.02;
+
+  // Securin dynamics
+  k_synSec = 0.1;
+  k_apc20 = 0.5;
+  k_bdeg_sec = 0.01;
+
+  // PP2A^Cdc55 regulation
+  PP2A0 = 1;
+  k_Prec = 0.02;
+  k_Pdown = 0.5;
+
+  // Net1 phosphorylation/dephosphorylation
+  k_cdk_net1 = 0.4;
+  k_men_net1 = 0.3;
+  k_pp2a_net1 = 0.5;
+  k_cdc14_net1 = 0.5;
+
+  // Cdc14 release/resequestration
+  k_release = 1.0;
+  k_men_c14 = 0.3;
+  k_sequestration = 0.5;
+
+  // MEN control
+  k_act_men = 0.5;
+  k_inh_cdk = 2.0;
+  k_bfa1 = 0.1;
+  k_inact_men = 0.2;
+
+  // Cdh1 control
+  k_act_cdh1 = 0.5;
+  k_inh_cdh1 = 1.0;
+
+  // Clb2 turnover
+  k_syn_clb2 = 0.2;
+  k_apc20_cyc = 0.5;
+  k_apc_cdh1 = 0.8;
+
+  //// Other declarations:
+  var Cdk, Sepa;
+  const cell, Sep_tot, Ki_sec, k_syn20, k_deg20, k_synSec, k_apc20, k_bdeg_sec, PP2A0, k_Prec, k_Pdown, k_cdk_net1, k_men_net1, k_pp2a_net1, k_cdc14_net1, k_release, k_men_c14, k_sequestration, k_act_men, k_inh_cdk, k_bfa1, k_inact_men, k_act_cdh1, k_inh_cdh1, k_syn_clb2, k_apc20_cyc, k_apc_cdh1;
+
+  //// Unit definitions:
+  // (omitted)
+
+  //// Display Names:
+  cell is "Cell volume";
+  Cdc20 is "APC activator (Cdc20)";
+  Securin is "Securin (Pds1)";
+  Sepa is "Separase activity (derived)";
+  PP2A is "PP2A^Cdc55 activity";
+  Net1P is "Phosphorylated Net1 (reduced Cdc14 binding)";
+  Cdc14 is "Active Cdc14 phosphatase (released)";
+  MEN is "Mitotic Exit Network activity";
+  Cdh1 is "APC activator (Cdh1)";
+  Clb2 is "Mitotic cyclin (Clb2)";
+  Cdk is "Clb2-Cdk activity (proxy)";
+end
+
+/*
+Unmapped/assumed elements and notes:
+- The publication provides a wiring diagram and qualitative relationships for mitotic exit and states that full differential equations are in Figure S6 (supplementary), which is not included here. The present model encodes those qualitative interactions into normalized ODEs with placeholder parameter values to allow simulation. Replace parameters with those from Figure S6 for quantitative fidelity.
+- Positive feedbacks modeled: (i) Separase (after securin degradation) downregulates PP2A^Cdc55; (ii) Reduced PP2A promotes Net1 phosphorylation; (iii) Net1P releases Cdc14; (iv) Cdc14 activates MEN and Cdh1; (v) MEN further supports Net1 phosphorylation and Cdc14 maintenance; (vi) Cdh1 accelerates Clb2 degradation, lowering Cdk.
+- MEN inhibition by high Cdk and activation via Bfa1 phosphorylation when PP2A is low are represented phenomenologically.
+- Variables represent activities/fractions (0..1). Units are arbitrary; cell volume set to 1.
+*/

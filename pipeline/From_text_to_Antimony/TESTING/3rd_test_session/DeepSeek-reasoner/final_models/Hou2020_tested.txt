@@ -1,0 +1,62 @@
+model *Hou2020_COVID19_SEIR()
+
+  //// Compartments and Species:
+  compartment Population;
+  species S in Population, E in Population, I in Population, R in Population;
+
+  //// Assignment Rules:
+  N := S + E + I + R;
+
+  //// Rate Rules:
+  S' = -r1*beta1*I*S/N - r2*beta2*E*S/N;
+  E' = r1*beta1*I*S/N - incubation_rate*E + r2*beta2*E*S/N;
+  I' = incubation_rate*E - gamma*I;
+  R' = gamma*I;
+
+  //// Reactions:
+  /* Note: The SEIR dynamics are implemented as rate rules above rather than reactions 
+     because the system uses population-level differential equations */
+
+  //// Events:
+  /* No discrete events specified in the model */
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  Population = 11081000;
+
+  //// Variable initializations:
+  r1 = 6;
+  r2 = 18;
+  beta1 = 0.4;
+  beta2 = 0.2;
+  incubation_rate = 0.14;
+  gamma = 0.048;
+
+  //// Other declarations:
+  var S, E, I, R, N;
+  const Population, r1, r2, beta1, beta2, incubation_rate, gamma;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+  unit population_unit = 1 individual;
+
+  //// Display Names:
+  S is "Susceptible population";
+  E is "Exposed (latent) population";
+  I is "Infectious population";
+  R is "Recovered population";
+  N is "Total population";
+  Population is "Wuhan population compartment";
+  r1 is "Contact rate of infected individuals";
+  r2 is "Contact rate of latent individuals";
+  beta1 is "Infection probability from infected";
+  beta2 is "Infection probability from exposed";
+  incubation_rate is "Incubation rate (1/incubation period)";
+  gamma is "Recovery rate (1/duration of infection)";
+
+end

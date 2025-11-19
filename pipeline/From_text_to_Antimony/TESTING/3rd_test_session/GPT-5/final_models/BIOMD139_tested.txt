@@ -1,0 +1,98 @@
+model *Hoffmann2002_IKB_NFKB_Module()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFkB_c in cytoplasm, NFkB_n in nucleus;
+  species IkBa_c in cytoplasm, IkBb_c in cytoplasm, IkBe_c in cytoplasm;
+  species C_a in cytoplasm, C_b in cytoplasm, C_e in cytoplasm;
+
+  //// Reactions:
+  B_a: NFkB_c + IkBa_c -> C_a; kon_a*NFkB_c*IkBa_c - koff_a*C_a;  # reversible binding/unbinding
+  B_b: NFkB_c + IkBb_c -> C_b; kon_b*NFkB_c*IkBb_c - koff_b*C_b;  # reversible binding/unbinding
+  B_e: NFkB_c + IkBe_c -> C_e; kon_e*NFkB_c*IkBe_c - koff_e*C_e;  # reversible binding/unbinding
+
+  D_a_free: IkBa_c => ; (kdeg_a_base + kdeg_a_IKK*IKK_act)*IkBa_c;  # IKK-dependent degradation of free IkBa
+  D_b_free: IkBb_c => ; (kdeg_b_base + kdeg_b_IKK*IKK_act)*IkBb_c;  # IKK-dependent degradation of free IkBb
+  D_e_free: IkBe_c => ; (kdeg_e_base + kdeg_e_IKK*IKK_act)*IkBe_c;  # IKK-dependent degradation of free IkBe
+
+  D_a_complex: C_a => NFkB_c; (kdeg_aC_base + kdeg_aC_IKK*IKK_act)*C_a;  # degradation of IkBa within complex, releasing NFkB
+  D_b_complex: C_b => NFkB_c; (kdeg_bC_base + kdeg_bC_IKK*IKK_act)*C_b;  # degradation of IkBb within complex, releasing NFkB
+  D_e_complex: C_e => NFkB_c; (kdeg_eC_base + kdeg_eC_IKK*IKK_act)*C_e;  # degradation of IkBe within complex, releasing NFkB
+
+  T_in:  NFkB_c => NFkB_n; k_in*NFkB_c;   # cytoplasm to nucleus translocation
+  T_out: NFkB_n => NFkB_c; k_out*NFkB_n;  # nucleus to cytoplasm export
+
+  S_a:  => IkBa_c;  vsyn_a_bas + vsyn_a_ind*(NFkB_n/(K_NF + NFkB_n));  # NF-?B?induced IkBa synthesis
+  S_b:  => IkBb_c;  vsyn_b_bas + vsyn_b_ind*(NFkB_n/(K_NF + NFkB_n));  # NF-?B?induced IkBb synthesis
+  S_e:  => IkBe_c;  vsyn_e_bas + vsyn_e_ind*(NFkB_n/(K_NF + NFkB_n));  # NF-?B?induced IkBe synthesis
+
+  //// Events:
+  E_on:  at time >= t_on:  IKK_act = IKK_on;
+  E_off: at time >= t_off: IKK_act = IKK_base;
+
+  //// Species initializations:
+  NFkB_c = 1;
+  NFkB_n = 0;
+  IkBa_c = 1;
+  IkBb_c = 0.5;
+  IkBe_c = 0.5;
+  C_a = 0;
+  C_b = 0;
+  C_e = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  kon_a = 1;
+  koff_a = 0.1;
+  kon_b = 1;
+  koff_b = 0.1;
+  kon_e = 1;
+  koff_e = 0.1;
+
+  kdeg_a_base = 0.001;
+  kdeg_a_IKK  = 0.5;
+  kdeg_b_base = 0.001;
+  kdeg_b_IKK  = 0.5;
+  kdeg_e_base = 0.001;
+  kdeg_e_IKK  = 0.5;
+
+  kdeg_aC_base = 0.001;
+  kdeg_aC_IKK  = 1;
+  kdeg_bC_base = 0.001;
+  kdeg_bC_IKK  = 1;
+  kdeg_eC_base = 0.001;
+  kdeg_eC_IKK  = 1;
+
+  k_in  = 0.2;
+  k_out = 0.1;
+
+  vsyn_a_bas = 0.001;
+  vsyn_a_ind = 0.5;   # IkBa strongly NF-?B?responsive
+  vsyn_b_bas = 0.001;
+  vsyn_b_ind = 0.1;   # IkBb slower/damping role
+  vsyn_e_bas = 0.001;
+  vsyn_e_ind = 0.1;   # IkBe slower/damping role
+  K_NF = 0.5;
+
+  IKK_on   = 1;
+  IKK_base = 0;
+  IKK_act  = IKK_base;
+
+  t_on  = 0;       # stimulus onset (time units of the simulator)
+  t_off = 1e9;     # stimulus offset; large default -> effectively persistent
+
+  //// Other declarations:
+  var IKK_act;
+  const cytoplasm, nucleus, kon_a, koff_a, kon_b, koff_b, kon_e, koff_e, kdeg_a_base, kdeg_a_IKK, kdeg_b_base, kdeg_b_IKK, kdeg_e_base, kdeg_e_IKK, kdeg_aC_base, kdeg_aC_IKK, kdeg_bC_base, kdeg_bC_IKK, kdeg_eC_base, kdeg_eC_IKK, k_in, k_out, vsyn_a_bas, vsyn_a_ind, vsyn_b_bas, vsyn_b_ind, vsyn_e_bas, vsyn_e_ind, K_NF, IKK_on, IKK_base, t_on, t_off;
+
+end
+
+/* Unmapped/assumed elements and notes:
+- The input text specifies components and qualitative dynamics of the I?B?NF-?B?IKK module, including three I?B isoforms (I?B?, I?B?, I?B?), cytoplasmic sequestration of NF-?B, IKK-dependent degradation of I?B (free and in complex), NF-?B nuclear translocation, and NF-?B?induced synthesis of I?B genes. It does not provide explicit kinetic parameter values or initial concentrations.
+- Numerical values provided here (rate constants, initial amounts) are placeholders to yield an executable model and should be replaced with empirically fitted values from the original Supporting Online Material if available.
+- Events E_on/E_off model transient vs. persistent IKK activation (e.g., TNF-? stimulation) consistent with described pulses (5?60 min) and persistent stimuli; adjust t_off to match desired pulse duration.
+- This minimal mass-action/activation model reflects the roles described: I?B? provides strong negative feedback (higher vsyn_a_ind), while I?B? and I?B? contribute to damping (lower vsyn_b/e_ind).
+*/

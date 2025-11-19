@@ -1,0 +1,61 @@
+model *Kimmel2021_CART_Competition()
+
+  //// Compartments and Species:
+  compartment body;
+  species N in body, C in body, B in body;
+
+  //// Assignment Rules:
+  T := N + C;
+  rC := rho_C + b*(T - K_N)^2/(a*(T^2) + (T - K_N)^2);
+
+  //// Rate Rules:
+  N' = - r_N*N*ln((N + C)/K_N);
+  C' = - rC*C*ln((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*(C/(k_B + C));
+
+  //// Species initializations:
+  N = 3e9;
+  C = 1.8e8;
+  B = 9.486e10;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  K_N = 2.5e11;
+  K_C = 6.96e10;
+  r_N = 1.70e-1;
+  rho_C = 2.51e-2;
+  a = 4.23e-1;
+  b = 5.25e-1;
+  r_B = 0.19;
+  gamma_B = 1.15;
+  k_B = 2.024e9;
+
+  //// Other declarations:
+  var T, rC;
+  const body, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Display Names:
+  body is "System volume (arbitrary)";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "CD19+ tumour cells";
+  T is "Total lymphocytes (N + C)";
+  rC is "Effective CAR T turnover rate";
+  K_N is "Normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "Normal T net rate (day^-1)";
+  rho_C is "Baseline CAR T net rate (day^-1)";
+  a is "Signalling inefficiency factor in rC";
+  b is "Immune reconstitution impact in rC (day^-1)";
+  r_B is "Tumour net growth rate (day^-1)";
+  gamma_B is "Max tumour-killing rate (day^-1)";
+  k_B is "Killing saturation constant (cells)";
+end
+
+/* Notes and unmapped details:
+- rC(T) functional form: The main text contained a formatting ambiguity. We used the form from the figure description:
+  rC = rho_C + b*(T - K_N)^2 / (a*(T^2) + (T - K_N)^2).
+- Tumour growth rate r_B: Table 1 lists a range ((1?50)*1e-2 day^-1). We initialized r_B = 0.19 day^-1 (the ?medium? value referenced in Fig. 3b) as a default; adjust as needed.
+- Units: Variables are treated as absolute cell numbers; rates are per day. */

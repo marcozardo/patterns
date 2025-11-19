@@ -1,0 +1,225 @@
+model Kok2020_IFNalpha_Signaling()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IFN in cytoplasm, Rec in cytoplasm, aRecIFN in cytoplasm;
+  species STAT1_c in cytoplasm, STAT2_c in cytoplasm, IRF9_c in cytoplasm;
+  species pSTAT1_c in cytoplasm, pSTAT2_c in cytoplasm;
+  species pSTAT1dim_c in cytoplasm, pSTAT1pSTAT2_c in cytoplasm, ISGF3_c in cytoplasm;
+  species STAT1_n in nucleus, STAT2_n in nucleus, IRF9_n in nucleus;
+  species pSTAT1_n in nucleus, pSTAT2_n in nucleus;
+  species pSTAT1dim_n in nucleus, pSTAT1pSTAT2_n in nucleus, ISGF3_n in nucleus;
+  species OccGASbs in nucleus, OccISREbs in nucleus, OccGASISREbs in nucleus;
+  species SOCS3_mRNA in cytoplasm, USP18_mRNA in cytoplasm, SOCS1_mRNA in cytoplasm;
+  species IRF2_mRNA in cytoplasm, IRF9_mRNA in cytoplasm, STAT1_mRNA in cytoplasm, STAT2_mRNA in cytoplasm;
+  species SOCS3 in cytoplasm, USP18 in cytoplasm, SOCS1 in cytoplasm, IRF2 in cytoplasm;
+
+  //// Assignment Rules:
+  tSTAT1 := STAT1_c + pSTAT1_c + 2*pSTAT1dim_c + pSTAT1pSTAT2_c + ISGF3_c + STAT1_n + pSTAT1_n + 2*pSTAT1dim_n + pSTAT1pSTAT2_n + ISGF3_n;
+  tSTAT2 := STAT2_c + pSTAT2_c + pSTAT1pSTAT2_c + ISGF3_c + STAT2_n + pSTAT2_n + pSTAT1pSTAT2_n + ISGF3_n;
+  tIRF9 := IRF9_c + ISGF3_c + IRF9_n + ISGF3_n;
+  tUSP18 := USP18;
+
+  //// Rate Rules:
+  IFN' = -k_bind*IFN*Rec + k_off*aRecIFN - k_deg_IFN*IFN;
+  Rec' = -k_bind*IFN*Rec + k_off*aRecIFN + k_syn_Rec - k_deg_Rec*Rec - k_int_Rec*aRecIFN*SOCS1 - k_int_Rec_USP18*aRecIFN*SOCS1*USP18;
+  aRecIFN' = k_bind*IFN*Rec - k_off*aRecIFN - k_phos_STAT1*aRecIFN*STAT1_c - k_phos_STAT2*aRecIFN*STAT2_c - k_int_Rec*aRecIFN*SOCS1 - k_int_Rec_USP18*aRecIFN*SOCS1*USP18;
+
+  //// Reactions:
+  STAT1_phosphorylation: aRecIFN + STAT1_c -> aRecIFN + pSTAT1_c; k_phos_STAT1*aRecIFN*STAT1_c;
+  STAT2_phosphorylation: aRecIFN + STAT2_c -> aRecIFN + pSTAT2_c; k_phos_STAT2*aRecIFN*STAT2_c;
+  STAT1_dimerization: 2 pSTAT1_c -> pSTAT1dim_c; k_dim_STAT1*pSTAT1_c^2;
+  STAT1_STAT2_dimerization: pSTAT1_c + pSTAT2_c -> pSTAT1pSTAT2_c; k_dim_STAT1_STAT2*pSTAT1_c*pSTAT2_c;
+  ISGF3_formation: pSTAT1pSTAT2_c + IRF9_c -> ISGF3_c; k_form_ISGF3*pSTAT1pSTAT2_c*IRF9_c;
+  
+  pSTAT1dim_import: pSTAT1dim_c -> pSTAT1dim_n; k_imp_pSTAT1dim*pSTAT1dim_c;
+  pSTAT1pSTAT2_import: pSTAT1pSTAT2_c -> pSTAT1pSTAT2_n; k_imp_pSTAT1pSTAT2*pSTAT1pSTAT2_c;
+  ISGF3_import: ISGF3_c -> ISGF3_n; k_imp_ISGF3*ISGF3_c;
+  
+  STAT1_export: STAT1_n -> STAT1_c; k_exp_STAT1*STAT1_n;
+  STAT2_export: STAT2_n -> STAT2_c; k_exp_STAT2*STAT2_n;
+  IRF9_export: IRF9_n -> IRF9_c; k_exp_IRF9*IRF9_n;
+  
+  GAS_binding: pSTAT1dim_n + OccGASbs -> OccGASbs; k_bind_GAS*pSTAT1dim_n*(1 - OccGASbs);
+  ISRE_binding: ISGF3_n + OccISREbs -> OccISREbs; k_bind_ISRE*ISGF3_n*(1 - OccISREbs);
+  GASISRE_binding: pSTAT1pSTAT2_n + ISGF3_n + OccGASISREbs -> OccGASISREbs; k_bind_GASISRE*(pSTAT1pSTAT2_n + ISGF3_n)*(1 - OccGASISREbs);
+  
+  SOCS3_transcription: OccGASbs -> OccGASbs + SOCS3_mRNA; k_syn_SOCS3_mRNA*OccGASbs;
+  USP18_transcription: OccGASISREbs -> OccGASISREbs + USP18_mRNA; k_syn_USP18_mRNA*OccGASISREbs;
+  SOCS1_transcription: OccGASISREbs -> OccGASISREbs + SOCS1_mRNA; k_syn_SOCS1_mRNA*OccGASISREbs;
+  IRF2_transcription: OccGASISREbs -> OccGASISREbs + IRF2_mRNA; k_syn_IRF2_mRNA*OccGASISREbs;
+  IRF9_transcription: OccGASISREbs -> OccGASISREbs + IRF9_mRNA; k_syn_IRF9_mRNA*OccGASISREbs;
+  STAT1_transcription: OccGASISREbs -> OccGASISREbs + STAT1_mRNA; k_syn_STAT1_mRNA*OccGASISREbs;
+  STAT2_transcription: OccGASISREbs -> OccGASISREbs + STAT2_mRNA; k_syn_STAT2_mRNA*OccGASISREbs;
+  
+  SOCS3_translation: SOCS3_mRNA -> SOCS3_mRNA + SOCS3; k_syn_SOCS3*SOCS3_mRNA;
+  USP18_translation: USP18_mRNA -> USP18_mRNA + USP18; k_syn_USP18*USP18_mRNA;
+  SOCS1_translation: SOCS1_mRNA -> SOCS1_mRNA + SOCS1; k_syn_SOCS1*SOCS1_mRNA;
+  IRF2_translation: IRF2_mRNA -> IRF2_mRNA + IRF2; k_syn_IRF2*IRF2_mRNA;
+  IRF9_translation: IRF9_mRNA -> IRF9_mRNA + IRF9_c; k_syn_IRF9*IRF9_mRNA;
+  STAT1_translation: STAT1_mRNA -> STAT1_mRNA + STAT1_c; k_syn_STAT1*STAT1_mRNA;
+  STAT2_translation: STAT2_mRNA -> STAT2_mRNA + STAT2_c; k_syn_STAT2*STAT2_mRNA;
+  
+  SOCS3_mRNA_degradation: SOCS3_mRNA -> ; k_deg_SOCS3_mRNA*SOCS3_mRNA;
+  USP18_mRNA_degradation: USP18_mRNA -> ; k_deg_USP18_mRNA*USP18_mRNA;
+  SOCS1_mRNA_degradation: SOCS1_mRNA -> ; k_deg_SOCS1_mRNA*SOCS1_mRNA;
+  IRF2_mRNA_degradation: IRF2_mRNA -> ; k_deg_IRF2_mRNA*IRF2_mRNA;
+  IRF9_mRNA_degradation: IRF9_mRNA -> ; k_deg_IRF9_mRNA*IRF9_mRNA;
+  STAT1_mRNA_degradation: STAT1_mRNA -> ; k_deg_STAT1_mRNA*STAT1_mRNA;
+  STAT2_mRNA_degradation: STAT2_mRNA -> ; k_deg_STAT2_mRNA*STAT2_mRNA;
+  
+  SOCS3_degradation: SOCS3 -> ; k_deg_SOCS3*SOCS3;
+  USP18_degradation: USP18 -> ; k_deg_USP18*USP18;
+  SOCS1_degradation: SOCS1 -> ; k_deg_SOCS1*SOCS1;
+  IRF2_degradation: IRF2 -> ; k_deg_IRF2*IRF2;
+  IRF9_degradation: IRF9_c -> ; k_deg_IRF9*IRF9_c;
+  STAT1_degradation: STAT1_c -> ; k_deg_STAT1*STAT1_c;
+  STAT2_degradation: STAT2_c -> ; k_deg_STAT2*STAT2_c;
+
+  //// Events:
+  at (time >= 0): IFN = 2.8e-12;
+  at (time >= 0): IFN = 1.4e-9;
+  at (time >= 86400): IFN = 1.4e-9;
+
+  //// Species initializations:
+  IFN = 0;
+  Rec = 1e4;
+  aRecIFN = 0;
+  STAT1_c = 5e5;
+  STAT2_c = 5e4;
+  IRF9_c = 1e3;
+  pSTAT1_c = 0;
+  pSTAT2_c = 0;
+  pSTAT1dim_c = 0;
+  pSTAT1pSTAT2_c = 0;
+  ISGF3_c = 0;
+  STAT1_n = 0;
+  STAT2_n = 0;
+  IRF9_n = 0;
+  pSTAT1_n = 0;
+  pSTAT2_n = 0;
+  pSTAT1dim_n = 0;
+  pSTAT1pSTAT2_n = 0;
+  ISGF3_n = 0;
+  OccGASbs = 0;
+  OccISREbs = 0;
+  OccGASISREbs = 0;
+  SOCS3_mRNA = 0;
+  USP18_mRNA = 0;
+  SOCS1_mRNA = 0;
+  IRF2_mRNA = 0;
+  IRF9_mRNA = 0;
+  STAT1_mRNA = 0;
+  STAT2_mRNA = 0;
+  SOCS3 = 0;
+  USP18 = 1e3;
+  SOCS1 = 0;
+  IRF2 = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  k_bind = 1e7;
+  k_off = 0.1;
+  k_deg_IFN = 0.01;
+  k_syn_Rec = 1e3;
+  k_deg_Rec = 0.001;
+  k_int_Rec = 1e5;
+  k_int_Rec_USP18 = 1e6;
+  k_phos_STAT1 = 1e6;
+  k_phos_STAT2 = 1e6;
+  k_dim_STAT1 = 1e6;
+  k_dim_STAT1_STAT2 = 1e6;
+  k_form_ISGF3 = 1e6;
+  k_imp_pSTAT1dim = 0.1;
+  k_imp_pSTAT1pSTAT2 = 0.1;
+  k_imp_ISGF3 = 0.1;
+  k_exp_STAT1 = 0.01;
+  k_exp_STAT2 = 0.01;
+  k_exp_IRF9 = 0.01;
+  k_bind_GAS = 1e6;
+  k_bind_ISRE = 1e6;
+  k_bind_GASISRE = 1e6;
+  k_syn_SOCS3_mRNA = 1e-3;
+  k_syn_USP18_mRNA = 1e-3;
+  k_syn_SOCS1_mRNA = 1e-3;
+  k_syn_IRF2_mRNA = 1e-3;
+  k_syn_IRF9_mRNA = 1e-3;
+  k_syn_STAT1_mRNA = 1e-3;
+  k_syn_STAT2_mRNA = 1e-3;
+  k_syn_SOCS3 = 1e-2;
+  k_syn_USP18 = 1e-2;
+  k_syn_SOCS1 = 1e-2;
+  k_syn_IRF2 = 1e-2;
+  k_syn_IRF9 = 1e-2;
+  k_syn_STAT1 = 1e-2;
+  k_syn_STAT2 = 1e-2;
+  k_deg_SOCS3_mRNA = 0.01;
+  k_deg_USP18_mRNA = 0.01;
+  k_deg_SOCS1_mRNA = 0.01;
+  k_deg_IRF2_mRNA = 0.01;
+  k_deg_IRF9_mRNA = 0.01;
+  k_deg_STAT1_mRNA = 0.01;
+  k_deg_STAT2_mRNA = 0.01;
+  k_deg_SOCS3 = 0.001;
+  k_deg_USP18 = 0.001;
+  k_deg_SOCS1 = 0.001;
+  k_deg_IRF2 = 0.001;
+  k_deg_IRF9 = 0.001;
+  k_deg_STAT1 = 0.001;
+  k_deg_STAT2 = 0.001;
+
+  //// Other declarations:
+  var tSTAT1, tSTAT2, tIRF9, tUSP18;
+  const cytoplasm, nucleus, k_bind, k_off, k_deg_IFN, k_syn_Rec, k_deg_Rec, k_int_Rec, k_int_Rec_USP18, k_phos_STAT1, k_phos_STAT2, k_dim_STAT1, k_dim_STAT1_STAT2, k_form_ISGF3, k_imp_pSTAT1dim, k_imp_pSTAT1pSTAT2, k_imp_ISGF3, k_exp_STAT1, k_exp_STAT2, k_exp_IRF9, k_bind_GAS, k_bind_ISRE, k_bind_GASISRE, k_syn_SOCS3_mRNA, k_syn_USP18_mRNA, k_syn_SOCS1_mRNA, k_syn_IRF2_mRNA, k_syn_IRF9_mRNA, k_syn_STAT1_mRNA, k_syn_STAT2_mRNA, k_syn_SOCS3, k_syn_USP18, k_syn_SOCS1, k_syn_IRF2, k_syn_IRF9, k_syn_STAT1, k_syn_STAT2, k_deg_SOCS3_mRNA, k_deg_USP18_mRNA, k_deg_SOCS1_mRNA, k_deg_IRF2_mRNA, k_deg_IRF9_mRNA, k_deg_STAT1_mRNA, k_deg_STAT2_mRNA, k_deg_SOCS3, k_deg_USP18, k_deg_SOCS1, k_deg_IRF2, k_deg_IRF9, k_deg_STAT1, k_deg_STAT2;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 1 second;
+
+  //// Display Names:
+  substance is "nanomole";
+  time_unit is "second";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  IFN is "Interferon alpha";
+  Rec is "IFN Receptor";
+  aRecIFN is "Active Receptor-IFN Complex";
+  STAT1_c is "STAT1 Cytoplasm";
+  STAT2_c is "STAT2 Cytoplasm";
+  IRF9_c is "IRF9 Cytoplasm";
+  pSTAT1_c is "Phospho-STAT1 Cytoplasm";
+  pSTAT2_c is "Phospho-STAT2 Cytoplasm";
+  pSTAT1dim_c is "STAT1 Homodimer Cytoplasm";
+  pSTAT1pSTAT2_c is "STAT1-STAT2 Heterodimer Cytoplasm";
+  ISGF3_c is "ISGF3 Complex Cytoplasm";
+  STAT1_n is "STAT1 Nucleus";
+  STAT2_n is "STAT2 Nucleus";
+  IRF9_n is "IRF9 Nucleus";
+  pSTAT1_n is "Phospho-STAT1 Nucleus";
+  pSTAT2_n is "Phospho-STAT2 Nucleus";
+  pSTAT1dim_n is "STAT1 Homodimer Nucleus";
+  pSTAT1pSTAT2_n is "STAT1-STAT2 Heterodimer Nucleus";
+  ISGF3_n is "ISGF3 Complex Nucleus";
+  OccGASbs is "Occupied GAS Binding Sites";
+  OccISREbs is "Occupied ISRE Binding Sites";
+  OccGASISREbs is "Occupied GAS+ISRE Binding Sites";
+  SOCS3_mRNA is "SOCS3 mRNA";
+  USP18_mRNA is "USP18 mRNA";
+  SOCS1_mRNA is "SOCS1 mRNA";
+  IRF2_mRNA is "IRF2 mRNA";
+  IRF9_mRNA is "IRF9 mRNA";
+  STAT1_mRNA is "STAT1 mRNA";
+  STAT2_mRNA is "STAT2 mRNA";
+  SOCS3 is "SOCS3 Protein";
+  USP18 is "USP18 Protein";
+  SOCS1 is "SOCS1 Protein";
+  IRF2 is "IRF2 Protein";
+  tSTAT1 is "Total STAT1";
+  tSTAT2 is "Total STAT2";
+  tIRF9 is "Total IRF9";
+  tUSP18 is "Total USP18";
+
+end

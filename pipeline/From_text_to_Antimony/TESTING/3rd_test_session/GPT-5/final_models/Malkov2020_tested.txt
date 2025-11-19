@@ -1,0 +1,81 @@
+model *Malkov2020_SEIRS()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  Rtilde := 0.5*(Rtilde1 + Rtilde2);   # Time-varying reproduction number (average of two components)
+  beta := gamma_*Rtilde;                 # Transmission rate
+
+  //// Rate Rules:
+  S' = -beta*(S/N)*I + omega*R;
+  E' =  beta*(S/N)*I - sigma*E;
+  I' =  sigma*E - gamma_*I;
+  R' =  gamma_*I - omega*R;
+  Rtilde1' = -eta1*(Rtilde1 - R1_star);
+  Rtilde2' = -eta2*(Rtilde2 - R2_star);
+
+  //// Reactions:
+  # not present
+
+  //// Events:
+  # One-time reinfection scenario (Section 4.2): at time t_star, move all R back to S.
+  # To emulate this scenario, set omega = 0 and choose t_star (e.g., 120 or 30 days).
+  # Default t_star is set very large to disable this event by default.
+  at(time >= t_star): S = S + R, R = 0;
+
+  //// Species initializations:
+  S = 0.95525;    # S(0) = 1 - E(0) - I(0) - R(0)
+  E = 0.04375;    # E(0) = 43.75 * I(0)
+  I = 0.001;      # I(0) = 1/1000
+  R = 0;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  N = 1;               # Total population (normalized)
+  sigma = 1/5.2;       # Incubation (latent) rate
+  gamma_ = 1/18;        # Recovery rate
+  omega = 0;           # Immunity waning rate (set >0 for reinfection via waning; e.g., 1/365, 1/183, 1/120, 1/60)
+  Rtilde1 = 3;         # Initial value for component 1 of time-varying reproduction number
+  Rtilde2 = 3;         # Initial value for component 2 of time-varying reproduction number
+  R1_star = 1.6;       # Long-run value for Rtilde1
+  R2_star = 1.6;       # Long-run value for Rtilde2
+  eta1 = 1/20;         # Convergence rate for Rtilde1
+  eta2 = 1/20;         # Convergence rate for Rtilde2
+  t_star = 1e9;        # Time for one-time reinfection event (days); set to 120 or 30 to reproduce Section 4.2 cases
+
+  //// Other declarations:
+  var Rtilde1, Rtilde2, Rtilde, beta;
+  const population, N, sigma, gamma_, omega, R1_star, R2_star, eta1, eta2, t_star;
+
+  //// Display Names:
+  population is "Population (normalized to 1)";
+  S is "Susceptible (fraction)";
+  E is "Exposed (fraction)";
+  I is "Infectious (fraction)";
+  R is "Resistant/Recovered (fraction)";
+  Rtilde is "Effective reproduction number";
+  Rtilde1 is "R~ component 1";
+  Rtilde2 is "R~ component 2";
+  beta is "Transmission rate";
+  sigma is "Incubation rate (1/latent period)";
+  gamma_ is "Recovery rate (1/infectious period)";
+  omega is "Immunity waning rate";
+  eta1 is "Convergence rate of R~_1 to R1*";
+  eta2 is "Convergence rate of R~_2 to R2*";
+  R1_star is "Long-run R~_1";
+  R2_star is "Long-run R~_2";
+  t_star is "One-time reinfection event time";
+end
+
+/* 
+Notes and mapping to the source:
+- Core SEIRS with waning immunity (?) and time-varying transmission: Eqs. (2)-(5), ?(t)=??R?(t).
+- R?(t) parameterization via two components converging to long-run targets: Eqs. (7)-(9) and (11)-(12); implemented with rate rules for Rtilde1 and Rtilde2 and assignment Rtilde = 0.5*(Rtilde1+Rtilde2).
+- Defaults for ? = 1/5.2, ? = 1/18, N = 1, I(0)=1/1000, E(0)=43.75*I(0), R(0)=0 taken from Section 2.
+- ? default is 0 (no reinfection); set to values like 1/365, 1/183, 1/120, 1/60 to model waning-immunity reinfection (Section 2 and simulations).
+- Event encodes the "one-time reinfection" scenario (Section 4.2): set ? = 0 and choose t_star = 120 or 30 days as in the paper.
+- Alternative 7-compartment ?milder disease after reinfection? model (Section 4.1) with {S_p,S_s,E_p,E_s,I_p,I_s,R} and parameter relations (?_s=?_p/2, ?_s=2?_p, ?_s=?_p) is an alternative formulation and thus not combined here to avoid mixing frameworks in one executable model. */

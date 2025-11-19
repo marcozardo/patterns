@@ -1,0 +1,302 @@
+model *Kok2020_IFNa_JAKSTAT_Minimal()
+
+  //// Compartments and Species:
+  compartment extracellular, cyt, nuc;
+
+  # Boundary ligand pool (externally applied IFN?)
+  species $IFN_ext in extracellular;
+
+  # Receptor states (membrane lumped into cyt)
+  species Rec in cyt, aRecIFN in cyt;
+
+  # Cytoplasmic transcription factors
+  species STAT1c in cyt, STAT2c in cyt, IRF9c in cyt;
+  species pSTAT1dimc in cyt, pSTAT1pSTAT2c in cyt, ISGF3c in cyt;
+
+  # Nuclear transcription factors and complexes
+  species STAT1n in nuc, STAT2n in nuc, IRF9n in nuc;
+  species pSTAT1dimn in nuc, pSTAT1pSTAT2n in nuc, ISGF3n in nuc;
+
+  # Feedback regulators (proteins; cytoplasmic pool)
+  species USP18 in cyt, SOCS1 in cyt, SOCS3 in cyt, IRF2 in cyt;
+
+  # Feedback and STAT mRNAs (lumped transcript pools; cytoplasmic)
+  species STAT1_mRNA in cyt, STAT2_mRNA in cyt, IRF9_mRNA in cyt;
+  species USP18_mRNA in cyt, SOCS1_mRNA in cyt, SOCS3_MRNA in cyt, IRF2_MRNA in cyt;
+
+  //// Assignment Rules:
+  # Occupied promoter binding sites (proxies for antiviral transcriptional activity)
+  OccGASbs := k_GAS_occ * pSTAT1dimn;
+  OccISREbs := k_ISRE_occ * ISGF3n;
+  OccGASbs_plus_OccISREbs := OccGASbs + OccISREbs;
+
+  //// Reactions:
+  # IFN? binding to receptor and activation
+  R_bind: Rec + IFN_ext -> aRecIFN; k_on_IFN * Rec * IFN_ext;
+  R_unbind: aRecIFN -> Rec + IFN_ext; k_off_IFN * aRecIFN;
+
+  # Lumped STAT phosphorylation and complex formation catalyzed by active receptor
+  R_STAT1_dimer_form: 2 STAT1c + aRecIFN => pSTAT1dimc + aRecIFN; k_dim_STAT1 * STAT1c * STAT1c * aRecIFN;
+  R_STAT1_STAT2_hetero_form: STAT1c + STAT2c + aRecIFN => pSTAT1pSTAT2c + aRecIFN; k_dim_STAT1STAT2 * STAT1c * STAT2c * aRecIFN;
+  R_ISGF3_form: pSTAT1pSTAT2c + IRF9c + aRecIFN => ISGF3c + aRecIFN; k_trimer_ISGF3 * pSTAT1pSTAT2c * IRF9c * aRecIFN;
+
+  # Nuclear import of active complexes
+  R_imp_pSTAT1dim: pSTAT1dimc => pSTAT1dimn; k_transloc_dim * pSTAT1dimc;
+  R_imp_hetero: pSTAT1pSTAT2c => pSTAT1pSTAT2n; k_transloc_hd * pSTAT1pSTAT2c;
+  R_imp_ISGF3: ISGF3c => ISGF3n; k_transloc_ISGF3 * ISGF3c;
+
+  # Nuclear complex dissociation into monomers
+  R_diss_pSTAT1dim: pSTAT1dimn => 2 STAT1n; k_diss_dim * pSTAT1dimn;
+  R_diss_hetero: pSTAT1pSTAT2n => STAT1n + STAT2n; k_diss_hd * pSTAT1pSTAT2n;
+  R_diss_ISGF3: ISGF3n => STAT1n + STAT2n + IRF9n; k_diss_ISGF3 * ISGF3n;
+
+  # Nucleo-cytoplasmic shuttling of monomers
+  R_STAT1_export: STAT1n => STAT1c; k_shuttle_STAT1_n2c * STAT1n;
+  R_STAT1_import: STAT1c => STAT1n; k_shuttle_STAT1_c2n * STAT1c;
+  R_STAT2_export: STAT2n => STAT2c; k_shuttle_STAT2_n2c * STAT2n;
+  R_STAT2_import: STAT2c => STAT2n; k_shuttle_STAT2_c2n * STAT2c;
+  R_IRF9_export: IRF9n => IRF9c; k_shuttle_IRF9_n2c * IRF9n;
+  R_IRF9_import: IRF9c => IRF9n; k_shuttle_IRF9_c2n * IRF9c;
+
+  # Transcriptional induction by nuclear complexes
+  # GAS-driven (pSTAT1 homodimer) transcription
+  TX_SOCS3_GAS:  => SOCS3_MRNA; k_tx_GAS * pSTAT1dimn;
+
+  # ISRE/GAS-combined promoters (driven by ISGF3 and to a lesser extent by pSTAT1:STAT2 heterodimers)
+  TX_STAT1_ISGF3:  => STAT1_mRNA; k_tx_ISRE * ISGF3n;
+  TX_STAT1_HD:     => STAT1_mRNA; k_tx_HD   * pSTAT1pSTAT2n;
+
+  TX_STAT2_ISGF3:  => STAT2_mRNA; k_tx_ISRE * ISGF3n;
+  TX_STAT2_HD:     => STAT2_mRNA; k_tx_HD   * pSTAT1pSTAT2n;
+
+  TX_IRF9_ISGF3:   => IRF9_mRNA;  k_tx_ISRE * ISGF3n;
+  TX_IRF9_HD:      => IRF9_mRNA;  k_tx_HD   * pSTAT1pSTAT2n;
+
+  TX_USP18_ISGF3:  => USP18_mRNA; k_tx_ISRE * ISGF3n;
+  TX_USP18_HD:     => USP18_mRNA; k_tx_HD   * pSTAT1pSTAT2n;
+
+  TX_SOCS1_ISGF3:  => SOCS1_mRNA; k_tx_ISRE * ISGF3n;
+  TX_SOCS1_HD:     => SOCS1_mRNA; k_tx_HD   * pSTAT1pSTAT2n;
+
+  TX_IRF2_ISGF3:   => IRF2_MRNA;  k_tx_ISRE * ISGF3n;
+  TX_IRF2_HD:      => IRF2_MRNA;  k_tx_HD   * pSTAT1pSTAT2n;
+
+  # Basal transcription (leak)
+  TX_basal_STAT1:  => STAT1_mRNA;  k_basal_STAT1;
+  TX_basal_STAT2:  => STAT2_mRNA;  k_basal_STAT2;
+  TX_basal_IRF9:   => IRF9_mRNA;   k_basal_IRF9;
+  TX_basal_USP18:  => USP18_mRNA;  k_basal_USP18;
+  TX_basal_SOCS1:  => SOCS1_mRNA;  k_basal_SOCS1;
+  TX_basal_SOCS3:  => SOCS3_MRNA;  k_basal_SOCS3;
+  TX_basal_IRF2:   => IRF2_MRNA;  k_basal_IRF2;
+
+  # Translation
+  TL_STAT1:  STAT1_mRNA  => STAT1_mRNA  + STAT1c;  k_tl_STAT  * STAT1_mRNA;
+  TL_STAT2:  STAT2_mRNA  => STAT2_mRNA  + STAT2c;  k_tl_STAT  * STAT2_mRNA;
+  TL_IRF9:   IRF9_mRNA   => IRF9_mRNA   + IRF9c;   k_tl_IRF9   * IRF9_mRNA;
+  TL_USP18:  USP18_mRNA  => USP18_mRNA  + USP18;   k_tl_USP18  * USP18_mRNA;
+  TL_SOCS1:  SOCS1_mRNA  => SOCS1_mRNA  + SOCS1;   k_tl_SOCS1  * SOCS1_mRNA;
+  TL_SOCS3:  SOCS3_MRNA  => SOCS3_MRNA  + SOCS3;   k_tl_SOCS3  * SOCS3_MRNA;
+  TL_IRF2:   IRF2_MRNA   => IRF2_MRNA   + IRF2;    k_tl_IRF2   * IRF2_MRNA;
+
+  # mRNA degradation
+  DEG_STAT1_mRNA: STAT1_mRNA => ; k_deg_mRNA * STAT1_mRNA;
+  DEG_STAT2_mRNA: STAT2_mRNA => ; k_deg_mRNA * STAT2_mRNA;
+  DEG_IRF9_mRNA:  IRF9_mRNA  => ; k_deg_mRNA * IRF9_mRNA;
+  DEG_USP18_mRNA: USP18_mRNA => ; k_deg_mRNA * USP18_mRNA;
+  DEG_SOCS1_mRNA: SOCS1_mRNA => ; k_deg_mRNA * SOCS1_mRNA;
+  DEG_SOCS3_mRNA: SOCS3_MRNA => ; k_deg_mRNA * SOCS3_MRNA;
+  DEG_IRF2_mRNA:  IRF2_MRNA  => ; k_deg_mRNA * IRF2_MRNA;
+
+  # IRF2-enhanced SOCS1 mRNA decay (cross-regulatory repression)
+  DEG_SOCS1_mRNA_IRF2: SOCS1_mRNA + IRF2 => ; k_deg_SOCS1mRNA_IRF2 * SOCS1_mRNA * IRF2;
+
+  # Protein degradation (first-order)
+  DEG_STAT1c: STAT1c => ; k_deg_STAT * STAT1c;
+  DEG_STAT1n: STAT1n => ; k_deg_STAT * STAT1n;
+  DEG_STAT2c: STAT2c => ; k_deg_STAT * STAT2c;
+  DEG_STAT2n: STAT2n => ; k_deg_STAT * STAT2n;
+  DEG_IRF9c:  IRF9c  => ; k_deg_IRF9 * IRF9c;
+  DEG_IRF9n:  IRF9n  => ; k_deg_IRF9 * IRF9n;
+  DEG_USP18:  USP18  => ; k_deg_USP18 * USP18;
+  DEG_SOCS1:  SOCS1  => ; k_deg_SOCS1 * SOCS1;
+  DEG_SOCS3:  SOCS3  => ; k_deg_SOCS3 * SOCS3;
+  DEG_IRF2:   IRF2   => ; k_deg_IRF2  * IRF2;
+
+  # Negative feedback at receptor level
+  INH_USP18: aRecIFN + USP18 => Rec + USP18; k_inhibit_USP18 * aRecIFN * USP18;
+  INH_SOCS3: aRecIFN + SOCS3 => Rec + SOCS3; k_deact_SOCS3   * aRecIFN * SOCS3;
+  DEG_aRec_SOCS1: aRecIFN + SOCS1 => ; k_deg_aRec_SOCS1 * aRecIFN * SOCS1;
+
+  //// Events:
+  # Optional experimental protocol: prestimulation and stimulation schedule (hours)
+  E_prestim: at (time >= t_prestim_start): IFN_ext = IFN_prestim;
+  E_stim:    at (time >= t_stim):          IFN_ext = IFN_stim;
+
+  //// Species initializations:
+  IFN_ext = 0;
+  Rec = 1;
+  aRecIFN = 0;
+
+  STAT1c = 1;
+  STAT2c = 1;
+  IRF9c  = 1;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n  = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+
+  USP18 = 0;
+  SOCS1 = 0;
+  SOCS3 = 0;
+  IRF2  = 0;
+
+  STAT1_mRNA = 0;
+  STAT2_mRNA = 0;
+  IRF9_mRNA  = 0;
+  USP18_mRNA = 0;
+  SOCS1_mRNA = 0;
+  SOCS3_MRNA = 0;
+  IRF2_MRNA  = 0;
+
+  //// Compartment initializations:
+  extracellular = 1;
+  cyt = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  # Binding/activation
+  k_on_IFN = 0.01;
+  k_off_IFN = 0.001;
+
+  # Complex formation
+  k_dim_STAT1 = 0.01;
+  k_dim_STAT1STAT2 = 0.01;
+  k_trimer_ISGF3 = 0.01;
+
+  # Nuclear import and dissociation
+  k_transloc_dim = 0.05;
+  k_transloc_hd = 0.05;
+  k_transloc_ISGF3 = 0.05;
+
+  k_diss_dim = 0.01;
+  k_diss_hd = 0.01;
+  k_diss_ISGF3 = 0.01;
+
+  # Shuttling
+  k_shuttle_STAT1_n2c = 0.02;
+  k_shuttle_STAT1_c2n = 0.02;
+  k_shuttle_STAT2_n2c = 0.02;
+  k_shuttle_STAT2_c2n = 0.02;
+  k_shuttle_IRF9_n2c  = 0.02;
+  k_shuttle_IRF9_c2n  = 0.02;
+
+  # Transcription (induced)
+  k_tx_GAS  = 0.02;
+  k_tx_ISRE = 0.02;
+  k_tx_HD   = 0.01;
+
+  # Basal transcription
+  k_basal_STAT1 = 0.0001;
+  k_basal_STAT2 = 0.0001;
+  k_basal_IRF9  = 0.0001;
+  k_basal_USP18 = 0.0001;
+  k_basal_SOCS1 = 0.0001;
+  k_basal_SOCS3 = 0.0001;
+  k_basal_IRF2  = 0.0001;
+
+  # Translation
+  k_tl_STAT  = 0.05;
+  k_tl_IRF9  = 0.05;
+  k_tl_USP18 = 0.05;
+  k_tl_SOCS1 = 0.05;
+  k_tl_SOCS3 = 0.05;
+  k_tl_IRF2  = 0.05;
+
+  # Degradation
+  k_deg_mRNA = 0.01;
+  k_deg_STAT = 0.001;
+  k_deg_IRF9 = 0.001;
+  k_deg_USP18 = 0.001;
+  k_deg_SOCS1 = 0.001;
+  k_deg_SOCS3 = 0.001;
+  k_deg_IRF2  = 0.001;
+
+  # Cross-regulation and receptor negative feedbacks
+  k_deg_SOCS1mRNA_IRF2 = 0.005;
+  k_inhibit_USP18 = 0.01;
+  k_deact_SOCS3   = 0.01;
+  k_deg_aRec_SOCS1 = 0.01;
+
+  # Promoter occupancy scaling (reporting proxies)
+  k_GAS_occ = 1;
+  k_ISRE_occ = 1;
+
+  # Stimulation protocol defaults (hours and concentrations in arbitrary units)
+  t_prestim_start = 0;
+  t_stim = 24;
+  IFN_prestim = 0;
+  IFN_stim = 1;
+
+  //// Other declarations:
+  const extracellular, cyt, nuc;
+  const k_on_IFN, k_off_IFN, k_dim_STAT1, k_dim_STAT1STAT2, k_trimer_ISGF3;
+  const k_transloc_dim, k_transloc_hd, k_transloc_ISGF3, k_diss_dim, k_diss_hd, k_diss_ISGF3;
+  const k_shuttle_STAT1_n2c, k_shuttle_STAT1_c2n, k_shuttle_STAT2_n2c, k_shuttle_STAT2_c2n, k_shuttle_IRF9_n2c, k_shuttle_IRF9_c2n;
+  const k_tx_GAS, k_tx_ISRE, k_tx_HD, k_basal_STAT1, k_basal_STAT2, k_basal_IRF9, k_basal_USP18, k_basal_SOCS1, k_basal_SOCS3, k_basal_IRF2;
+  const k_tl_STAT, k_tl_IRF9, k_tl_USP18, k_tl_SOCS1, k_tl_SOCS3, k_tl_IRF2;
+  const k_deg_mRNA, k_deg_STAT, k_deg_IRF9, k_deg_USP18, k_deg_SOCS1, k_deg_SOCS3, k_deg_IRF2, k_deg_SOCS1mRNA_IRF2;
+  const k_inhibit_USP18, k_deact_SOCS3, k_deg_aRec_SOCS1, k_GAS_occ, k_ISRE_occ;
+  const t_prestim_start, t_stim, IFN_prestim, IFN_stim;
+
+  //// Unit definitions:
+  # Omitted (not provided in source; model uses arbitrary units and hours)
+
+  //// Display Names:
+  extracellular is "Extracellular space";
+  cyt is "Cytoplasm";
+  nuc is "Nucleus";
+  IFN_ext is "Interferon alpha (external)";
+  Rec is "IFNAR1/2 receptor complex (latent)";
+  aRecIFN is "Active IFN?-bound receptor";
+  STAT1c is "STAT1 (cytoplasm)";
+  STAT2c is "STAT2 (cytoplasm)";
+  IRF9c is "IRF9 (cytoplasm)";
+  pSTAT1dimc is "pSTAT1:STAT1 dimer (cyto)";
+  pSTAT1pSTAT2c is "pSTAT1:pSTAT2 heterodimer (cyto)";
+  ISGF3c is "ISGF3 (cyto)";
+  STAT1n is "STAT1 (nucleus)";
+  STAT2n is "STAT2 (nucleus)";
+  IRF9n is "IRF9 (nucleus)";
+  pSTAT1dimn is "pSTAT1:STAT1 dimer (nuc)";
+  pSTAT1pSTAT2n is "pSTAT1:pSTAT2 heterodimer (nuc)";
+  ISGF3n is "ISGF3 (nuc)";
+  USP18 is "USP18 (negative regulator)";
+  SOCS1 is "SOCS1 (negative regulator)";
+  SOCS3 is "SOCS3 (negative regulator)";
+  IRF2 is "IRF2 (transcriptional modulator)";
+  STAT1_mRNA is "STAT1 mRNA";
+  STAT2_mRNA is "STAT2 mRNA";
+  IRF9_mRNA is "IRF9 mRNA";
+  USP18_mRNA is "USP18 mRNA";
+  SOCS1_mRNA is "SOCS1 mRNA";
+  SOCS3_MRNA is "SOCS3 mRNA";
+  IRF2_MRNA is "IRF2 mRNA";
+  OccGASbs is "Occupied GAS binding sites (proxy)";
+  OccISREbs is "Occupied ISRE binding sites (proxy)";
+  OccGASbs_plus_OccISREbs is "Total occupied antiviral binding sites (proxy)";
+
+end
+
+/* Notes and unmapped data:
+- This executable Antimony encodes the IFN??IFNAR?JAK/STAT?ISGF3 network with positive (STAT1/2, IRF9) and negative (USP18, SOCS1, SOCS3, IRF2) feedbacks as described. It follows the paper?s simplifications: (i) receptor lumping (Rec/aRecIFN), (ii) lumped phosphorylation/dimerization steps, (iii) nuclear import, dissociation, and transcriptional induction, (iv) SOCS1/USP18/SOCS3 receptor-level inhibition, and (v) IRF2-mediated SOCS1 mRNA repression. Linear chains for translation delays are approximated by single-step translation.
+- Parameter values herein are generic placeholders to ensure model loading; the publication?s calibrated parameter set is not provided in the input text. For quantitative use, calibrate k_* parameters to the BioModels entry MODEL2005110001 (Model_EV1.xml) referenced in the paper.
+- Prestimulation/stimulation schedules are abstracted via events setting IFN_ext at t_prestim_start and t_stim. To mimic protocols: set IFN_prestim (e.g., 2.8 pM equiv.) and IFN_stim (e.g., 1400 pM equiv.) in consistent units, or keep arbitrary units for qualitative exploration.
+- Additional mechanisms tested (e.g., cytoplasmic phosphatase, STAT2 as USP18 adaptor, GAS induction by pSTAT1dimn variants) and detailed dose-to-parameter mappings are not explicitly encoded due to lack of numerical definitions in the provided text.
+*/
