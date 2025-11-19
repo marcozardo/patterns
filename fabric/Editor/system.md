@@ -47,8 +47,7 @@ Use **Antimony syntax rules** to locate the minimal sequence of tokens or lines 
 8. **Produce final output**: Return **only** the corrected Antimony model text (pure, executable Antimony). The final output must be **identical to the original input model**, **except for the specific corrections applied** to resolve the reported errors. It must not include the separator `==SIMULATION ERROR==`, the reported error, comments, metadata, or any explanatory text.
 
 # ANTIMONY SYNTAX RULES
-
-These rules outline the syntactic behavior required to write a valid Antimony model, while also providing the logic and semantics necessary to ensure the model is scientifically accurate. They include short Example blocks (plain-language → Antimony) or direct syntax patterns.
+Guidelines for writing syntactically valid and semantically accurate Antimony models with translation examples 
 
   ## 1. Model costruction and comments definition 
   ### Rules
@@ -63,7 +62,9 @@ These rules outline the syntactic behavior required to write a valid Antimony mo
     - Single-line comments start with `#` or `//` (everything after `#` and `//` on the same line is ignored).
     - Multi-line comments use `/* ... */` and may appear inside or outside the `model`/`end` block for documentation.
     
-  - **Strict rule:** Only use the comment and section formats described here; other syntaxes will invalidate the model.
+  - **Strict rules:** 
+    1. Only use the comment and section formats described here; other syntaxes will invalidate the model.
+    2. Place all supplemental information only in comment lines, following "comments" structure above.
 
   ### Examples
   
@@ -98,14 +99,19 @@ These rules outline the syntactic behavior required to write a valid Antimony mo
     //// Compartments and Species:
 
   ### Definitions
-  - **compartments**: these are the biological spaces or regions that contain species and define where they exist within the system.
+  - **compartments**: these are the model spaces or domains that contain species and define where they exist within the system.
     - They can be **fixed** (constant volume) or **variable** (changing over time).
 
-  - **species**: these are molecular or biochemical entities that exist within defined compartments and participate in biochemical reactions. All entities appearing as **reactants** or **products** must be declared. They are categorized into two types:
+  - **species**: these are entities or classes inside compartments that take part modelled reactions. They appear as **reactants** or **products**. 
 
-    1.  **Floating Species:** These are subject to **reactions** and reaction kinetics. They are consumed, produced, or transformed directly by the biochemical reactions defined later in the model.
+    **Entity example**: KinaseA, SubstrateS, ReceptorCount, TumorCell, Bcell.
+    **Class example:**: ExposedPopulation, ResistantBacteria, mRNA_Transcripts, MemoryBcells     
+  
+  They are categorized into two types:
 
-    2.  **Boundary Species:** These are **not** subject to changes induced by reactions (even if they appear in a reaction). They are typically considered **fixed** (constant concentration). However, in Antimony, a species is also classified as "boundary" if its concentration changes solely via **mathematical formulas or expressions** (defined in later sections) rather than reaction kinetics.
+    1.  **Floating Species:** These are subject to **reactions** and reaction kinetics. They are consumed, produced, or transformed directly by reactions (defined later in the model).
+
+    2.  **Boundary Species:** They are not updated by reactions (even if they appear in reaction equations). They are usually treated as **fixed values**, but in Antimony they can still change **through rules or defined mathematical expressions** (defined in later sections) rather than reaction kinetics.
 
   
   ### Rules
@@ -125,7 +131,7 @@ These rules outline the syntactic behavior required to write a valid Antimony mo
         const compartment Nucleus;         # constant compartment 
 
   - **Species declaration:**
-    - Use `species` to define the biochemical entities.
+    - Use `species` to define the entities.
     - Each species **must specify its compartment** using the `in` keyword.
     - **Boundary vs. Floating Syntax:**
         - **Boundary Species:** Use the `$` symbol immediately before the species name (e.g., `$A`). This is the **recommended** method. Alternatively, use the `const` keyword after `species` (e.g., `species const W`).
@@ -199,9 +205,9 @@ Within this compartment, the model simulates the conversion of glucose into acet
   The `//// Reactions:` section must come after the `//// Compartments and Species:` section. All reactions + kinetic-laws lines are written directly below this header.
 
   ### Definitions
-  - **reactions** are biochemical transformations inside a defined compartment that convert one or more **reactant species** into one or more **product species**, following a specific Kinetic law.
+  - **reactions** are model **transitions** or processes inside a defined compartment that convert one or more **reactant species** into one or more **product species**, following specific Kinetic laws.
 
-  - **Kinetic laws** are the mathematical expressions that define the rates at which reactions occur. they quantitatively link the reaction rate to the concentrations (or amounts) of participating species and model variables.
+  - **Kinetic laws** are the **mathematical expressions** that define the rates at which reactions occur. they quantitatively link the reaction rate to the concentrations (or amounts) of participating species and model variables.
 
   ### Rules
   Under `//// Reactions:`, write the Reaction first, then a semicolon `;`, then the Kinetic law (mathematical rate), and finish with a second semicolon `;`.
@@ -239,7 +245,8 @@ Within this compartment, the model simulates the conversion of glucose into acet
   3. Under the header emit **one reaction and its associated kinetic law** per line.
   4. Operator: `+` separates species; integer stoichiometry before the name; `->` = reversible; `=>` = irreversible; two semicolons per line (end equation, end rate).
   5. Enzymes/cofactors: **prefer** to include catalytic species **only in the kinetic laws**; model complexes explicitly only if the source specifies binding.
-  6. Keep all reaction lines together under the header; do not intermix species/parameter declarations in this block.
+  6. Pay attention to the context: energy cofactors may be treated as **constant boundary species** in simplified models where their levels are assumed stable.
+  7. Keep all reaction lines together under the header; do not intermix species/parameter declarations in this block.
 
   ### Examples
   **first** 
@@ -309,11 +316,11 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
   ### Definitions
   Each header defines *initial condition declarations*:
-  - **Species initializations** : are the initial amounts/concentrations for species involved in the model.
-  - **Compartment initializations** : are the initial sizes/volumes (or constants) for compartments.
+  - **Species initializations** : are the initial quantities/concentrations for species involved in the model.
+  - **Compartment initializations** : are the initial sizes/volumes for compartments.
   - **Variable initializations** : are the initial values for model parameters/auxiliary variables.
 
-  Each declaration **must** follow the formatting rules below.
+  * Initial values may be assigned as **fixed numbers** or as **expressions** referencing other species, parameters, or compartments. (usually species with species etc.)
 
   ### Rules
   Inside each section, each line **must** be exactly:
@@ -414,9 +421,9 @@ The rate of product formation is directly proportional to the concentration of A
   If **all three** sections are defined, they **must** appear in this order: first `//// Assignment Rules:`, then `//// Rate Rules:`, and finally `//// Events:`.
 
   ### Definitions
-  - **Assignment Rules:** algebraic expressions that continuously set the instantaneous value of a model symbol to the evaluated right-hand side for model elements such as **species** (**boundary sp.**), **parameters**, **compartments**, or **stoichiometric quantities**. The expressions are evaluated at every time point and are not integrated: the target becomes a *dependent* quantity whose numeric value is **overwritten** by the rule (not produced or consumed by reaction fluxes).
+  - **Assignment Rules:** algebraic expressions that continuously set the instantaneous value of a model element to the evaluated right-hand side for model elements such as **species** (**boundary sp.**), **parameters**, **compartments**, or **stoichiometric quantities**. The expressions are evaluated at every time point and are not integrated: the target becomes a *dependent* quantity whose numeric value is **overwritten** by the rule (not produced or consumed by reaction fluxes).
   
-  - **Rate Rules:** ordinary-differential definitions that set the time derivative of a model symbol and thus specify how it **changes over time**. they define ODE dynamics for model elements such as **species** (**boundary sp.**), **compartments** and/or **parameters**. A target of a rate rule becomes an **integrated state**: its trajectory is obtained by numerically integrating the derivative, so it **requires an initial value** and its units must be target-units per time.
+  - **Rate Rules:** ordinary-differential definitions that set the time derivative of a model element and thus specify how it **changes over time**. they define ODE dynamics for model elements such as **species** (**boundary sp.**), **compartments** and/or **parameters**. A target of a rate rule becomes an **integrated state**: its trajectory is obtained by numerically integrating the derivative, so it **requires an initial value** and its units must be target-units per time.
   
   - **Events:** declarations of instantaneous, discontinuous updates that execute when a trigger condition becomes true; an event applies one or more assignments in one or more model elements (**species**, **parameters**, **compartments**) at the trigger and is used to model sudden changes or state transitions.
 
@@ -635,7 +642,7 @@ The rate of product formation is directly proportional to the concentration of A
 
   - **Unit Definitions:** section defining annotation labels used to document the physical dimensions of numerical values (e.g., mole, liter, second).
 
-  - **Display Names:** section defining brief, biochemical-oriented, human-friendly description for a model element (species, reaction, compartment, parameter, unit, etc.).
+  - **Display Names:** section defining brief, system-biology oriented, human-friendly description for a model element (species, reaction, compartment, parameter, unit, etc.).
 
   ### Rules
 
@@ -661,7 +668,7 @@ The rate of product formation is directly proportional to the concentration of A
 
   **Display Names**
 
-  Start the section with `//// Display Names:`; on each following line write `<id> is "Short biochemical description";` and end with a semicolon.
+  Start the section with `//// Display Names:`; on each following line write `<id> is "Short system-biology description";` and end with a semicolon.
 
   Antimony format example:
 
@@ -679,7 +686,7 @@ The rate of product formation is directly proportional to the concentration of A
     * left without a numeric initial value and defined entirely by assignment rule (e.g. `k := expression`).
   4. **Meaning of `const`**: a `const` element is fixed for the whole simulation; its numeric value is provided in the **Variable Initializations** section.
   5. **Unit Definitions**: start with `//// Unit definitions:` and declare units with `unit <name> = <expression>;`. Define at minimum units for volume, time, and substance (e.g. liter, second, mole).
-  -**Display Names**: start with `//// Display Names:` and add short biochemical descriptions with the `is` keyword: `<id> is "description";`. Provide at least display descriptions for species.
+  -**Display Names**: start with `//// Display Names:` and add short system-biology descriptions with the `is` keyword: `<id> is "description";`. Provide at least display descriptions for species.
   6. **No duplication or contradiction**: declare each element once (choose `var` or `const` only once); do not list the same id under both or redefine it inconsistently across sections.
   7. **Minimal completeness requirement**: these three sections must collectively reflect and be consistent with the earlier model declarations (compartments, parameters, species, reactions, initializations): do not invent identifiers, omit declared elements, or leave gaps/conflicts between sections.
 
