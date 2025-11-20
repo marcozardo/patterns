@@ -1,0 +1,59 @@
+model *Hou2020_SEIR_Wuhan()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  N := S + E + I + R;  # total population (conserved)
+
+  //// Reactions:
+  # Infection by symptomatic infectious individuals
+  R_inf_I: S + I -> E + I; (r1*beta1/N)*S*I;
+  # Infection by latent (exposed) individuals
+  R_inf_E: S + E -> 2 E; (r2*beta2/N)*S*E;
+  # Incubation progression (E -> I)
+  R_progress: E -> I; sigma*E;
+  # Recovery (I -> R)
+  R_recover: I -> R; gamma_*I;
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  r1 = 6;        # contact rate of symptomatic infectious individuals (per day)
+  r2 = 18;       # contact rate of latent (exposed) individuals (per day) - varied 6..18 in study
+  beta1 = 0.04;  # infection probability per exposure (S with I), 4%
+  beta2 = 0.02;  # infection probability per exposure (S with E), set to 1/2 * beta1
+  sigma = 0.14;  # incubation rate (1/7 day^-1)
+  gamma_ = 0.048; # recovery rate (1/21 day^-1)
+
+  //// Other declarations:
+  var N;
+  const population, r1, r2, beta1, beta2, sigma, gamma_;
+
+  //// Display Names:
+  population is "Wuhan population compartment";
+  S is "Susceptible";
+  E is "Exposed (latent, partially infectious)";
+  I is "Infectious (symptomatic)";
+  R is "Recovered (removed)";
+  N is "Total population";
+  R_inf_I is "Infection by symptomatic infectious (S+I -> E+I)";
+  R_inf_E is "Infection by latent exposed (S+E -> 2E)";
+  R_progress is "Incubation progression (E -> I)";
+  R_recover is "Recovery (I->R)";
+  r1 is "Contact rate of infectious individuals";
+  r2 is "Contact rate of latent individuals";
+  beta1 is "Per-contact infection probability (I to S)";
+  beta2 is "Per-contact infection probability (E to S)";
+  sigma is "Incubation rate (E->I)";
+  gamma_ is "Recovery rate (I->R)";
+
+end

@@ -1,0 +1,116 @@
+model *Dwivedi2014_IL6_Crohn()
+
+  //// Compartments and Species:
+  compartment Liver, GI_tract, Circulation;
+  species $IL6 in Circulation, $sIL6R in Circulation, $CRP in Circulation, $sgp130 in Circulation;
+  species $IL6_sIL6R_complex in Circulation, $IL6_sIL6R_sgp130_complex in Circulation;
+  species $IL6_GI in GI_tract, $pSTAT3_GI in GI_tract;
+  species $Anti_IL6 in Circulation, $Anti_IL6_bound in Circulation;
+  species $Anti_IL6R in Circulation, $Anti_IL6R_bound in Circulation;
+  species $sgp130Fc in Circulation;
+
+  //// Assignment Rules:
+  STAT3_phosphorylation_rate := k_phosphorylation * IL6_sIL6R_complex;
+  CRP_production_rate := k_CRP_production * pSTAT3_GI;
+  sIL6R_shedding_rate := k_shedding * CRP;
+
+  //// Rate Rules:
+  IL6' = k_IL6_production - k_IL6_degradation*IL6 - k_bind_IL6_sIL6R*IL6*sIL6R + k_unbind_IL6_sIL6R*IL6_sIL6R_complex;
+  sIL6R' = k_sIL6R_production + sIL6R_shedding_rate - k_sIL6R_degradation*sIL6R - k_bind_IL6_sIL6R*IL6*sIL6R + k_unbind_IL6_sIL6R*IL6_sIL6R_complex;
+  IL6_sIL6R_complex' = k_bind_IL6_sIL6R*IL6*sIL6R - k_unbind_IL6_sIL6R*IL6_sIL6R_complex - k_bind_complex_sgp130*IL6_sIL6R_complex*sgp130;
+  sgp130' = k_sgp130_production - k_sgp130_degradation*sgp130 - k_bind_complex_sgp130*IL6_sIL6R_complex*sgp130;
+  IL6_sIL6R_sgp130_complex' = k_bind_complex_sgp130*IL6_sIL6R_complex*sgp130 - k_sgp130_complex_degradation*IL6_sIL6R_sgp130_complex;
+  CRP' = CRP_production_rate - k_CRP_degradation*CRP;
+  pSTAT3_GI' = STAT3_phosphorylation_rate - k_pSTAT3_dephosphorylation*pSTAT3_GI;
+  IL6_GI' = k_IL6_GI_production - k_IL6_GI_degradation*IL6_GI;
+
+  //// Reactions:
+  Anti_IL6_binding: IL6 + Anti_IL6 => Anti_IL6_bound; k_bind_Anti_IL6*IL6*Anti_IL6;
+  Anti_IL6R_binding: sIL6R + Anti_IL6R => Anti_IL6R_bound; k_bind_Anti_IL6R*sIL6R*Anti_IL6R;
+  sgp130Fc_binding: IL6_sIL6R_complex + sgp130Fc => IL6_sIL6R_sgp130_complex; k_bind_sgp130Fc*IL6_sIL6R_complex*sgp130Fc;
+
+  //// Events:
+  Anti_IL6_dosing1: at time>=0: Anti_IL6 = Anti_IL6 + dose_Anti_IL6;
+  Anti_IL6_dosing2: at time>=336: Anti_IL6 = Anti_IL6 + dose_Anti_IL6;
+  Anti_IL6_dosing3: at time>=672: Anti_IL6 = Anti_IL6 + dose_Anti_IL6;
+  Anti_IL6R_dosing1: at time>=0: Anti_IL6R = Anti_IL6R + dose_Anti_IL6R;
+  Anti_IL6R_dosing2: at time>=336: Anti_IL6R = Anti_IL6R + dose_Anti_IL6R;
+  Anti_IL6R_dosing3: at time>=672: Anti_IL6R = Anti_IL6R + dose_Anti_IL6R;
+  sgp130Fc_dosing1: at time>=0: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+  sgp130Fc_dosing2: at time>=336: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+  sgp130Fc_dosing3: at time>=672: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+
+  //// Species initializations:
+  IL6 = 4.22e-5;
+  sIL6R = 2.8e-3;
+  CRP = 2.8e-7;
+  sgp130 = 2.8e-3;
+  IL6_GI = 1.055e-3;
+  pSTAT3_GI = 3;
+  Anti_IL6 = 0;
+  Anti_IL6_bound = 0;
+  Anti_IL6R = 0;
+  Anti_IL6R_bound = 0;
+  sgp130Fc = 0;
+  IL6_sIL6R_complex = 0;
+  IL6_sIL6R_sgp130_complex = 0;
+
+  //// Compartment initializations:
+  Liver = 1;
+  GI_tract = 1;
+  Circulation = 1;
+
+  //// Variable initializations:
+  k_IL6_production = 1.0;
+  k_IL6_degradation = 1.0;
+  k_sIL6R_production = 1.0;
+  k_sIL6R_degradation = 1.0;
+  k_sgp130_production = 1.0;
+  k_sgp130_degradation = 1.0;
+  k_IL6_GI_production = 1.0;
+  k_IL6_GI_degradation = 1.0;
+  k_bind_IL6_sIL6R = 1.0;
+  k_unbind_IL6_sIL6R = 1.0;
+  k_bind_complex_sgp130 = 1.0;
+  k_sgp130_complex_degradation = 1.0;
+  k_phosphorylation = 1.0;
+  k_pSTAT3_dephosphorylation = 1.0;
+  k_CRP_production = 1.0;
+  k_CRP_degradation = 1.0;
+  k_shedding = 1.0;
+  k_bind_Anti_IL6 = 1.0;
+  k_bind_Anti_IL6R = 1.0;
+  k_bind_sgp130Fc = 1.0;
+  dose_Anti_IL6 = 0;
+  dose_Anti_IL6R = 0;
+  dose_sgp130Fc = 0;
+
+  //// Other declarations:
+  var IL6, sIL6R, CRP, sgp130, IL6_sIL6R_complex, IL6_sIL6R_sgp130_complex;
+  var IL6_GI, pSTAT3_GI, Anti_IL6, Anti_IL6_bound, Anti_IL6R, Anti_IL6R_bound, sgp130Fc;
+  const Liver, GI_tract, Circulation;
+
+  //// Unit definitions:
+  unit volume = 1 liter;
+  unit time_unit = 1 hour;
+  unit concentration = 1e-9 mole/liter;
+
+  //// Display Names:
+  IL6 is "Interleukin-6";
+  sIL6R is "Soluble IL-6 Receptor";
+  CRP is "C-reactive Protein";
+  sgp130 is "Soluble gp130";
+  IL6_sIL6R_complex is "IL-6/sIL-6R Complex";
+  IL6_sIL6R_sgp130_complex is "IL-6/sIL-6R/sgp130 Complex";
+  IL6_GI is "Gut IL-6";
+  pSTAT3_GI is "Phosphorylated STAT3 in Gut";
+  Anti_IL6 is "Anti-IL-6 Antibody";
+  Anti_IL6_bound is "Bound Anti-IL-6 Antibody";
+  Anti_IL6R is "Anti-IL-6R Antibody";
+  Anti_IL6R_bound is "Bound Anti-IL-6R Antibody";
+  sgp130Fc is "sgp130Fc Fusion Protein";
+  Liver is "Liver Compartment";
+  GI_tract is "GI Tract Compartment";
+  Circulation is "Circulation Compartment";
+
+end

@@ -1,0 +1,93 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment Cell;
+  species $Securin in Cell, $Separase_inactive in Cell, $Separase_active in Cell;
+  species $PP2A_Cdc55_active in Cell, $PP2A_Cdc55_inactive in Cell;
+  species $Net1_unphosphorylated in Cell, $Net1_phosphorylated in Cell;
+  species $Cdc14_bound in Cell, $Cdc14_free in Cell;
+  species $Clb2 in Cell, $Cdc28 in Cell;
+  species $Cdh1_inactive in Cell, $Cdh1_active in Cell;
+  species $Bfa1_unphosphorylated in Cell, $Bfa1_phosphorylated in Cell;
+  species $MEN_inactive in Cell, $MEN_active in Cell;
+  species $APC_Cdc20 in Cell;
+
+  //// Assignment Rules:
+  Cdk_active := Clb2 * Cdc28;  # Active Cdk complex
+  Net1_total := Net1_unphosphorylated + Net1_phosphorylated;
+  Cdc14_total := Cdc14_bound + Cdc14_free;
+  Separase_total := Separase_inactive + Separase_active;
+
+  //// Rate Rules:
+  Net1_unphosphorylated' = -k_phosphorylation_Cdk * Cdk_active * Net1_unphosphorylated * (1 - PP2A_Cdc55_active/PP2A_total) + k_dephosphorylation_PP2A * PP2A_Cdc55_active * Net1_phosphorylated;
+  Net1_phosphorylated' = k_phosphorylation_Cdk * Cdk_active * Net1_unphosphorylated * (1 - PP2A_Cdc55_active/PP2A_total) - k_dephosphorylation_PP2A * PP2A_Cdc55_active * Net1_phosphorylated;
+  Cdc14_bound' = -k_release * Net1_phosphorylated * Cdc14_bound + k_sequestration * Net1_unphosphorylated * Cdc14_free;
+  Cdc14_free' = k_release * Net1_phosphorylated * Cdc14_bound - k_sequestration * Net1_unphosphorylated * Cdc14_free;
+  PP2A_Cdc55_active' = -k_PP2A_inactivation * Separase_active * PP2A_Cdc55_active;
+  PP2A_Cdc55_inactive' = k_PP2A_inactivation * Separase_active * PP2A_Cdc55_active;
+  Separase_active' = k_securin_degradation * APC_Cdc20 * Securin - k_Separase_inactivation * Separase_active;
+  Clb2' = -k_Clb2_degradation * (APC_Cdc20 + Cdh1_active) * Clb2;
+  Cdh1_active' = k_Cdh1_activation * Cdc14_free * Cdh1_inactive - k_Cdh1_inactivation * Cdk_active * Cdh1_active;
+  Bfa1_phosphorylated' = k_Bfa1_phosphorylation * (1 - PP2A_Cdc55_active/PP2A_total) * Bfa1_unphosphorylated - k_Bfa1_dephosphorylation * Bfa1_phosphorylated;
+  MEN_active' = k_MEN_activation * Bfa1_phosphorylated * MEN_inactive - k_MEN_inactivation * MEN_active;
+
+  //// Reactions:
+  // Securin degradation by APC^Cdc20
+  R_securin_degradation: Securin -> ; k_securin_degradation * APC_Cdc20 * Securin;
+  
+  // Separase activation upon securin degradation
+  R_Separase_activation: Separase_inactive -> Separase_active; k_Separase_activation * (1 - Securin/Securin_initial);
+
+  //// Events:
+  E_APC_activation: at time >= t_anaphase_onset: APC_Cdc20 = 1;
+  E_MEN_engagement: at (Cdc14_free > Cdc14_threshold) and (time > t_anaphase_onset): MEN_inactive = MEN_inactive * 0.5, MEN_active = MEN_active + MEN_inactive * 0.5;
+
+  //// Species initializations:
+  Securin = 1;
+  Separase_inactive = 1;
+  Separase_active = 0;
+  PP2A_Cdc55_active = 1;
+  PP2A_Cdc55_inactive = 0;
+  Net1_unphosphorylated = 1;
+  Net1_phosphorylated = 0;
+  Cdc14_bound = 1;
+  Cdc14_free = 0;
+  Clb2 = 1;
+  Cdc28 = 1;
+  Cdh1_inactive = 1;
+  Cdh1_active = 0;
+  Bfa1_unphosphorylated = 1;
+  Bfa1_phosphorylated = 0;
+  MEN_inactive = 1;
+  MEN_active = 0;
+  APC_Cdc20 = 0;
+
+  //// Compartment initializations:
+  Cell = 1;
+
+  //// Variable initializations:
+  k_phosphorylation_Cdk = 2.0;
+  k_dephosphorylation_PP2A = 1.5;
+  k_release = 3.0;
+  k_sequestration = 0.5;
+  k_PP2A_inactivation = 2.5;
+  k_securin_degradation = 4.0;
+  k_Separase_activation = 3.0;
+  k_Separase_inactivation = 0.1;
+  k_Clb2_degradation = 1.0;
+  k_Cdh1_activation = 1.5;
+  k_Cdh1_inactivation = 2.0;
+  k_Bfa1_phosphorylation = 2.0;
+  k_Bfa1_dephosphorylation = 1.0;
+  k_MEN_activation = 1.5;
+  k_MEN_inactivation = 0.5;
+  PP2A_total = 1;
+  Securin_initial = 1;
+  Cdc14_threshold = 0.3;
+  t_anaphase_onset = 10;
+
+  //// Other declarations:
+  var Cdk_active, Net1_total, Cdc14_total, Separase_total;
+  const k_phosphorylation_Cdk, k_dephosphorylation_PP2A, k_release, k_sequestration, k_PP2A_inactivation, k_securin_degradation, k_Separase_activation, k_Separase_inactivation, k_Clb2_degradation, k_Cdh1_activation, k_Cdh1_inactivation, k_Bfa1_phosphorylation, k_Bfa1_dephosphorylation, k_MEN_activation, k_MEN_inactivation, PP2A_total, Securin_initial, Cdc14_threshold, t_anaphase_onset;
+
+end

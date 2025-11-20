@@ -1,0 +1,186 @@
+model *Strasen2018_TGFB_SMAD()
+
+  //// Compartments and Species:
+  compartment Extracellular, Membrane, Cytoplasm, Nucleus, Endosome;
+
+  species L_ext in Extracellular;
+
+  species R1 in Membrane, R2 in Membrane, R1R2_L in Membrane;
+
+  species R1R2_L_e in Endosome, R1e in Endosome, R2e in Endosome;
+
+  species S2 in Cytoplasm, S2p in Cytoplasm, S4 in Cytoplasm, S2p_S4 in Cytoplasm;
+
+  species S2n in Nucleus, S4n in Nucleus, S2p_S4_n in Nucleus, FB_mRNA in Nucleus;
+
+  species FB in Cytoplasm;
+
+  //// Assignment Rules:
+  RC_act := R1R2_L/(1 + FB/Ki_FB);  # active receptor complex after inhibition by feedback
+  NucCyt_SMAD2 := (S2n + S2p_S4_n)/(S2 + S2p + S2p_S4 + 1e-9);  # nuclear/cytoplasmic SMAD2 ratio proxy
+
+  //// Rate Rules:
+  // not present so omitted
+
+  //// Reactions:
+  # Ligand binding to receptors at the membrane (reversible formation of active signaling complex)
+  R_bind: R1 + R2 + L_ext -> R1R2_L; k_on*R1*R2*L_ext - k_off*R1R2_L;
+
+  # Internalization of active receptor-ligand complex to endosomes (feedback can accelerate deactivation/internalization)
+  R_int: R1R2_L => R1R2_L_e; k_int*(1 + k_int_fb*FB)*R1R2_L;
+
+  # Endosomal processing: ligand degradation with receptor recovery to endosomes
+  R_e_deg: R1R2_L_e => R1e + R2e; k_degL*R1R2_L_e;
+
+  # Recycling of receptors back to membrane; receptor turnover (synthesis/degradation)
+  R1_recycle: R1e => R1; k_rec1*R1e;
+  R2_recycle: R2e => R2; k_rec2*R2e;
+  R1_prod: => R1; k_syn1;
+  R2_prod: => R2; k_syn2;
+  R1_deg: R1 => ; k_deg1*R1;
+  R2_deg: R2 => ; k_deg2*R2;
+
+  # SMAD2 phosphorylation by active receptor; cytoplasmic dephosphorylation
+  S2_phos: S2 => S2p; k_phos*RC_act*S2;
+  S2_dephos_c: S2p => S2; k_dephos_cyt*S2p;
+
+  # SMAD complex formation in cytoplasm (S2p with S4), nuclear import of complex
+  C_form: S2p + S4 -> S2p_S4; k_on_cplx*S2p*S4 - k_off_cplx*S2p_S4;
+  C_import: S2p_S4 => S2p_S4_n; k_imp_cplx*S2p_S4;
+
+  # Nuclear dephosphorylation and complex dissociation; nuclear export
+  C_dephos_n: S2p_S4_n => S2n + S4n; k_dephos_nuc*S2p_S4_n;
+  S2_export: S2n => S2; k_exp_S2n*S2n;
+  S4_export: S4n => S4; k_exp_S4n*S4n;
+
+  # Basal SMAD production and degradation
+  S2_prod: => S2; k_s2_prod;
+  S4_prod: => S4; k_s4_prod;
+  S2_deg: S2 => ; k_s2_deg*S2;
+  S4_deg: S4 => ; k_s4_deg*S4;
+
+  # Feedback transcription (in nucleus), translation and degradation
+  FB_tx: => FB_mRNA; k_fb_m_basal + k_fb_m_ind*(S2p_S4_n^n_h/(K_fb^n_h + S2p_S4_n^n_h));
+  FB_mdeg: FB_mRNA => ; k_deg_fb_m*FB_mRNA;
+  FB_tl: FB_mRNA => FB; k_tl*FB_mRNA;
+  FB_deg: FB => ; k_deg_fb*FB;
+
+  //// Events:
+  # Optional re-stimulation events to replenish extracellular TGFbeta at defined times
+  E_add1: at (time >= t_add1): L_ext = L_ext + L_add1;
+  E_add2: at (time >= t_add2): L_ext = L_ext + L_add2;
+
+  //// Species initializations:
+  L_ext = 25;      # initial extracellular TGFbeta (e.g., pM; adjust to experiment)
+  R1 = 1;
+  R2 = 1;
+  R1R2_L = 0;
+
+  R1R2_L_e = 0;
+  R1e = 0;
+  R2e = 0;
+
+  S2 = 1;
+  S2p = 0;
+  S4 = 1;
+  S2p_S4 = 0;
+
+  S2n = 0;
+  S4n = 0;
+  S2p_S4_n = 0;
+  FB_mRNA = 0;
+
+  FB = 0;
+
+  //// Compartment initializations:
+  Extracellular = 1;
+  Membrane = 1;
+  Cytoplasm = 1;
+  Nucleus = 1;
+  Endosome = 1;
+
+  //// Variable initializations:
+  # Receptor-ligand kinetics
+  k_on = 1e-3;
+  k_off = 1e-2;
+  k_int = 1e-2;
+  k_int_fb = 0.1;
+  k_degL = 5e-3;
+  k_rec1 = 5e-3;
+  k_rec2 = 5e-3;
+  k_syn1 = 1e-3;
+  k_syn2 = 1e-3;
+  k_deg1 = 1e-3;
+  k_deg2 = 1e-3;
+
+  # SMAD modification and trafficking
+  k_phos = 1e-2;
+  k_dephos_cyt = 5e-3;
+  k_on_cplx = 1e-3;
+  k_off_cplx = 1e-3;
+  k_imp_cplx = 5e-3;
+  k_dephos_nuc = 5e-3;
+  k_exp_S2n = 2e-3;
+  k_exp_S4n = 2e-3;
+
+  # SMAD production/degradation
+  k_s2_prod = 1e-3;
+  k_s4_prod = 1e-3;
+  k_s2_deg = 5e-4;
+  k_s4_deg = 5e-4;
+
+  # Feedback gene expression and action
+  k_fb_m_basal = 1e-4;
+  k_fb_m_ind = 2e-3;
+  K_fb = 0.1;
+  n_h = 2;
+  k_deg_fb_m = 1e-3;
+  k_tl = 1e-2;
+  k_deg_fb = 1e-3;
+  Ki_FB = 0.5;
+
+  # Optional ligand re-stimulation (set additions to 0 to disable)
+  t_add1 = 3;      # hours
+  L_add1 = 0;
+  t_add2 = 8;      # hours
+  L_add2 = 0;
+
+  //// Other declarations:
+  var RC_act, NucCyt_SMAD2;
+  const Extracellular, Membrane, Cytoplasm, Nucleus, Endosome;
+  const k_on, k_off, k_int, k_int_fb, k_degL, k_rec1, k_rec2, k_syn1, k_syn2, k_deg1, k_deg2;
+  const k_phos, k_dephos_cyt, k_on_cplx, k_off_cplx, k_imp_cplx, k_dephos_nuc, k_exp_S2n, k_exp_S4n;
+  const k_s2_prod, k_s4_prod, k_s2_deg, k_s4_deg;
+  const k_fb_m_basal, k_fb_m_ind, K_fb, n_h, k_deg_fb_m, k_tl, k_deg_fb, Ki_FB;
+  const t_add1, L_add1, t_add2, L_add2;
+
+  //// Unit definitions:
+  // omitted
+
+  //// Display Names:
+  L_ext is "Extracellular TGFbeta ligand";
+  R1 is "TGFBR1 (Type I receptor) at membrane";
+  R2 is "TGFBR2 (Type II receptor) at membrane";
+  R1R2_L is "Active ligand-bound receptor complex";
+  R1R2_L_e is "Internalized receptor-ligand complex (endosome)";
+  R1e is "Internalized TGFBR1";
+  R2e is "Internalized TGFBR2";
+  S2 is "SMAD2 (cytoplasm)";
+  S2p is "Phosphorylated SMAD2 (cytoplasm)";
+  S4 is "SMAD4 (cytoplasm)";
+  S2p_S4 is "Cytoplasmic SMAD2p:SMAD4 complex";
+  S2p_S4_n is "Nuclear SMAD2p:SMAD4 complex";
+  S2n is "SMAD2 (nucleus)";
+  S4n is "SMAD4 (nucleus)";
+  FB_mRNA is "Feedback regulator mRNA (e.g., SMAD7 mRNA)";
+  FB is "Feedback regulator protein (e.g., SMAD7)";
+  RC_act is "Active receptor complex after feedback inhibition";
+  NucCyt_SMAD2 is "SMAD2 nuclear-to-cytoplasmic ratio (proxy)";
+end
+
+/* Unmapped/unspecified details from the source text:
+- Exact kinetic parameter values and units were fit in the original study (Appendix/Table EV1) and are not provided here.
+- The original model includes explicit receptor clustering, additional trafficking nuances, and possibly separate SMAD4 shuttling, which are summarized here at a coarse-grained level.
+- The effect of transcriptional inhibitor DRB and TGFBRI inhibitor SB431542 are not explicitly encoded; they can be emulated by reducing k_fb_m_ind (for DRB) or k_phos (for SB431542) as needed.
+- Restimulation experiments at specific times (e.g., 3 h, 8 h) are parameterized via events (t_add1/2, L_add1/2), default additions set to 0 to preserve baseline behavior.
+- Ligand degradation in medium beyond receptor-mediated uptake is not explicitly included; it can be added as L_ext => ; k_deg_ext*L_ext if desired and data-supported. */

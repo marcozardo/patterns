@@ -1,0 +1,65 @@
+/* Context: Physiological/ecological-scale cell population model of CAR T therapy in large B-cell lymphoma, capturing competitive Gompertz-like reconstitution of normal and CAR T cells and saturable CAR-mediated tumor killing. Source: Kimmel, Locke, Altrock (Proc. R. Soc. B 2021). */
+
+model *Kimmel2021_CART_Gompertz()
+
+  //// Compartments and Species:
+  compartment host;
+  species N in host, C in host, B in host;
+
+  //// Assignment Rules:
+  T := N + C;  # total lymphocytes
+  rC := rho_C + b*(T - K_N)^2/(a*T^2 + (T - K_N)^2);  # r_C(T) functional form (see Fig. text)
+
+  //// Rate Rules:
+  N' = - r_N*N*ln((N + C)/K_N);
+  C' = - rC*C*ln((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*(C/(k_B + C));
+
+  //// Species initializations:
+  N = 3.0e9;        # cells
+  C = 1.8e8;        # cells
+  B = 9.486e10;     # cells
+
+  //// Compartment initializations:
+  host = 1;
+
+  //// Variable initializations:
+  K_N = 2.50e11;    # cells
+  K_C = 6.96e10;    # cells
+  r_N = 1.70e-1;    # day^-1
+  rho_C = 2.51e-2;  # day^-1
+  a = 4.23e-1;      # dimensionless
+  b = 5.25e-1;      # day^-1
+  r_B = 1.90e-1;    # day^-1 (medium-growth scenario; see notes)
+  gamma_B = 1.15e0; # day^-1
+  k_B = 2.024e9;    # cells
+
+  //// Other declarations:
+  var T, rC;
+  const host, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Display Names:
+  host is "Patient/system compartment (volume=1)";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "CD19+ tumor cells";
+  T is "Total lymphocytes (N+C)";
+  rC is "Effective CAR T turnover rate r_C(T)";
+  K_N is "Normal T carrying capacity";
+  K_C is "CAR T carrying capacity";
+  r_N is "Normal T net rate (Gompertz)";
+  rho_C is "Baseline CAR T net rate";
+  a is "Signalling inefficiency factor in r_C";
+  b is "Immune reconstitution impact in r_C";
+  r_B is "Tumor net growth rate";
+  gamma_B is "Max tumor-killing rate by CAR T";
+  k_B is "Killing saturation parameter";
+
+end
+
+/* Unmapped/notes from source:
+- r_B reported as (1?50)?10^-2 day^-1; simulations in Fig. 3b used slow/medium/fast = 0.105/0.19/0.265 day^-1. Here, r_B default set to 0.19 day^-1 (medium).
+- Alternative tumor-killing formulations discussed: gamma_B * B*C/(k_B + phi*B + C) or gamma_B*(B/(k_B + B))*(C/(k_C + C)); chosen simpler form B*C/(k_B + C) per eq. (2.3).
+- Stochastic extinction dynamics and hybrid deterministic?stochastic switching thresholds are not represented; this model encodes the mean-field ODEs (2.1)?(2.3).
+- Units are implicit (cells, day). No SBML unit definitions provided to avoid nonstandard 'cell' unit.
+*/

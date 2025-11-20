@@ -1,0 +1,68 @@
+model *Greene2019_DrugResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;  # Total tumor volume
+
+  //// Rate Rules:
+  S' = (1 - p_r) * (1 - V) * S - d * u * S - alpha * u * S;
+  R' = p_r * (1 - V) * R + epsilon * (1 - p_r) * (1 - V) * S + alpha * u * S;
+
+  //// Reactions:
+
+  //// Events:
+  u := 0;  # Default treatment off
+
+  //// Species initializations:
+  S = 0.01;  # Initial sensitive population (nondimensionalized)
+  R = 0;     # Initial resistant population
+
+  //// Compartment initializations:
+  tumor = 1;  # Nondimensionalized carrying capacity
+
+  //// Variable initializations:
+  epsilon = 1e-6;    # Background mutation rate (spontaneous resistance)
+  alpha = 0;         # Drug-induced resistance rate (phenotype-preserving case)
+  alpha_induced = 0.01;  # Drug-induced resistance rate (resistance-inducing case)
+  d = 1;             # Cytotoxicity of sensitive cells
+  p_r = 0.2;         # Resistant growth fraction
+  V_d = 0.1;         # Detectable tumor volume
+  V_c = 0.9;         # Critical tumor volume (treatment failure)
+  
+  // Treatment parameters for constant therapy:
+  u_on_constant = 1.5;    # Constant treatment magnitude
+  
+  // Treatment parameters for pulsed therapy:
+  u_on_pulsed = 1.5;      # Pulsed treatment magnitude  
+  Delta_t_on = 1;         # Treatment window duration
+  Delta_t_off = 3;        # Treatment holiday duration
+
+  //// Other declarations:
+  var V, S, R, u;
+  const tumor, epsilon, d, p_r, V_d, V_c, u_on_constant, u_on_pulsed, Delta_t_on, Delta_t_off;
+
+  //// Unit definitions:
+  unit volume_unit = dimensionless;
+  unit time_unit = dimensionless;
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  S is "Sensitive cancer cells";
+  R is "Resistant cancer cells";
+  V is "Total tumor volume";
+  epsilon is "Spontaneous resistance rate";
+  alpha is "Drug-induced resistance rate (phenotype-preserving)";
+  alpha_induced is "Drug-induced resistance rate (resistance-inducing)";
+  d is "Drug cytotoxicity";
+  p_r is "Resistant cell growth fraction";
+  V_d is "Detectable tumor volume";
+  V_c is "Critical tumor volume";
+  u_on_constant is "Constant therapy dose";
+  u_on_pulsed is "Pulsed therapy dose";
+  Delta_t_on is "Treatment window duration";
+  Delta_t_off is "Treatment holiday duration";
+
+end

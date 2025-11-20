@@ -1,0 +1,251 @@
+model *IFNa_JAKSTAT_Kok2020_simplified()
+
+  //// Compartments and Species:
+  compartment cyt, nuc;
+  species $IFN in cyt, Rec in cyt, aRecIFN in cyt;
+  species STAT1c in cyt, STAT2c in cyt, IRF9c in cyt;
+  species pSTAT1dimc in cyt, pSTAT1pSTAT2c in cyt, ISGF3c in cyt;
+  species STAT1n in nuc, STAT2n in nuc, IRF9n in nuc;
+  species pSTAT1dimn in nuc, pSTAT1pSTAT2n in nuc, ISGF3n in nuc;
+  species OccGASbs in nuc, OccISREbs in nuc, OccCombo in nuc;
+  species SOCS1mRNA in cyt, SOCS3mRNA in cyt, IRF2mRNA in cyt, IRF9mRNA in cyt, STAT1mRNA in cyt, STAT2mRNA in cyt, USP18mRNA in cyt;
+  species SOCS1 in cyt, SOCS3 in cyt, IRF2 in cyt, USP18 in cyt, SOCS1_USP18 in cyt;
+
+  //// Reactions:
+  # IFN binding/activation of receptor; SOCS3 inhibits activation
+  R1: Rec + IFN => aRecIFN; kon_rec*Rec*IFN/(1 + inh_SOCS3*SOCS3);
+  # Active receptor decay and SOCS1-/SOCS1:USP18-mediated degradation
+  R2: aRecIFN => ; kdeg_aRec*aRecIFN + kSOCS1*aRecIFN*SOCS1 + kSOCS1USP*aRecIFN*SOCS1_USP18;
+
+  # Approximate phosphorylation+dimerization by active receptor
+  R3: 2 STAT1c => pSTAT1dimc; kph1*aRecIFN*STAT1c^2;
+  R4: STAT1c + STAT2c => pSTAT1pSTAT2c; kph2*aRecIFN*STAT1c*STAT2c;
+  R5: pSTAT1pSTAT2c + IRF9c => ISGF3c; kform3*pSTAT1pSTAT2c*IRF9c;
+
+  # Nuclear translocation and export of transcription factor complexes
+  R6: pSTAT1dimc -> pSTAT1dimn; ktrans_din*pSTAT1dimc;
+  R7: pSTAT1dimn -> pSTAT1dimc; kexp_din*pSTAT1dimn;
+  R8: pSTAT1pSTAT2c -> pSTAT1pSTAT2n; ktrans_het*pSTAT1pSTAT2c;
+  R9: pSTAT1pSTAT2n -> pSTAT1pSTAT2c; kexp_het*pSTAT1pSTAT2n;
+  R10: ISGF3c -> ISGF3n; ktrans_isg*ISGF3c;
+  R11: ISGF3n -> ISGF3c; kexp_isg*ISGF3n;
+
+  # Nuclear dissociation of complexes
+  R12: pSTAT1dimn => 2 STAT1n; kdis_din*pSTAT1dimn;
+  R13: pSTAT1pSTAT2n => STAT1n + STAT2n; kdis_het*pSTAT1pSTAT2n;
+  R14: ISGF3n => STAT1n + STAT2n + IRF9n; kdis_isg*ISGF3n;
+
+  # Shuttling of monomers between cytoplasm and nucleus
+  R15: STAT1c -> STAT1n; kin1*STAT1c;
+  R16: STAT1n -> STAT1c; kout1*STAT1n;
+  R17: STAT2c -> STAT2n; kin2*STAT2c;
+  R18: STAT2n -> STAT2c; kout2*STAT2n;
+  R19: IRF9c -> IRF9n; kin9*IRF9c;
+  R20: IRF9n -> IRF9c; kout9*IRF9n;
+
+  # Promoter occupancy dynamics
+  R21:  => OccGASbs; alpha_G*pSTAT1dimn;
+  R22: OccGASbs => ; delta_G*OccGASbs;
+  R23:  => OccISREbs; alpha_I*ISGF3n;
+  R24: OccISREbs => ; delta_I*OccISREbs;
+  R25:  => OccCombo; alpha_C*(pSTAT1pSTAT2n + w_ISGF3*ISGF3n);
+  R26: OccCombo => ; delta_C*OccCombo;
+
+  # Transcription (with basal) and mRNA degradation
+  R27:  => SOCS3mRNA; v_socs3*OccGASbs/(K_socs3 + OccGASbs) + vbas_socs3;
+  R28: SOCS3mRNA => ; d_mRNA*SOCS3mRNA;
+
+  R29:  => IRF9mRNA; v_irf9*OccCombo/(K_combo + OccCombo) + vbas_irf9;
+  R30: IRF9mRNA => ; d_mRNA*IRF9mRNA;
+
+  R31:  => STAT1mRNA; v_stat1*OccCombo/(K_combo + OccCombo) + vbas_stat1;
+  R32: STAT1mRNA => ; d_mRNA*STAT1mRNA;
+
+  R33:  => STAT2mRNA; v_stat2*OccCombo/(K_combo + OccCombo) + vbas_stat2;
+  R34: STAT2mRNA => ; d_mRNA*STAT2mRNA;
+
+  R35:  => USP18mRNA; v_usp18*OccCombo/(K_combo + OccCombo) + vbas_usp18;
+  R36: USP18mRNA => ; d_mRNA*USP18mRNA;
+
+  R37:  => SOCS1mRNA; v_socs1*OccCombo/(K_combo + OccCombo) + vbas_socs1;
+  R38: SOCS1mRNA => ; d_mRNA*SOCS1mRNA;
+  R39: SOCS1mRNA => ; d_socs1_IRF2*IRF2*SOCS1mRNA;  # IRF2-enhanced SOCS1 mRNA decay
+
+  R40:  => IRF2mRNA; v_irf2*OccCombo/(K_combo + OccCombo) + vbas_irf2;
+  R41: IRF2mRNA => ; d_mRNA*IRF2mRNA;
+
+  # Translation and protein degradation
+  R42: IRF9mRNA => IRF9c; ktrans_irf9*IRF9mRNA;
+  R43: STAT1mRNA => STAT1c; ktrans_stat1*STAT1mRNA;
+  R44: STAT2mRNA => STAT2c; ktrans_stat2*STAT2mRNA;
+  R45: USP18mRNA => USP18; ktrans_usp18*USP18mRNA;
+  R46: SOCS1mRNA => SOCS1; ktrans_socs1*SOCS1mRNA;
+  R47: SOCS3mRNA => SOCS3; ktrans_socs3*SOCS3mRNA;
+  R48: IRF2mRNA => IRF2; ktrans_irf2*IRF2mRNA;
+
+  R49: IRF9c => ; d_prot*IRF9c;
+  R50: STAT1c => ; d_prot*STAT1c;
+  R51: STAT2c => ; d_prot*STAT2c;
+  R52: USP18 => ; d_prot*USP18;
+  R53: SOCS1 => ; d_prot*SOCS1;
+  R54: SOCS3 => ; d_prot*SOCS3;
+  R55: IRF2 => ; d_prot*IRF2;
+
+  # Complex degradation terms for TF complexes (optional turnover)
+  R56: pSTAT1dimc => ; d_cplx*pSTAT1dimc;
+  R57: pSTAT1pSTAT2c => ; d_cplx*pSTAT1pSTAT2c;
+  R58: ISGF3c => ; d_cplx*ISGF3c;
+  R59: pSTAT1dimn => ; d_cplx*pSTAT1dimn;
+  R60: pSTAT1pSTAT2n => ; d_cplx*pSTAT1pSTAT2n;
+  R61: ISGF3n => ; d_cplx*ISGF3n;
+
+  # Receptor turnover
+  R62: Rec => ; d_rec*Rec;
+  R63:  => Rec; ksynth_rec;
+
+  # SOCS1:USP18 complex formation
+  R64: SOCS1 + USP18 -> SOCS1_USP18; kon_cplx*SOCS1*USP18;
+  R65: SOCS1_USP18 -> SOCS1 + USP18; koff_cplx*SOCS1_USP18;
+
+  //// Events:
+  E1: at(time >= T_switch): IFN = IFN_stim;
+
+  //// Species initializations:
+  IFN = IFN_prestim;
+  Rec = 1;
+  aRecIFN = 0;
+  STAT1c = 1;
+  STAT2c = 0.1;
+  IRF9c = 0.05;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  OccGASbs = 0;
+  OccISREbs = 0;
+  OccCombo = 0;
+  SOCS1mRNA = 0;
+  SOCS3mRNA = 0;
+  IRF2mRNA = 0;
+  IRF9mRNA = 0;
+  STAT1mRNA = 0;
+  STAT2mRNA = 0;
+  USP18mRNA = 0;
+  SOCS1 = 0;
+  SOCS3 = 0;
+  IRF2 = 0;
+  USP18 = 0;
+  SOCS1_USP18 = 0;
+
+  //// Compartment initializations:
+  cyt = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  kon_rec = 0.01;
+  inh_SOCS3 = 1;
+  kdeg_aRec = 0.05;
+  kSOCS1 = 0.1;
+  kSOCS1USP = 0.2;
+
+  kph1 = 0.02;
+  kph2 = 0.02;
+  kform3 = 0.02;
+
+  ktrans_din = 0.5;
+  kexp_din = 0.2;
+  ktrans_het = 0.5;
+  kexp_het = 0.2;
+  ktrans_isg = 0.5;
+  kexp_isg = 0.2;
+
+  kdis_din = 0.1;
+  kdis_het = 0.1;
+  kdis_isg = 0.1;
+
+  kin1 = 0.05;
+  kout1 = 0.05;
+  kin2 = 0.05;
+  kout2 = 0.05;
+  kin9 = 0.05;
+  kout9 = 0.05;
+
+  alpha_G = 0.1;
+  delta_G = 0.1;
+  alpha_I = 0.1;
+  delta_I = 0.1;
+  alpha_C = 0.1;
+  delta_C = 0.1;
+  w_ISGF3 = 1;
+
+  v_socs3 = 1;
+  K_socs3 = 0.5;
+  vbas_socs3 = 0.001;
+
+  v_irf9 = 0.8;
+  vbas_irf9 = 0.001;
+  v_stat1 = 0.5;
+  vbas_stat1 = 0.001;
+  v_stat2 = 0.5;
+  vbas_stat2 = 0.001;
+  v_usp18 = 0.5;
+  vbas_usp18 = 0.001;
+  v_socs1 = 0.5;
+  vbas_socs1 = 0.001;
+  v_irf2 = 0.3;
+  vbas_irf2 = 0.001;
+  K_combo = 0.5;
+
+  d_mRNA = 0.2;
+  d_socs1_IRF2 = 0.1;
+
+  ktrans_irf9 = 0.3;
+  ktrans_stat1 = 0.3;
+  ktrans_stat2 = 0.3;
+  ktrans_usp18 = 0.3;
+  ktrans_socs1 = 0.3;
+  ktrans_socs3 = 0.3;
+  ktrans_irf2 = 0.3;
+
+  d_prot = 0.05;
+  d_cplx = 0.05;
+
+  d_rec = 0.01;
+  ksynth_rec = 0.01;
+
+  kon_cplx = 0.1;
+  koff_cplx = 0.05;
+
+  T_switch = 24;
+  IFN_prestim = 0.1;
+  IFN_stim = 10;
+
+  //// Other declarations:
+  const cyt, nuc;
+  const kon_rec, inh_SOCS3, kdeg_aRec, kSOCS1, kSOCS1USP;
+  const kph1, kph2, kform3;
+  const ktrans_din, kexp_din, ktrans_het, kexp_het, ktrans_isg, kexp_isg;
+  const kdis_din, kdis_het, kdis_isg;
+  const kin1, kout1, kin2, kout2, kin9, kout9;
+  const alpha_G, delta_G, alpha_I, delta_I, alpha_C, delta_C, w_ISGF3;
+  const v_socs3, K_socs3, vbas_socs3, v_irf9, vbas_irf9, v_stat1, vbas_stat1, v_stat2, vbas_stat2, v_usp18, vbas_usp18, v_socs1, vbas_socs1, v_irf2, vbas_irf2, K_combo;
+  const d_mRNA, d_socs1_IRF2, ktrans_irf9, ktrans_stat1, ktrans_stat2, ktrans_usp18, ktrans_socs1, ktrans_socs3, ktrans_irf2, d_prot, d_cplx, d_rec, ksynth_rec, kon_cplx, koff_cplx, T_switch, IFN_prestim, IFN_stim;
+
+end
+
+/* Unmapped data and notes:
+- This Antimony model encodes the IFN?-induced JAK/STAT pathway structure described by Kok et al. (2020) including Rec/aRecIFN, STAT1/STAT2/IRF9 complexes (pSTAT1dim, pSTAT1:STAT2, ISGF3), cytoplasm?nucleus shuttling, promoter occupancy (OccGASbs, OccISREbs, OccCombo), transcription of STAT1/STAT2/IRF9/USP18/SOCS1/SOCS3/IRF2 mRNAs, translation, and negative regulation by SOCS1, SOCS3, USP18 (with SOCS1:USP18 complex), and IRF2-enhanced SOCS1 mRNA decay. Kinetics are mass-action or simple saturations as generic placeholders.
+
+- The original publication reports a calibrated ODE model (BioModels ID MODEL2005110001) with 41 species and 75 reactions, Michaelis?Menten terms, linear-chain translation delays, and fitted parameters; exact numeric parameters are not provided in the excerpt. Here, generic parameter values are assigned to enable simulation; users seeking quantitative agreement should replace them with calibrated values from the SBML BioModels entry.
+
+- Prestimulation/restimulation is represented by an event that sets ligand to IFN_stim at T_switch; initial IFN is set to IFN_prestim to emulate the 24 h prestimulation protocol used experimentally. Adjust IFN_prestim, IFN_stim, and T_switch to reproduce specific dosing regimens.
+
+- Additional mechanisms tested/rejected in the paper (cytoplasmic phosphatase for complexes; STAT2 as USP18 adapter; pSTAT1dimn induction of combined sites) are not included.
+
+References: Kok et al., Mol Syst Biol (2020) 16:e8955; BioModels MODEL2005110001.
+*/

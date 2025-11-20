@@ -1,0 +1,80 @@
+/* Domain: Molecular/cell-cycle systems biology (post-translational modification cascade driving mitotic oscillations)
+Source: Goldbeter A. (1991) PNAS 88:9107?9111 ? Minimal cascade model for the mitotic oscillator involving cyclin (C), cdc2 kinase activity (M), and cyclin protease activity (X).
+Dynamics given explicitly as ODEs (Eq. 1) with auxiliary relations (Eq. 2).
+*/
+
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;  # C: cyclin (concentration); M: active cdc2 kinase (fraction); X: active cyclin protease (fraction)
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C)) * VM1;  # Eq. 2: cyclin-activated phosphatase effective max rate on cdc2 (E1)
+  V3 := M * VM3;             # Eq. 2: cdc2-activated kinase effective max rate on protease (E3)
+
+  //// Rate Rules:
+  C' = vi - vd*X*(C/(Kd + C)) - kd*C;                                         # Eq. 1 for cyclin
+  M' = V1*((1 - M)/(K1 + (1 - M))) - V2*(M/(K2 + M));                         # Eq. 1 for cdc2 activity fraction
+  X' = V3*((1 - X)/(K3 + (1 - X))) - V4*(X/(K4 + X));                         # Eq. 1 for protease activity fraction
+
+  //// Species initializations:
+  C = 0;        # ?M; small initial cyclin
+  M = 0;        # fraction; inactive cdc2 initially
+  X = 0.01;     # fraction; from figure caption initial condition
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Michaelis constants for modification steps (normalized by total substrate), Ki = 0.1 (i=1..4)
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  # Max rates for converter enzymes (per minute) ? values from figure caption (OCR-resolved)
+  VM1 = 0.5;     # min^-1 (E1: phosphatase acting on cdc2; effective max)
+  V2  = 0.167;   # min^-1 (E2: kinase acting on cdc2; effective max, constant)
+  VM3 = 0.2;     # min^-1 (E3: cdc2 kinase acting on protease; effective max)
+  V4  = 0.1;     # min^-1 (E4: phosphatase acting on protease; effective max, constant)
+
+  # Cyclin synthesis and degradation parameters
+  vi = 0.023;    # ?M min^-1; constant cyclin synthesis rate
+  vd = 0.1;      # ?M min^-1; max protease-dependent cyclin degradation rate (at X=1)
+  Kc = 0.3;      # ?M; Michaelis constant for cyclin activation of E1 (phosphatase on cdc2)
+  Kd = 0.02;     # ?M; Michaelis constant for protease-mediated cyclin degradation
+  kd = 0;        # min^-1; nonspecific cyclin decay (facultative, small; set to 0 if unspecified)
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, K1, K2, K3, K4, VM1, V2, VM3, V4, vi, vd, Kc, Kd, kd;
+
+  //// Unit definitions:
+  # (omitted ? simulator default units used)
+
+  //// Display Names:
+  cell is "well-mixed compartment";
+  C is "Cyclin concentration";
+  M is "Active cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  V1 is "Effective max rate E1 (cdc2-activating phosphatase)";
+  V3 is "Effective max rate E3 (protease-activating kinase)";
+  V2 is "Effective max rate E2 (cdc2-inactivating kinase)";
+  V4 is "Effective max rate E4 (protease-inactivating phosphatase)";
+  vi is "Cyclin synthesis rate";
+  vd is "Max protease-dependent cyclin degradation rate";
+  Kc is "Michaelis const. for cyclin activation of E1";
+  Kd is "Michaelis const. for protease-mediated cyclin degradation";
+  K1 is "Reduced Michaelis const. for E1";
+  K2 is "Reduced Michaelis const. for E2";
+  K3 is "Reduced Michaelis const. for E3";
+  K4 is "Reduced Michaelis const. for E4";
+end
+
+/* Unmapped or uncertain items from source (kept for transparency):
+- Figure caption OCR ambiguities: lines ?Ve = 0.167 min??? and ?Ve = 0.1 min??? were interpreted as V2=0.167 min^-1 and V4=0.1 min^-1.
+- Caption lists ?vi = 0.023 ?M min??, vad = 0.1 ?M min??? interpreted as vi=0.023 ?M/min and vd=0.1 ?M/min.
+- Caption shows ?Ka = 3.33 ? 10?? min??? but kd (nonspecific cyclin decay) is not clearly specified in the main text; set here to kd=0 (facultative term).
+- If authoritative parameter sets differ, replace values in the Variable initializations section; equations and structure remain as in Eqs. (1)?(2).
+*/

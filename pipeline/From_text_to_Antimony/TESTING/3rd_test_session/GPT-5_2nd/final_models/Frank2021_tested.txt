@@ -1,0 +1,105 @@
+model *Frank2021_MacrophagePolarization()
+
+  //// Compartments and Species:
+  compartment cell;
+  species x1 in cell, x2 in cell;
+
+  //// Assignment Rules:
+  Hplus1 := (x1^n1) / (x1^n1 + k1^n1);   // Stimulating Hill function for STAT1 self-stimulation
+  Hplus2 := (x2^n2) / (x2^n2 + k2^n2);   // Stimulating Hill function for STAT6 self-stimulation
+  Hminus1 := (p1^l1) / (p1^l1 + x1^l1);  // Inhibitory Hill function for STAT1 on STAT6 input
+  Hminus2 := (p2^l2) / (p2^l2 + x2^l2);  // Inhibitory Hill function for STAT6 on STAT1 input
+
+  //// Rate Rules:
+  x1' = (a1*Hplus1 + S1)*Hminus2 + b1 - q1*x1;  // d/dt STAT1 (proxy for M1)
+  x2' = a2*Hplus2 + S2*Hminus1 + b2 - q2*x2;    // d/dt STAT6 (proxy for M2)
+
+  //// Reactions:
+
+  //// Events:
+
+  //// Species initializations:
+  x1 = 0;    // initial STAT1 activation level (dimensionless)
+  x2 = 0;    // initial STAT6 activation level (dimensionless)
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Parameter set Theta_0 (baseline, adapted from Yates et al. 2004)
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;   // IFN-gamma input strength
+  S2 = 3.75;   // IL-4 input strength
+
+  //// Other declarations:
+  const cell;
+  // Derived (assignment-rule) variables:
+  var Hplus1, Hplus2, Hminus1, Hminus2;
+  // Parameters (constant for a given simulation):
+  const a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Display Names:
+  cell is "Macrophage (well-mixed)";
+  x1 is "STAT1 activation (M1 proxy)";
+  x2 is "STAT6 activation (M2 proxy)";
+  Hplus1 is "Hill+(STAT1)";
+  Hplus2 is "Hill+(STAT6)";
+  Hminus1 is "Hill-(STAT1 on STAT6 input)";
+  Hminus2 is "Hill-(STAT6 on STAT1 input)";
+  a1 is "Max self-stimulation rate STAT1";
+  a2 is "Max self-stimulation rate STAT6";
+  b1 is "Basal activation STAT1";
+  b2 is "Basal activation STAT6";
+  n1 is "Hill exponent self-stim STAT1";
+  n2 is "Hill exponent self-stim STAT6";
+  k1 is "Half-activation STAT1 self-stim";
+  k2 is "Half-activation STAT6 self-stim";
+  l1 is "Hill exponent inhibition on STAT6 input";
+  l2 is "Hill exponent inhibition on STAT1 input";
+  p1 is "Half-inhibition by STAT1 (on STAT6 input)";
+  p2 is "Half-inhibition by STAT6 (on STAT1 input)";
+  q1 is "Deactivation rate STAT1";
+  q2 is "Deactivation rate STAT6";
+  S1 is "IFN-gamma input strength";
+  S2 is "IL-4 input strength";
+
+end
+
+/* 
+Alternative parameter sets from Table 2 (use by updating Variable initializations above):
+
+Theta_1 (only input strengths increased):
+  S1 = 4;
+  S2 = 4;
+
+Theta_2 (asymmetric self-stimulation, steeper STAT1 nonlinearity, faster deactivation, higher inputs):
+  a1 = 15;
+  a2 = 8;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 22;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5.8;
+  q2 = 5.8;
+  S1 = 5;
+  S2 = 5;
+*/

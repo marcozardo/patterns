@@ -1,0 +1,90 @@
+model *Hoffmann2002_NFkB_Signaling()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFkB in cytoplasm, NFkB_nuc in nucleus;
+  species IkBa in cytoplasm, IkBb in cytoplasm, IkBe in cytoplasm;
+  species IKK_active in cytoplasm;
+  species $TNF in cytoplasm;
+
+  //// Assignment Rules:
+  IkBa_synthesis := k_syn_a * (NFkB_nuc^2)/(K_trans^2 + NFkB_nuc^2);
+  IkBb_synthesis := k_syn_b * (NFkB_nuc^2)/(K_trans^2 + NFkB_nuc^2);
+  IkBe_synthesis := k_syn_e * (NFkB_nuc^2)/(K_trans^2 + NFkB_nuc^2);
+
+  //// Rate Rules:
+  IKK_active' = k_act*TNF*(IKK_tot - IKK_active) - k_inact*IKK_active;
+
+  //// Reactions:
+  IkBa_degradation: IkBa -> ; k_deg_a*IKK_active*IkBa;
+  IkBb_degradation: IkBb -> ; k_deg_b*IKK_active*IkBb;
+  IkBe_degradation: IkBe -> ; k_deg_e*IKK_active*IkBe;
+  
+  IkBa_synth:  -> IkBa; IkBa_synthesis;
+  IkBb_synth:  -> IkBb; IkBb_synthesis;
+  IkBe_synth:  -> IkBe; IkBe_synthesis;
+  
+  NFkB_transport_import: NFkB -> NFkB_nuc; k_imp*NFkB*(1/(1 + IkBa/K_dissoc_a + IkBb/K_dissoc_b + IkBe/K_dissoc_e));
+  NFkB_transport_export: NFkB_nuc -> NFkB; k_exp*NFkB_nuc;
+
+  //// Events:
+  TNF_pulse: at time >= pulse_start && time <= pulse_end: TNF = 1;
+  TNF_off: at time > pulse_end: TNF = 0;
+
+  //// Species initializations:
+  NFkB = 100;
+  NFkB_nuc = 0;
+  IkBa = 50;
+  IkBb = 30;
+  IkBe = 20;
+  IKK_active = 0;
+  TNF = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  k_act = 0.1;
+  k_inact = 0.5;
+  IKK_tot = 100;
+  k_deg_a = 0.1;
+  k_deg_b = 0.05;
+  k_deg_e = 0.03;
+  k_syn_a = 10;
+  k_syn_b = 3;
+  k_syn_e = 2;
+  K_trans = 10;
+  k_imp = 0.1;
+  k_exp = 0.05;
+  K_dissoc_a = 1;
+  K_dissoc_b = 1;
+  K_dissoc_e = 1;
+  pulse_start = 0;
+  pulse_end = 60;
+
+  //// Other declarations:
+  var IkBa_synthesis, IkBb_synthesis, IkBe_synthesis, IKK_active;
+  const cytoplasm, nucleus, k_act, k_inact, IKK_tot, k_deg_a, k_deg_b, k_deg_e, k_syn_a, k_syn_b, k_syn_e, K_trans, k_imp, k_exp, K_dissoc_a, K_dissoc_b, K_dissoc_e, pulse_start, pulse_end;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration = 1e-9 mole;
+
+  //// Display Names:
+  time_unit is "minute";
+  concentration is "nanomolar";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  NFkB is "NF-?B (cytoplasmic)";
+  NFkB_nuc is "NF-?B (nuclear)";
+  IkBa is "I?B?";
+  IkBb is "I?B?";
+  IkBe is "I?B?";
+  IKK_active is "Active IKK";
+  TNF is "TNF-? stimulus";
+  IkBa_synthesis is "I?B? synthesis rate";
+  IkBb_synthesis is "I?B? synthesis rate";
+  IkBe_synthesis is "I?B? synthesis rate";
+
+end

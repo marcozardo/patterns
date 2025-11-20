@@ -1,0 +1,179 @@
+model *IL6_Crohns_Multiscale()
+
+  //// Compartments and Species:
+  compartment circulation, liver, GI_tract;
+  species IL6 in circulation, sIL6R in circulation, CRP in circulation, sgp130 in circulation;
+  species IL6_sIL6R_complex in circulation, IL6_sIL6R_sgp130_complex in circulation;
+  species IL6_GI in GI_tract, IL6R_membrane in GI_tract, gp130 in GI_tract;
+  species STAT3 in GI_tract, pSTAT3 in GI_tract, pSTAT3_dimer in GI_tract;
+  species Gene_products in GI_tract;
+  species Anti_IL6 in circulation, Anti_IL6R in circulation, sgp130Fc in circulation;
+  species Anti_IL6_IL6_complex in circulation, Anti_IL6R_IL6R_complex in circulation;
+  species Anti_IL6_complex_complex in circulation;
+
+  //// Assignment Rules:
+  SOCS_expression := k_SOCS * pSTAT3_dimer;  # SOCS negative feedback
+  CRP_production := k_CRP_secretion * pSTAT3_dimer;  # CRP production in liver
+  sIL6R_shedding := k_shed * CRP * IL6R_membrane;  # CRP-mediated IL-6R shedding
+  IL6_trans_signaling := k_assoc_IL6_sIL6R * IL6 * sIL6R - k_dissoc_IL6_sIL6R * IL6_sIL6R_complex;
+  Trans_complex_inhibition := k_assoc_complex_sgp130 * IL6_sIL6R_complex * sgp130 - k_dissoc_complex_sgp130 * IL6_sIL6R_sgp130_complex;
+
+  //// Rate Rules:
+  IL6' = k_synth_IL6 - k_deg_IL6 * IL6 - IL6_trans_signaling;
+  sIL6R' = sIL6R_shedding - k_deg_sIL6R * sIL6R - IL6_trans_signaling;
+  CRP' = CRP_production - k_deg_CRP * CRP;
+  sgp130' = k_synth_sgp130 - k_deg_sgp130 * sgp130 - Trans_complex_inhibition;
+  IL6_sIL6R_complex' = IL6_trans_signaling - Trans_complex_inhibition - k_deg_complex * IL6_sIL6R_complex;
+  IL6_sIL6R_sgp130_complex' = Trans_complex_inhibition - k_deg_complex * IL6_sIL6R_sgp130_complex;
+  
+  // GI tract signaling dynamics
+  IL6_GI' = k_synth_IL6_GI - k_deg_IL6 * IL6_GI - k_bind_IL6_IL6R * IL6_GI * IL6R_membrane;
+  STAT3' = k_synth_STAT3 - k_deg_STAT3 * STAT3 - k_phospho_STAT3 * gp130 * STAT3 + k_dephospho * pSTAT3;
+  pSTAT3' = k_phospho_STAT3 * gp130 * STAT3 - k_dephospho * pSTAT3 - k_dimerize * pSTAT3^2 + k_dedimerize * pSTAT3_dimer;
+  pSTAT3_dimer' = k_dimerize * pSTAT3^2 - k_dedimerize * pSTAT3_dimer - k_deg_dimer * pSTAT3_dimer;
+  Gene_products' = k_transcription * pSTAT3_dimer - k_deg_gene * Gene_products;
+
+  // Antibody dynamics
+  Anti_IL6' = -k_bind_Anti_IL6 * Anti_IL6 * IL6 + k_unbind_Anti_IL6 * Anti_IL6_IL6_complex - k_clear_Anti_IL6 * Anti_IL6;
+  Anti_IL6R' = -k_bind_Anti_IL6R * Anti_IL6R * sIL6R + k_unbind_Anti_IL6R * Anti_IL6R_IL6R_complex - k_clear_Anti_IL6R * Anti_IL6R;
+  Anti_IL6_IL6_complex' = k_bind_Anti_IL6 * Anti_IL6 * IL6 - k_unbind_Anti_IL6 * Anti_IL6_IL6_complex - k_clear_complex * Anti_IL6_IL6_complex;
+  Anti_IL6R_IL6R_complex' = k_bind_Anti_IL6R * Anti_IL6R * sIL6R - k_unbind_Anti_IL6R * Anti_IL6R_IL6R_complex - k_clear_complex * Anti_IL6R_IL6R_complex;
+
+  //// Reactions:
+  // Classical signaling in GI tract
+  J_classical: IL6_GI + IL6R_membrane => IL6_GI_IL6R_complex; k_bind_IL6_IL6R * IL6_GI * IL6R_membrane;
+  J_gp130_recruitment: IL6_GI_IL6R_complex + gp130 => active_complex; k_bind_gp130 * IL6_GI_IL6R_complex * gp130;
+  
+  // Trans-signaling from circulation to GI tract
+  J_trans_to_GI: IL6_sIL6R_complex => IL6_GI + sIL6R; k_transfer * IL6_sIL6R_complex;
+
+  //// Events:
+  // Anti-IL-6 dosing (every 4 weeks)
+  E_Anti_IL6_dose: at time >= 0 && time % 672 == 0: Anti_IL6 = Anti_IL6 + dose_Anti_IL6;
+  // Anti-IL-6R dosing (every 4 weeks)  
+  E_Anti_IL6R_dose: at time >= 0 && time % 672 == 0: Anti_IL6R = Anti_IL6R + dose_Anti_IL6R;
+  // sgp130Fc dosing (various schedules)
+  E_sgp130Fc_Q4W: at time >= 0 && time % 672 == 0: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+  E_sgp130Fc_Q2W: at time >= 0 && time % 336 == 0: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+  E_sgp130Fc_Q1W: at time >= 0 && time % 168 == 0: sgp130Fc = sgp130Fc + dose_sgp130Fc;
+
+  //// Species initializations:
+  // Healthy baseline concentrations (converted to nmol/L where applicable)
+  IL6 = 4.22e-5;          // 1 pg/ml ? 4.22e-5 nmol/L (MW 23.7 kDa)
+  sIL6R = 1.6;            // 80 ng/ml ? 1.6 nmol/L (MW 50 kDa)
+  CRP = 0.04;             // 1 mg/L ? 0.04 nmol/L (MW 25 kDa)
+  sgp130 = 3.9;           // 390 ng/ml ? 3.9 nmol/L (MW 100 kDa)
+  IL6_GI = 5.91e-4;       // 14 pg/ml ? 5.91e-4 nmol/L
+  STAT3 = 1.0;            // Arbitrary units
+  pSTAT3 = 1.0;           // Arbitrary units (baseline)
+  pSTAT3_dimer = 0.1;     // Arbitrary units
+  Gene_products = 1.0;    // Arbitrary units
+  
+  // Complexes initialized at zero
+  IL6_sIL6R_complex = 0;
+  IL6_sIL6R_sgp130_complex = 0;
+  Anti_IL6_IL6_complex = 0;
+  Anti_IL6R_IL6R_complex = 0;
+  Anti_IL6_complex_complex = 0;
+  
+  // Antibodies initialized at zero
+  Anti_IL6 = 0;
+  Anti_IL6R = 0;
+  sgp130Fc = 0;
+
+  //// Compartment initializations:
+  circulation = 5.0;      // Blood volume (L)
+  liver = 1.5;            // Liver volume (L)
+  GI_tract = 1.0;         // GI tract volume (L)
+
+  //// Variable initializations:
+  // Synthesis and degradation rates (1/hr)
+  k_synth_IL6 = 1.0e-4;
+  k_deg_IL6 = 0.1;
+  k_synth_sgp130 = 0.05;
+  k_deg_sgp130 = 0.01;
+  k_deg_sIL6R = 0.05;
+  k_deg_CRP = 0.02;
+  k_deg_complex = 0.1;
+  
+  // GI tract specific rates
+  k_synth_IL6_GI = 1.0e-3;
+  k_synth_STAT3 = 0.1;
+  k_deg_STAT3 = 0.05;
+  k_phospho_STAT3 = 1.0;
+  k_dephospho = 0.5;
+  k_dimerize = 2.0;
+  k_dedimerize = 0.1;
+  k_deg_dimer = 0.05;
+  k_transcription = 0.2;
+  k_deg_gene = 0.1;
+  
+  // Binding and dissociation rates
+  k_bind_IL6_IL6R = 10.0;
+  k_bind_gp130 = 5.0;
+  k_assoc_IL6_sIL6R = 15.0;
+  k_dissoc_IL6_sIL6R = 5.0;
+  k_assoc_complex_sgp130 = 20.0;
+  k_dissoc_complex_sgp130 = 2.0;
+  
+  // Shedding and production rates
+  k_shed = 0.01;
+  k_CRP_secretion = 0.1;
+  k_SOCS = 0.05;
+  
+  // Antibody parameters
+  k_bind_Anti_IL6 = 100.0;        // High affinity binding (1/nmol*hr)
+  k_unbind_Anti_IL6 = 0.1;
+  k_bind_Anti_IL6R = 100.0;
+  k_unbind_Anti_IL6R = 0.1;
+  k_clear_Anti_IL6 = 0.01;
+  k_clear_Anti_IL6R = 0.01;
+  k_clear_complex = 0.02;
+  
+  // Transfer and dosing parameters
+  k_transfer = 0.1;
+  dose_Anti_IL6 = 100.0;          // nmol (typical dose)
+  dose_Anti_IL6R = 100.0;
+  dose_sgp130Fc = 100.0;
+
+  //// Other declarations:
+  var IL6, sIL6R, CRP, sgp130, IL6_sIL6R_complex, IL6_sIL6R_sgp130_complex;
+  var IL6_GI, STAT3, pSTAT3, pSTAT3_dimer, Gene_products;
+  var Anti_IL6, Anti_IL6R, sgp130Fc, Anti_IL6_IL6_complex, Anti_IL6R_IL6R_complex;
+  var SOCS_expression, CRP_production, sIL6R_shedding, IL6_trans_signaling, Trans_complex_inhibition;
+  const circulation, liver, GI_tract;
+  const k_synth_IL6, k_deg_IL6, k_synth_sgp130, k_deg_sgp130, k_deg_sIL6R, k_deg_CRP;
+  const k_deg_complex, k_synth_IL6_GI, k_synth_STAT3, k_deg_STAT3, k_phospho_STAT3;
+  const k_dephospho, k_dimerize, k_dedimerize, k_deg_dimer, k_transcription, k_deg_gene;
+  const k_bind_IL6_IL6R, k_bind_gp130, k_assoc_IL6_sIL6R, k_dissoc_IL6_sIL6R;
+  const k_assoc_complex_sgp130, k_dissoc_complex_sgp130, k_shed, k_CRP_secretion, k_SOCS;
+  const k_bind_Anti_IL6, k_unbind_Anti_IL6, k_bind_Anti_IL6R, k_unbind_Anti_IL6R;
+  const k_clear_Anti_IL6, k_clear_Anti_IL6R, k_clear_complex, k_transfer;
+  const dose_Anti_IL6, dose_Anti_IL6R, dose_sgp130Fc;
+
+  //// Unit definitions:
+  unit volume = liter;
+  unit time_unit = hour;
+  unit substance = nmole;
+  unit concentration = nmole/liter;
+
+  //// Display Names:
+  IL6 is "Interleukin-6 (serum)";
+  sIL6R is "Soluble IL-6 Receptor";
+  CRP is "C-reactive Protein";
+  sgp130 is "Soluble gp130";
+  IL6_sIL6R_complex is "IL-6/sIL-6R Complex";
+  IL6_sIL6R_sgp130_complex is "IL-6/sIL-6R/sgp130 Complex";
+  IL6_GI is "IL-6 (GI tract)";
+  STAT3 is "STAT3";
+  pSTAT3 is "Phosphorylated STAT3";
+  pSTAT3_dimer is "pSTAT3 Dimer";
+  Gene_products is "Gene Products";
+  Anti_IL6 is "Anti-IL-6 Antibody";
+  Anti_IL6R is "Anti-IL-6R Antibody";
+  sgp130Fc is "sgp130Fc Fusion Protein";
+  circulation is "Blood Circulation";
+  liver is "Liver Compartment";
+  GI_tract is "GI Tract Compartment";
+
+end

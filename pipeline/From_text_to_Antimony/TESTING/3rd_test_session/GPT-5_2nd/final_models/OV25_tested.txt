@@ -1,0 +1,119 @@
+/* Domain: Tumor?immune?virotherapy (physiological/clinical systems biology)
+Minimal ODE model for oncolytic adenovirus expressing 4-1BBL and IL-12 (Ad/4-1BBL/IL-12) combined with dendritic cell (DC) injections, as described in the provided text.
+Variables:
+- U: uninfected tumor volume
+- I: infected tumor volume
+- V: free virions
+- T: tumor-targeting T cells
+- D: dendritic cells (injected)
+Key features:
+- Density-dependent infection and T-cell mediated killing scaled by total interacting volume N = U + I + T
+- Virus production from lysis of infected tumor cells
+- T-cell recruitment by infected cells and DCs
+- Natural losses (clearance/death) of compartments
+- Time-scheduled bolus injections implemented via events (default schedule days 0,2,4 for virus; 1,3,5 for DCs; default doses set to 0 so users can set protocol-specific values)
+Note:
+- Ensure U0 > 0 so N = U + I + T > 0 at t=0 to avoid division by zero in density-dependent terms. */
+
+model *Ad4_1BBL_IL12_DC_Minimal()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species U in tumor, I in tumor, V in tumor, T in tumor, D in tumor;
+
+  //// Assignment Rules:
+  N := U + I + T;  # total interacting cell volume used to scale density-dependent processes
+
+  //// Rate Rules:
+  U' = r*U - beta*(U*V)/N - (kappa0 + c_kill*I)*(U*T)/N;
+  I' = beta*(U*V)/N - delta_I*I - (kappa0 + c_kill*I)*(I*T)/N;
+  V' = alpha*delta_I*I - delta_V*V;  # bolus OV injections are implemented via events
+  T' = c_T*I + chi_D*D - delta_T*T;
+  D' = -delta_D*D;                  # bolus DC injections are implemented via events
+
+  //// Events:
+  at(time >= tV1): V = V + doseV1;
+  at(time >= tV2): V = V + doseV2;
+  at(time >= tV3): V = V + doseV3;
+  at(time >= tD1): D = D + doseD1;
+  at(time >= tD2): D = D + doseD2;
+  at(time >= tD3): D = D + doseD3;
+
+  //// Species initializations:
+  U = U0;
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Core kinetic parameters (set to literature-fit values where unambiguous, else default 0; users should set per study)
+  r = 0.3198;       # tumor net growth rate (per day), from text
+  beta = 0;         # infection rate constant
+  kappa0 = 0;       # baseline T-cell killing rate
+  c_kill = 0;       # T-cell killing coefficient (I-dependent augmentation)
+  delta_I = 0;      # infected cell lysis rate
+  alpha = 0;        # virions released per infected cell lysis (coupled to delta_I)
+  delta_V = 0;      # viral clearance rate
+  c_T = 0;          # T-cell recruitment rate per infected cell
+  chi_D = 0;        # T-cell recruitment rate per DC
+  delta_T = 0;      # T-cell death rate
+  delta_D = 0;      # DC decay rate
+
+  # Initial tumor volume and default injection schedule/doses
+  U0 = 1;           # ensure >0 to avoid division-by-zero in N-scaling
+  tV1 = 0;  tV2 = 2;  tV3 = 4;    # days for OV injections (per text: days 0,2,4)
+  tD1 = 1;  tD2 = 3;  tD3 = 5;    # days for DC injections (per text: days 1,3,5)
+  doseV1 = 0;  doseV2 = 0;  doseV3 = 0;  # set per protocol (e.g., 2.5e9 or 5e9, consistent units)
+  doseD1 = 0;  doseD2 = 0;  doseD3 = 0;  # set per protocol
+
+  //// Other declarations:
+  var N;
+  const tumor, r, beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, U0;
+  const tV1, tV2, tV3, tD1, tD2, tD3, doseV1, doseV2, doseV3, doseD1, doseD2, doseD3;
+
+  //// Unit definitions:
+  # Omitted (users may define day, mm3, etc., as needed for their workflow)
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  U is "Uninfected tumor volume";
+  I is "Infected tumor volume";
+  V is "Free adenovirus (Ad/4-1BBL/IL-12)";
+  T is "Tumor-targeting T cells";
+  D is "Injected dendritic cells";
+  N is "Total interacting volume (U + I + T)";
+  r is "Tumor growth rate";
+  beta is "Infection rate constant";
+  kappa0 is "Baseline T-cell killing rate";
+  c_kill is "T-cell killing coefficient (I-dependent)";
+  delta_I is "Infected tumor cell lysis rate";
+  alpha is "Virions released per infected cell lysis";
+  delta_V is "Viral clearance rate";
+  c_T is "T-cell recruitment by infected cells";
+  chi_D is "T-cell recruitment by DCs";
+  delta_T is "T-cell death rate";
+  delta_D is "DC decay rate";
+  tV1 is "OV injection time 1 (day)";
+  tV2 is "OV injection time 2 (day)";
+  tV3 is "OV injection time 3 (day)";
+  tD1 is "DC injection time 1 (day)";
+  tD2 is "DC injection time 2 (day)";
+  tD3 is "DC injection time 3 (day)";
+  doseV1 is "OV bolus dose at tV1";
+  doseV2 is "OV bolus dose at tV2";
+  doseV3 is "OV bolus dose at tV3";
+  doseD1 is "DC bolus dose at tD1";
+  doseD2 is "DC bolus dose at tD2";
+  doseD3 is "DC bolus dose at tD3";
+end
+
+/*
+Unmapped/notes:
+- Best-fit parameter values beyond r (0.3198 per day) are provided in the source tables, but some symbols were garbled in the provided text. Users should set beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, and delta_D to their study-specific or fitted values.
+- Doses and units (e.g., 2.5e9 vs 5e9 virions; DC counts) are protocol-dependent and not fully specified in the provided text. Set doseV* and doseD* accordingly and ensure consistent units across species and parameters.
+- The original ODEs include u_V(t) and u_D(t) source terms. Here, bolus administrations are implemented via Events that instantaneously add to V and D, respectively. This is a common practical implementation equivalent to specifying u_V(t), u_D(t) as sums of impulses.
+- Ensure U0 > 0 to keep N = U + I + T > 0 for all t to avoid division by zero in density-scaled terms. Consider constraints or simulation guards if exploring parameter regions where all three species could approach zero simultaneously. */

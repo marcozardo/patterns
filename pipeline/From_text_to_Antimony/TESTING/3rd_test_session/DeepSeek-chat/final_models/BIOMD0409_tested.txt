@@ -1,0 +1,125 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment nucleus;
+  species $Cdc20 in nucleus, $Cdh1 in nucleus, $Clb2 in nucleus, $Securin in nucleus;
+  species Separase in nucleus, PP2A_Cdc55 in nucleus, Net1 in nucleus, Cdc14 in nucleus;
+  species Net1_P in nucleus, MEN_active in nucleus;
+  species $Swe1 in nucleus, $Bfa1_Bub2 in nucleus;
+
+  //// Assignment Rules:
+  Cdk_activity := kcdk * Clb2;
+  APC_active := Cdc20;
+  PP2A_activity := kpp2a * PP2A_Cdc55 * (1 - Separase_inhibition);
+  Separase_inhibition := Securin / (K_securin + Securin);
+  MEN_activation := kmen * (1 - Bfa1_Bub2) * Cdc14;
+  Cdh1_activation := kcdh1 * Cdc14 * (1 - Cdk_activity/K_cdk_cdh1);
+
+  //// Rate Rules:
+  PP2A_Cdc55' = k_pp2a_synth - k_pp2a_degrade * PP2A_Cdc55 - k_separase_bind * Separase * PP2A_Cdc55;
+  MEN_active' = MEN_activation - k_men_inactivate * MEN_active;
+  Clb2' = k_clb2_synth - k_clb2_degrade * Clb2 * APC_active;
+  Securin' = k_securin_synth - k_securin_degrade * Securin * APC_active - k_securin_bind * Securin * Separase + k_securin_unbind * Securin_Separase;
+  Cdc20' = k_cdc20_synth * (1 - Cdc20) - k_cdc20_degrade * Cdc20;
+  Cdh1' = Cdh1_activation - k_cdh1_inactivate * Cdh1 * Cdk_activity;
+
+  //// Reactions:
+  // Simplified representation of key processes
+  R1: Net1 -> Net1_P; kcdk * Clb2 * Net1 * (1 - kpp2a * PP2A_Cdc55 * (1 - Securin/(K_securin + Securin)));
+  R2: Net1_P -> Net1; k_dephos * Net1_P;
+  R3: Net1_P + Cdc14 -> Net1_Cdc14; k_assemble * Net1_P * Cdc14;
+  R4: Net1_Cdc14 -> Net1 + Cdc14; k_disassemble * Net1_Cdc14;
+  R5: => Cdc14; krelease * Net1_P * (1 - Cdc14);
+  R6: Securin + Separase -> Securin_Separase; k_securin_bind * Securin * Separase;
+  R7: Securin_Separase -> Securin + Separase; k_securin_unbind * Securin_Separase;
+  R8: => Separase; k_separase_synth - k_separase_degrade * Separase - k_securin_bind * Securin * Separase + k_securin_unbind * Securin_Separase;
+  R9: => Cdc14; -kbind * Net1 * Cdc14 + k_men_release * MEN_active;
+
+  //// Events:
+  Anaphase_Onset: at time >= 20: Cdc20 = 1;
+  MEN_Engagement: at Cdc14 > 0.5: MEN_active = 1;
+
+  //// Species initializations:
+  // Metaphase initial conditions
+  Cdc20 = 0;
+  Cdh1 = 0;
+  Clb2 = 1;
+  Securin = 1;
+  Separase = 0.1;
+  PP2A_Cdc55 = 1;
+  Net1 = 1;
+  Cdc14 = 0;
+  Net1_P = 0;
+  MEN_active = 0;
+  Swe1 = 0.5;
+  Bfa1_Bub2 = 1;
+
+  //// Compartment initializations:
+  nucleus = 1;
+
+  //// Variable initializations:
+  // Rate constants
+  kcdk = 1.0;
+  kpp2a = 0.8;
+  k_separase_synth = 0.1;
+  k_separase_degrade = 0.05;
+  k_pp2a_synth = 0.1;
+  k_pp2a_degrade = 0.05;
+  k_dephos = 0.3;
+  k_assemble = 2.0;
+  k_disassemble = 0.1;
+  krelease = 0.5;
+  kbind = 1.0;
+  kmen = 0.3;
+  k_men_inactivate = 0.1;
+  k_men_release = 0.2;
+  k_clb2_synth = 0.05;
+  k_clb2_degrade = 0.5;
+  k_securin_synth = 0.1;
+  k_securin_degrade = 0.8;
+  k_securin_bind = 3.0;
+  k_securin_unbind = 0.1;
+  k_cdc20_synth = 0.2;
+  k_cdc20_degrade = 0.1;
+  kcdh1 = 0.4;
+  k_cdh1_inactivate = 0.5;
+  
+  // Constants
+  K_securin = 0.1;
+  K_cdk_cdh1 = 0.3;
+  k_separase_bind = 1.5;
+
+  //// Other declarations:
+  var Cdk_activity, APC_active, PP2A_activity;
+  var Separase_inhibition, MEN_activation, Cdh1_activation;
+  const kcdk, kpp2a, k_separase_synth, k_separase_degrade, k_pp2a_synth, k_pp2a_degrade;
+  const k_dephos, k_assemble, k_disassemble, krelease, kbind, kmen, k_men_inactivate;
+  const k_men_release, k_clb2_synth, k_clb2_degrade, k_securin_synth, k_securin_degrade;
+  const k_securin_bind, k_securin_unbind, k_cdc20_synth, k_cdc20_degrade, kcdh1;
+  const k_cdh1_inactivate, K_securin, K_cdk_cdh1, k_separase_bind;
+
+  //// Unit definitions:
+  unit concentration = 1e-9 mole;
+  unit time_unit = 60 second;
+
+  //// Display Names:
+  concentration is "nM";
+  time_unit is "minute";
+  nucleus is "Nucleus";
+  Cdc20 is "Cdc20";
+  Cdh1 is "Cdh1";
+  Clb2 is "Cyclin B2";
+  Securin is "Securin";
+  Separase is "Separase";
+  PP2A_Cdc55 is "PP2A-Cdc55";
+  Net1 is "Net1";
+  Cdc14 is "Cdc14";
+  Net1_P is "Phospho-Net1";
+  MEN_active is "Active MEN";
+  Swe1 is "Swe1 kinase";
+  Bfa1_Bub2 is "Bfa1-Bub2 complex";
+  Cdk_activity is "Cdk activity";
+  APC_active is "Active APC";
+  PP2A_activity is "PP2A activity";
+
+end

@@ -1,0 +1,78 @@
+model *Greene2019_InducedResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;                                            // total tumor volume (dimensionless), Eq. (8)
+  Tcycle := dt_on + dt_off;                               // pulsed-therapy cycle length
+  // phase since therapy start; zero before detection
+  phase := piecewise(0, time < t_start, time - t_start - floor((time - t_start)/Tcycle)*Tcycle);
+  // therapy input u(t): 0 before detection; constant or pulsed after detection (Eqs. 4?5)
+  u := piecewise(0, time < t_start, u_on, (therapy_type == 1) && (time >= t_start), u_on, (therapy_type == 2) && (phase < dt_on), 0);
+
+  //// Rate Rules:
+  // Nondimensionalized model with nonreversible resistance (gamma = 0) and d_R = 0 (Eqs. 4?5)
+  S' = (1 - (S + R))*S - (eps + alpha*u)*S - d*u*S;
+  R' = p_r*(1 - (S + R))*R + (eps + alpha*u)*S;
+
+  //// Events:
+  // Begin therapy at first detection of tumor volume V_d
+  _E_detect: at(V >= Vd): t_start = time;
+  // Flag treatment failure when tumor reaches V_c
+  _E_fail:   at(V >= Vc): failure = 1;
+
+  //// Species initializations:
+  S = S0;       // initial sensitive fraction (dimensionless)
+  R = 0;        // initial resistant fraction (dimensionless)
+
+  //// Compartment initializations:
+  tumor = 1;    // nondimensional volume
+
+  //// Variable initializations:
+  // Table 1 defaults (dimensionless); modify as needed
+  S0 = 0.01;        // initial sensitive population (Eq. 7)
+  Vd = 0.1;         // detectable tumor volume
+  Vc = 0.9;         // failure threshold
+  eps = 1e-6;       // background (spontaneous) resistance rate
+  d = 1;            // drug cytotoxicity against S
+  p_r = 0.2;        // resistant growth fraction (0 <= p_r < 1)
+  alpha = 0;        // induction rate; set to 0.01 for resistance-inducing drug in Fig. 2C?D
+  u_on = 1.5;       // treatment magnitude during on-periods
+  dt_on = 1;        // pulsed on-window length
+  dt_off = 3;       // pulsed off-window length
+  therapy_type = 1; // 0: no therapy, 1: constant, 2: pulsed
+  // runtime flags/state
+  failure = 0;      // becomes 1 at failure event
+  t_start = 1e9;    // large sentinel; set to detection time by _E_detect
+
+  //// Other declarations:
+  var u, V, Tcycle, phase, failure, t_start;
+  const tumor, S0, Vd, Vc, eps, d, p_r, alpha, u_on, dt_on, dt_off, therapy_type;
+
+  //// Display Names:
+  tumor is "Tumor compartment (nondimensional)";
+  S is "Sensitive tumor cells (fraction of carrying capacity)";
+  R is "Resistant tumor cells (fraction of carrying capacity)";
+  V is "Total tumor volume (S + R)";
+  u is "Effective drug input u(t)";
+  eps is "Spontaneous resistance rate (epsilon)";
+  alpha is "Drug-induced resistance rate (alpha)";
+  d is "Cytotoxic effect on S";
+  p_r is "Relative resistant growth rate";
+  Vd is "Detection threshold volume";
+  Vc is "Failure threshold volume";
+  u_on is "Therapy magnitude during on-periods";
+  dt_on is "Pulse on-duration";
+  dt_off is "Pulse off-duration";
+  therapy_type is "Therapy schedule selector (0 none, 1 constant, 2 pulsed)";
+  t_start is "Time of therapy start (set at detection)";
+  failure is "Failure flag (1 when V >= Vc)";
+end
+
+/* Unmapped or optional extensions from the source:
+- Reversible resistance extension (gamma > 0) as in Eqs. (A4)?(A5) not included here.
+- Three-compartment extension distinguishing nonreversible R_n and reversible R_r (Eqs. (10)?(13)) not encoded.
+- Pharmacokinetic/pharmacodynamic refinements for u(t) (e.g., Bender et al., Wu et al., Fetterly et al.) are not modeled; u(t) is a control input.
+- Equal-AUC normalization variants and identifiability experiments with nonconstant controls (Appendix) are not explicitly implemented. */

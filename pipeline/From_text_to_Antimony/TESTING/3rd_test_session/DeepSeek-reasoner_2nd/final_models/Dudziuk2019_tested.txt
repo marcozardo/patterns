@@ -1,0 +1,118 @@
+model *Hsp70_Heat_Induction()
+
+  //// Compartments and Species:
+  compartment cell;
+  species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell, HSF3 in cell, HSE in cell, HSE_HSF3 in cell, mRNA in cell, P in cell;
+
+  //// Assignment Rules:
+  /* Temperature-dependent transcription rate constant */
+  k8_T := k8_max * (1 - 1/(1 + exp(-R_k8 * (T - T_k8))));
+  
+  /* Temperature-dependent denaturation rate constant */
+  V_den_T := 1 - (1 + ((T - T0)/(T0_5 - T0))^nV)^(-1);
+  k11_T := k10 * V_den_T/(1 - V_den_T);
+  
+  /* Temperature-dependent HSE:HSF3 dissociation rate constant (linear interpolation) */
+  l7_T := piecewise(l7_37, T <= 37,
+                   l7_37 + (l7_41 - l7_37)/(41-37)*(T-37), T <= 41,
+                   l7_41 + (l7_42 - l7_41)/(42-41)*(T-41), T <= 42,
+                   l7_42 + (l7_43 - l7_42)/(43-42)*(T-42), T <= 43,
+                   l7_43 + (l7_44 - l7_43)/(44-43)*(T-43), T <= 44,
+                   l7_44 + (l7_45 - l7_44)/(45-44)*(T-44), T <= 45,
+                   l7_45, T > 45);
+
+  //// Reactions:
+  /* HSF activation (trimerisation) */
+  R1: 3 HSF -> HSF3; k3 * HSF^3;
+  
+  /* HSE:HSF3 association and dissociation */
+  R2_forward: HSF3 + HSE -> HSE_HSF3; k7 * HSF3 * HSE;
+  R2_reverse: HSE_HSF3 -> HSF3 + HSE; l7_T * HSE_HSF3;
+  
+  /* Transcription */
+  R3: HSE_HSF3 -> HSE_HSF3 + mRNA; k8_T * HSE_HSF3;
+  
+  /* HSF inactivation */
+  R4: HSP + HSF3 -> HSP_HSF + 2 HSF; l3 * HSP * HSF3;
+  
+  /* HSP-substrate interactions */
+  R5_forward: HSP + S -> HSP_S; k1 * HSP * S;
+  R5_reverse: HSP_S -> HSP + S; l1 * HSP_S;
+  
+  /* HSP-HSF interactions */
+  R6_forward: HSP + HSF -> HSP_HSF; k2 * HSP * HSF;
+  R6_reverse: HSP_HSF -> HSP + HSF; l2 * HSP_HSF;
+  
+  /* HSP degradation */
+  R7: HSP -> ; k9 * HSP;
+  
+  /* Protein refolding */
+  R8: HSP_S -> HSP + P; k10 * HSP_S;
+  
+  /* Protein denaturation */
+  R9: P -> S; k11_T * P;
+  
+  /* Translation */
+  R10: mRNA -> mRNA + HSP; k4 * mRNA;
+  
+  /* mRNA degradation */
+  R11: mRNA -> ; k5 * mRNA;
+  
+  /* Constitutive HSP production */
+  R12: -> HSP; k6;
+
+  //// Species initializations:
+  HSP = 52.06;
+  HSF = 1.363e-3;
+  S = 8.122e-8;
+  HSP_HSF = 1.429e-2;
+  HSP_S = 5.268e-4;
+  HSF3 = 9.082e-6;
+  HSE = 3.996e-6;
+  HSE_HSF3 = 4.484e-9;
+  mRNA = 4.946e-4;
+  P = 1297.0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  /* Reaction rate constants */
+  k1 = 12.6;
+  l1 = 3.028e-3;
+  k2 = 0.218;
+  l2 = 1.162;
+  k3 = 446500.0;
+  l3 = 2.392;
+  k4 = 18.85;
+  k5 = 8.709e-4;
+  k6 = 0.08899;
+  k7 = 5892.0;
+  k9 = 1.888e-3;
+  k10 = 0.09813;
+  
+  /* Temperature-dependent parameter nodes for l7_T */
+  l7_37 = 47.68;
+  l7_41 = 1.233;
+  l7_42 = 0.6628;
+  l7_43 = 0.01639;
+  l7_44 = 50.01;
+  l7_45 = 84.27;
+  
+  /* Transcription temperature dependence parameters */
+  k8_max = 96.07;
+  R_k8 = 15.93;
+  T_k8 = 42.89;
+  
+  /* Denaturation temperature dependence parameters */
+  T0 = 35.81;
+  T0_5 = 47.13;
+  nV = 6.522;
+  
+  /* Initial temperature (37?C homeostasis) */
+  T = 37.0;
+
+  //// Other declarations:
+  var k8_T, V_den_T, k11_T, l7_T, T;
+
+end

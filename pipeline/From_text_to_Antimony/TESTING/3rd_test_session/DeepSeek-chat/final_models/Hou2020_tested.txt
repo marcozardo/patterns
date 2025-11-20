@@ -1,0 +1,61 @@
+model *Hou2020_COVID19_SEIR()
+
+  //// Compartments and Species:
+  compartment Population;
+  species S in Population, E in Population, I in Population, R in Population;
+
+  //// Assignment Rules:
+
+  //// Rate Rules:
+
+  //// Reactions:
+  Infection_from_I: S + I -> E + I; r1*beta1*S*I/N;
+  Infection_from_E: S + E -> E + E; r2*beta2*S*E/N;
+  Progression: E -> I; sigma*E;
+  Recovery: I -> R; gamma*I;
+
+  //// Events:
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  Population = 11081000;
+
+  //// Variable initializations:
+  r1 = 6;
+  r2 = 18;
+  beta1 = 0.4;
+  beta2 = 0.2;
+  sigma = 0.14;
+  gamma = 0.048;
+  N = 11081000;
+
+  //// Other declarations:
+  const Population, r1, r2, beta1, beta2, sigma, gamma, N;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  S is "Susceptible individuals";
+  E is "Exposed individuals (latent)";
+  I is "Infected individuals";
+  R is "Recovered individuals";
+  Population is "Wuhan population";
+  r1 is "Contact rate of infected individuals";
+  r2 is "Contact rate of latent individuals";
+  beta1 is "Infection probability from infected";
+  beta2 is "Infection probability from exposed";
+  sigma is "Incubation rate";
+  gamma is "Recovery rate";
+  N is "Total population";
+  Infection_from_I is "Infection from symptomatic individuals";
+  Infection_from_E is "Infection from exposed individuals";
+  Progression is "Progression to symptomatic";
+  Recovery is "Recovery from infection";
+
+end

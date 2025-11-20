@@ -1,0 +1,115 @@
+model *Strasen2018_TGFb_SMAD_Signaling()
+
+  //// Compartments and Species:
+  compartment extracellular, cytoplasm, nucleus;
+  species $TGFb in extracellular, $R1 in cytoplasm, $R2 in cytoplasm;
+  species R1R2_TGFb in cytoplasm, R1R2_TGFb_e in cytoplasm;
+  species S2 in cytoplasm, S2p in cytoplasm, S2n in nucleus;
+  species S4 in cytoplasm, S4n in nucleus;
+  species FB_mRNA in nucleus, FB_protein in cytoplasm;
+  
+  //// Assignment Rules:
+  S2_total := S2 + S2p + S2n;
+  S4_total := S4 + S4n;
+  nuc_cyt_ratio := S2n / (S2 + S2p);
+  FB_expression := k_FB_basal + k_FB_induced * (S2n + S4n);
+
+  //// Rate Rules:
+  TGFb' = -k_on * TGFb * R1 * R2 + k_off * R1R2_TGFb - k_degr_TGFb * TGFb;
+  R1' = -k_on * TGFb * R1 * R2 + k_off * R1R2_TGFb - k_int_R1 * R1 + k_rec_R1 * R1R2_TGFb_e;
+  R2' = -k_on * TGFb * R1 * R2 + k_off * R1R2_TGFb - k_int_R2 * R2 + k_rec_R2 * R1R2_TGFb_e;
+  R1R2_TGFb' = k_on * TGFb * R1 * R2 - k_off * R1R2_TGFb - k_phospho * R1R2_TGFb * S2 - k_int_complex * R1R2_TGFb;
+  R1R2_TGFb_e' = k_int_complex * R1R2_TGFb - k_degr_complex * R1R2_TGFb_e - k_rec_R1 * R1R2_TGFb_e - k_rec_R2 * R1R2_TGFb_e;
+  S2' = -k_phospho * R1R2_TGFb * S2 + k_dephospho * S2p - k_import_S2 * S2 + k_export_S2 * S2n;
+  S2p' = k_phospho * R1R2_TGFb * S2 - k_dephospho * S2p - k_import_S2p * S2p + k_export_S2p * S2n;
+  S2n' = k_import_S2p * S2p - k_export_S2p * S2n;
+  S4' = -k_import_S4 * S4 + k_export_S4 * S4n;
+  S4n' = k_import_S4 * S4 - k_export_S4 * S4n;
+  FB_mRNA' = FB_expression - k_degr_FB_mRNA * FB_mRNA;
+  FB_protein' = k_trans_FB * FB_mRNA - k_degr_FB_protein * FB_protein - k_FB_action * FB_protein * R1R2_TGFb;
+
+  //// Reactions:
+  // Receptor complex formation and internalization already covered in rate rules
+  // SMAD complex formation implicitly handled through nuclear translocation dynamics
+
+  //// Events:
+  TGFb_stimulus: at time >= 0: TGFb = TGFb_stim;
+
+  //// Species initializations:
+  TGFb = 0;        # Initial TGF? concentration (pM)
+  R1 = 1000;       # TGF? receptor I
+  R2 = 1000;       # TGF? receptor II
+  R1R2_TGFb = 0;   # Active receptor complex
+  R1R2_TGFb_e = 0; # Internalized complex
+  S2 = 10000;      # SMAD2 total
+  S2p = 0;         # Phosphorylated SMAD2
+  S2n = 0;         # Nuclear SMAD2
+  S4 = 10000;      # SMAD4 total
+  S4n = 0;         # Nuclear SMAD4
+  FB_mRNA = 10;    # Feedback mRNA
+  FB_protein = 100; # Feedback protein (e.g., SMAD7)
+
+  //// Compartment initializations:
+  extracellular = 1;
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  // Rate constants
+  k_on = 1e-3;              # Receptor-ligand association
+  k_off = 1e-2;             # Receptor-ligand dissociation
+  k_phospho = 0.1;          # SMAD2 phosphorylation
+  k_dephospho = 0.05;       # SMAD2 dephosphorylation
+  k_int_complex = 0.01;     # Complex internalization
+  k_degr_complex = 0.005;   # Complex degradation
+  k_int_R1 = 0.001;         # R1 internalization
+  k_int_R2 = 0.001;         # R2 internalization
+  k_rec_R1 = 0.002;         # R1 recycling
+  k_rec_R2 = 0.002;         # R2 recycling
+  k_degr_TGFb = 0.01;       # TGF? degradation
+  
+  // SMAD translocation rates
+  k_import_S2 = 0.1;        # SMAD2 import to nucleus
+  k_export_S2 = 0.05;       # SMAD2 export from nucleus
+  k_import_S2p = 0.5;       # Phospho-SMAD2 import
+  k_export_S2p = 0.02;      # Phospho-SMAD2 export
+  k_import_S4 = 0.1;        # SMAD4 import
+  k_export_S4 = 0.05;       # SMAD4 export
+  
+  // Feedback regulation
+  k_FB_basal = 0.1;         # Basal feedback expression
+  k_FB_induced = 0.01;      # Induced feedback expression
+  k_trans_FB = 0.1;         # Feedback protein translation
+  k_degr_FB_mRNA = 0.05;    # Feedback mRNA degradation
+  k_degr_FB_protein = 0.02; # Feedback protein degradation
+  k_FB_action = 0.01;       # Feedback action on receptor complex
+  
+  // Experimental conditions
+  TGFb_stim = 100;          # TGF? stimulation concentration (pM)
+
+  //// Other declarations:
+  var TGFb, R1, R2, R1R2_TGFb, R1R2_TGFb_e, S2, S2p, S2n, S4, S4n, FB_mRNA, FB_protein;
+  const k_on, k_off, k_phospho, k_dephospho, k_int_complex, k_degr_complex;
+  const k_int_R1, k_int_R2, k_rec_R1, k_rec_R2, k_degr_TGFb;
+  const k_import_S2, k_export_S2, k_import_S2p, k_export_S2p, k_import_S4, k_export_S4;
+  const k_FB_basal, k_FB_induced, k_trans_FB, k_degr_FB_mRNA, k_degr_FB_protein, k_FB_action;
+  const TGFb_stim;
+
+  //// Unit definitions:
+  unit concentration = 1e-9 mole / liter;
+  unit time_unit = 3600 second;
+
+  //// Display Names:
+  TGFb is "TGF-beta ligand";
+  R1 is "TGF-beta receptor I";
+  R2 is "TGF-beta receptor II";
+  R1R2_TGFb is "Active receptor complex";
+  S2 is "SMAD2";
+  S2p is "Phosphorylated SMAD2";
+  S2n is "Nuclear SMAD2";
+  S4 is "SMAD4";
+  S4n is "Nuclear SMAD4";
+  FB_protein is "Feedback protein (SMAD7)";
+  nuc_cyt_ratio is "Nuclear-to-cytoplasmic SMAD2 ratio";
+
+end

@@ -1,0 +1,125 @@
+model *TumorImmuneOVDC()
+
+  //// Compartments and Species:
+  compartment tumor_microenvironment;
+  species U in tumor_microenvironment, I in tumor_microenvironment, V in tumor_microenvironment, T in tumor_microenvironment, D in tumor_microenvironment;
+
+  //// Assignment Rules:
+  N := U + I + T;  # Total volume of cells (tumor cells + T cells)
+
+  //// Rate Rules:
+  /* Not used - all dynamics captured by reactions and assignment rules */
+
+  //// Reactions:
+  /* Tumor growth - exponential growth of uninfected tumor cells */
+  tumor_growth: => U; r*U;
+  
+  /* Viral infection of tumor cells */
+  viral_infection: U => I; beta*U*V/N;
+  
+  /* T cell-mediated killing of uninfected tumor cells */
+  Tcell_killing_U: U => ; (kappa_0 + c_kill*I)*U*T/N;
+  
+  /* T cell-mediated killing of infected tumor cells */
+  Tcell_killing_I: I => ; (kappa_0 + c_kill*I)*I*T/N;
+  
+  /* Infected cell lysis and viral release */
+  infected_lysis: I => ; delta_I*I;
+  viral_release: => V; alpha*delta_I*I;
+  
+  /* Viral decay */
+  viral_decay: V => ; delta_V*V;
+  
+  /* T cell recruitment from 4-1BBL and IL-12 stimulation */
+  Tcell_recruitment: => T; c_T*I;
+  
+  /* T cell recruitment from dendritic cells */
+  DC_Tcell_recruitment: => T; chi_D*D;
+  
+  /* T cell natural death */
+  Tcell_death: T => ; delta_T*T;
+  
+  /* Dendritic cell decay */
+  DC_decay: D => ; delta_D*D;
+
+  //// Events:
+  /* OV injections - days 0, 2, 4 */
+  OV_injection1: at time == 0: V = V + OV_dose;
+  OV_injection2: at time == 2: V = V + OV_dose;
+  OV_injection3: at time == 4: V = V + OV_dose;
+  
+  /* DC injections - days 1, 3, 5 */
+  DC_injection1: at time == 1: D = D + DC_dose;
+  DC_injection2: at time == 3: D = D + DC_dose;
+  DC_injection3: at time == 5: D = D + DC_dose;
+
+  //// Species initializations:
+  U = 63;      # Initial tumor volume (mm?) - from experimental data
+  I = 0;       # Initial infected tumor volume
+  V = 0;       # Initial viral load
+  T = 0;       # Initial T cell population
+  D = 0;       # Initial dendritic cell population
+
+  //// Compartment initializations:
+  tumor_microenvironment = 1;
+
+  //// Variable initializations:
+  /* Parameters from hierarchical fitting to experimental data */
+  r = 0.3198;              # Tumor growth rate (day??)
+  beta = 0.00100854;       # Viral infection rate (day??)
+  kappa_0 = 0;             # Baseline T cell killing rate (set to 0 in this model)
+  c_kill = 6.234e7;        # Enhanced T cell killing coefficient
+  delta_I = 1.0;           # Infected cell lysis rate (day??) - typical value
+  alpha = 100;             # Viral burst size (virions per cell) - typical value
+  delta_V = 1.0;           # Viral decay rate (day??) - typical value
+  c_T = 1.428064;          # T cell recruitment rate from cytokines
+  chi_D = 1.0;             # T cell recruitment rate from DCs
+  delta_T = 0.1;           # T cell death rate (day??) - typical value
+  delta_D = 4.901894;      # DC decay rate (day??)
+  
+  /* Treatment doses */
+  OV_dose = 5e9;           # Oncolytic virus dose (virions) - high dose
+  DC_dose = 1e6;           # Dendritic cell dose (cells) - typical value
+
+  //// Other declarations:
+  var N;
+  const r, beta, kappa_0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, OV_dose, DC_dose;
+
+  //// Unit definitions:
+  unit volume = 1 mm^3;
+  unit time_unit = 1 day;
+  unit virus_unit = 1 virion;
+  unit cell_unit = 1 cell;
+
+  //// Display Names:
+  tumor_microenvironment is "Tumor microenvironment";
+  U is "Uninfected tumor volume";
+  I is "Infected tumor volume";
+  V is "Viral load";
+  T is "Tumor-targeting T cells";
+  D is "Dendritic cells";
+  r is "Tumor growth rate";
+  beta is "Viral infection rate";
+  c_kill is "Enhanced T cell killing coefficient";
+  delta_I is "Infected cell lysis rate";
+  alpha is "Viral burst size";
+  delta_V is "Viral decay rate";
+  c_T is "T cell recruitment rate from cytokines";
+  chi_D is "T cell recruitment rate from DCs";
+  delta_T is "T cell death rate";
+  delta_D is "DC decay rate";
+  OV_dose is "Oncolytic virus dose";
+  DC_dose is "Dendritic cell dose";
+  tumor_growth is "Tumor growth";
+  viral_infection is "Viral infection";
+  Tcell_killing_U is "T cell killing of uninfected tumor";
+  Tcell_killing_I is "T cell killing of infected tumor";
+  infected_lysis is "Infected cell lysis";
+  viral_release is "Viral release";
+  viral_decay is "Viral decay";
+  Tcell_recruitment is "T cell recruitment from cytokines";
+  DC_Tcell_recruitment is "T cell recruitment from DCs";
+  Tcell_death is "T cell death";
+  DC_decay is "DC decay";
+
+end

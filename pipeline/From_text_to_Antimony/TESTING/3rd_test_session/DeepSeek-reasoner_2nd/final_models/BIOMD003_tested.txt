@@ -1,0 +1,69 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C / (K_c + C)) * V_M1;
+  V3 := M * V_M3;
+
+  //// Rate Rules:
+  C' = v_i - v_d * X * (C / (K_d + C)) - k_d * C;
+  M' = V1 * (1 - M)/(K1 + (1 - M)) - V2 * M/(K2 + M);
+  X' = V3 * (1 - X)/(K3 + (1 - X)) - V4 * X/(K4 + X);
+
+  //// Reactions:
+  /* No explicit chemical reactions - system is governed by rate rules */
+
+  //// Events:
+  /* No events specified in the model */
+
+  //// Species initializations:
+  C = 0.01;  # Initial cyclin concentration (?M)
+  M = 0.01;  # Initial fraction of active cdc2 kinase
+  X = 0.01;  # Initial fraction of active cyclin protease
+
+  //// Compartment initializations:
+  cell = 1;  # Unit volume
+
+  //// Variable initializations:
+  # Cyclin synthesis and degradation parameters
+  v_i = 0.023;    # Cyclin synthesis rate (?M/min)
+  v_d = 0.1;      # Maximum cyclin degradation rate (?M/min)
+  k_d = 0.00333;  # Non-specific degradation rate constant (min??)
+  K_d = 0.02;     # Michaelis constant for cyclin degradation (?M)
+  K_c = 0.3;      # Michaelis constant for cyclin activation of phosphatase (?M)
+  
+  # cdc2 kinase cycle parameters
+  V_M1 = 0.5;     # Maximum rate of cdc2 phosphatase (min??)
+  V2 = 0.167;     # Rate of cdc2 kinase inactivation (min??)
+  K1 = 0.1;       # Reduced Michaelis constant for cdc2 phosphatase
+  K2 = 0.1;       # Reduced Michaelis constant for cdc2 kinase
+  
+  # Cyclin protease cycle parameters  
+  V_M3 = 0.2;     # Maximum rate of protease kinase (min??)
+  V4 = 0.1;       # Rate of protease phosphatase (min??)
+  K3 = 0.1;       # Reduced Michaelis constant for protease kinase
+  K4 = 0.1;       # Reduced Michaelis constant for protease phosphatase
+
+  //// Other declarations:
+  var C, M, X, V1, V3;
+  const cell, v_i, v_d, k_d, K_d, K_c, V_M1, V2, K1, K2, V_M3, V4, K3, K4;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit volume = 1e-15 liter;
+
+  //// Display Names:
+  cell is "Cell";
+  C is "Cyclin";
+  M is "Active cdc2 kinase fraction";
+  X is "Active cyclin protease fraction";
+  v_i is "Cyclin synthesis rate";
+  v_d is "Maximum cyclin degradation rate";
+  V1 is "cdc2 phosphatase effective rate";
+  V3 is "Protease kinase effective rate";
+
+end

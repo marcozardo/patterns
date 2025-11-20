@@ -1,0 +1,63 @@
+model *COVID19_SEIRS()
+
+//// Compartments and Species:
+compartment population;
+species S in population, E in population, I in population, R in population;
+
+//// Assignment Rules:
+Rtilde1 := Rtilde1_0 * exp(-eta1 * time) + R1_star * (1 - exp(-eta1 * time));
+Rtilde2 := Rtilde2_0 * exp(-eta2 * time) + R2_star * (1 - exp(-eta2 * time));
+Rtilde := (Rtilde1 + Rtilde2) / 2;
+beta := recovery_rate * Rtilde;
+
+//// Reactions:
+J1: S -> E; beta * S * I;
+J2: E -> I; sigma * E;
+J3: I -> R; recovery_rate * I;
+J4: R -> S; omega * R;
+
+//// Species initializations:
+S = 0.95525;
+E = 0.04375;
+I = 0.001;
+R = 0;
+
+//// Compartment initializations:
+population = 1;
+
+//// Variable initializations:
+sigma = 0.19230769230769232; # 1/5.2
+recovery_rate = 0.05555555555555555; # 1/18
+omega = 0;
+Rtilde1_0 = 3;
+R1_star = 1.6;
+eta1 = 0;
+Rtilde2_0 = 3;
+R2_star = 1.6;
+eta2 = 0;
+
+//// Other declarations:
+const sigma, recovery_rate, omega, Rtilde1_0, R1_star, eta1, Rtilde2_0, R2_star, eta2;
+var Rtilde1, Rtilde2, Rtilde, beta;
+
+//// Unit definitions:
+unit day = 1 day;
+unit fraction = dimensionless;
+
+//// Display Names:
+S is "Susceptible";
+E is "Exposed";
+I is "Infected";
+R is "Resistant";
+beta is "Transmission rate";
+Rtilde is "Time-varying reproduction number";
+sigma is "Incubation rate";
+recovery_rate is "Recovery rate";
+omega is "Immunity waning rate";
+population is "Total population";
+J1 is "Infection process";
+J2 is "Progression to infectious";
+J3 is "Recovery process";
+J4 is "Reinfection process";
+
+end

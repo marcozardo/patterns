@@ -1,0 +1,79 @@
+model *Malkov2020_COVID19_SEIRS()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+  species R_tilde1 in population, R_tilde2 in population;
+
+  //// Assignment Rules:
+  R_tilde := 0.5*(R_tilde1 + R_tilde2);
+  beta := gamma*R_tilde;
+
+  //// Rate Rules:
+  S' = -beta*S*I + omega*R;
+  E' = beta*S*I - sigma*E;
+  I' = sigma*E - gamma*I;
+  R' = gamma*I - omega*R;
+  R_tilde1' = -eta1*(R_tilde1 - R1_star);
+  R_tilde2' = -eta2*(R_tilde2 - R2_star);
+
+  //// Reactions:
+  // Disease transmission and progression captured by ODEs above
+
+  //// Events:
+  // No discrete events in baseline model
+
+  //// Species initializations:
+  S = 1 - I0 - E0;
+  E = E0;
+  I = I0;
+  R = 0;
+  R_tilde1 = R_tilde1_0;
+  R_tilde2 = R_tilde2_0;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  // Epidemiological parameters
+  sigma = 1/5.2;      // Mean latent period (5.2 days)
+  gamma = 1/18;       // Mean infectious period (18 days)
+  
+  // Initial conditions for US (March 16-17, 2020)
+  I0 = 0.001;         // 0.1% of population initially infected
+  E0 = 43.75 * I0;    // Exposed population
+  
+  // Immunity waning rate (range considered in paper)
+  omega = 1/365;      // Default: 1-year immunity duration
+  
+  // Time-varying reproduction number parameters
+  R_tilde1_0 = 3.0;
+  R_tilde2_0 = 3.0;
+  R1_star = 1.6;
+  R2_star = 1.6;
+  eta1 = 1/20;        // Moderate convergence rate
+  eta2 = 1/20;        // Moderate convergence rate
+
+  //// Other declarations:
+  var S, E, I, R, R_tilde1, R_tilde2, R_tilde, beta;
+  const population, sigma, gamma, I0, E0, omega, R_tilde1_0, R_tilde2_0, R1_star, R2_star, eta1, eta2;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;  // 1 day in seconds
+  unit population_unit = 1;       // Fraction of total population
+
+  //// Display Names:
+  time_unit is "day";
+  population_unit is "population fraction";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Recovered";
+  R_tilde is "Effective reproduction number";
+  beta is "Transmission rate";
+  sigma is "Incubation rate";
+  gamma is "Recovery rate";
+  omega is "Immunity waning rate";
+  population is "Total population";
+
+end
