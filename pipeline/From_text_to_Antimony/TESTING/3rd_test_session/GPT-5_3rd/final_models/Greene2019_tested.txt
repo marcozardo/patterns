@@ -1,0 +1,82 @@
+model *Greene2019_InducedResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;  # total tumor volume
+  T_cycle := dt_on + dt_off;  # pulsing period length
+  phase := ((time - det_time)/T_cycle) - floor((time - det_time)/T_cycle);  # fractional position within cycle [0,1)
+  u := piecewise(u_on, (treat_on == 1) && (protocol_mode == 0), u_on, (treat_on == 1) && (protocol_mode == 1) && (phase < (dt_on / T_cycle)), 0);
+
+  //// Rate Rules:
+  S' = (1 - (S + R))*S - (epsilon + alpha*u)*S - d*u*S;
+  R' = p_r*(1 - (S + R))*R + (epsilon + alpha*u)*S;
+
+  //// Events:
+  E_detect: at(V >= Vd): treat_on = 1, det_time = time;
+  E_fail:   at(V >= Vc): fail = 1;
+
+  //// Species initializations:
+  S = S0;
+  R = R0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Initial conditions and thresholds (nondimensional)
+  S0 = 0.01;
+  R0 = 0;
+  Vd = 0.1;
+  Vc = 0.9;
+
+  # Kinetic parameters (nondimensional model, Eqs. 4?5)
+  epsilon = 1e-6;   # background spontaneous resistance rate
+  alpha   = 1e-2;   # drug-induced resistance rate (set to 0 for phenotype-preserving drug)
+  d       = 1;      # drug cytotoxicity on sensitive cells
+  p_r     = 0.2;    # resistant growth fraction (0 <= p_r < 1)
+
+  # Therapy scheduling parameters
+  u_on   = 1.5;     # treatment magnitude during on-windows
+  dt_on  = 1;       # pulse duration
+  dt_off = 3;       # holiday duration
+  protocol_mode = 0;  # 0 = constant therapy after detection; 1 = pulsed therapy after detection
+
+  # Runtime flags (set by events)
+  treat_on = 0;
+  det_time = 0;
+  fail = 0;
+
+  //// Other declarations:
+  var V, T_cycle, phase, u, treat_on, det_time, fail;
+  const tumor, S0, R0, Vd, Vc, epsilon, alpha, d, p_r, u_on, dt_on, dt_off, protocol_mode;
+
+  //// Display Names:
+  tumor is "Tumor compartment (nondimensional volume)";
+  S is "Drug-sensitive tumor cells (nondimensional)";
+  R is "Drug-resistant tumor cells (nondimensional)";
+  V is "Total tumor volume V = S + R";
+  u is "Effective drug input u(t)";
+  epsilon is "Background (spontaneous) resistance rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Drug cytotoxicity on sensitive cells";
+  p_r is "Resistant growth fraction";
+  Vd is "Detection threshold volume";
+  Vc is "Failure threshold volume";
+  u_on is "Therapy magnitude during on-phase";
+  dt_on is "Duration of therapy on-phase";
+  dt_off is "Duration of therapy off-phase";
+  protocol_mode is "Therapy protocol selector: 0=constant, 1=pulsed";
+  treat_on is "Therapy activation flag (set at detection)";
+  det_time is "Time of detection (therapy start time)";
+  fail is "Failure flag (set when V >= Vc)";
+end
+
+/* Unmapped/omitted from this implementation (to keep the minimal main model Eqs. 4?5):
+   - Dimensional model (Eqs. 1?2) and PK/PD elaborations on u(t).
+   - Reversible resensitization gamma > 0 and the three-compartment extension with R_n, R_r (Eqs. 10?13).
+   - Alternative comparisons with equal AUC normalization from the Appendix.
+   - Identifiability derivations and experimental protocols; here u(t) is provided via protocol_mode.
+*/

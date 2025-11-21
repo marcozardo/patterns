@@ -1,0 +1,37 @@
+model *Hou2020_Wuhan_SEIR()
+
+  //// Compartments and Species:
+  compartment default;
+  species S in default, E in default, I in default, R in default;
+
+  //// Assignment Rules:
+  N := S + E + I + R;        // Total population (closed population)
+  beta2 := 0.5*beta1;        // Assumption: latent infectiousness is half that of symptomatic
+
+  //// Reactions:
+  infection_from_I: S => E; r1*beta1*S*I/N;
+  infection_from_E: S => E; r2*beta2*S*E/N;
+  progression_to_I: E => I; sigma*E;
+  recovery: I => R; gamma_*I;
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  default = 1;
+
+  //// Variable initializations:
+  r1 = 6;        // Contact rate for infectious individuals
+  r2 = 18;       // Contact rate for latent individuals (vary 6?18 to explore scenarios)
+  beta1 = 0.4;   // Infection probability per exposure from infectious
+  sigma = 0.14;  // Incubation rate (1/7 days)
+  gamma_ = 0.048; // Recovery rate (1/21 days)
+
+  //// Other declarations:
+  var N, beta2;
+  const default, r1, r2, beta1, sigma, gamma_;
+
+end

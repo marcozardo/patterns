@@ -1,0 +1,2 @@
+,N° paper,Attempt,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),N° Boundary sp.(query/original),N° Floating sp.(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original)
+gpt-5,10,3,0.7,1.0,1.0,inf,0.88,0.35,1.1,1.04

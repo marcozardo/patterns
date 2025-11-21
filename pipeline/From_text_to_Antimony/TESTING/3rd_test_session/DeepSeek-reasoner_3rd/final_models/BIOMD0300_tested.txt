@@ -1,0 +1,83 @@
+model *Schmierer2010_HIF_FIH_ARD()
+
+  //// Compartments and Species:
+  compartment cell;
+  species H_tot in cell, H in cell, H_OH in cell, A in cell, A_OH in cell;
+  species $P_tot in cell, $F_tot in cell, $O2_tilde in cell, $A_tot in cell;
+
+  //// Assignment Rules:
+  H_OH := H_tot - H;
+  A_OH := A_tot - A;
+  H_p := -0.5*(H_tot - P_tot - K_D_hat_P + sqrt((K_D_hat_P + P_tot - H_tot)^2 + 4*K_D_hat_P*H_tot));
+  H_F := 0.5*(H - F_tot - K_i_FH + sqrt((K_i_FH + F_tot - H)^2 + 4*K_i_FH*H));
+  K_i_FH := K_D_hat_FH * (1 + A/K_D_hat_FA + gamma * A_OH/K_D_hat_FA);
+  v_P := k_cat_prime_P * P_tot * (1/(K_D_hat_P + H_p + P_tot)) * (O2_tilde/(1+O2_tilde));
+  v_FH := k_cat_prime_FH * F_tot * (1/(K_i_FH + H_F + F_tot)) * (O2_tilde/(alpha + O2_tilde));
+  v_FA := (k_cat_prime_FA * F_tot) / (K_D_hat_FA * (1 + H_F/K_D_hat_FH) + A + gamma * A_OH) * (O2_tilde/(alpha + O2_tilde));
+  HRE_CAD := H/(K_D_hat_HRE + H_tot);
+  HRE_CADOH := H_OH/(K_D_hat_HRE + H_tot);
+  F_free := 1/(1 + kappa * A);
+  kappa := A_tot/K_D_hat_FA;
+  beta := k_cat_prime_FA * F_tot/(k_d_A * A_tot);
+
+  //// Rate Rules:
+  H_tot' = 1 - H_tot*(1 + v_P);
+  H' = 1 - H*(1 + v_P + v_FH);
+  A' = (A_tot - A*(1 + epsilon * v_FA))/epsilon;
+
+  //// Reactions:
+  // Note: Hydroxylation reactions are implemented via rate rules and assignment rules
+  // rather than traditional reaction kinetics due to the complex competitive binding
+
+  //// Species initializations:
+  H_tot = 0;
+  H = 0;
+  A = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Primary model parameters from Table 2
+  P_tot = 0.2;
+  K_D_hat_P = 1;
+  k_cat_prime_P = 500;
+  F_tot = 1;
+  K_D_hat_FH = 1;
+  k_cat_prime_FH = 500;
+  k_cat_prime_FA = 500;
+  alpha = 0.33;
+  A_tot = 100;
+  K_D_hat_FA = 1;
+  gamma = 0.02;
+  epsilon = 5;
+  K_D_hat_HRE = 0.3;
+  O2_tilde = 0.1;
+  k_d_A = 1;
+
+  //// Other declarations:
+  const P_tot, F_tot, A_tot, O2_tilde, K_D_hat_P, k_cat_prime_P, K_D_hat_FH, k_cat_prime_FH, k_cat_prime_FA, alpha, K_D_hat_FA, gamma, epsilon, K_D_hat_HRE, k_d_A;
+  var H_tot, H, H_OH, A, A_OH, H_p, H_F, K_i_FH, v_P, v_FH, v_FA, HRE_CAD, HRE_CADOH, F_free, kappa, beta;
+
+  //// Unit definitions:
+  unit substance = 1 dimensionless;
+  unit time_unit = 1 dimensionless;
+
+  //// Display Names:
+  H_tot is "Total HIF?";
+  H is "Non-CAD-hydroxylated HIF?";
+  H_OH is "CAD-hydroxylated HIF?";
+  A is "Unhydroxylated FIH target repeats";
+  A_OH is "Hydroxylated FIH target repeats";
+  P_tot is "Total PHD concentration";
+  F_tot is "Total FIH concentration";
+  O2_tilde is "Oxygen concentration (relative to PHD K_M)";
+  A_tot is "Total FIH target ankyrin repeats";
+  v_P is "PHD-dependent HIF? ODD-hydroxylation rate";
+  v_FH is "FIH-dependent HIF? CAD-hydroxylation rate";
+  v_FA is "FIH-dependent AR-hydroxylation rate";
+  HRE_CAD is "HRE bound by non-CAD-hydroxylated HIF?";
+  HRE_CADOH is "HRE bound by CAD-hydroxylated HIF?";
+  F_free is "Free FIH fraction";
+
+end

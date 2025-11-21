@@ -1,0 +1,65 @@
+model *Kimmel2021_CAR_Tcell_Therapy()
+
+  //// Compartments and Species:
+  compartment body;
+  species N in body, C in body, B in body;
+
+  //// Assignment Rules:
+  T := N + C;
+  r_C := rho_C + b * (T - K_N)^2 / (a * T^2 + (T - K_N)^2);
+
+  //// Rate Rules:
+  N' = -r_N * N * ln((N + C) / K_N);
+  C' = -r_C * C * ln((N + C) / K_C);
+  B' = r_B * B - gamma_B * B * (C / (k_B + C));
+
+  //// Reactions:
+  // No traditional biochemical reactions - dynamics captured by rate rules
+
+  //// Events:
+  // No events defined in the source literature
+
+  //// Species initializations:
+  N = 3.00e9;
+  C = 1.80e8;
+  B = 94.86;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  K_N = 2.50e11;
+  K_C = 6.96e10;
+  r_N = 0.170;
+  rho_C = 0.0251;
+  a = 0.423;
+  b = 0.525;
+  r_B = 0.19;
+  gamma_B = 1.15;
+  k_B = 2.024e9;
+
+  //// Other declarations:
+  var T, r_C;
+  const K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Unit definitions:
+  unit cell_count = dimensionless;
+  unit volume = 1 milliliter;
+  unit time_unit = 86400 second;
+
+  //// Display Names:
+  body is "Human body";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "Tumor volume";
+  T is "Total T cells";
+  r_C is "CAR T cell growth rate";
+  K_N is "Normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "Normal T cell growth rate";
+  rho_C is "Baseline CAR T growth rate";
+  r_B is "Tumor growth rate";
+  gamma_B is "Tumor killing rate";
+  k_B is "Killing saturation parameter";
+
+end

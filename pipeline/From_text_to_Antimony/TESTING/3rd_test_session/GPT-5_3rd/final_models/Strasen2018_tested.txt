@@ -1,0 +1,112 @@
+model *Strasen2018_TGFB_Smad_Core()
+
+  //// Compartments and Species:
+  compartment Ext, Membrane, Cyt, Nucleus, Endosome;
+  species L in Ext, R1 in Membrane, R2 in Membrane, LR1R2_m in Membrane, LR1R2_e in Endosome;
+  species S2 in Cyt, S4 in Cyt, pS2 in Cyt, pS2_S4 in Cyt;
+  species pS2_S4_n in Nucleus, S2_n in Nucleus, S4_n in Nucleus;
+  species FB_mRNA in Nucleus, FB in Cyt;
+
+  //// Reactions:
+  J1_bind: L + R1 + R2 => LR1R2_m; k_on*L*R1*R2;
+  J2_int: LR1R2_m => LR1R2_e; k_int*LR1R2_m;
+  J3_deg_int: LR1R2_e => ; k_deg_comp*LR1R2_e;
+  J4_phosS2: S2 => pS2; (k_phos*LR1R2_m*S2)/(1 + K_FB*FB);
+  J5_complex_cyt: pS2 + S4 -> pS2_S4; k_on_c*pS2*S4 - k_off_c*pS2_S4;
+  J6_import: pS2_S4 => pS2_S4_n; k_imp*pS2_S4;
+  J7_dephos_nuc: pS2_S4_n => S2_n + S4_n; k_dephos_nuc*pS2_S4_n;
+  J8_export_S2: S2_n => S2; k_exp_S2*S2_n;
+  J9_export_S4: S4_n => S4; k_exp_S4*S4_n;
+  J10_tx_FB:  => FB_mRNA; k_tx_basal + k_tx_ind*pS2_S4_n;
+  J11_mdeg_FB: FB_mRNA => ; k_mdeg*FB_mRNA;
+  J12_tl_FB:  => FB; k_tl*FB_mRNA;
+  J13_pdeg_FB: FB => ; k_pdeg*FB;
+  J14_L_decay: L => ; k_L_deg*L;
+
+  //// Species initializations:
+  L = 25;            # extracellular TGF? (default stimulus, arbitrary units)
+  R1 = 1;
+  R2 = 1;
+  LR1R2_m = 0;
+  LR1R2_e = 0;
+  S2 = 1;
+  S4 = 1;
+  pS2 = 0;
+  pS2_S4 = 0;
+  pS2_S4_n = 0;
+  S2_n = 0;
+  S4_n = 0;
+  FB_mRNA = 0;
+  FB = 0;
+
+  //// Compartment initializations:
+  Ext = 1;
+  Membrane = 1;
+  Cyt = 1;
+  Nucleus = 1;
+  Endosome = 1;
+
+  //// Variable initializations:
+  k_on = 1e-3;
+  k_int = 1e-2;
+  k_deg_comp = 5e-3;
+  k_phos = 1e-2;
+  K_FB = 1;
+  k_on_c = 1e-2;
+  k_off_c = 1e-3;
+  k_imp = 5e-3;
+  k_exp_S2 = 1e-3;
+  k_exp_S4 = 1e-3;
+  k_dephos_nuc = 2e-3;
+  k_tx_basal = 1e-4;
+  k_tx_ind = 1e-3;
+  k_mdeg = 5e-4;
+  k_tl = 2e-3;
+  k_pdeg = 5e-4;
+  k_L_deg = 1e-3;
+
+  //// Other declarations:
+  const Ext, Membrane, Cyt, Nucleus, Endosome;
+  const k_on, k_int, k_deg_comp, k_phos, K_FB, k_on_c, k_off_c, k_imp, k_exp_S2, k_exp_S4, k_dephos_nuc, k_tx_basal, k_tx_ind, k_mdeg, k_tl, k_pdeg, k_L_deg;
+
+  //// Display Names:
+  Ext is "Extracellular space";
+  Membrane is "Plasma membrane";
+  Cyt is "Cytoplasm";
+  Nucleus is "Nucleus";
+  Endosome is "Endosomal compartment";
+  L is "TGF? ligand (extracellular)";
+  R1 is "TGF? receptor I (ALK5) at membrane";
+  R2 is "TGF? receptor II at membrane";
+  LR1R2_m is "Ligand-bound R1/R2 complex (active) at membrane";
+  LR1R2_e is "Internalized ligand-receptor complex (endosome)";
+  S2 is "SMAD2 (cytoplasmic)";
+  pS2 is "Phosphorylated SMAD2 (cytoplasmic)";
+  S4 is "SMAD4 (cytoplasmic)";
+  pS2_S4 is "Cytoplasmic pSMAD2:SMAD4 complex";
+  pS2_S4_n is "Nuclear pSMAD2:SMAD4 complex";
+  S2_n is "SMAD2 (nuclear)";
+  S4_n is "SMAD4 (nuclear)";
+  FB_mRNA is "Feedback mRNA (e.g., SMAD7 transcript)";
+  FB is "Feedback protein (e.g., SMAD7)";
+  J1_bind is "Ligand-induced R1/R2 complex formation";
+  J2_int is "Internalization of active receptor complex";
+  J3_deg_int is "Degradation of internalized complex (ligand depletion)";
+  J4_phosS2 is "R-SMAD2 phosphorylation by active receptor (inhibited by feedback)";
+  J5_complex_cyt is "pSMAD2:SMAD4 complex formation/dissociation";
+  J6_import is "Nuclear import of pSMAD2:SMAD4 complex";
+  J7_dephos_nuc is "Nuclear dephosphorylation and complex dissociation (PPM1A-like)";
+  J8_export_S2 is "Nuclear export of SMAD2";
+  J9_export_S4 is "Nuclear export of SMAD4";
+  J10_tx_FB is "Transcription of feedback mRNA induced by nuclear complex";
+  J11_mdeg_FB is "Feedback mRNA degradation";
+  J12_tl_FB is "Translation of feedback protein from mRNA";
+  J13_pdeg_FB is "Feedback protein degradation";
+  J14_L_decay is "Extracellular ligand decay";
+
+end
+
+/* Notes:
+- This model encodes the network topology described in Strasen et al. (2018): ligand binding and receptor activation, internalization-driven ligand depletion, SMAD2 phosphorylation, SMAD4 complex formation, nucleocytoplasmic shuttling, nuclear dephosphorylation/export, and transcriptional negative feedback (e.g., SMAD7) acting at the receptor level. Feedback inhibition is implemented as a divisive term in the phosphorylation rate.
+- Quantitative parameter values were not provided in the input text; default placeholder values are assigned to allow simulation. Replace these with fitted values as needed (see BioModels MODEL1712050001?MODEL17120500012 referenced in the article).
+- Initial extracellular ligand (L) is set to 25 (arbitrary units) to reflect typical stimuli (1?100 pM in the experiments). Adjust to desired stimulus levels. */

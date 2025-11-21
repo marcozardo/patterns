@@ -1,0 +1,69 @@
+model COVID19_SEIRS_Reinfection()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  R_tilde := (R1_tilde + R2_tilde)/2;
+
+  //// Rate Rules:
+  R1_tilde' = -eta1 * (R1_tilde - R1_star);
+  R2_tilde' = -eta2 * (R2_tilde - R2_star);
+
+  //// Reactions:
+  J_exposure: S -> E; recovery_rate * R_tilde * S * I;
+  J_progression: E -> I; sigma * E;
+  J_recovery: I -> R; recovery_rate * I;
+  J_waning: R -> S; omega * R;
+
+  //// Species initializations:
+  S = 0.95525;
+  E = 0.04375;
+  I = 0.001;
+  R = 0;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  sigma = 1/5.2;
+  recovery_rate = 1/18;
+  omega = 0;
+  R1_tilde = 2.2;
+  R2_tilde = 2.2;
+  R1_star = 2.2;
+  R2_star = 2.2;
+  eta1 = 0;
+  eta2 = 0;
+
+  //// Other declarations:
+  var R1_tilde, R2_tilde, R_tilde;
+  const sigma, recovery_rate, omega, R1_star, R2_star, eta1, eta2;
+
+  //// Unit definitions:
+  unit time_unit = day;
+
+  //// Display Names:
+  population is "Population";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant";
+  J_exposure is "Exposure process";
+  J_progression is "Progression to infectious";
+  J_recovery is "Recovery";
+  J_waning is "Immunity waning";
+  R_tilde is "Time-varying reproduction number";
+  R1_tilde is "R1 tilde";
+  R2_tilde is "R2 tilde";
+  sigma is "Incubation rate";
+  recovery_rate is "Recovery rate";
+  omega is "Immunity waning rate";
+  eta1 is "Convergence rate for R1";
+  eta2 is "Convergence rate for R2";
+  R1_star is "Long-run R1";
+  R2_star is "Long-run R2";
+  time_unit is "Time (days)";
+
+end

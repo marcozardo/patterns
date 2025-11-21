@@ -1,0 +1,61 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C)) * VM1;    # Effective max rate for activation of cdc2 by phosphatase E1, activated by cyclin
+  V3 := M * VM3;               # Effective max rate for activation (phosphorylation) of protease X by cdc2 kinase
+
+  //// Rate Rules:
+  C' = vi - vd*X*C/(Kd + C) - kd*C;                                   # Cyclin synthesis and degradation
+  M' = V1*((1 - M)/(K1 + (1 - M))) - V2*(M/(K2 + M));                 # cdc2 kinase activation/deactivation cycle
+  X' = V3*((1 - X)/(K3 + (1 - X))) - V4*(X/(K4 + X));                 # Cyclin protease activation/deactivation cycle
+
+  //// Species initializations:
+  C = 0;         # Cyclin concentration (?M)
+  M = 0;         # Fraction of active cdc2 kinase
+  X = 0.01;      # Fraction of active cyclin protease (per Fig. 4 caption)
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  vi = 0.023;    # Cyclin synthesis rate (?M/min)
+  vd = 0.1;      # Max cyclin degradation rate at X=1 (?M/min)
+  Kd = 0.02;     # Michaelis const. for cyclin degradation (?M)
+  kd = 0;        # First-order nonspecific cyclin degradation rate (min^-1); facultative, set to 0 as per text
+  Kc = 0.3;      # Michaelis const. for cyclin activation of E1 (?M)
+
+  K1 = 0.1;      # Reduced Michaelis constants for covalent-modification steps (dimensionless)
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  VM1 = 0.5;     # Max velocity of E1 (min^-1), at saturating cyclin
+  V2  = 0.167;   # Effective max rate for inactivation of cdc2 by E2 (min^-1)
+  VM3 = 0.2;     # Max velocity of cdc2 kinase acting on X (min^-1), at M=1
+  V4  = 0.1;     # Effective max rate for inactivation of protease X by E4 (min^-1)
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, vi, vd, Kd, kd, Kc, K1, K2, K3, K4, VM1, V2, VM3, V4;
+
+  //// Unit definitions:
+  # (omitted; not required for simulation)
+
+  //// Display Names:
+  C is "Cyclin";
+  M is "Active cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  V1 is "Effective max rate E1 (cdc2 activation)";
+  V3 is "Effective max rate E3 (X activation)";
+end
+
+/* Unmapped/Ambiguous items from source text:
+- Figure text shows two entries labeled "Ve" with values 0.167 and 0.1 min^-1; these were mapped to V2 (=0.167) and V4 (=0.1), respectively.
+- The caption line "Ka = 3.33 ? 10?? min??" is ambiguous; no such parameter appears in Eqs. (1)-(2), so it was not included.
+- kd (first-order nonspecific cyclin degradation) was described qualitatively as facultative and not needed for oscillations; no numeric value was unambiguously given, so kd was set to 0.
+- Initial values for C and M were not specified; set to 0 to allow simulation. X initial value (0.01) taken from caption.
+*/

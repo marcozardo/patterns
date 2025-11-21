@@ -1,0 +1,43 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C / (K_c + C)) * V_M1;
+  V3 := M * V_M3;
+
+  //// Rate Rules:
+  C' = v_i - v_d * X * (C / (K_d + C)) - k_d * C;
+  M' = V1 * ((1 - M) / (K_1 + (1 - M))) - V2 * (M / (K_2 + M));
+  X' = V3 * ((1 - X) / (K_3 + (1 - X))) - V4 * (X / (K_4 + X));
+
+  //// Species initializations:
+  C = 0.001;
+  M = 0;
+  X = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  v_i = 0.023;
+  v_d = 0.1;
+  K_d = 0.02;
+  k_d = 0.00333;
+  V_M1 = 0.5;
+  V2 = 0.167;
+  V_M3 = 0.2;
+  V4 = 0.1;
+  K_1 = 0.1;
+  K_2 = 0.1;
+  K_3 = 0.1;
+  K_4 = 0.1;
+  K_c = 0.3;
+
+  //// Other declarations:
+  const cell, v_i, v_d, K_d, k_d, V_M1, V2, V_M3, V4, K_1, K_2, K_3, K_4, K_c;
+  var V1, V3;
+
+end

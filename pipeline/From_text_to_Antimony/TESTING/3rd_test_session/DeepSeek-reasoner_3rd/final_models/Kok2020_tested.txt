@@ -1,0 +1,194 @@
+model *Kok2020_IFNalpha_Signaling()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IFN in cytoplasm, Rec in cytoplasm, aRecIFN in cytoplasm;
+  species STAT1c in cytoplasm, STAT2c in cytoplasm, IRF9c in cytoplasm;
+  species pSTAT1c in cytoplasm, pSTAT2c in cytoplasm;
+  species pSTAT1dimc in cytoplasm, pSTAT1pSTAT2c in cytoplasm, ISGF3c in cytoplasm;
+  species STAT1n in nucleus, STAT2n in nucleus, IRF9n in nucleus;
+  species pSTAT1n in nucleus, pSTAT2n in nucleus;
+  species pSTAT1dimn in nucleus, pSTAT1pSTAT2n in nucleus, ISGF3n in nucleus;
+  species OccGASbs in nucleus, OccISREbs in nucleus;
+  species STAT1mRNA in nucleus, STAT2mRNA in nucleus, IRF9mRNA in nucleus;
+  species USP18mRNA in nucleus, SOCS1mRNA in nucleus, SOCS3mRNA in nucleus, IRF2mRNA in nucleus;
+  species STAT1p in cytoplasm, STAT2p in cytoplasm, IRF9p in cytoplasm;
+  species USP18p in cytoplasm, SOCS1p in cytoplasm, SOCS3p in cytoplasm, IRF2p in cytoplasm;
+
+  //// Assignment Rules:
+  total_STAT1 := STAT1c + STAT1n + pSTAT1c + pSTAT1n + 2*pSTAT1dimc + 2*pSTAT1dimn + pSTAT1pSTAT2c + pSTAT1pSTAT2n + ISGF3c + ISGF3n;
+  total_STAT2 := STAT2c + STAT2n + pSTAT2c + pSTAT2n + pSTAT1pSTAT2c + pSTAT1pSTAT2n + ISGF3c + ISGF3n;
+  total_IRF9 := IRF9c + IRF9n + ISGF3c + ISGF3n;
+
+  //// Rate Rules:
+  // (Note: These would require detailed ODE definitions from the original model)
+
+  //// Reactions:
+  // Receptor activation
+  R1: IFN + Rec -> aRecIFN; k1*IFN*Rec;
+  
+  // STAT phosphorylation
+  R2: aRecIFN + STAT1c -> aRecIFN + pSTAT1c; k2*aRecIFN*STAT1c;
+  R3: aRecIFN + STAT2c -> aRecIFN + pSTAT2c; k3*aRecIFN*STAT2c;
+  
+  // Dimerization and complex formation
+  R4: 2 pSTAT1c -> pSTAT1dimc; k4*pSTAT1c^2;
+  R5: pSTAT1c + pSTAT2c -> pSTAT1pSTAT2c; k5*pSTAT1c*pSTAT2c;
+  R6: pSTAT1pSTAT2c + IRF9c -> ISGF3c; k6*pSTAT1pSTAT2c*IRF9c;
+  
+  // Nuclear translocation
+  R7: pSTAT1dimc -> pSTAT1dimn; k7*pSTAT1dimc;
+  R8: pSTAT1pSTAT2c -> pSTAT1pSTAT2n; k8*pSTAT1pSTAT2c;
+  R9: ISGF3c -> ISGF3n; k9*ISGF3c;
+  
+  // Transcription factor binding
+  R10: pSTAT1dimn + OccGASbs -> OccGASbs; k10*pSTAT1dimn*OccGASbs;
+  R11: pSTAT1pSTAT2n + OccGASbs + OccISREbs -> OccGASbs + OccISREbs; k11*pSTAT1pSTAT2n*(OccGASbs + OccISREbs);
+  R12: ISGF3n + OccISREbs -> OccISREbs; k12*ISGF3n*OccISREbs;
+  
+  // Gene expression
+  R13: OccGASbs -> STAT1mRNA; k13*OccGASbs;
+  R14: OccGASbs + OccISREbs -> STAT2mRNA; k14*(OccGASbs + OccISREbs);
+  R15: OccGASbs + OccISREbs -> IRF9mRNA; k15*(OccGASbs + OccISREbs);
+  R16: OccGASbs + OccISREbs -> USP18mRNA; k16*(OccGASbs + OccISREbs);
+  R17: OccGASbs + OccISREbs -> SOCS1mRNA; k17*(OccGASbs + OccISREbs);
+  R18: OccGASbs -> SOCS3mRNA; k18*OccGASbs;
+  R19: OccGASbs + OccISREbs -> IRF2mRNA; k19*(OccGASbs + OccISREbs);
+  
+  // Translation
+  R20: STAT1mRNA -> STAT1p; k20*STAT1mRNA;
+  R21: STAT2mRNA -> STAT2p; k21*STAT2mRNA;
+  R22: IRF9mRNA -> IRF9p; k22*IRF9mRNA;
+  R23: USP18mRNA -> USP18p; k23*USP18mRNA;
+  R24: SOCS1mRNA -> SOCS1p; k24*SOCS1mRNA;
+  R25: SOCS3mRNA -> SOCS3p; k25*SOCS3mRNA;
+  R26: IRF2mRNA -> IRF2p; k26*IRF2mRNA;
+  
+  // Negative feedback mechanisms
+  R27: USP18p + aRecIFN -> Rec; k27*USP18p*aRecIFN;
+  R28: SOCS1p + aRecIFN -> Rec; k28*SOCS1p*aRecIFN;
+  R29: SOCS3p + aRecIFN -> Rec; k29*SOCS3p*aRecIFN;
+  R30: IRF2p + SOCS1mRNA -> SOCS1mRNA; k30*IRF2p*SOCS1mRNA;
+
+  //// Events:
+  E1: at time >= 0: IFN = IFN_prestim;
+  E2: at time >= 1440: IFN = IFN_stim;  // 24 hours = 1440 minutes
+
+  //// Species initializations:
+  IFN = 0;
+  Rec = 10000;
+  aRecIFN = 0;
+  STAT1c = 500000;
+  STAT2c = 50000;
+  IRF9c = 5000;
+  pSTAT1c = 0;
+  pSTAT2c = 0;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1n = 0;
+  pSTAT2n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  OccGASbs = 100;
+  OccISREbs = 100;
+  STAT1mRNA = 10;
+  STAT2mRNA = 10;
+  IRF9mRNA = 10;
+  USP18mRNA = 10;
+  SOCS1mRNA = 10;
+  SOCS3mRNA = 10;
+  IRF2mRNA = 10;
+  STAT1p = 500000;
+  STAT2p = 50000;
+  IRF9p = 5000;
+  USP18p = 1000;
+  SOCS1p = 1000;
+  SOCS3p = 1000;
+  IRF2p = 1000;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  // Rate constants (placeholder values - would need calibration from original model)
+  k1 = 0.001;
+  k2 = 0.01;
+  k3 = 0.01;
+  k4 = 0.001;
+  k5 = 0.001;
+  k6 = 0.001;
+  k7 = 0.1;
+  k8 = 0.1;
+  k9 = 0.1;
+  k10 = 0.001;
+  k11 = 0.001;
+  k12 = 0.001;
+  k13 = 0.01;
+  k14 = 0.01;
+  k15 = 0.01;
+  k16 = 0.01;
+  k17 = 0.01;
+  k18 = 0.01;
+  k19 = 0.01;
+  k20 = 0.1;
+  k21 = 0.1;
+  k22 = 0.1;
+  k23 = 0.1;
+  k24 = 0.1;
+  k25 = 0.1;
+  k26 = 0.1;
+  k27 = 0.001;
+  k28 = 0.001;
+  k29 = 0.001;
+  k30 = 0.001;
+  
+  // Stimulation parameters
+  IFN_prestim = 2.8;    // Low dose for hypersensitization
+  IFN_stim = 1400;      // High dose for stimulation
+
+  //// Other declarations:
+  var total_STAT1, total_STAT2, total_IRF9;
+  const cytoplasm, nucleus, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29, k30, IFN_prestim, IFN_stim;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit volume = 1e-15 liter;
+
+  //// Display Names:
+  substance is "nanomole";
+  time_unit is "minute";
+  volume is "femtoliter";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  IFN is "Interferon alpha";
+  Rec is "IFN Receptor";
+  aRecIFN is "Active Receptor-IFN Complex";
+  STAT1c is "STAT1 Cytoplasm";
+  STAT2c is "STAT2 Cytoplasm";
+  IRF9c is "IRF9 Cytoplasm";
+  pSTAT1c is "Phospho-STAT1 Cytoplasm";
+  pSTAT2c is "Phospho-STAT2 Cytoplasm";
+  pSTAT1dimc is "pSTAT1 Dimer Cytoplasm";
+  pSTAT1pSTAT2c is "pSTAT1-pSTAT2 Heterodimer Cytoplasm";
+  ISGF3c is "ISGF3 Complex Cytoplasm";
+  pSTAT1dimn is "pSTAT1 Dimer Nucleus";
+  pSTAT1pSTAT2n is "pSTAT1-pSTAT2 Heterodimer Nucleus";
+  ISGF3n is "ISGF3 Complex Nucleus";
+  OccGASbs is "Occupied GAS Binding Sites";
+  OccISREbs is "Occupied ISRE Binding Sites";
+  USP18p is "USP18 Protein";
+  SOCS1p is "SOCS1 Protein";
+  SOCS3p is "SOCS3 Protein";
+  IRF2p is "IRF2 Protein";
+  total_STAT1 is "Total STAT1";
+  total_STAT2 is "Total STAT2";
+  total_IRF9 is "Total IRF9";
+
+end

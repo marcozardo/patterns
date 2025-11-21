@@ -1,0 +1,84 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Clb2 in cell, $Securin in cell, $Separase in cell, $Net1 in cell, $Cdc14 in cell, $PP2A_Cdc55 in cell, $Cdh1 in cell, $MEN in cell, Net1_P in cell, Cdc14_free in cell, Cdh1_active in cell, MEN_active in cell;
+
+  //// Assignment Rules:
+  Net1_P := (k_phos_Cdk * Clb2 * Net1 + k_phos_MEN * MEN_active * Net1) / (k_dephos_PP2A * PP2A_Cdc55 + k_dephos_Cdc14 * Cdc14_free + k_phos_Cdk * Clb2 + k_phos_MEN * MEN_active);
+  Cdh1_active := (k_dephos_Cdc14 * Cdc14_free * Cdh1) / (k_phos_Cdk * Clb2 + k_dephos_Cdc14 * Cdc14_free);
+  MEN_active := (k_act_MEN * Cdc14_free * MEN) / (k_inact_MEN + k_act_MEN * Cdc14_free);
+  PP2A_Cdc55_active := PP2A_Cdc55 / (1 + k_bind_Separase * Separase);
+
+  //// Rate Rules:
+  Clb2' = -k_deg_Clb2 * Cdh1_active * Clb2;
+  Securin' = -k_deg_Securin * APC_Cdc20 * Securin;
+  Separase' = k_deg_Securin * APC_Cdc20 * Securin - k_bind_Separase * Separase * PP2A_Cdc55;
+  Cdc14_free' = k_diss * Net1_P * Cdc14 - k_ass * Net1 * Cdc14_free;
+
+  //// Reactions:
+  Net1_phosphorylation: Net1 -> Net1_P; k_phos_Cdk * Clb2 * Net1 + k_phos_MEN * MEN_active * Net1;
+  Net1_dephosphorylation: Net1_P -> Net1; k_dephos_PP2A * PP2A_Cdc55_active * Net1_P + k_dephos_Cdc14 * Cdc14_free * Net1_P;
+  Cdh1_activation: Cdh1 -> Cdh1_active; k_dephos_Cdc14 * Cdc14_free * Cdh1;
+  Cdh1_inactivation: Cdh1_active -> Cdh1; k_phos_Cdk * Clb2 * Cdh1_active;
+  MEN_activation: MEN -> MEN_active; k_act_MEN * Cdc14_free * MEN;
+  MEN_inactivation: MEN_active -> MEN; k_inact_MEN * MEN_active;
+
+  //// Events:
+  Anaphase_Onset: at time >= 20: APC_Cdc20 = 1;
+
+  //// Species initializations:
+  Clb2 = 1;
+  Securin = 1;
+  Separase = 0;
+  Net1 = 0.9;
+  Cdc14 = 0.9;
+  PP2A_Cdc55 = 1;
+  Cdh1 = 0.1;
+  MEN = 1;
+  Net1_P = 0.1;
+  Cdc14_free = 0.1;
+  Cdh1_active = 0;
+  MEN_active = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_phos_Cdk = 0.5;
+  k_phos_MEN = 0.3;
+  k_dephos_PP2A = 0.8;
+  k_dephos_Cdc14 = 0.2;
+  k_diss = 0.5;
+  k_ass = 2;
+  k_deg_Clb2 = 0.1;
+  k_deg_Securin = 0.3;
+  k_bind_Separase = 0.5;
+  k_act_MEN = 0.2;
+  k_inact_MEN = 0.1;
+  APC_Cdc20 = 0;
+
+  //// Other declarations:
+  var Net1_P, Cdc14_free, Cdh1_active, MEN_active, PP2A_Cdc55_active;
+  const k_phos_Cdk, k_phos_MEN, k_dephos_PP2A, k_dephos_Cdc14, k_diss, k_ass, k_deg_Clb2, k_deg_Securin, k_bind_Separase, k_act_MEN, k_inact_MEN;
+
+  //// Unit definitions:
+  unit concentration = 1;
+  unit time_unit = 1 minute;
+
+  //// Display Names:
+  Clb2 is "Clb2-Cdk complex";
+  Securin is "Securin (Pds1)";
+  Separase is "Separase (Esp1)";
+  Net1 is "Net1/Cfi1";
+  Cdc14 is "Cdc14 phosphatase";
+  PP2A_Cdc55 is "PP2A-Cdc55 phosphatase";
+  Cdh1 is "Cdh1";
+  MEN is "Mitotic Exit Network";
+  Net1_P is "Phosphorylated Net1";
+  Cdc14_free is "Active Cdc14";
+  Cdh1_active is "Active Cdh1";
+  MEN_active is "Active MEN";
+  APC_Cdc20 is "APC-Cdc20 activity";
+
+end

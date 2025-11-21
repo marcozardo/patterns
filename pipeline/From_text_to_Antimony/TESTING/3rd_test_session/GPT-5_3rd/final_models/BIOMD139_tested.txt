@@ -1,0 +1,136 @@
+/* Hoffmann et al. 2002: The I?B?NF-?B signaling module
+   Minimal mechanistic ODE model capturing:
+   - Two compartments (cytoplasm, nucleus)
+   - NF-?B sequestration by three I?B isoforms (I?B?, I?B?, I?B?)
+   - IKK-dependent degradation of I?B within NF-?B:I?B complexes
+   - NF-?B nucleo-cytoplasmic shuttling
+   - NF-?B?driven transcription and translation of I?B isoforms (negative feedback)
+   - External TNF stimulus controlling IKK activation, with events enabling pulse or persistent stimulation
+   Parameters are set to generic numeric values so the model loads and simulates; they are not fitted.
+*/
+
+model *Hoffmann2002_IkB_NFkB_Module()
+
+  //// Compartments and Species:
+  compartment Cyt, Nuc;
+  species NFkB_c in Cyt, NFkB_n in Nuc;
+  species IkBa in Cyt, IkBb in Cyt, IkBe in Cyt;
+  species IkBa_m in Nuc, IkBb_m in Nuc, IkBe_m in Nuc;
+  species NFkB_IkBa in Cyt, NFkB_IkBb in Cyt, NFkB_IkBe in Cyt;
+  species IKK_inact in Cyt, IKK_act in Cyt;
+
+  //// Reactions:
+  # IKK activation by TNF signal and spontaneous deactivation
+  R_IKK_act:    IKK_inact => IKK_act; k_IKK_act*TNF*IKK_inact;
+  R_IKK_deact:  IKK_act   => IKK_inact; k_IKK_deact*IKK_act;
+
+  # NF-?B nucleo-cytoplasmic shuttling (free NF-?B only)
+  R_NFkB_import:  NFkB_c => NFkB_n; k_in*NFkB_c;
+  R_NFkB_export:  NFkB_n => NFkB_c; k_out*NFkB_n;
+
+  # Sequestration of NF-?B by I?B isoforms (reversible binding)
+  R_bind_a: NFkB_c + IkBa -> NFkB_IkBa; kon_a*NFkB_c*IkBa - koff_a*NFkB_IkBa;
+  R_bind_b: NFkB_c + IkBb -> NFkB_IkBb; kon_b*NFkB_c*IkBb - koff_b*NFkB_IkBb;
+  R_bind_e: NFkB_c + IkBe -> NFkB_IkBe; kon_e*NFkB_c*IkBe - koff_e*NFkB_IkBe;
+
+  # IKK-mediated degradation of I?B within complexes, releasing free NF-?B
+  R_deg_cplx_a: NFkB_IkBa => NFkB_c; k_deg_cplx_a*IKK_act*NFkB_IkBa;
+  R_deg_cplx_b: NFkB_IkBb => NFkB_c; k_deg_cplx_b*IKK_act*NFkB_IkBb;
+  R_deg_cplx_e: NFkB_IkBe => NFkB_c; k_deg_cplx_e*IKK_act*NFkB_IkBe;
+
+  # Constitutive degradation of free I?B isoforms
+  R_deg_free_a: IkBa => ; k_deg_free_a*IkBa;
+  R_deg_free_b: IkBb => ; k_deg_free_b*IkBb;
+  R_deg_free_e: IkBe => ; k_deg_free_e*IkBe;
+
+  # NF-?B?dependent transcription of I?B mRNAs (linear activation by nuclear NF-?B)
+  R_txn_IkBa: => IkBa_m; k_txn_a*NFkB_n;
+  R_txn_IkBb: => IkBb_m; k_txn_b*NFkB_n;
+  R_txn_IkBe: => IkBe_m; k_txn_e*NFkB_n;
+
+  # mRNA degradation
+  R_mdeg_a: IkBa_m => ; k_mdeg_a*IkBa_m;
+  R_mdeg_b: IkBb_m => ; k_mdeg_b*IkBb_m;
+  R_mdeg_e: IkBe_m => ; k_mdeg_e*IkBe_m;
+
+  # Translation of I?B isoforms (mRNA-catalyzed production; mRNA not consumed)
+  R_tln_a: => IkBa; k_tln_a*IkBa_m;
+  R_tln_b: => IkBb; k_tln_b*IkBb_m;
+  R_tln_e: => IkBe; k_tln_e*IkBe_m;
+
+  //// Events:
+  # Set TNF stimulus on at t = 0
+  E_on: at(time >= 0): TNF = 1;
+  # Turn TNF off at t = pulse_dur unless 'persistent' flag keeps it on
+  E_off: at(time >= pulse_dur): TNF = piecewise(1, persistent >= 0.5, 0);
+
+  //// Species initializations:
+  NFkB_c = 1;
+  NFkB_n = 0;
+  IkBa = 1;
+  IkBb = 1;
+  IkBe = 1;
+  IkBa_m = 0;
+  IkBb_m = 0;
+  IkBe_m = 0;
+  NFkB_IkBa = 0;
+  NFkB_IkBb = 0;
+  NFkB_IkBe = 0;
+  IKK_inact = 1;
+  IKK_act = 0;
+
+  //// Compartment initializations:
+  Cyt = 1;
+  Nuc = 1;
+
+  //// Variable initializations:
+  # IKK switching
+  k_IKK_act = 1;
+  k_IKK_deact = 0.1;
+  # NF-?B transport
+  k_in = 1;
+  k_out = 0.5;
+  # Binding/unbinding
+  kon_a = 1;
+  koff_a = 0.1;
+  kon_b = 1;
+  koff_b = 0.1;
+  kon_e = 1;
+  koff_e = 0.1;
+  # IKK-dependent complex degradation
+  k_deg_cplx_a = 1;
+  k_deg_cplx_b = 0.5;
+  k_deg_cplx_e = 0.5;
+  # Free I?B degradation
+  k_deg_free_a = 0.01;
+  k_deg_free_b = 0.005;
+  k_deg_free_e = 0.005;
+  # Transcription rates (NF-?B?responsive promoters)
+  k_txn_a = 1;
+  k_txn_b = 0.3;
+  k_txn_e = 0.3;
+  # mRNA degradation
+  k_mdeg_a = 0.2;
+  k_mdeg_b = 0.1;
+  k_mdeg_e = 0.1;
+  # Translation
+  k_tln_a = 1;
+  k_tln_b = 0.5;
+  k_tln_e = 0.5;
+  # TNF stimulus control
+  TNF = 0;
+  persistent = 0;
+  pulse_dur = 15;
+
+  //// Other declarations:
+  var TNF;
+  const Cyt, Nuc, k_IKK_act, k_IKK_deact, k_in, k_out, kon_a, koff_a, kon_b, koff_b, kon_e, koff_e, k_deg_cplx_a, k_deg_cplx_b, k_deg_cplx_e, k_deg_free_a, k_deg_free_b, k_deg_free_e, k_txn_a, k_txn_b, k_txn_e, k_mdeg_a, k_mdeg_b, k_mdeg_e, k_tln_a, k_tln_b, k_tln_e, persistent, pulse_dur;
+
+end
+
+/* Unmapped or non-quantified details from the source text that are not explicitly encoded:
+   - Absolute, isoform-specific kinetic parameters and transport rates (30+ parameters) were fitted in the original study; here generic values are used.
+   - Nuclear I?B dynamics (import/export, nuclear complex export) and ternary IKK?I?B?NF-?B complexes are simplified into effective reactions.
+   - Gene-specific downstream responses (e.g., IP-10 and RANTES transcriptional kinetics, histone acetylation dependencies) are not modeled.
+   - Stimulus waveforms (5, 15, 30, 60 min pulses vs persistent) can be reproduced by setting 'pulse_dur' and 'persistent'; amplitudes are unitless placeholders.
+*/
