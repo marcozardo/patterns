@@ -1,0 +1,116 @@
+Looking at the error report, the issue is that `FB_protein` is being governed by both a rate rule and a reaction (`Feedback_inhibition`). According to SBML rules, a species cannot be determined simultaneously by both reactions and rules.
+
+In the current model:
+- `FB_protein` has a rate rule that defines its dynamics
+- `FB_protein` also appears in the `Feedback_inhibition` reaction as a catalyst
+
+The solution is to make `FB_protein` a boundary species since it's being controlled by a rate rule and should not be affected by reaction stoichiometry.
+
+Here's the corrected Antimony model:
+
+```antimony
+/* TGF?/SMAD signaling pathway model based on Strasen et al. 2018
+   Captures receptor activation, SMAD phosphorylation, nuclear translocation,
+   and negative feedback regulation via SMAD7
+   Molecular Systems Biology 14: e7733 | 2018 */
+
+model *Strasen2018_TGFb_SMAD_Signaling()
+
+  //// Compartments and Species:
+  compartment extracellular, cytoplasm, nucleus, endosome;
+  species TGFb in extracellular, $TGFb_medium in extracellular;
+  species R1 in cytoplasm, R2 in cytoplasm, R1R2_complex in cytoplasm;
+  species R1R2L_complex in cytoplasm, R1R2L_complex_e in endosome;
+  species S2 in cytoplasm, S2p in cytoplasm, S4 in cytoplasm;
+  species S2pS4_complex in cytoplasm, S2pS4_complex_n in nucleus;
+  species S2p_n in nucleus, S4_n in nucleus;
+  species FB_mRNA in nucleus, $FB_protein in cytoplasm;
+
+  //// Assignment Rules:
+  nuc_cyt_SMAD2_ratio := (S2p_n + S2pS4_complex_n) / (S2 + S2p + S2pS4_complex);
+  TGFb_concentration := TGFb_medium;
+
+  //// Rate Rules:
+  TGFb_medium' = -k_internalization*TGFb_medium*R1R2_complex + k_degradation_ext*TGFb;
+  FB_mRNA' = k_prod_FB_mRNA_basal + k_prod_FB_mRNA_induced*S2pS4_complex_n/(K_FB + S2pS4_complex_n) - k_deg_FB_mRNA*FB_mRNA;
+  FB_protein' = k_translation_FB*FB_mRNA - k_deg_FB_protein*FB_protein;
+
+  //// Reactions:
+  R1_synthesis: => R1; k_syn_R1;
+  R2_synthesis: => R2; k_syn_R2;
+  R1_degradation: R1 => ; k_deg_R1*R1;
+  R2_degradation: R2 => ; k_deg_R2*R2;
+  
+  Receptor_complex_formation: R1 + R2 -> R1R2_complex; k_assoc_R1R2*R1*R2 - k_dissoc_R1R2*R1R2_complex;
+  
+  Ligand_binding: TGFb + R1R2_complex -> R1R2L_complex; k_on_TGFb*TGFb*R1R2_complex - k_off_TGFb*R1R2L_complex;
+  
+  Internalization: R1R2L_complex -> R1R2L_complex_e; k_internalization*R1R2L_complex;
+  
+  SMAD2_phosphorylation: R1R2L_complex_e + S2 -> R1R2L_complex_e + S2p; k_phosphorylation*R1R2L_complex_e*S2;
+  
+  SMAD_dephosphorylation: S2p -> S2; k_dephosphorylation*S2p;
+  
+  Complex_formation: S2p + S4 -> S2pS4_complex; k_assoc_S2S4*S2p*S4 - k_dissoc_S2S4*S2pS4_complex;
+  
+  Nuclear_import_S2pS4: S2pS4_complex -> S2pS4_complex_n; k_import_S2pS4*S2pS4_complex - k_export_S2pS4*S2pS4_complex_n;
+  
+  Nuclear_import_S4: S4 -> S4_n; k_import_S4*S4 - k_export_S4*S4_n;
+  
+  Feedback_inhibition: FB_protein + R1R2L_complex_e -> FB_protein + R1R2_complex; k_FB_inhibition*FB_protein*R1R2L_complex_e;
+
+  //// Species initializations:
+  TGFb = 0;
+  TGFb_medium = 100;
+  R1 = 1;
+  R2 = 1;
+  R1R2_complex = 0.5;
+  R1R2L_complex = 0;
+  R1R2L_complex_e = 0;
+  S2 = 10;
+  S2p = 0;
+  S4 = 8;
+  S2pS4_complex = 0;
+  S2pS4_complex_n = 0;
+  S2p_n = 0;
+  S4_n = 2;
+  FB_mRNA = 0.1;
+  FB_protein = 0.5;
+
+  //// Compartment initializations:
+  extracellular = 1;
+  cytoplasm = 1;
+  nucleus = 1;
+  endosome = 0.1;
+
+  //// Variable initializations:
+  k_syn_R1 = 0.1;
+  k_syn_R2 = 0.1;
+  k_deg_R1 = 0.05;
+  k_deg_R2 = 0.05;
+  k_assoc_R1R2 = 1.0;
+  k_dissoc_R1R2 = 0.5;
+  k_on_TGFb = 0.8;
+  k_off_TGFb = 0.2;
+  k_internalization = 0.3;
+  k_degradation_ext = 0.02;
+  k_phosphorylation = 0.7;
+  k_dephosphorylation = 0.4;
+  k_assoc_S2S4 = 1.2;
+  k_dissoc_S2S4 = 0.3;
+  k_import_S2pS4 = 0.6;
+  k_export_S2pS4 = 0.2;
+  k_import_S4 = 0.4;
+  k_export_S4 = 0.3;
+  k_prod_FB_mRNA_basal = 0.01;
+  k_prod_FB_mRNA_induced = 0.5;
+  k_deg_FB_mRNA = 0.1;
+  k_translation_FB = 0.2;
+  k_deg_FB_protein = 0.05;
+  k_FB_inhibition = 0.8;
+  K_FB = 1.0;
+
+end
+```
+
+The key change is in the "Compartment and Species" section where `FB_protein` is now declared as a boundary species using the `$` symbol: `$FB_protein in cytoplasm`. This ensures that its dynamics are controlled solely by the rate rule, while still allowing it to participate in the `Feedback_inhibition` reaction as a catalyst.

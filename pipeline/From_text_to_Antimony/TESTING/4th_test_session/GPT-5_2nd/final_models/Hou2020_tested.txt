@@ -1,0 +1,52 @@
+model *Hou2020_Wuhan_SEIR()
+
+  //// Compartments and Species:
+  compartment pop;
+  species S in pop, E in pop, I in pop, R in pop;
+
+  //// Assignment Rules:
+  N := S + E + I + R;                         # Total population
+  beta2 := 0.5*beta1;                         # Half as infectious as symptomatic (latent infectivity)
+  lambda_ := (r1*beta1*I + r2*beta2*E)/N;     # Force of infection from I and E
+
+  //// Rate Rules:
+  S' = - lambda_*S;
+  E' = lambda_*S - sigma*E;
+  I' = sigma*E - gamma_*I;
+  R' = gamma_*I;
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  pop = 1;
+
+  //// Variable initializations:
+  r1 = 6;          # Contact rate with infectious
+  r2 = 18;         # Contact rate with latent (scenario parameter; can vary 6?18)
+  beta1 = 0.04;    # Probability of infection per exposure (from symptomatic infectious)
+  sigma = 0.14;    # Incubation rate (1/7 days)
+  gamma_ = 0.048;  # Recovery rate (1/21 days)
+
+  //// Other declarations:
+  var N, beta2, lambda_;
+  const pop, r1, r2, beta1, sigma, gamma_;
+
+  //// Display Names:
+  pop is "Population compartment";
+  S is "Susceptible";
+  E is "Exposed (latent, partially infectious)";
+  I is "Infectious (symptomatic)";
+  R is "Recovered/Removed";
+  N is "Total population";
+  beta1 is "Infection probability per exposure (symptomatic source)";
+  beta2 is "Infection probability per exposure (latent source)";
+  r1 is "Contact rate with infectious";
+  r2 is "Contact rate with latent";
+  sigma is "Incubation rate (E->I)";
+  gamma_ is "Recovery rate (I->R)";
+  lambda_ is "Force of infection";
+end

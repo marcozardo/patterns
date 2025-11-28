@@ -1,0 +1,158 @@
+model *Dudziuk2019_Hsp70_HSR()
+
+  //// Compartments and Species:
+  compartment cell;
+  species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell, HSF3 in cell, HSE in cell, HSE_HSF3 in cell, mRNA in cell, P in cell;
+
+  //// Assignment Rules:
+  # Temperature-dependent dissociation of HSE:HSF3 (linear interpolation across T = 37,41,42,43,44,45 ?C)
+  l7T := piecewise(l7_37 + (l7_41 - l7_37)/(41 - 37)*(T - 37), (T >= 37) && (T < 41), l7_41 + (l7_42 - l7_41)/(42 - 41)*(T - 41), (T >= 41) && (T < 42), l7_42 + (l7_43 - l7_42)/(43 - 42)*(T - 42), (T >= 42) && (T < 43), l7_43 + (l7_44 - l7_43)/(44 - 43)*(T - 43), (T >= 43) && (T < 44), l7_44 + (l7_45 - l7_44)/(45 - 44)*(T - 44), (T >= 44) && (T <= 45), l7_42, T < 37, l7_45);
+
+  # Temperature-dependent transcription rate constant (suppressed at high T), Eq. (2.13)
+  k8T := k8_max * (1 - 1/(1 + exp(-R_k8*(T - T_k8))));
+
+  # Fractional denaturation as Hill function, Eq. (2.17)
+  V_denT := piecewise(0, T <= T0, 1 - (1 + ((T - T0)/(T05 - T0))^n_v)^(-1));
+
+  # Temperature-dependent denaturation rate constant, Eq. (2.14)
+  k11T := k10 * (V_denT / (1 - V_denT));
+
+  //// Rate Rules:
+  # not present
+
+  //// Reactions:
+  # (2.1) HSF activation (trimerisation)
+  R1: 3 HSF => HSF3; k3*HSF^3;
+
+  # (2.2) HSF3?DNA interactions (association and temperature-dependent dissociation)
+  R2a: HSF3 + HSE => HSE_HSF3; k7*HSF3*HSE;
+  R2b: HSE_HSF3 => HSF3 + HSE; l7T*HSE_HSF3;
+
+  # (2.3) Transcription driven by HSE:HSF3
+  R3: HSE_HSF3 => HSE_HSF3 + mRNA; k8T*HSE_HSF3;
+
+  # (2.4) HSF inactivation by HSP (trimer breakdown in presence of HSP)
+  R4: HSP + HSF3 => HSP_HSF + 2 HSF; l3*HSP*HSF3;
+
+  # (2.5) HSP?substrate interactions (binding/unbinding)
+  R5a: HSP + S  => HSP_S; k1*HSP*S;
+  R5b: HSP_S    => HSP + S; l1*HSP_S;
+
+  # (2.6) HSP?HSF interactions (binding/unbinding)
+  R6a: HSP + HSF => HSP_HSF; k2*HSP*HSF;
+  R6b: HSP_HSF   => HSP + HSF; l2*HSP_HSF;
+
+  # (2.7) HSP degradation
+  R7: HSP => ; k9*HSP;
+
+  # (2.8) Protein refolding (release of native P from HSP:S)
+  R8: HSP_S => HSP + P; k10*HSP_S;
+
+  # (2.9) Protein denaturation (temperature-dependent)
+  R9: P => S; k11T*P;
+
+  # (2.10) Translation (HSP production from mRNA)
+  R10: mRNA => mRNA + HSP; k4*mRNA;
+
+  # (2.11) Hsp70 mRNA degradation
+  R11: mRNA => ; k5*mRNA;
+
+  # (2.12) Constitutive HSP production
+  R12:  => HSP; k6;
+
+  //// Events:
+  # not present
+
+  //// Species initializations:
+  HSP = 5.206e+01;
+  HSF = 1.363e-03;
+  S = 8.122e-08;
+  HSP_HSF = 1.429e-02;
+  HSP_S = 5.268e-04;
+  HSF3 = 9.082e-06;
+  HSE = 3.996e-06;
+  HSE_HSF3 = 4.484e-09;
+  mRNA = 4.946e-04;
+  P = 1.297e+03;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Temperature (?C)
+  T = 37;
+
+  # Temperature interpolation nodes for l7(T) at T = 37, 41, 42, 43, 44, 45 ?C (min^-1)
+  l7_37 = 4.768e+01;
+  l7_41 = 1.233e+00;
+  l7_42 = 6.628e-01;
+  l7_43 = 1.639e-02;
+  l7_44 = 5.001e+01;
+  l7_45 = 8.427e+01;
+
+  # Transcription temperature dependence parameters (Eq. 2.13)
+  k8_max = 9.607e+01;
+  R_k8 = 15.93;
+  T_k8 = 42.89;
+
+  # Fractional denaturation parameters (Eq. 2.17)
+  T0 = 35.81;
+  T05 = 47.13;
+  n_v = 6.522;
+
+  # Temperature-independent kinetic parameters
+  k1 = 1.260e+01;     # HSP:S association (?M^-1 min^-1)
+  l1 = 3.028e-03;     # HSP:S dissociation (min^-1)
+  k2 = 2.180e-01;     # HSP:HSF association (?M^-1 min^-1)
+  l2 = 1.162e+00;     # HSP:HSF dissociation (min^-1)
+  k3 = 4.465e+05;     # HSF activation (?M^-2 min^-1)
+  l3 = 2.392e+00;     # HSF inactivation by HSP (?M^-1 min^-1)
+  k4 = 1.885e+01;     # Translation (min^-1)
+  k5 = 8.709e-04;     # mRNA degradation (min^-1)
+  k6 = 8.899e-02;     # Constitutive HSP production (?M min^-1)
+  k7 = 5.892e+03;     # HSE:HSF3 association (?M^-1 min^-1)
+  k9 = 1.888e-03;     # HSP degradation (min^-1)
+  k10 = 9.813e-02;    # Protein refolding (min^-1)
+
+  //// Other declarations:
+  var T, l7T, k8T, V_denT, k11T;
+  const cell, l7_37, l7_41, l7_42, l7_43, l7_44, l7_45, k8_max, R_k8, T_k8, T0, T05, n_v, k1, l1, k2, l2, k3, l3, k4, k5, k6, k7, k9, k10;
+
+  //// Unit definitions:
+  # Optional documentation units
+  # unit time_unit = 60 second;
+  # unit substance = 1e-6 mole / liter;
+
+  //// Display Names:
+  cell is "cellular compartment";
+  HSP is "Heat shock proteins (Hsp70/Hsc70/Hsp90 lumped)";
+  HSF is "Heat shock factor 1 (monomer)";
+  HSF3 is "HSF trimers (active HSF)";
+  HSE is "Heat shock elements";
+  HSE_HSF3 is "Transcriptional complexes (HSE:HSF3)";
+  mRNA is "Hsp70 mRNA";
+  P is "Native proteins";
+  S is "Denatured proteins (substrate)";
+  HSP_HSF is "HSP:HSF complex";
+  HSP_S is "HSP:substrate complex";
+  l7T is "Temperature-dependent HSE:HSF3 dissociation rate";
+  k8T is "Temperature-dependent transcription rate";
+  V_denT is "Fraction of denaturation-susceptible proteins denatured";
+  k11T is "Temperature-dependent denaturation rate constant";
+  R1 is "HSF activation (trimerisation)";
+  R2a is "HSF3 binding to HSE";
+  R2b is "HSF3 unbinding from HSE";
+  R3 is "Transcription from HSE:HSF3";
+  R4 is "HSF inactivation by HSP";
+  R5a is "HSP binds substrate";
+  R5b is "HSP releases substrate";
+  R6a is "HSP binds HSF";
+  R6b is "HSP releases HSF";
+  R7 is "HSP degradation";
+  R8 is "Refolding of substrate to native protein";
+  R9 is "Native protein denaturation (temperature-dependent)";
+  R10 is "Translation (Hsp70 synthesis)";
+  R11 is "Hsp70 mRNA degradation";
+  R12 is "Constitutive HSP production";
+
+end

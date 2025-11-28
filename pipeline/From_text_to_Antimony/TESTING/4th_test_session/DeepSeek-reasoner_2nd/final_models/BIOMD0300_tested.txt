@@ -1,0 +1,79 @@
+model Schmierer2010_HIF_Hydroxylation()
+
+  //// Compartments and Species:
+  compartment Cell;
+  species H_tot in Cell, H in Cell, H_OH in Cell;
+  species A in Cell, A_OH in Cell;
+  species $A_tot in Cell, $P_tot in Cell, $F_tot in Cell, $O2_tilde in Cell;
+
+  //// Assignment Rules:
+  H_OH := H_tot - H;
+  A_OH := A_tot - A;
+  H_p := -0.5*(H_tot - P_tot - K_D_P + sqrt((K_D_P + P_tot - H_tot)^2 + 4*K_D_P*H_tot));
+  H_F := -0.5*(H - F_tot - K_i_FH + sqrt((K_i_FH + F_tot - H)^2 + 4*K_i_FH*H));
+  K_i_FH := K_D_FH*(1 + A/K_D_FA + gamma_*A_OH/K_D_FA);
+  v_P := k_cat_P*P_tot*(1/(K_D_P + H_p + P_tot))*(O2_tilde/(1 + O2_tilde));
+  v_FH := k_cat_FH*F_tot*(1/(K_i_FH + H_F + F_tot))*(O2_tilde/(alpha + O2_tilde));
+  v_FA := (k_cat_FA*F_tot)/(K_D_FA*(1 + H_F/K_D_FH) + A + gamma_*A_OH)*(O2_tilde/(alpha + O2_tilde));
+  HRE_CAD := H/(K_D_HRE + H_tot);
+  HRE_CADOH := H_OH/(K_D_HRE + H_tot);
+  F_free := 1/(1 + kappa*A);
+  kappa := A_tot/K_D_FA;
+  beta := (k_cat_FA*F_tot)/(k_d_A*A_tot);
+
+  //// Rate Rules:
+  H_tot' = 1 - H_tot*(1 + v_P);
+  H' = 1 - H*(1 + v_P + v_FH);
+  A' = (A_tot - A*(1 + epsilon*v_FA))/epsilon;
+
+  //// Species initializations:
+  H_tot = 0.5;
+  H = 0.3;
+  A = 50;
+  A_tot = 100;
+  P_tot = 0.2;
+  F_tot = 1;
+  O2_tilde = 1;
+
+  //// Compartment initializations:
+  Cell = 1;
+
+  //// Variable initializations:
+  K_D_P = 1;
+  k_cat_P = 500;
+  K_D_FH = 1;
+  k_cat_FH = 500;
+  k_cat_FA = 500;
+  K_D_FA = 1;
+  alpha = 0.33;
+  gamma_ = 0.02;
+  epsilon = 5;
+  K_D_HRE = 0.3;
+  k_d_A = 1;
+
+  //// Other declarations:
+  var H_p, H_F, K_i_FH, v_P, v_FH, v_FA, HRE_CAD, HRE_CADOH, F_free, kappa, beta;
+  const Cell, A_tot, P_tot, F_tot, O2_tilde, K_D_P, k_cat_P, K_D_FH, k_cat_FH, k_cat_FA, K_D_FA, alpha, gamma_, epsilon, K_D_HRE, k_d_A;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 1 second;
+
+  //// Display Names:
+  Cell is "Cell";
+  H_tot is "Total HIF?";
+  H is "Non-CAD-hydroxylated HIF?";
+  H_OH is "CAD-hydroxylated HIF?";
+  A is "Unhydroxylated ARD repeats";
+  A_OH is "Hydroxylated ARD repeats";
+  A_tot is "Total ARD repeats";
+  P_tot is "Total PHD";
+  F_tot is "Total FIH";
+  O2_tilde is "Oxygen (normalized)";
+  v_P is "PHD hydroxylation rate";
+  v_FH is "FIH HIF? hydroxylation rate";
+  v_FA is "FIH ARD hydroxylation rate";
+  HRE_CAD is "HRE bound by non-CAD-hydroxylated HIF";
+  HRE_CADOH is "HRE bound by CAD-hydroxylated HIF";
+  F_free is "Free FIH fraction";
+end

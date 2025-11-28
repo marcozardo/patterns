@@ -1,0 +1,154 @@
+```antimony
+model *Dwivedi2014_IL6_Crohns()
+
+  //// Compartments and Species:
+  compartment GI_tract, Liver, Circulation;
+  species IL6_Gut in GI_tract, IL6_Liver in Liver, IL6_Serum in Circulation;
+  species IL6R_Gut in GI_tract, IL6R_Liver in Liver;
+  species sIL6R_Gut in GI_tract, sIL6R_Liver in Liver, sIL6R_Serum in Circulation;
+  species gp130_Gut in GI_tract, gp130_Liver in Liver;
+  species sgp130_Gut in GI_tract, sgp130_Liver in Liver, sgp130_Serum in Circulation;
+  species IL6_sIL6R_complex in Circulation;
+  species IL6_sIL6R_sgp130_complex in Circulation;
+  species STAT3_Gut in GI_tract, STAT3_Liver in Liver;
+  species pSTAT3_Gut in GI_tract, pSTAT3_Liver in Liver;
+  species CRP_Liver in Liver, CRP_Serum in Circulation;
+  species Anti_IL6 in Circulation, Anti_IL6R in Circulation, sgp130Fc in Circulation;
+  species Anti_IL6_IL6_complex in Circulation;
+  species Anti_IL6R_IL6R_complex in Circulation;
+
+  //// Assignment Rules:
+  pSTAT3_fold_change_Gut := pSTAT3_Gut / pSTAT3_Gut_baseline;
+  CRP_suppression := (CRP_baseline - CRP_Serum) / CRP_baseline * 100;
+
+  //// Rate Rules:
+  IL6_Gut' = ksynfIL6Gut - kdegIL6*IL6_Gut - k_bind_IL6_IL6R*IL6_Gut*IL6R_Gut - k_bind_IL6_sIL6R*IL6_Gut*sIL6R_Gut;
+  IL6_Liver' = ksynfIL6Liver - kdegIL6*IL6_Liver - k_bind_IL6_IL6R*IL6_Liver*IL6R_Liver - k_bind_IL6_sIL6R*IL6_Liver*sIL6R_Liver;
+  sIL6R_Serum' = ksynfSR + k_shed_CRP*CRP_Serum - kdegSR*sIL6R_Serum - k_bind_IL6_sIL6R*IL6_Serum*sIL6R_Serum;
+  STAT3_Gut' = ksynSTAT3 - kdegSTAT3*STAT3_Gut - k_phosphorylation*pSTAT3_Gut*STAT3_Gut;
+  pSTAT3_Gut' = k_phosphorylation*pSTAT3_Gut*STAT3_Gut - k_dephosphorylation*pSTAT3_Gut;
+  CRP_Liver' = kCRPSecretion*pSTAT3_Liver - kdegCRP*CRP_Liver;
+
+  //// Reactions:
+  IL6_binding_IL6R_Gut: IL6_Gut + IL6R_Gut -> IL6_IL6R_complex_Gut; k_bind_IL6_IL6R*IL6_Gut*IL6R_Gut;
+  IL6_binding_sIL6R_Gut: IL6_Gut + sIL6R_Gut -> IL6_sIL6R_complex_Gut; k_bind_IL6_sIL6R*IL6_Gut*sIL6R_Gut;
+  STAT3_phosphorylation_Gut: STAT3_Gut -> pSTAT3_Gut; Vmax_phosphorylation*STAT3_Gut/(Km_phosphorylation + STAT3_Gut);
+  IL6_binding_IL6R_Liver: IL6_Liver + IL6R_Liver -> IL6_IL6R_complex_Liver; k_bind_IL6_IL6R*IL6_Liver*IL6R_Liver;
+  IL6_binding_sIL6R_Liver: IL6_Liver + sIL6R_Liver -> IL6_sIL6R_complex_Liver; k_bind_IL6_sIL6R*IL6_Liver*sIL6R_Liver;
+  STAT3_phosphorylation_Liver: STAT3_Liver -> pSTAT3_Liver; Vmax_phosphorylation*STAT3_Liver/(Km_phosphorylation + STAT3_Liver);
+  IL6_sIL6R_complex_formation: IL6_Serum + sIL6R_Serum -> IL6_sIL6R_complex; k_bind_IL6_sIL6R*IL6_Serum*sIL6R_Serum;
+  IL6_sIL6R_sgp130_complex_formation: IL6_sIL6R_complex + sgp130_Serum -> IL6_sIL6R_sgp130_complex; k_bind_complex_sgp130*IL6_sIL6R_complex*sgp130_Serum;
+  Anti_IL6_binding: Anti_IL6 + IL6_Serum -> Anti_IL6_IL6_complex; k_bind_Anti_IL6*Anti_IL6*IL6_Serum;
+  Anti_IL6R_binding: Anti_IL6R + sIL6R_Serum -> Anti_IL6R_IL6R_complex; k_bind_Anti_IL6R*Anti_IL6R*sIL6R_Serum;
+
+  //// Events:
+  Anti_IL6_dosing_Q4W: at time >= 0 and (time % 672 == 0): Anti_IL6 = Anti_IL6 + dose_Anti_IL6;
+  Anti_IL6R_dosing_Q4W: at time >= 0 and (time % 672 == 0): Anti_IL6R = Anti_IL6R + dose_Anti_IL6R;
+  sgp130Fc_dosing_Q4W: at time >= 0 and (time % 672 == 0): sgp130Fc = sgp130Fc + dose_sgp130Fc;
+
+  //// Species initializations:
+  IL6_Gut = 14e-3;
+  IL6_Liver = 1e-3;
+  IL6_Serum = 1e-3;
+  IL6R_Gut = 1.0;
+  IL6R_Liver = 1.0;
+  sIL6R_Gut = 1.6;
+  sIL6R_Liver = 1.6;
+  sIL6R_Serum = 1.6;
+  gp130_Gut = 1.0;
+  gp130_Liver = 1.0;
+  sgp130_Gut = 3.9;
+  sgp130_Liver = 3.9;
+  sgp130_Serum = 3.9;
+  STAT3_Gut = 1.0;
+  STAT3_Liver = 1.0;
+  pSTAT3_Gut = 1.0;
+  pSTAT3_Liver = 1.0;
+  CRP_Liver = 0.04;
+  CRP_Serum = 0.04;
+  Anti_IL6 = 0;
+  Anti_IL6R = 0;
+  sgp130Fc = 0;
+  Anti_IL6_IL6_complex = 0;
+  Anti_IL6R_IL6R_complex = 0;
+  IL6_sIL6R_complex = 0;
+  IL6_sIL6R_sgp130_complex = 0;
+
+  //// Compartment initializations:
+  GI_tract = 1;
+  Liver = 1;
+  Circulation = 1;
+
+  //// Variable initializations:
+  ksynfIL6Gut = 0.1;
+  ksynfIL6Liver = 0.01;
+  kdegIL6 = 0.1;
+  k_bind_IL6_IL6R = 1.0;
+  k_bind_IL6_sIL6R = 1.0;
+  ksynfSR = 0.1;
+  k_shed_CRP = 0.01;
+  kdegSR = 0.1;
+  ksynSTAT3 = 0.1;
+  kdegSTAT3 = 0.1;
+  k_phosphorylation = 0.5;
+  k_dephosphorylation = 0.5;
+  kCRPSecretion = 1.0;
+  kdegCRP = 0.1;
+  Vmax_phosphorylation = 1.0;
+  Km_phosphorylation = 0.1;
+  k_bind_complex_sgp130 = 1.0;
+  k_bind_Anti_IL6 = 1.0;
+  k_bind_Anti_IL6R = 1.0;
+  pSTAT3_Gut_baseline = 1.0;
+  CRP_baseline = 0.04;
+  dose_Anti_IL6 = 200;
+  dose_Anti_IL6R = 200;
+  dose_sgp130Fc = 1000;
+
+  //// Other declarations:
+  var IL6_Gut, IL6_Liver, IL6_Serum, sIL6R_Serum, STAT3_Gut, pSTAT3_Gut, CRP_Liver;
+  var Anti_IL6, Anti_IL6R, sgp130Fc, Anti_IL6_IL6_complex, Anti_IL6R_IL6R_complex;
+  var IL6_sIL6R_complex, IL6_sIL6R_sgp130_complex;
+  const GI_tract, Liver, Circulation;
+  const ksynfIL6Gut, ksynfIL6Liver, kdegIL6, k_bind_IL6_IL6R, k_bind_IL6_sIL6R;
+  const ksynfSR, k_shed_CRP, kdegSR, ksynSTAT3, kdegSTAT3, k_phosphorylation;
+  const k_dephosphorylation, kCRPSecretion, kdegCRP, Vmax_phosphorylation, Km_phosphorylation;
+  const k_bind_complex_sgp130, k_bind_Anti_IL6, k_bind_Anti_IL6R;
+  const pSTAT3_Gut_baseline, CRP_baseline, dose_Anti_IL6, dose_Anti_IL6R, dose_sgp130Fc;
+
+  //// Unit definitions:
+  unit volume = 1 liter;
+  unit time_unit = 1 hour;
+  unit concentration = 1e-9 mole/liter;
+
+  //// Display Names:
+  GI_tract is "Gastrointestinal Tract";
+  Liver is "Liver";
+  Circulation is "Blood Circulation";
+  IL6_Gut is "Interleukin-6 in Gut";
+  IL6_Liver is "Interleukin-6 in Liver";
+  IL6_Serum is "Interleukin-6 in Serum";
+  IL6R_Gut is "IL-6 Receptor in Gut";
+  IL6R_Liver is "IL-6 Receptor in Liver";
+  sIL6R_Gut is "Soluble IL-6 Receptor in Gut";
+  sIL6R_Liver is "Soluble IL-6 Receptor in Liver";
+  sIL6R_Serum is "Soluble IL-6 Receptor in Serum";
+  gp130_Gut is "gp130 Coreceptor in Gut";
+  gp130_Liver is "gp130 Coreceptor in Liver";
+  sgp130_Gut is "Soluble gp130 in Gut";
+  sgp130_Liver is "Soluble gp130 in Liver";
+  sgp130_Serum is "Soluble gp130 in Serum";
+  STAT3_Gut is "STAT3 in Gut";
+  STAT3_Liver is "STAT3 in Liver";
+  pSTAT3_Gut is "Phosphorylated STAT3 in Gut";
+  pSTAT3_Liver is "Phosphorylated STAT3 in Liver";
+  CRP_Liver is "C-Reactive Protein in Liver";
+  CRP_Serum is "C-Reactive Protein in Serum";
+  Anti_IL6 is "Anti-IL-6 Antibody";
+  Anti_IL6R is "Anti-IL-6R Antibody";
+  sgp130Fc is "sgp130Fc Fusion Protein";
+  IL6_sIL6R_complex is "IL-6/sIL-6R Complex";
+  IL6_sIL6R_sgp130_complex is "IL-6/sIL-6R/sgp130 Complex";
+
+end
+```

@@ -1,0 +1,55 @@
+model *COVID19_SEIRS_Reinfection()
+
+  //// Compartments and Species:
+  compartment Population;
+  species S in Population, E in Population, I in Population, R in Population;
+
+  //// Assignment Rules:
+  R_tilde1 := exp(-eta1 * time) * R_tilde1_0 + (1 - exp(-eta1 * time)) * R1_star;
+  R_tilde2 := exp(-eta2 * time) * R_tilde2_0 + (1 - exp(-eta2 * time)) * R2_star;
+  R_tilde := (R_tilde1 + R_tilde2) / 2;
+  beta := gamma * R_tilde;
+
+  //// Rate Rules:
+  S' = -beta * S * I + omega * R;
+  E' = beta * S * I - sigma * E;
+  I' = sigma * E - gamma * I;
+  R' = gamma * I - omega * R;
+
+  //// Species initializations:
+  S = 0.95525;
+  E = 0.04375;
+  I = 0.001;
+  R = 0;
+
+  //// Compartment initializations:
+  Population = 1;
+
+  //// Variable initializations:
+  sigma = 1/5.2;
+  gamma = 1/18;
+  omega = 0;
+  R_tilde1_0 = 3.0;
+  R_tilde2_0 = 3.0;
+  R1_star = 1.6;
+  R2_star = 1.6;
+  eta1 = 0.1;
+  eta2 = 0.1;
+
+  //// Other declarations:
+  var S, E, I, R, R_tilde1, R_tilde2, R_tilde, beta;
+  const Population, sigma, gamma, omega, R_tilde1_0, R_tilde2_0, R1_star, R2_star, eta1, eta2;
+
+  //// Display Names:
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant";
+  Population is "Total Population";
+  sigma is "Incubation rate";
+  gamma is "Recovery rate";
+  omega is "Immunity waning rate";
+  R_tilde is "Time-varying reproduction number";
+  beta is "Transmission rate";
+
+end

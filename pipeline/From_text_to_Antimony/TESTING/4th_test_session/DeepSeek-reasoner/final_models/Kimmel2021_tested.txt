@@ -1,0 +1,58 @@
+model *Kimmel2021_CAR_Tcell_Therapy()
+
+  //// Compartments and Species:
+  compartment blood, tumour;
+  species N in blood, C in blood, B in tumour;
+
+  //// Assignment Rules:
+  T := N + C;
+  r_C := rho_C + b * (T - K_N)^2 / (a * T^2 + (T - K_N)^2);
+
+  //// Rate Rules:
+  N' = -r_N * N * ln((N + C) / K_N);
+  C' = -r_C * C * ln((N + C) / K_C);
+  B' = r_B * B - gamma_B * B * (C / (k_B + C));
+
+  //// Species initializations:
+  N = 3.00e9;   # Initial normal T cells (cells)
+  C = 1.80e8;   # Initial CAR T cells (cells)
+  B = 9.486e10; # Initial tumour cells
+
+  //// Compartment initializations:
+  blood = 1;
+  tumour = 1;
+
+  //// Variable initializations:
+  r_N = 0.17;      # Normal T cell net growth rate (day??)
+  K_N = 2.50e11;   # Normal T cell carrying capacity (cells)
+  rho_C = 0.0251;  # Baseline CAR T net growth rate (day??)
+  a = 0.423;       # Signalling inefficiency factor
+  b = 0.525;       # Immune reconstitution impact (day??)
+  K_C = 6.96e10;   # CAR T cell carrying capacity (cells)
+  r_B = 0.01;      # Tumour net growth rate (day??) - using lower bound from range
+  gamma_B = 1.15;  # Tumour-killing rate (day??)
+  k_B = 2.024e9;   # Killing rate saturation parameter (cells)
+
+  //// Other declarations:
+  const r_N, K_N, rho_C, a, b, K_C, r_B, gamma_B, k_B;
+  var T, r_C;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+  unit cell_count = 1 item;
+
+  //// Display Names:
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "Tumour cells";
+  blood is "Blood compartment";
+  tumour is "Tumour compartment";
+  r_N is "Normal T cell growth rate";
+  r_C is "CAR T cell growth rate";
+  r_B is "Tumour growth rate";
+  gamma_B is "Tumour killing rate";
+  K_N is "Normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  k_B is "Killing saturation parameter";
+
+end

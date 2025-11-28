@@ -1,0 +1,97 @@
+/* Domain: Molecular/cellular systems biology (cell cycle oscillator)
+   Source: Goldbeter A. (1991) "A minimal cascade model for the mitotic oscillator involving cyclin and cdc2 kinase", PNAS 88:9107-9111.
+   Model: Three-variable minimal mitotic oscillator with cyclin (C), active cdc2 fraction (M), and active cyclin protease fraction (X).
+*/
+
+model *Goldbeter1991_MinMitoticOscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $C in cell, $M in cell, $X in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C)) * VM1;   // Effective max rate for cdc2 activation (phosphatase E1), Michaelian activation by cyclin
+  V3 := M * VM3;              // Effective max rate for protease activation by cdc2 kinase (E3), proportional to active cdc2 fraction
+
+  //// Rate Rules:
+  C' = vi - vd*X*C/(Kd + C) - kd*C;                                  // dC/dt
+  M' = V1*(1 - M)/(K1 + (1 - M)) - V2*M/(K2 + M);                    // dM/dt
+  X' = V3*(1 - X)/(K3 + (1 - X)) - V4*X/(K4 + X);                    // dX/dt
+
+  //// Reactions:
+  // no explicit reactions; dynamics given by rate rules (phenomenological ODEs)
+
+  //// Events:
+  // not present
+
+  //// Species initializations:
+  C = 0;       // Cyclin concentration (?M); starts low and accumulates
+  M = 0;       // Active cdc2 kinase fraction (dimensionless)
+  X = 0.01;    // Active cyclin protease fraction (dimensionless), as noted in figure caption
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Michaelis constants for modification cycles (dimensionless, normalized by total target protein)
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  // Effective maximum rates (per minute)
+  VM1 = 0.5;      // Max of E1 at saturating cyclin
+  V2  = 0.167;    // Max of E2 (cdc2 inactivating kinase)
+  VM3 = 0.2;      // Max of E3 at M = 1
+  V4  = 0.1;      // Max of E4 (protease inactivating phosphatase)
+
+  // Cyclin synthesis and degradation parameters
+  vi = 0.023;     // Constant cyclin synthesis rate (?M/min)
+  vd = 0.1;       // Max rate of cyclin proteolysis by X (?M/min) at X=1
+  kd = 0;         // Nonspecific first-order cyclin degradation (per min); optional, set to 0 as it is not needed for oscillations
+
+  // Michaelis constants for cyclin-dependent processes (?M)
+  Kc = 0.3;       // Cyclin activation of E1 (phosphatase on cdc2)
+  Kd = 0.02;      // Cyclin proteolysis Michaelis constant
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, K1, K2, K3, K4, VM1, VM3, V2, V4, vi, vd, kd, Kc, Kd;
+
+  //// Unit definitions:
+  // omitted (values given in per-minute and ?M terms in comments)
+
+  //// Display Names:
+  cell is "Well-mixed cell volume";
+  C is "Cyclin concentration";
+  M is "Active cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  V1 is "Effective Vmax for cdc2 activation (E1)";
+  V3 is "Effective Vmax for protease activation (E3)";
+  K1 is "Michaelis constant for E1 (normalized)";
+  K2 is "Michaelis constant for E2 (normalized)";
+  K3 is "Michaelis constant for E3 (normalized)";
+  K4 is "Michaelis constant for E4 (normalized)";
+  VM1 is "Max rate of E1 at saturating cyclin";
+  VM3 is "Max rate of E3 for M=1";
+  V2 is "Max rate of E2 (cdc2 inactivating kinase)";
+  V4 is "Max rate of E4 (protease inactivating phosphatase)";
+  vi is "Cyclin synthesis rate";
+  vd is "Max cyclin proteolysis rate (by X)";
+  kd is "Nonspecific cyclin decay (first-order)";
+  Kc is "Cyclin Michaelis constant for E1 activation";
+  Kd is "Cyclin Michaelis constant for proteolysis";
+
+end
+
+/* Unmapped/ambiguous data and notes:
+- The article provides the ODEs explicitly:
+    dC/dt = vi - vd*X*C/(Kd + C) - kd*C
+    dM/dt = V1*(1-M)/(K1 + (1-M)) - V2*M/(K2 + M)
+    dX/dt = V3*(1-X)/(K3 + (1-X)) - V4*X/(K4 + X)
+  with V1 = (C/(Kc + C))*VM1 and V3 = M*VM3.
+- Parameter values appear in a figure caption with some OCR artifacts. The following were clearly extracted and used:
+  K1=K2=K3=K4=0.1; VM1=0.5 min^-1; V2=0.167 min^-1; VM3=0.2 min^-1; V4=0.1 min^-1; vi=0.023 ?M/min; vd=0.1 ?M/min; Kc=0.3 ?M; Kd=0.02 ?M.
+- The first-order nonspecific cyclin decay kd was not unambiguously provided in the text; it is optional (?not needed for oscillations?) and has been set to 0. Adjust as needed.
+- Initial conditions: Only X(0)=0.01 was explicitly indicated in a figure caption; C(0) and M(0) were set to 0 to represent ?small/low? initial values consistent with the narrative. Adjust as needed.
+*/

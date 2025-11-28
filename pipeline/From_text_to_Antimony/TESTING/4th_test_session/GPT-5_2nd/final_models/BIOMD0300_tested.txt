@@ -1,0 +1,105 @@
+model *Schmierer2010_SKM1_SKM2()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Htot_hat in cell, H_hat in cell, A_hat in cell;
+
+  //// Assignment Rules:
+  H_OH_hat := Htot_hat - H_hat;  // CAD-hydroxylated HIF? (dimensionless, conservation)
+  A_OH_hat := A_tot_hat - A_hat; // hydroxylated AR repeats (dimensionless, conservation)
+
+  // Oxygen scalings (dimensionless)
+  O2_bar := O2_tilde/alpha;  // oxygen relative to K_M of FIH: O2_bar = O2_tilde / alpha
+
+  // SKM1 hydroxylation rate functions (dimensionless forms)
+  nu_p := (kcat_p_prime*P_tot_hat) * (O2_tilde/(1 + O2_tilde)) / (K_D_p_hat + Htot_hat);         // Eq. (10)
+  nu_FH := (kcat_FH_prime*F_tot_hat) * (O2_tilde/(alpha + O2_tilde)) / (K_D_FH_hat + H_hat);     // Eq. (11)
+
+  // SKM2 sequestration and FIH release
+  kappa := A_tot_hat / K_D_FA_hat;              // Eq. (14)
+  F_free := 1/(1 + kappa*A_hat);                // Eq. (13)
+
+  // HRE occupancy probabilities (dimensionless)
+  HRE_CAD := H_hat/(K_D_HRE_hat + Htot_hat);
+  HRE_CADOH := H_OH_hat/(K_D_HRE_hat + Htot_hat);
+
+  //// Rate Rules:
+  // SKM1 (HIF? module, Eqs. 1-2 with SKM1 rates)
+  Htot_hat' = 1 - Htot_hat*(1 + nu_p);                  // Eq. (1)
+  H_hat'    = 1 - H_hat*(1 + nu_p + nu_FH);             // Eq. (2)
+
+  // SKM2 (ARD/FIH sequestration module, Eq. 12)
+  A_hat' = 1 - A_hat - beta * (kappa*A_hat)/(1 + kappa*A_hat) * (O2_bar/(1 + O2_bar)); // Eq. (12)
+
+  //// Reactions:
+  // not present (dynamics defined by differential equations)
+
+  //// Events:
+  // none defined
+
+  //// Species initializations:
+  Htot_hat = 1;   // Maximal HIF? (no oxygen-dependent degradation) normalization
+  H_hat    = 1;   // Initially all HIF? non-CAD-hydroxylated (dimensionless)
+  A_hat    = 1;   // Initially all AR repeats unhydroxylated (dimensionless, relative to A_tot_hat)
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Oxygen (relative to K_M of PHDs)
+  O2_tilde = 0.1;        // 0..1
+
+  // SKM1 parameters (Table 2 defaults / text)
+  P_tot_hat     = 0.2;   // PHD concentration (dimensionless)
+  K_D_p_hat     = 1;     // PHD/HIF? dissociation constant
+  kcat_p_prime  = 500;   // (kcat_P / basal HIF? degradation); product with P_tot_hat = 100
+  F_tot_hat     = 1;     // FIH concentration (dimensionless)
+  K_D_FH_hat    = 1;     // FIH/HIF? dissociation constant
+  kcat_FH_prime = 500;   // (kcat_FH / basal HIF? ODD rate); set equal to kcat_p_prime (parameter 6 = 1)
+  alpha         = 0.33;  // K_M^F / K_M^P (oxygen Michaelis ratio)
+  K_D_HRE_hat   = 0.3;   // HIF/HRE dissociation constant (dimensionless)
+
+  // SKM2 parameters
+  A_tot_hat   = 100;   // total FIH-target AR repeats (dimensionless, varied 0..500)
+  K_D_FA_hat  = 1;     // FIH/ARD dissociation constant (unhydroxylated ARs)
+  beta        = 8;     // hydroxylation efficiency = (kcat_FA * F_tot)/(k_d^A * A_tot)
+
+  //// Other declarations:
+  const cell, O2_tilde, P_tot_hat, K_D_p_hat, kcat_p_prime, F_tot_hat, K_D_FH_hat, kcat_FH_prime, alpha, K_D_HRE_hat, A_tot_hat, K_D_FA_hat, beta;
+  var H_OH_hat, A_OH_hat, O2_bar, nu_p, nu_FH, kappa, F_free, HRE_CAD, HRE_CADOH;
+
+  //// Unit definitions:
+  // omitted (dimensionless model)
+
+  //// Display Names:
+  cell is "Well-mixed compartment";
+  Htot_hat is "All HIF? (dimensionless)";
+  H_hat is "Non-CAD-hydroxylated HIF? (dimensionless)";
+  H_OH_hat is "CAD-hydroxylated HIF? (dimensionless)";
+  A_hat is "Unhydroxylated FIH-target ankyrin repeats (dimensionless)";
+  A_OH_hat is "Hydroxylated ankyrin repeats (dimensionless)";
+  O2_tilde is "Oxygen (relative to PHD K_M)";
+  O2_bar is "Oxygen (relative to FIH K_M)";
+  nu_p is "PHD-dependent ODD-hydroxylation rate (dimensionless)";
+  nu_FH is "FIH-dependent CAD-hydroxylation rate (dimensionless)";
+  F_free is "Free FIH fraction (dimensionless)";
+  HRE_CAD is "HRE occupancy by non-CAD-hydroxylated HIF?";
+  HRE_CADOH is "HRE occupancy by CAD-hydroxylated HIF?";
+  P_tot_hat is "Total PHD (dimensionless)";
+  F_tot_hat is "Total FIH (dimensionless)";
+  K_D_p_hat is "PHD/HIF? dissociation (dimensionless)";
+  K_D_FH_hat is "FIH/HIF? dissociation (dimensionless)";
+  K_D_FA_hat is "FIH/ARD dissociation (dimensionless)";
+  K_D_HRE_hat is "HIF/HRE dissociation (dimensionless)";
+  kcat_p_prime is "Scaled kcat for ODD-hydroxylation";
+  kcat_FH_prime is "Scaled kcat for CAD-hydroxylation";
+  alpha is "KM(FIH)/KM(PHD) oxygen ratio";
+  A_tot_hat is "Total FIH-target AR repeats (dimensionless)";
+  beta is "Hydroxylation efficiency for ARs (dimensionless)";
+  kappa is "FIH sequestration capacity (A_tot/K_D_FA)";
+end
+
+/* Unmapped or ambiguous elements from the source (left as comments to avoid guessing):
+- Full Model rate expressions (Eqs. 4?9) include auxiliary quantities (e.g., H_p_hat, H_F_hat, K_i^FH, possible product binding via ?) with exact algebraic forms detailed in Additional File 2. Due to OCR ambiguities and missing derivations, the present model uses the explicitly stated SKM1 (Eqs. 1?2 with Eqs. 10?11) and SKM2 (Eq. 12 with Eqs. 13?15) formulations, which the paper uses to dissect system behavior.
+- Parameter ? in Eq. (3) of the Full Model and the precise coupling terms between the HIF and ARD modules (beyond SKM1/SKM2) are not reconstructed here.
+- If desired, events can be added to program hypoxia/reoxygenation protocols by changing O2_tilde over time, but specific timings were not uniquely defined in the extracted text. */

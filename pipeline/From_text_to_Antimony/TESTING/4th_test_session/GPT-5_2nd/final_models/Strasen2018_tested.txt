@@ -1,0 +1,159 @@
+model *Strasen2018_TGFb_Smad_Core()
+
+  //// Compartments and Species:
+  compartment Ext, Membrane;
+  compartment Cyt, Nuc;
+  species L_ext in Ext, R1 in Membrane, R2 in Membrane, LR1R2 in Membrane, LR1R2_e in Cyt;
+  species S2 in Cyt, S2p in Cyt, S2n in Nuc, S4 in Cyt, S4n in Nuc;
+  species C in Cyt, Cn in Nuc;
+  species FB_mRNA in Nuc, FB_prot in Cyt;
+
+  //// Assignment Rules:
+  fac_FB := 1/(1 + k_fb*FB_prot);  # Receptor-level inhibition by feedback (e.g., SMAD7)
+  nuc_cyt_SMAD2 := (S2n + Cn)/(S2 + C + 1e-6);  # Readout: nuclear-to-cytoplasmic SMAD2 proxy
+
+  //// Rate Rules:
+
+  //// Reactions:
+  # Ligand-receptor complex formation and dissociation at the membrane
+  Rbind: L_ext + R1 + R2 => LR1R2; k_on*fac_FB*L_ext*R1*R2;
+  Runbind: LR1R2 -> L_ext + R1 + R2; k_off*LR1R2;
+
+  # Internalization and degradation of ligand?receptor complexes (ligand depletion; receptor downregulation)
+  Rint: LR1R2 => LR1R2_e; k_int*LR1R2;
+  RdegL: LR1R2_e => ; k_degL*LR1R2_e;
+
+  # Receptor turnover (synthesis and basal degradation)
+  SR1:  => R1; k_synth_R1;
+  DR1: R1 => ; k_degR1*R1;
+  SR2:  => R2; k_synth_R2;
+  DR2: R2 => ; k_degR2*R2;
+
+  # Optional extracellular ligand loss independent of receptor-mediated internalization
+  Lext_loss: L_ext => ; k_deg_Lext*L_ext;
+
+  # SMAD2 phosphorylation by active receptor complexes and dephosphorylation (PPM1A action)
+  S2p_form: S2 => S2p; k_p*LR1R2*S2;
+  S2_deph:  S2p => S2; k_deph*S2p;
+
+  # SMAD2p:SMAD4 complex formation/dissociation in cytosol
+  Cform: S2p + S4 => C; k_onC*S2p*S4;
+  Crev:  C -> S2p + S4; k_offC*C;
+
+  # Nucleocytoplasmic shuttling
+  S2_in:  S2 => S2n; k_in_S2*S2;
+  S2_out: S2n => S2; k_out_S2*S2n;
+  S4_in:  S4 => S4n; k_in_S4*S4;
+  S4_out: S4n => S4; k_out_S4*S4n;
+  C_in:   C  => Cn;  k_in_C*C;
+  C_out:  Cn => C;   k_out_C*Cn;
+
+  # Nuclear complex interconversion (binding/dissociation in nucleus)
+  Cn_form: S2n + S4n => Cn; k_onC_n*S2n*S4n;
+  Cn_rev:  Cn -> S2n + S4n; k_offC_n*Cn;
+
+  # Transcriptional negative feedback (e.g., SMAD7): induction by nuclear SMAD complex, turnover and translation
+  FB_txn:    => FB_mRNA; k_basal_m + k_ind_m*Cn;
+  FB_mdeg: FB_mRNA => ; k_deg_m*FB_mRNA;
+  FB_tln:  FB_mRNA => FB_prot; k_trans*FB_mRNA;
+  FB_pdeg: FB_prot  => ; k_deg_p*FB_prot;
+
+  //// Events:
+
+  //// Species initializations:
+  L_ext   = 25;
+  R1      = 1;
+  R2      = 1;
+  LR1R2   = 0;
+  LR1R2_e = 0;
+
+  S2  = 1;
+  S2p = 0;
+  S2n = 0;
+
+  S4  = 1;
+  S4n = 0;
+
+  C  = 0;
+  Cn = 0;
+
+  FB_mRNA = 0;
+  FB_prot = 0;
+
+  //// Compartment initializations:
+  Ext = 1;
+  Membrane = 1;
+  Cyt = 1;
+  Nuc = 1;
+
+  //// Variable initializations:
+  k_on   = 1e-3;
+  k_off  = 1e-2;
+  k_int  = 5e-2;
+  k_degL = 5e-2;
+
+  k_synth_R1 = 1e-2;
+  k_degR1    = 1e-3;
+  k_synth_R2 = 1e-2;
+  k_degR2    = 1e-3;
+
+  k_deg_Lext = 1e-3;
+
+  k_p    = 1e-1;
+  k_deph = 1e-1;
+
+  k_onC  = 1e-1;
+  k_offC = 1e-2;
+
+  k_in_S2  = 1e-2;
+  k_out_S2 = 1e-2;
+  k_in_S4  = 2e-2;
+  k_out_S4 = 2e-2;
+  k_in_C   = 1e-1;
+  k_out_C  = 5e-2;
+
+  k_onC_n  = 1e-1;
+  k_offC_n = 1e-2;
+
+  k_basal_m = 1e-3;
+  k_ind_m   = 5e-2;
+  k_deg_m   = 1e-2;
+  k_trans   = 5e-2;
+  k_deg_p   = 5e-3;
+
+  k_fb = 1;
+
+  //// Other declarations:
+  var fac_FB, nuc_cyt_SMAD2;
+  const Ext, Membrane, Cyt, Nuc, k_on, k_off, k_int, k_degL, k_synth_R1, k_degR1, k_synth_R2, k_degR2, k_deg_Lext, k_p, k_deph, k_onC, k_offC, k_in_S2, k_out_S2, k_in_S4, k_out_S4, k_in_C, k_out_C, k_onC_n, k_offC_n, k_basal_m, k_ind_m, k_deg_m, k_trans, k_deg_p, k_fb;
+
+  //// Display Names:
+  Ext is "Extracellular space";
+  Membrane is "Plasma membrane";
+  Cyt is "Cytoplasm";
+  Nuc is "Nucleus";
+  L_ext is "Extracellular TGF-beta ligand";
+  R1 is "TGFBR1";
+  R2 is "TGFBR2";
+  LR1R2 is "Ligand-bound TGFBR1/2 complex (surface)";
+  LR1R2_e is "Internalized ligand-receptor complex (endosomal)";
+  S2 is "SMAD2 (cyto)";
+  S2p is "Phospho-SMAD2 (cyto)";
+  S2n is "SMAD2 (nuclear)";
+  S4 is "SMAD4 (cyto)";
+  S4n is "SMAD4 (nuclear)";
+  C is "SMAD2p:SMAD4 complex (cyto)";
+  Cn is "SMAD2:SMAD4 complex (nuclear)";
+  FB_mRNA is "Feedback mRNA (e.g., SMAD7 mRNA)";
+  FB_prot is "Feedback protein (e.g., SMAD7)";
+  fac_FB is "Feedback inhibition factor on receptor activation";
+  nuc_cyt_SMAD2 is "Nuclear-to-cytoplasmic SMAD2 readout";
+
+end
+
+/* Unmapped or approximated elements from the source:
+- Exact kinetic parameters, volumes, and initial conditions were not provided in the excerpt; placeholder values were chosen to ensure an executable model.
+- The model topology follows Fig. 4B: ligand?receptor binding/internalization/degradation, SMAD2 phosphorylation, SMAD4 complex formation, nucleo-cytoplasmic shuttling, and transcriptional negative feedback acting at receptor level (e.g., SMAD7). PPM1A-mediated dephosphorylation is represented as cytosolic S2p -> S2; nuclear dephosphorylation/export was simplified.
+- Restimulation protocols (adding ligand at defined times) and pharmacological inhibition (e.g., SB431542, DRB) are not encoded as Events due to missing exact timing/doses in the excerpt.
+- Heterogeneity and signaling class decomposition were captured in the original study by varying total protein levels across subpopulations; this Antimony model provides the deterministic core module without stochastic/ensemble sampling.
+*/

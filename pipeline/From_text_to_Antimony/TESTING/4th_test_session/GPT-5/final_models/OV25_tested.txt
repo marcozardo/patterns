@@ -1,0 +1,103 @@
+model *Gevertz2019_OV_DC_Minimal()
+
+  //// Compartments and Species:
+  compartment tumor;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Rate Rules:
+  U' = r*U - beta*U*V/N - (kappa0 + c_kill*I)*(U*T)/N;
+  I' = beta*U*V/N - delta_I*I - (kappa0 + c_kill*I)*(I*T)/N;
+  V' = uV + alpha*delta_I*I - delta_V*V;
+  T' = c_T*I + chi_D*D - delta_T*T;
+  D' = uD - delta_D*D;
+
+  //// Reactions:
+  # not present so omitted
+
+  //// Events:
+  at(time >= tV1): V = V + OV_dose;
+  at(time >= tV2): V = V + OV_dose;
+  at(time >= tV3): V = V + OV_dose;
+  at(time >= tD1): D = D + DC_dose;
+  at(time >= tD2): D = D + DC_dose;
+  at(time >= tD3): D = D + DC_dose;
+
+  //// Species initializations:
+  # none declared
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  U = U0;
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  uV = 0;
+  uD = 0;
+
+  r = 0.3198;
+  beta = 0.00100854;
+  kappa0 = 0.01;
+  c_kill = 1e-3;
+  delta_I = 0.5;
+  alpha = 50;
+  delta_V = 1.0;
+  c_T = 1.428064;
+  chi_D = 0.5;
+  delta_T = 0.1;
+  delta_D = 4.901894;
+
+  U0 = 1000;
+  OV_dose = 5e9;
+  DC_dose = 1e6;
+  tV1 = 0;
+  tV2 = 2;
+  tV3 = 4;
+  tD1 = 1;
+  tD2 = 3;
+  tD3 = 5;
+
+  //// Other declarations:
+  var U, I, V, T, D, N, uV, uD;
+  const tumor, r, beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, U0, OV_dose, DC_dose, tV1, tV2, tV3, tD1, tD2, tD3;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = mole;
+  unit volume_unit = dimensionless;
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  U is "Uninfected tumor cell volume";
+  I is "Infected tumor cell volume";
+  V is "Free virions";
+  T is "Tumor-targeting T cells";
+  D is "Injected dendritic cells";
+  N is "Total interacting volume (U+I+T)";
+  r is "Tumor exponential growth rate";
+  beta is "Infection rate (density-dependent via N)";
+  kappa0 is "Baseline T-cell killing rate";
+  c_kill is "Infection-dependent enhancement of T-cell killing";
+  delta_I is "Infected cell death rate (lysis/clearance)";
+  alpha is "Virions released per lysed infected cell";
+  delta_V is "Virion clearance rate";
+  c_T is "Recruitment of T cells per infected cell (4-1BBL/IL-12 effect)";
+  chi_D is "T-cell production from DCs";
+  delta_T is "T-cell death rate";
+  delta_D is "DC decay rate";
+  uV is "Exogenous OV input term";
+  uD is "Exogenous DC input term";
+  OV_dose is "OV bolus dose per injection (virions)";
+  DC_dose is "DC bolus dose per injection (cells)";
+  tV1 is "Time of 1st OV injection (days)";
+  tV2 is "Time of 2nd OV injection (days)";
+  tV3 is "Time of 3rd OV injection (days)";
+  tD1 is "Time of 1st DC injection (days)";
+  tD2 is "Time of 2nd DC injection (days)";
+  tD3 is "Time of 3rd DC injection (days)";
+end

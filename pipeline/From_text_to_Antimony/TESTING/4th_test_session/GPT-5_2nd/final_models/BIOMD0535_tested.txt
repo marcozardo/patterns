@@ -1,0 +1,167 @@
+model *Dwivedi2014_IL6_Crohn()
+
+  //// Compartments and Species:
+  compartment Serum, GI, Liver;
+  species IL6_s in Serum, sIL6R_s in Serum, sgp130_s in Serum, IL6_sIL6R_s in Serum, IL6_sIL6R_sgp130_s in Serum, CRP_s in Serum;
+  species IL6_g in GI;
+  species $pSTAT3_g in GI, $pSTAT3_l in Liver;
+
+  //// Assignment Rules:
+  Sig_g := alpha_t*IL6_sIL6R_s + alpha_c*IL6_s;      # Effective IL-6 signal (trans + classical) sensed by GI
+  Sig_l := alpha_t*IL6_sIL6R_s + alpha_c*IL6_s;      # Effective IL-6 signal (trans + classical) sensed by Liver
+  STAT3_free_g := STAT3tot_g - pSTAT3_g;             # Free STAT3 in GI (total minus phosphorylated)
+  STAT3_free_l := STAT3tot_l - pSTAT3_l;             # Free STAT3 in Liver (total minus phosphorylated)
+
+  //// Rate Rules:
+  pSTAT3_g' = Vphos_g * (Sig_g/(Ksig + Sig_g)) * STAT3_free_g - Vdephos_g * (pSTAT3_g/(Kdephos + pSTAT3_g));
+  pSTAT3_l' = Vphos_l * (Sig_l/(Ksig + Sig_l)) * STAT3_free_l - Vdephos_l * (pSTAT3_l/(Kdephos + pSTAT3_l));
+
+  //// Reactions:
+  # IL-6 trans-signaling complex formation and sequestration
+  R1_bind: IL6_s + sIL6R_s -> IL6_sIL6R_s; kon1*IL6_s*sIL6R_s - koff1*IL6_sIL6R_s;
+  R2_sequester: IL6_sIL6R_s + sgp130_s -> IL6_sIL6R_sgp130_s; kon2*IL6_sIL6R_s*sgp130_s - koff2*IL6_sIL6R_sgp130_s;
+
+  # IL-6 production (gut), exchange with serum, and degradation
+  R3_IL6_g_prod:  => IL6_g; ksyn_IL6_g;
+  R4_IL6_g_deg:   IL6_g => ; kdeg_IL6*IL6_g;
+  R5_IL6_g2s:     IL6_g => IL6_s; k_gi_to_ser*IL6_g;
+  R6_IL6_s2g:     IL6_s => IL6_g; k_ser_to_gi*IL6_s;
+  R7_IL6_s_deg:   IL6_s => ; kdeg_IL6*IL6_s;
+
+  # sIL-6R production (basal + CRP-mediated shedding) and degradation
+  R8_sIL6R_prod:  => sIL6R_s; ksyn_sIL6R + k_shed*CRP_s;
+  R9_sIL6R_deg:   sIL6R_s => ; kdeg_sIL6R*sIL6R_s;
+
+  # sgp130 production and degradation
+  R10_sgp130_prod: => sgp130_s; ksyn_sgp130;
+  R11_sgp130_deg:  sgp130_s => ; kdeg_sgp130*sgp130_s;
+
+  # CRP production in liver (pSTAT3-driven) secreted to serum and degradation
+  R12_CRP_prod:  => CRP_s; Vcrp_basal + Vcrp_max*(pSTAT3_l/(Kcrp + pSTAT3_l));
+  R13_CRP_deg:   CRP_s => ; kdeg_CRP*CRP_s;
+
+  # Clearance of inactive/sequestered complexes (optional lumped clearance)
+  R14_cx1_clear: IL6_sIL6R_s => ; kdeg_complex*IL6_sIL6R_s;
+  R15_cx2_clear: IL6_sIL6R_sgp130_s => ; kdeg_complex*IL6_sIL6R_sgp130_s;
+
+  //// Species initializations:
+  IL6_s = 4.22e-4;              # Serum IL-6 (nmol/l) ~ 10 pg/ml @ 23.7 kDa
+  sIL6R_s = 2.8;                # Serum sIL-6R (nmol/l) ~ 140 ng/ml @ 50 kDa
+  sgp130_s = 2.8;               # Serum sgp130 (nmol/l) ~ 280 ng/ml @ 100 kDa
+  IL6_sIL6R_s = 0;              # IL-6:sIL-6R complex (nmol/l)
+  IL6_sIL6R_sgp130_s = 0;       # IL-6:sIL-6R:sgp130 complex (nmol/l)
+  CRP_s = 280;                  # Serum CRP (nmol/l) ~ 7 mg/l @ 25 kDa
+  IL6_g = 0.01055;              # Gut IL-6 (nmol/l) ~ 250 pg/ml @ 23.7 kDa
+  pSTAT3_g = 3;                 # Gut pSTAT3 (arbitrary units; Crohn's ~3-fold of healthy)
+  pSTAT3_l = 1;                 # Liver pSTAT3 (arbitrary units; assumed baseline)
+
+  //// Compartment initializations:
+  Serum = 1;
+  GI = 1;
+  Liver = 1;
+
+  //// Variable initializations:
+  # Signaling weights (dimensionless)
+  alpha_t = 1;
+  alpha_c = 0.1;
+
+  # STAT3 totals (arbitrary units)
+  STAT3tot_g = 5;
+  STAT3tot_l = 5;
+
+  # STAT3 phosphorylation/dephosphorylation kinetics (per hr, nmol/l scale)
+  Vphos_g = 1;
+  Vphos_l = 1;
+  Vdephos_g = 0.5;
+  Vdephos_l = 0.5;
+  Ksig = 0.001;
+  Kdephos = 1;
+
+  # IL-6 dynamics
+  ksyn_IL6_g = 0.001;
+  kdeg_IL6 = 0.1;
+  k_gi_to_ser = 0.05;
+  k_ser_to_gi = 0.02;
+
+  # Complex formation/sequestration
+  kon1 = 1;
+  koff1 = 0.1;
+  kon2 = 1;
+  koff2 = 0.1;
+  kdeg_complex = 0.05;
+
+  # sIL-6R shedding and turnover
+  ksyn_sIL6R = 0.1;
+  k_shed = 0.01;
+  kdeg_sIL6R = 0.05;
+
+  # sgp130 synthesis and turnover
+  ksyn_sgp130 = 0.01;
+  kdeg_sgp130 = 0.02;
+
+  # CRP production and turnover
+  Vcrp_basal = 0;
+  Vcrp_max = 50;
+  Kcrp = 1;
+  kdeg_CRP = 0.1;
+
+  //// Other declarations:
+  var Sig_g, Sig_l, STAT3_free_g, STAT3_free_l;
+  const Serum, GI, Liver, alpha_t, alpha_c, STAT3tot_g, STAT3tot_l, Vphos_g, Vphos_l, Vdephos_g, Vdephos_l, Ksig, Kdephos, ksyn_IL6_g, kdeg_IL6, k_gi_to_ser, k_ser_to_gi, kon1, koff1, kon2, koff2, kdeg_complex, ksyn_sIL6R, k_shed, kdeg_sIL6R, ksyn_sgp130, kdeg_sgp130, Vcrp_basal, Vcrp_max, Kcrp, kdeg_CRP;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole / liter;     # nmol/l
+  unit time_unit = 3600 second;           # hour
+
+  //// Display Names:
+  Serum is "Circulation (serum)";
+  GI is "Gastrointestinal tract";
+  Liver is "Liver";
+  IL6_s is "Serum IL-6";
+  sIL6R_s is "Serum soluble IL-6 receptor";
+  sgp130_s is "Serum soluble gp130";
+  IL6_sIL6R_s is "IL-6:sIL-6R complex (serum)";
+  IL6_sIL6R_sgp130_s is "IL-6:sIL-6R:sgp130 complex (serum)";
+  CRP_s is "C-reactive protein (serum)";
+  IL6_g is "Gut IL-6";
+  pSTAT3_g is "Phospho-STAT3 in GI (au)";
+  pSTAT3_l is "Phospho-STAT3 in Liver (au)";
+  Sig_g is "Effective IL-6 signal at GI";
+  Sig_l is "Effective IL-6 signal at Liver";
+  R1_bind is "IL-6 + sIL-6R reversible binding";
+  R2_sequester is "Sequestration of IL-6:sIL-6R by sgp130";
+  R3_IL6_g_prod is "Basal IL-6 synthesis in gut";
+  R4_IL6_g_deg is "IL-6 degradation in gut";
+  R5_IL6_g2s is "IL-6 transport gut->serum";
+  R6_IL6_s2g is "IL-6 transport serum->gut";
+  R7_IL6_s_deg is "IL-6 degradation in serum";
+  R8_sIL6R_prod is "sIL-6R production (basal + CRP-induced shedding)";
+  R9_sIL6R_deg is "sIL-6R degradation";
+  R10_sgp130_prod is "sgp130 production";
+  R11_sgp130_deg is "sgp130 degradation";
+  R12_CRP_prod is "CRP production (pSTAT3_l-driven) to serum";
+  R13_CRP_deg is "CRP degradation";
+  R14_cx1_clear is "Clearance of IL-6:sIL-6R complex";
+  R15_cx2_clear is "Clearance of IL-6:sIL-6R:sgp130 complex";
+
+end
+
+/* Unmapped or assumed elements and notes:
+- This Antimony encodes a reduced multiscale IL-6 system consistent with the paper's qualitative modules:
+  ? Compartments: GI, Liver, Serum (circulation).
+  ? Trans-signaling: IL-6 + sIL-6R <-> complex; sequestration by sgp130.
+  ? Downstream: STAT3 phosphorylation (GI and Liver) driven by an effective IL-6 signal (trans + classical surrogate).
+  ? CRP production in Liver driven by pSTAT3 and secreted to Serum.
+  ? CRP-mediated shedding increases sIL-6R production.
+  ? Basal synthesis and first-order degradation for soluble factors; IL-6 exchange between GI and Serum.
+- Initial concentrations reflect Crohn's patient values converted to nmol/l from Table 1:
+  Serum IL-6 ~10 pg/ml ? 4.22e-4 nmol/l @ 23.7 kDa;
+  Serum sIL-6R ~140 ng/ml ? 2.8 nmol/l @ 50 kDa;
+  Serum CRP ~7 mg/l ? 280 nmol/l @ 25 kDa;
+  Serum sgp130 ~280 ng/ml ? 2.8 nmol/l @ 100 kDa;
+  Gut IL-6 ~250 pg/ml ? 0.01055 nmol/l.
+  Gut pSTAT3 ~3-fold healthy ? initialized as 3 au; Liver pSTAT3 initialized to 1 au (assumed).
+- Kinetic forms follow Methods: mass-action for bindings/turnover/transport; Michaelis?Menten for phosphorylation/dephosphorylation and CRP expression.
+- Parameter values (rate constants, Vmax, Km) are nominal placeholders to enable simulation; the source text does not provide a full calibrated parameter set.
+- Drug PK/PD module (anti-IL-6, anti-IL-6R, sgp130Fc) is not included due to missing explicit equations/parameters in the provided excerpt; it can be appended consistently via additional compartments/species and binding reactions when data are available.
+*/

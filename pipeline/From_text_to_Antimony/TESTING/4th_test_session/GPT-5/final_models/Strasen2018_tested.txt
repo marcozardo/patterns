@@ -1,0 +1,186 @@
+model *Strasen2018_TGFB_Smad_Core()
+
+  //// Compartments and Species:
+  compartment Medium, Membrane, Cytoplasm, Nucleus, Endosome;
+  species L in Medium;
+  species R1 in Membrane, R2 in Membrane, R1R2 in Membrane, L_R1R2 in Membrane, L_R1R2_e in Endosome;
+  species S2 in Cytoplasm, S2p in Cytoplasm, S4 in Cytoplasm, C in Cytoplasm;
+  species S2n in Nucleus, S2pn in Nucleus, S4n in Nucleus, Cn in Nucleus;
+  species FBm in Nucleus, FB in Cytoplasm;
+
+  //// Assignment Rules:
+  nuc_cyt_SMAD2_ratio := (S2n + S2pn + Cn)/(S2 + S2p + C + eps);  # Observable (approximates nuc/cyt SMAD2-YFP ratio)
+
+  //// Reactions:
+  R_dimerize: R1 + R2 -> R1R2; kf_r*R1*R2 - kr_r*R1R2;
+  R_ligand_bind: L + R1R2 -> L_R1R2; kf_L*L*R1R2 - kr_L*L_R1R2;
+  R_internalize: L_R1R2 => L_R1R2_e; k_int*L_R1R2;
+  R_endosomal_deg: L_R1R2_e => ; k_deg_end*L_R1R2_e;
+  R_ligand_deg: L => ; k_L_deg*L;
+
+  R_S2_phos: S2 => S2p; (k_cat*RI_act*L_R1R2*S2/ (K_m + S2)) / (1 + k_fb*FB);  # receptor-mediated phosphorylation with feedback inhibition
+
+  R_cyt_complex_onoff: S2p + S4 -> C; k_on_c*S2p*S4 - k_off_c*C;
+
+  R_c_imp: C => Cn; k_imp_c*C;
+  R_c_exp: Cn => C; k_exp_c*Cn;
+
+  R_s2_imp: S2 => S2n; k_imp_s2*S2;
+  R_s2_exp: S2n => S2; k_exp_s2*S2n;
+
+  R_s4_imp: S4 => S4n; k_imp_s4*S4;
+  R_s4_exp: S4n => S4; k_exp_s4*S4n;
+
+  R_nuc_complex_onoff: S2pn + S4n -> Cn; k_on_n*S2pn*S4n - k_off_n*Cn;
+
+  R_dephos_cyt: S2p => S2; k_dephos_c*S2p;
+  R_dephos_nuc: S2pn => S2n; k_dephos_n*S2pn;
+
+  R_transcription_FB:  => FBm; k_tx_basal + k_tx_ind*Cn/(K_fb + Cn);
+  R_mRNA_deg: FBm => ; k_mdeg*FBm;
+  R_translation_FB: FBm => FBm + FB; k_tl*FBm;
+  R_FB_deg: FB => ; k_pdeg*FB;
+
+  R_R1_synth:  => R1; k_synth_R1;
+  R_R1_deg: R1 => ; k_deg_R1*R1;
+  R_R2_synth:  => R2; k_synth_R2;
+  R_R2_deg: R2 => ; k_deg_R2*R2;
+
+  //// Events:
+  E_restim: at(time >= t_restim): L = L0;
+  E_inhibit_RI: at(time >= t_inhib): RI_act = 0;
+
+  //// Species initializations:
+  L = L0;
+  R1 = R1_0;
+  R2 = R2_0;
+  R1R2 = 0;
+  L_R1R2 = 0;
+  L_R1R2_e = 0;
+
+  S2 = S2_0;
+  S2p = 0;
+  S4 = S4_0;
+  C = 0;
+
+  S2n = 0;
+  S2pn = 0;
+  S4n = 0;
+  Cn = 0;
+
+  FBm = 0;
+  FB = FB_0;
+
+  //// Compartment initializations:
+  Medium = 1;
+  Membrane = 1;
+  Cytoplasm = 1;
+  Nucleus = 1;
+  Endosome = 1;
+
+  //// Variable initializations:
+  # initial stimuli and pools
+  L0 = 25;        # nominal initial ligand (e.g., pM, dimensionless here)
+  R1_0 = 1;
+  R2_0 = 1;
+  S2_0 = 1;
+  S4_0 = 1;
+  FB_0 = 0;
+
+  # receptor dimerization and ligand binding
+  kf_r = 1;
+  kr_r = 0.1;
+  kf_L = 1;
+  kr_L = 0.1;
+
+  # receptor complex trafficking and ligand turnover
+  k_int = 0.2;
+  k_deg_end = 0.1;
+  k_L_deg = 0.01;
+
+  # receptor activity and feedback inhibition
+  k_cat = 1;
+  K_m = 0.5;
+  k_fb = 1;
+  RI_act = 1;
+
+  # cytoplasmic complexation
+  k_on_c = 1;
+  k_off_c = 0.1;
+
+  # nucleocytoplasmic shuttling
+  k_imp_c = 0.2;
+  k_exp_c = 0.1;
+  k_imp_s2 = 0.05;
+  k_exp_s2 = 0.05;
+  k_imp_s4 = 0.05;
+  k_exp_s4 = 0.05;
+
+  # nuclear complexation
+  k_on_n = 1;
+  k_off_n = 0.1;
+
+  # dephosphorylation
+  k_dephos_c = 0.2;
+  k_dephos_n = 0.2;
+
+  # transcriptional negative feedback (FB ~ SMAD7-like)
+  k_tx_basal = 0.01;
+  k_tx_ind = 0.5;
+  K_fb = 0.1;
+  k_mdeg = 0.1;
+  k_tl = 0.5;
+  k_pdeg = 0.05;
+
+  # receptor synthesis/turnover
+  k_synth_R1 = 0.01;
+  k_deg_R1 = 0.01;
+  k_synth_R2 = 0.01;
+  k_deg_R2 = 0.01;
+
+  # experimental protocols (restimulation and inhibition)
+  t_restim = 1e9;   # set to a large time to disable by default; set to e.g., 3 or 8 (hours) to restimulate
+  t_inhib = 1e9;    # set to a large time to disable by default; set to inhibitor addition time (hours)
+
+  # numerical safety
+  eps = 1e-12;
+
+  //// Other declarations:
+  const Medium, Membrane, Cytoplasm, Nucleus, Endosome;
+  var RI_act;
+  const L0, R1_0, R2_0, S2_0, S4_0, FB_0;
+  const kf_r, kr_r, kf_L, kr_L, k_int, k_deg_end, k_L_deg;
+  const k_cat, K_m, k_fb;
+  const k_on_c, k_off_c, k_imp_c, k_exp_c, k_imp_s2, k_exp_s2, k_imp_s4, k_exp_s4;
+  const k_on_n, k_off_n, k_dephos_c, k_dephos_n;
+  const k_tx_basal, k_tx_ind, K_fb, k_mdeg, k_tl, k_pdeg;
+  const k_synth_R1, k_deg_R1, k_synth_R2, k_deg_R2;
+  const t_restim, t_inhib, eps;
+
+  //// Display Names:
+  Medium is "Extracellular medium";
+  Membrane is "Plasma membrane";
+  Cytoplasm is "Cytoplasm";
+  Nucleus is "Nucleus";
+  Endosome is "Endosomal/lysosomal compartment";
+  L is "TGFbeta ligand";
+  R1 is "TGFbeta receptor I";
+  R2 is "TGFbeta receptor II";
+  R1R2 is "Receptor heterodimer";
+  L_R1R2 is "Ligand-bound receptor complex";
+  L_R1R2_e is "Internalized ligand-receptor complex";
+  S2 is "SMAD2 (cytoplasm)";
+  S2p is "Phospho-SMAD2 (cytoplasm)";
+  S4 is "SMAD4 (cytoplasm)";
+  C is "SMAD2p:SMAD4 complex (cytoplasm)";
+  S2n is "SMAD2 (nucleus)";
+  S2pn is "Phospho-SMAD2 (nucleus)";
+  S4n is "SMAD4 (nucleus)";
+  Cn is "SMAD2p:SMAD4 complex (nucleus)";
+  FBm is "Feedback mRNA (e.g., SMAD7 mRNA)";
+  FB is "Feedback protein (e.g., SMAD7)";
+  nuc_cyt_SMAD2_ratio is "Observable: nuclear-to-cytoplasmic SMAD2";
+  RI_act is "Receptor I kinase activity modifier (e.g., SB431542 target)";
+  E_restim is "Event: restimulation (replenish ligand to initial)";
+  E_inhibit_RI is "Event: TGFbetaRI inhibition";
+end

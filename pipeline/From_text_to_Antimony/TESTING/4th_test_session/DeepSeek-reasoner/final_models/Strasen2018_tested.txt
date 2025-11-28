@@ -1,0 +1,84 @@
+model *Strasen2018_TGFb_SMAD_Signaling()
+
+  //// Compartments and Species:
+  compartment extracellular, cytoplasm, nucleus;
+  species $TGFb in extracellular, $TGFbRI in cytoplasm, $TGFbRII in cytoplasm;
+  species $TGFbRI_TGFbRII_complex in cytoplasm;
+  species SMAD2 in cytoplasm, pSMAD2 in cytoplasm, SMAD4 in cytoplasm;
+  species pSMAD2_SMAD4_complex in cytoplasm, pSMAD2_SMAD4_complex_n in nucleus;
+  species $SMAD7_mRNA in nucleus, $SMAD7 in cytoplasm;
+
+  //// Assignment Rules:
+  nuc_cyt_ratio := pSMAD2_SMAD4_complex_n / pSMAD2_SMAD4_complex;
+
+  //// Rate Rules:
+  TGFbRI_TGFbRII_complex' = k_binding*TGFbRI*TGFbRII - k_internalization*TGFbRI_TGFbRII_complex - k_feedback*SMAD7*TGFbRI_TGFbRII_complex;
+  pSMAD2' = k_phosphorylation*TGFbRI_TGFbRII_complex*SMAD2 - k_dephosphorylation*pSMAD2 - k_complex_formation*pSMAD2*SMAD4;
+  SMAD2' = -k_phosphorylation*TGFbRI_TGFbRII_complex*SMAD2 + k_dephosphorylation*pSMAD2 + k_nuclear_export*pSMAD2_SMAD4_complex;
+  pSMAD2_SMAD4_complex' = k_complex_formation*pSMAD2*SMAD4 - k_nuclear_import*pSMAD2_SMAD4_complex + k_nuclear_export*pSMAD2_SMAD4_complex_n;
+  pSMAD2_SMAD4_complex_n' = k_nuclear_import*pSMAD2_SMAD4_complex - k_nuclear_export*pSMAD2_SMAD4_complex_n - k_degradation_nuclear*pSMAD2_SMAD4_complex_n;
+  SMAD7_mRNA' = k_transcription*pSMAD2_SMAD4_complex_n - k_degradation_mRNA*SMAD7_mRNA;
+  SMAD7' = k_translation*SMAD7_mRNA - k_degradation_protein*SMAD7;
+
+  //// Reactions:
+  // Note: Main reaction fluxes are captured in rate rules above
+
+  //// Species initializations:
+  TGFb = 100;     # Initial TGF? concentration (pM)
+  TGFbRI = 1.0;   # Relative receptor levels
+  TGFbRII = 1.0;
+  TGFbRI_TGFbRII_complex = 0;
+  SMAD2 = 1.0;
+  pSMAD2 = 0;
+  SMAD4 = 1.0;
+  pSMAD2_SMAD4_complex = 0;
+  pSMAD2_SMAD4_complex_n = 0;
+  SMAD7_mRNA = 0.1;
+  SMAD7 = 0.1;
+
+  //// Compartment initializations:
+  extracellular = 1;
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  k_binding = 0.5;           # Receptor complex formation rate
+  k_internalization = 0.1;   # Receptor internalization rate
+  k_phosphorylation = 0.8;   # SMAD2 phosphorylation rate
+  k_dephosphorylation = 0.2; # SMAD2 dephosphorylation rate
+  k_complex_formation = 0.6; # pSMAD2-SMAD4 complex formation
+  k_nuclear_import = 0.4;    # Nuclear import rate
+  k_nuclear_export = 0.1;    # Nuclear export rate
+  k_degradation_nuclear = 0.05; # Nuclear complex degradation
+  k_transcription = 0.3;     # SMAD7 transcription rate
+  k_degradation_mRNA = 0.1;  # mRNA degradation rate
+  k_translation = 0.2;       # SMAD7 translation rate
+  k_degradation_protein = 0.05; # SMAD7 protein degradation
+  k_feedback = 0.4;          # SMAD7-mediated receptor inhibition
+
+  //// Other declarations:
+  var TGFbRI_TGFbRII_complex, pSMAD2, SMAD2, pSMAD2_SMAD4_complex, pSMAD2_SMAD4_complex_n;
+  var SMAD7_mRNA, SMAD7;
+  const extracellular, cytoplasm, nucleus, k_binding, k_internalization, k_phosphorylation;
+  const k_dephosphorylation, k_complex_formation, k_nuclear_import, k_nuclear_export;
+  const k_degradation_nuclear, k_transcription, k_degradation_mRNA, k_translation;
+  const k_degradation_protein, k_feedback;
+
+  //// Display Names:
+  extracellular is "Extracellular space";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  TGFb is "TGF? ligand";
+  TGFbRI is "TGF? receptor I";
+  TGFbRII is "TGF? receptor II";
+  TGFbRI_TGFbRII_complex is "Active receptor complex";
+  SMAD2 is "SMAD2";
+  pSMAD2 is "Phosphorylated SMAD2";
+  SMAD4 is "SMAD4";
+  pSMAD2_SMAD4_complex is "SMAD2-SMAD4 complex";
+  pSMAD2_SMAD4_complex_n is "Nuclear SMAD complex";
+  SMAD7_mRNA is "SMAD7 mRNA";
+  SMAD7 is "SMAD7 feedback protein";
+  nuc_cyt_ratio is "Nuclear-to-cytoplasmic SMAD ratio";
+
+end

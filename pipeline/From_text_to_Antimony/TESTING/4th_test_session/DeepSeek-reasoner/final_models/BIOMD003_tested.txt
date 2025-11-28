@@ -1,0 +1,68 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $C in cell, $M in cell, $X in cell;
+
+  //// Assignment Rules:
+  V1 := (C / (K_c + C)) * V_M1;
+  V3 := M * V_M3;
+
+  //// Rate Rules:
+  C' = v_i - v_d * X * (C / (K_d + C)) - k_d * C;
+  M' = V1 * (1 - M) / (K_1 + (1 - M)) - V_2 * M / (K_2 + M);
+  X' = V3 * (1 - X) / (K_3 + (1 - X)) - V_4 * X / (K_4 + X);
+
+  //// Species initializations:
+  C = 0;
+  M = 0;
+  X = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  v_i = 0.023;
+  v_d = 0.1;
+  K_d = 0.02;
+  k_d = 0.00333;
+  V_M1 = 0.5;
+  V_2 = 0.167;
+  V_M3 = 0.2;
+  V_4 = 0.1;
+  K_c = 0.3;
+  K_1 = 0.1;
+  K_2 = 0.1;
+  K_3 = 0.1;
+  K_4 = 0.1;
+
+  //// Other declarations:
+  const v_i, v_d, K_d, k_d, V_M1, V_2, V_M3, V_4, K_c, K_1, K_2, K_3, K_4;
+  var V1, V3;
+
+  //// Unit definitions:
+  unit time_unit = minute;
+  unit concentration = micromole / litre;
+
+  //// Display Names:
+  cell is "Cell compartment";
+  C is "Cyclin";
+  M is "Active cdc2 kinase";
+  X is "Active cyclin protease";
+  V1 is "Effective rate of phosphatase E1";
+  V3 is "Effective rate of kinase E3";
+  v_i is "Cyclin synthesis rate";
+  v_d is "Maximum cyclin degradation rate";
+  K_d is "Michaelis constant for cyclin degradation";
+  k_d is "First-order degradation rate constant";
+  V_M1 is "Maximum rate of phosphatase E1";
+  V_2 is "Rate of kinase E2";
+  V_M3 is "Maximum rate of kinase E3";
+  V_4 is "Rate of phosphatase E4";
+  K_c is "Michaelis constant for cyclin activation";
+  K_1 is "Michaelis constant for phosphatase E1";
+  K_2 is "Michaelis constant for kinase E2";
+  K_3 is "Michaelis constant for kinase E3";
+  K_4 is "Michaelis constant for phosphatase E4";
+
+end

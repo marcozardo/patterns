@@ -1,0 +1,112 @@
+model *Frank2021_MacrophagePolarization()
+
+  //// Compartments and Species:
+  compartment cell;
+  species x1 in cell, x2 in cell;
+
+  //// Assignment Rules:
+  Hplus1 := x1^n1/(x1^n1 + k1^n1);
+  Hminus1 := p1^l1/(p1^l1 + x1^l1);
+  Hplus2 := x2^n2/(x2^n2 + k2^n2);
+  Hminus2 := p2^l2/(p2^l2 + x2^l2);
+  ratio_x1_x2 := x1/x2;  # STAT1/STAT6 activation ratio at current time
+
+  //// Rate Rules:
+  x1' = (a1*Hplus1 + S1)*Hminus2 + b1 - q1*x1;
+  x2' = a2*Hplus2 + S2*Hminus1 + b2 - q2*x2;
+
+  //// Events:
+  # not present
+
+  //// Species initializations:
+  x1 = 1.2;  # example initial condition used in paper figures
+  x2 = 2;    # example initial condition used in paper figures
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Parameter set Theta0 (baseline from Table 2)
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;   # Hill exponent for mutual inhibition fixed to 1
+  l2 = 1;   # Hill exponent for mutual inhibition fixed to 1
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;  # IFN-gamma input strength
+  S2 = 3.75;  # IL-4 input strength
+
+  //// Other declarations:
+  var Hplus1, Hminus1, Hplus2, Hminus2, ratio_x1_x2;
+  const cell, a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Unit definitions:
+  # omitted (values treated as nondimensional or per day as in source)
+
+  //// Display Names:
+  cell is "Cell (well-mixed)";
+  x1 is "Activated STAT1";
+  x2 is "Activated STAT6";
+  Hplus1 is "Self-stimulation Hill (STAT1)";
+  Hplus2 is "Self-stimulation Hill (STAT6)";
+  Hminus1 is "Inhibition Hill on STAT1 (by STAT6)";
+  Hminus2 is "Inhibition Hill on STAT6 (by STAT1)";
+  ratio_x1_x2 is "STAT1/STAT6 activation ratio";
+  a1 is "Max self-stim rate STAT1 (1/day)";
+  a2 is "Max self-stim rate STAT6 (1/day)";
+  b1 is "Basal activation STAT1 (1/day)";
+  b2 is "Basal activation STAT6 (1/day)";
+  n1 is "Hill exponent self-stimulation STAT1";
+  n2 is "Hill exponent self-stimulation STAT6";
+  k1 is "Half-activation threshold STAT1";
+  k2 is "Half-activation threshold STAT6";
+  l1 is "Hill exponent mutual inhibition on STAT1 (=1)";
+  l2 is "Hill exponent mutual inhibition on STAT6 (=1)";
+  p1 is "Half-inhibition threshold on STAT1";
+  p2 is "Half-inhibition threshold on STAT6";
+  q1 is "Deactivation rate STAT1 (1/day)";
+  q2 is "Deactivation rate STAT6 (1/day)";
+  S1 is "IFN_gamma input strength (1/day)";
+  S2 is "IL4 input strength (1/day)";
+
+end
+
+/*
+Scientific domain: molecular/cellular signaling (macrophage polarization via STAT1/STAT6).
+
+Alternative parameter sets from Table 2 (use by replacing values in Variable initializations):
+- Theta1 (only inputs changed):
+  S1 = 4;
+  S2 = 4;
+
+- Theta2 (asymmetric self-stimulation and higher deactivation):
+  a1 = 15;
+  a2 = 8;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 22;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5.8;
+  q2 = 5.8;
+  S1 = 5;
+  S2 = 5;
+
+Notes:
+- Time scale is per day for a1, a2, b1, b2, q1, q2, S1, S2 as described in the paper.
+- l1 = l2 = 1 is fixed by model design (reduced complexity).
+- The paper explores various initial conditions (e.g., (x1,x2) = (1.2,2), (1.2,1.2), (2,1), (1,3), (3,3), etc.) to demonstrate different basins of attraction; users may change x1 and x2 initial values accordingly.
+*/

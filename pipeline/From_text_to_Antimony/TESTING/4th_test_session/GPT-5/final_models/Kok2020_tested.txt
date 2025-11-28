@@ -1,0 +1,245 @@
+model *Kok2020_IFNa_Sensitization()
+
+  //// Compartments and Species:
+  compartment cyt, nuc;
+  species Rec in cyt, Rec_USP18 in cyt, aRecIFN in cyt;
+  species STAT1c in cyt, STAT2c in cyt, IRF9c in cyt;
+  species pSTAT1dimc in cyt, pSTAT1pSTAT2c in cyt, ISGF3c in cyt;
+  species pSTAT1dimn in nuc, pSTAT1pSTAT2n in nuc, ISGF3n in nuc;
+  species SOCS1mRNA in cyt, SOCS3mRNA in cyt, USP18mRNA in cyt, IRF9mRNA in cyt, STAT1mRNA in cyt, STAT2mRNA in cyt, IRF2mRNA in cyt;
+  species SOCS1 in cyt, SOCS3 in cyt, USP18 in cyt, IRF2 in cyt;
+  species $IFN in cyt;
+
+  //// Assignment Rules:
+
+  //// Rate Rules:
+
+  //// Reactions:
+  # Ligand-driven receptor activation and deactivation
+  R1: Rec + $IFN => aRecIFN; k_act * Rec * $IFN;
+  R2: aRecIFN => Rec; k_deact * aRecIFN;
+
+  # USP18 binding to receptor (inhibitory complex that cannot activate)
+  R3: Rec + USP18 -> Rec_USP18; k_bind_USP18 * Rec * USP18;
+  R4: Rec_USP18 -> Rec + USP18; k_unbind_USP18 * Rec_USP18;
+
+  # SOCS1- and SOCS1:USP18-mediated degradation of active receptor
+  R5: aRecIFN + SOCS1 => SOCS1; k_deg_SOCS1 * aRecIFN * SOCS1;
+  R6: aRecIFN + SOCS1 + USP18 => SOCS1 + USP18; k_deg_SOCS1_USP18 * aRecIFN * SOCS1 * USP18;
+
+  # STAT phosphorylation and dimerization approximated as single steps
+  R7: 2 STAT1c + aRecIFN => pSTAT1dimc + aRecIFN; k_p1 * STAT1c * STAT1c * aRecIFN;
+  R8: STAT1c + STAT2c + aRecIFN => pSTAT1pSTAT2c + aRecIFN; k_p12 * STAT1c * STAT2c * aRecIFN;
+
+  # ISGF3 assembly and complex dissociation
+  R9: pSTAT1pSTAT2c + IRF9c -> ISGF3c; k_assoc_isgf3 * pSTAT1pSTAT2c * IRF9c;
+  R10: pSTAT1dimc -> 2 STAT1c; k_diss1 * pSTAT1dimc;
+  R11: pSTAT1pSTAT2c -> STAT1c + STAT2c; k_diss12 * pSTAT1pSTAT2c;
+  R12: ISGF3c -> pSTAT1pSTAT2c + IRF9c; k_diss_isgf3 * ISGF3c;
+
+  # Nuclear import/export of transcription factor complexes
+  R13: pSTAT1dimc => pSTAT1dimn; k_imp1 * pSTAT1dimc;
+  R14: pSTAT1pSTAT2c => pSTAT1pSTAT2n; k_imp12 * pSTAT1pSTAT2c;
+  R15: ISGF3c => ISGF3n; k_impisgf3 * ISGF3c;
+  R16: pSTAT1dimn => pSTAT1dimc; k_exp1 * pSTAT1dimn;
+  R17: pSTAT1pSTAT2n => pSTAT1pSTAT2c; k_exp12 * pSTAT1pSTAT2n;
+  R18: ISGF3n => ISGF3c; k_expisgf3 * ISGF3n;
+
+  # Transcription (GAS-driven for SOCS3; ISRE/heterodimer-driven for others)
+  Tx1:  => SOCS3mRNA; k_tx_SOCS3 * pSTAT1dimn / (K_gas + pSTAT1dimn);
+  Tx2:  => SOCS1mRNA; k_tx_SOCS1 * ( w_isre_SOCS1 * ISGF3n / (K_isre + ISGF3n) + w_het_SOCS1 * pSTAT1pSTAT2n / (K_gisre + pSTAT1pSTAT2n) );
+  Tx3:  => USP18mRNA; k_tx_USP18 * ( w_isre_USP18 * ISGF3n / (K_isre + ISGF3n) + w_het_USP18 * pSTAT1pSTAT2n / (K_gisre + pSTAT1pSTAT2n) );
+  Tx4:  => IRF9mRNA; k_tx_IRF9 * ( w_isre_IRF9 * ISGF3n / (K_isre + ISGF3n) + w_het_IRF9 * pSTAT1pSTAT2n / (K_gisre + pSTAT1pSTAT2n) );
+  Tx5:  => STAT1mRNA; k_tx_STAT1 * ( w_isre_STAT1 * ISGF3n / (K_isre + ISGF3n) + w_het_STAT1 * pSTAT1pSTAT2n / (K_gisre + pSTAT1pSTAT2n) );
+  Tx6:  => STAT2mRNA; k_tx_STAT2 * ( w_isre_STAT2 * ISGF3n / (K_isre + ISGF3n) + w_het_STAT2 * pSTAT1pSTAT2n / (K_gisre + pSTAT1pSTAT2n) );
+  Tx7:  => IRF2mRNA; k_tx_IRF2 * ( w_isre_IRF2 * ISGF3n / (K_isre + ISGF3n) + w_het_IRF2 * pSTAT1pSTAT2n / (K_gisre + pSTAT1pSTAT2n) );
+
+  # Basal transcription to sustain steady-state
+  Btx1: => STAT1mRNA; k_basal_mRNA_STAT1;
+  Btx2: => STAT2mRNA; k_basal_mRNA_STAT2;
+  Btx3: => IRF9mRNA; k_basal_mRNA_IRF9;
+  Btx4: => USP18mRNA; k_basal_mRNA_USP18;
+  Btx5: => SOCS1mRNA; k_basal_mRNA_SOCS1;
+  Btx6: => SOCS3mRNA; k_basal_mRNA_SOCS3;
+  Btx7: => IRF2mRNA; k_basal_mRNA_IRF2;
+
+  # Translation
+  Tl1: SOCS3mRNA => SOCS3mRNA + SOCS3; k_tl_SOCS3 * SOCS3mRNA;
+  Tl2: SOCS1mRNA => SOCS1mRNA + SOCS1; k_tl_SOCS1 * SOCS1mRNA;
+  Tl3: USP18mRNA => USP18mRNA + USP18; k_tl_USP18 * USP18mRNA;
+  Tl4: IRF9mRNA => IRF9mRNA + IRF9c; k_tl_IRF9 * IRF9mRNA;
+  Tl5: STAT1mRNA => STAT1mRNA + STAT1c; k_tl_STAT1 * STAT1mRNA;
+  Tl6: STAT2mRNA => STAT2mRNA + STAT2c; k_tl_STAT2 * STAT2mRNA;
+  Tl7: IRF2mRNA => IRF2mRNA + IRF2; k_tl_IRF2 * IRF2mRNA;
+
+  # Degradation (mRNAs, proteins, complexes, receptors)
+  D1:  SOCS3mRNA => ; k_deg_mRNA * SOCS3mRNA;
+  D2:  SOCS1mRNA => ; k_deg_mRNA * SOCS1mRNA;
+  D3:  USP18mRNA => ; k_deg_mRNA * USP18mRNA;
+  D4:  IRF9mRNA => ; k_deg_mRNA * IRF9mRNA;
+  D5:  STAT1mRNA => ; k_deg_mRNA * STAT1mRNA;
+  D6:  STAT2mRNA => ; k_deg_mRNA * STAT2mRNA;
+  D7:  IRF2mRNA => ; k_deg_mRNA * IRF2mRNA;
+  D8:  SOCS3 => ; k_deg_SOCS3 * SOCS3;
+  D9:  SOCS1 => ; k_deg_SOCS1 * SOCS1;
+  D10: USP18 => ; k_deg_USP18 * USP18;
+  D11: IRF9c => ; k_deg_IRF9 * IRF9c;
+  D12: STAT1c => ; k_deg_STAT1 * STAT1c;
+  D13: STAT2c => ; k_deg_STAT2 * STAT2c;
+  D14: IRF2 => ; k_deg_IRF2 * IRF2;
+  D15: pSTAT1dimc => ; k_deg_pdimc * pSTAT1dimc;
+  D16: pSTAT1pSTAT2c => ; k_deg_phetc * pSTAT1pSTAT2c;
+  D17: ISGF3c => ; k_deg_isgf3c * ISGF3c;
+  D18: pSTAT1dimn => ; k_deg_pdimn * pSTAT1dimn;
+  D19: pSTAT1pSTAT2n => ; k_deg_phetn * pSTAT1pSTAT2n;
+  D20: ISGF3n => ; k_deg_isgf3n * ISGF3n;
+  D21: Rec => ; k_deg_Rec * Rec;
+  D22: Rec_USP18 => ; k_deg_RecUS * Rec_USP18;
+
+  # Basal receptor synthesis
+  SRec: => Rec; k_synth_Rec;
+
+  //// Events:
+  E0: at time >= t0: $IFN = IFN_pre;
+  E1: at time >= t_restim: $IFN = IFN_stim;
+
+  //// Species initializations:
+  Rec = 1;
+  Rec_USP18 = 0;
+  aRecIFN = 0;
+
+  STAT1c = 1;
+  STAT2c = 0.1;
+  IRF9c = 0.05;
+
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+
+  SOCS1mRNA = 0.01;
+  SOCS3mRNA = 0.01;
+  USP18mRNA = 0.01;
+  IRF9mRNA = 0.01;
+  STAT1mRNA = 0.02;
+  STAT2mRNA = 0.02;
+  IRF2mRNA = 0.01;
+
+  SOCS1 = 0.01;
+  SOCS3 = 0.01;
+  USP18 = 0.02;
+  IRF2 = 0.01;
+
+  $IFN = 0;
+
+  //// Compartment initializations:
+  cyt = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  k_act = 1;
+  k_deact = 0.1;
+
+  k_bind_USP18 = 0.1;
+  k_unbind_USP18 = 0.1;
+
+  k_deg_SOCS1 = 0.05;
+  k_deg_SOCS1_USP18 = 0.1;
+
+  k_p1 = 0.01;
+  k_p12 = 0.01;
+
+  k_assoc_isgf3 = 0.1;
+  k_diss1 = 0.01;
+  k_diss12 = 0.01;
+  k_diss_isgf3 = 0.01;
+
+  k_imp1 = 0.5;
+  k_imp12 = 0.5;
+  k_impisgf3 = 0.5;
+  k_exp1 = 0.2;
+  k_exp12 = 0.2;
+  k_expisgf3 = 0.2;
+
+  k_tx_SOCS3 = 0.5;
+  k_tx_SOCS1 = 0.3;
+  k_tx_USP18 = 0.3;
+  k_tx_IRF9 = 0.3;
+  k_tx_STAT1 = 0.2;
+  k_tx_STAT2 = 0.2;
+  k_tx_IRF2 = 0.2;
+
+  K_gas = 0.1;
+  K_isre = 0.1;
+  K_gisre = 0.1;
+
+  w_isre_SOCS1 = 1;
+  w_het_SOCS1 = 0.3;
+  w_isre_USP18 = 1;
+  w_het_USP18 = 0.3;
+  w_isre_IRF9 = 1;
+  w_het_IRF9 = 0.3;
+  w_isre_STAT1 = 1;
+  w_het_STAT1 = 0.3;
+  w_isre_STAT2 = 1;
+  w_het_STAT2 = 0.3;
+  w_isre_IRF2 = 1;
+  w_het_IRF2 = 0.3;
+
+  k_tl_SOCS3 = 0.5;
+  k_tl_SOCS1 = 0.5;
+  k_tl_USP18 = 0.5;
+  k_tl_IRF9 = 0.5;
+  k_tl_STAT1 = 0.5;
+  k_tl_STAT2 = 0.5;
+  k_tl_IRF2 = 0.5;
+
+  k_deg_mRNA = 0.1;
+  k_deg_SOCS3 = 0.05;
+  k_deg_SOCS1 = 0.05;
+  k_deg_USP18 = 0.02;
+  k_deg_IRF9 = 0.05;
+  k_deg_STAT1 = 0.01;
+  k_deg_STAT2 = 0.01;
+  k_deg_IRF2 = 0.05;
+
+  k_deg_pdimc = 0.1;
+  k_deg_phetc = 0.1;
+  k_deg_isgf3c = 0.1;
+  k_deg_pdimn = 0.1;
+  k_deg_phetn = 0.1;
+  k_deg_isgf3n = 0.1;
+
+  k_deg_Rec = 0.001;
+  k_deg_RecUS = 0.001;
+  k_synth_Rec = 0.01;
+
+  k_basal_mRNA_STAT1 = 0.001;
+  k_basal_mRNA_STAT2 = 0.001;
+  k_basal_mRNA_IRF9 = 0.001;
+  k_basal_mRNA_USP18 = 0.001;
+  k_basal_mRNA_SOCS1 = 0.001;
+  k_basal_mRNA_SOCS3 = 0.001;
+  k_basal_mRNA_IRF2 = 0.001;
+
+  t0 = 0;
+  t_restim = 24;
+  IFN_pre = 0.01;
+  IFN_stim = 1;
+
+  //// Other declarations:
+  const cyt, nuc, k_act, k_deact, k_bind_USP18, k_unbind_USP18, k_deg_SOCS1, k_deg_SOCS1_USP18, k_p1, k_p12, k_assoc_isgf3, k_diss1, k_diss12, k_diss_isgf3;
+  const k_imp1, k_imp12, k_impisgf3, k_exp1, k_exp12, k_expisgf3, k_tx_SOCS3, k_tx_SOCS1, k_tx_USP18, k_tx_IRF9, k_tx_STAT1, k_tx_STAT2, k_tx_IRF2;
+  const K_gas, K_isre, K_gisre, w_isre_SOCS1, w_het_SOCS1, w_isre_USP18, w_het_USP18, w_isre_IRF9, w_het_IRF9, w_isre_STAT1, w_het_STAT1, w_isre_STAT2, w_het_STAT2, w_isre_IRF2, w_het_IRF2;
+  const k_tl_SOCS3, k_tl_SOCS1, k_tl_USP18, k_tl_IRF9, k_tl_STAT1, k_tl_STAT2, k_tl_IRF2, k_deg_mRNA, k_deg_SOCS3, k_deg_SOCS1, k_deg_USP18, k_deg_IRF9, k_deg_STAT1, k_deg_STAT2, k_deg_IRF2;
+  const k_deg_pdimc, k_deg_phetc, k_deg_isgf3c, k_deg_pdimn, k_deg_phetn, k_deg_isgf3n, k_deg_Rec, k_deg_RecUS, k_synth_Rec;
+  const k_basal_mRNA_STAT1, k_basal_mRNA_STAT2, k_basal_mRNA_IRF9, k_basal_mRNA_USP18, k_basal_mRNA_SOCS1, k_basal_mRNA_SOCS3, k_basal_mRNA_IRF2, t0, t_restim, IFN_pre, IFN_stim;
+
+  //// Unit definitions:
+
+  //// Display Names:
+
+end

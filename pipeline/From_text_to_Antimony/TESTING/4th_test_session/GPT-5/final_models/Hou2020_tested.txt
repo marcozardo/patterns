@@ -1,0 +1,68 @@
+model *Hou2020_Wuhan_SEIR()
+
+  /* Epidemiological (population-level) SEIR model for COVID-19 in Wuhan.
+     Modified SEIR: both symptomatic infected (I) and latent exposed (E) contribute to new exposures.
+     Force of infection terms:
+       - from I: r1 * beta1 * S * I / N
+       - from E: r2 * beta2 * S * E / N, with beta2 = 0.5 * beta1
+     Parameters reflect values reported/assumed in Hou et al. (2020, J Med Virol).
+  */
+
+  //// Compartments and Species:
+  compartment region;
+  species S in region, E in region, I in region, R in region;
+
+  //// Assignment Rules:
+  beta2 := 0.5*beta1;         # half infectiousness during latency
+  N := S + E + I + R;         # total population
+
+  //// Reactions:
+  J_infect_I: S => E; r1*beta1*S*I/N;
+  J_infect_E: S => E; r2*beta2*S*E/N;
+  J_progress: E => I; sigma*E;
+  J_recover:  I => R; gamma_*I;
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  region = 1;
+
+  //// Variable initializations:
+  r1 = 6;         # contact rate of symptomatic infected
+  r2 = 18;        # contact rate of latent individuals (vary 6?18 to assess interventions)
+  beta1 = 0.04;   # infection probability per exposure from I (4%)
+  sigma = 0.14;   # incubation rate (1/7 day^-1)
+  gamma_ = 0.048;  # recovery rate (1/21 day^-1)
+
+  //// Other declarations:
+  var N, beta2;
+  const region, r1, r2, beta1, sigma, gamma_;
+
+  //// Display Names:
+  region is "Wuhan population (well-mixed)";
+  S is "Susceptible";
+  E is "Exposed (latent, partially infectious)";
+  I is "Infectious (symptomatic)";
+  R is "Recovered";
+  N is "Total population";
+  r1 is "Contact rate (symptomatic infected)";
+  r2 is "Contact rate (latent)";
+  beta1 is "Infection probability per exposure (from I)";
+  beta2 is "Infection probability per exposure (from E)";
+  sigma is "Incubation rate (E -> I)";
+  gamma_ is "Recovery rate (I -> R)";
+  J_infect_I is "New exposures from symptomatic infected";
+  J_infect_E is "New exposures from latent individuals";
+  J_progress is "Incubation progression";
+  J_recover is "Recovery";
+end
+
+/* Unmapped or clarified data and choices:
+- Table shows ?1 as 0.4, but text specifies 4%; we unified to beta1 = 0.04 (4%) per narrative.
+- r2 (contact rate of latent) explored over 6?18 to represent quarantine/isolation impact; set default r2 = 18 as in Table 1; vary as needed.
+- N defined by assignment N := S+E+I+R, consistent with Table relation (N = S+E+I+R) and closed-population assumption.
+- No explicit time-varying events (e.g., quarantine start) provided in equations; parameters held constant unless user varies r2 for scenarios. */

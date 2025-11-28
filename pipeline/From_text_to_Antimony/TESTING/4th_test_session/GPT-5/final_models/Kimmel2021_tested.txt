@@ -1,0 +1,64 @@
+/* Domain: Physiological/ecological tumor immunology (in vivo T-cell/tumor population dynamics in patients undergoing CD19 CAR T-cell therapy)
+
+Model source: Kimmel GJ, Locke FL, Altrock PM. 2021. Proc. R. Soc. B 288:20210229.
+Deterministic mean-field ODEs (Eqs. 2.1?2.3) for Normal T cells (N), CAR T cells (C), and tumor cells (B):
+
+dN/dt = - r_N * N * ln( (N + C) / K_N )
+dC/dt = - r_C(T) * C * ln( (N + C) / K_C ), with T = N + C and
+r_C(T) = rho_C + b * (T - K_N)^2 / ( a * T^2 + (T - K_N)^2 )
+dB/dt = r_B * B - gamma_B * B * ( C / (k_B + C) )
+
+Initial conditions and parameters from Table 1 and figure captions. Units: counts (cells) and per day rates. */
+
+model *Kimmel2021_CART_Gompertz()
+
+  //// Compartments and Species:
+  const compartment host;
+
+  //// Assignment Rules:
+  T := N + C;  // total lymphocytes
+  rC_T := rho_C + b*(T - K_N)^2 / (a*T^2 + (T - K_N)^2);  // CAR T turnover rate r_C(T)
+
+  //// Rate Rules:
+  N' = -r_N*N*ln((N + C)/K_N);
+  C' = -rC_T*C*ln((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*(C/(k_B + C));
+
+  //// Compartment initializations:
+  host = 1;
+
+  //// Variable initializations:
+  # Initial cell numbers (counts)
+  N = 3.00e9;       // initial median normal T cells
+  C = 1.80e8;       // initial CAR T cells
+  B = 9.486e10;     // initial median tumor cells
+
+  # Carrying capacities
+  K_N = 2.50e11;    // normal T cell carrying capacity
+  K_C = 6.96e10;    // CAR T cell carrying capacity
+
+  # Growth/turnover rates (per day)
+  r_N   = 1.70e-1;  // normal T net growth (Gompertz)
+  rho_C = 2.51e-2;  // baseline CAR T net turnover
+  a     = 4.23e-1;  // signaling inefficiency factor in r_C(T)
+  b     = 5.25e-1;  // immune reconstitution impact in r_C(T)
+
+  # Tumor kinetics
+  r_B     = 1.90e-1;  // intrinsic tumor net growth (per day), "medium" scenario from Fig. 3b
+  gamma_B = 1.15e0;   // maximal tumor-killing rate by CAR T (per day)
+  k_B     = 2.024e9;  // killing saturation parameter (cells)
+
+  //// Other declarations:
+  var N, C, B, T, rC_T;
+  const host, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+end
+
+/* Notes:
+- r_B was set to 0.19 day^-1 ("medium" intrinsic tumor growth) per Figure 3b caption.
+  Alternative scenarios used in the paper: 0.105/day ("slow") and 0.265/day ("fast").
+- The functional form of r_C(T) matches the figure annotation:
+    r_C(N,C) = rho_C + b*(N + C - K_N)^2 / ( a*(N + C)^2 + (N + C - K_N)^2 ).
+- State variables (N, C, B) are implemented as variables with Rate Rules (not as reacting species),
+  to exactly reproduce the published ODEs including sign structure (Gompertz dynamics).
+- All parameter names and symbols reflect those in the manuscript to aid traceability. */

@@ -1,0 +1,80 @@
+model *Minimal_Oncolytic_Virotherapy_Model()
+
+  //// Compartments and Species:
+  compartment TumorMicroenvironment;
+  species $U in TumorMicroenvironment, $I in TumorMicroenvironment, $V in TumorMicroenvironment, $T in TumorMicroenvironment, $D in TumorMicroenvironment;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Rate Rules:
+  U' = r*U - beta*(U*V)/N - (kappa0 + c_kill*I)*(U*T)/N;
+  I' = beta*(U*V)/N - delta_I*I - (kappa0 + c_kill*I)*(I*T)/N;
+  V' = u_V + alpha*delta_I*I - delta_V*V;
+  T' = c_T*I + chi_D*D - delta_T*T;
+  D' = u_D - delta_D*D;
+
+  //// Reactions:
+  // No traditional reactions - dynamics defined by rate rules above
+
+  //// Events:
+  // Note: u_V and u_D represent time-dependent treatment inputs
+  // These would typically be defined as events for specific dosing schedules
+  // Example event structure (commented out as exact dosing schedule not specified):
+  // at time=0: u_V = dose_V;
+  // at time=2: u_V = dose_V;
+  // at time=4: u_V = dose_V;
+  // at time=1: u_D = dose_D;
+  // at time=3: u_D = dose_D;
+  // at time=5: u_D = dose_D;
+
+  //// Species initializations:
+  U = 100;    // Initial tumor volume (mm?)
+  I = 0;      // Initial infected tumor volume
+  V = 0;      // Initial viral load
+  T = 0;      // Initial tumor-targeting T cells
+  D = 0;      // Initial dendritic cells
+
+  //// Compartment initializations:
+  TumorMicroenvironment = 1;
+
+  //// Variable initializations:
+  // Best-fit parameters from minimal model (Table 2)
+  r = 0.3198;           // Tumor growth rate (day??)
+  beta = 0.00100854;    // Viral infection rate
+  kappa0 = 1;           // Baseline T cell killing rate (placeholder)
+  c_kill = 6.234e7;     // Enhanced T cell killing coefficient
+  delta_I = 1;          // Infected cell death rate (placeholder)
+  alpha = 1;            // Viral burst size (placeholder)
+  delta_V = 1;          // Viral decay rate (placeholder)
+  c_T = 1.428064;       // T cell recruitment rate by cytokines
+  chi_D = 1;            // T cell production rate from DCs (placeholder)
+  delta_T = 1;          // T cell death rate (placeholder)
+  delta_D = 4.901894;   // Dendritic cell decay rate
+  
+  // Treatment parameters (example values - would need experimental specification)
+  u_V = 0;              // Viral treatment input (time-dependent)
+  u_D = 0;              // Dendritic cell treatment input (time-dependent)
+
+  //// Other declarations:
+  var N, u_V, u_D;
+  const r, beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D;
+
+  //// Unit definitions:
+  unit volume = 1 mm^3;
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  TumorMicroenvironment is "Tumor microenvironment";
+  U is "Uninfected tumor volume";
+  I is "Infected tumor volume";
+  V is "Viral load";
+  T is "Tumor-targeting T cells";
+  D is "Dendritic cells";
+  N is "Total cell volume";
+  r is "Tumor growth rate";
+  beta is "Viral infection rate";
+  c_kill is "Enhanced T cell killing coefficient";
+  c_T is "T cell recruitment rate";
+  delta_D is "Dendritic cell decay rate";
+end

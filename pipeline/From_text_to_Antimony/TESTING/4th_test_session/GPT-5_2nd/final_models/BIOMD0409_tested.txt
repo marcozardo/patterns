@@ -1,0 +1,120 @@
+model *Queralt2006_MitoticExit_FEAR_MEN()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Net1 in cell, Net1P in cell, Cdc14_free in cell, Net1_Cdc14 in cell;
+  species SepCplx in cell, Separase in cell;
+
+  //// Assignment Rules:
+  Cdk := Clb2;                                              # Clb2-Cdk activity proxy
+  PP2A := PP2A_base/(1 + k_sep_pp2a*Separase);             # separase-dependent downregulation of PP2A^Cdc55
+  Cdc14_tot := Cdc14_free + Net1_Cdc14;                     # total Cdc14 (free + nucleolar RENT-bound)
+  Net1_tot := Net1 + Net1P + Net1_Cdc14;                    # total Net1 pool
+
+  //// Rate Rules:
+  Clb2' = k_synth_Clb2 - k_deg20*APC20*Clb2 - k_degCdh1*Cdh1*Clb2;                                  # cyclin-Clb2 dynamics by APC^Cdc20 and APC^Cdh1
+  MEN'  = k_MEN_act*Cdc14_free/(1 + k_Cdk_inhib*Clb2) - k_MEN_decay*MEN;                            # MEN activation by Cdc14, inhibited by high Cdk
+  Cdh1' = k_act_Cdh1*(Cdc14_free/(1 + k_Cdk_Cdh1*Clb2))*(1 - Cdh1) - k_inact_Cdh1*Clb2*Cdh1;        # bistable Cdk?Cdh1 switch proxy
+
+  //// Reactions:
+  # Net1 phosphorylation/dephosphorylation balance (Cdk- and MEN-driven phosphorylation; PP2A^Cdc55 and Cdc14-driven dephosphorylation)
+  R1_phos:  Net1  => Net1P;  k_cdk_phos*Cdk*Net1 + k_men_phos*MEN*Net1;
+  R2_deph:  Net1P => Net1;   k_pp2a_deph*PP2A*Net1P + k_cdc14_deph*Cdc14_free*Net1P;
+
+  # Cdc14 sequestration in the nucleolus and anaphase release upon Net1 phosphorylation
+  R3_bind:    Net1 + Cdc14_free => Net1_Cdc14;                 k_bind*Net1*Cdc14_free;
+  R4_release: Net1P + Net1_Cdc14 => Net1P + Cdc14_free;        k_release*Net1P*Net1_Cdc14;
+
+  # Separase activation by APC^Cdc20-mediated securin destruction (modeled as conversion of securin?separase complex to active separase)
+  R5_sep_act: SepCplx => Separase; k_sep_act*APC20*SepCplx;
+
+  //// Events:
+  E0: at(time >= 0): APC20 = APC20_on;   # metaphase-to-anaphase switch: Cdc20 synthesis/activation
+
+  //// Species initializations:
+  Net1 = 1;            # unphosphorylated Net1 (nucleolar RENT component)
+  Net1P = 0;           # phosphorylated Net1
+  Cdc14_free = 0.05;   # free/active Cdc14 (low in metaphase)
+  Net1_Cdc14 = 0.95;   # RENT-bound (inactive) Cdc14 (high in metaphase)
+  SepCplx = 1;         # securin?separase complex (inactive separase pool)
+  Separase = 0;        # active separase
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  Clb2 = 1;            # high mitotic cyclin in metaphase
+  MEN = 0;             # MEN inactive in metaphase
+  Cdh1 = 0;            # APC^Cdh1 inactive in metaphase
+  APC20 = 0;           # APC^Cdc20 off in metaphase
+  APC20_on = 1;
+
+  # Kinetic parameters (dimensionless/normalized; placeholders consistent with qualitative dynamics)
+  k_synth_Clb2 = 0.05;
+  k_deg20      = 0.1;
+  k_degCdh1    = 0.1;
+
+  k_cdk_phos   = 1.0;
+  k_men_phos   = 0.5;
+  k_pp2a_deph  = 1.0;
+  k_cdc14_deph = 0.5;
+
+  k_bind       = 10.0;
+  k_release    = 5.0;
+
+  k_sep_act    = 0.5;
+
+  k_MEN_act    = 0.5;
+  k_Cdk_inhib  = 2.0;
+  k_MEN_decay  = 0.1;
+
+  k_act_Cdh1   = 0.5;
+  k_inact_Cdh1 = 0.5;
+  k_Cdk_Cdh1   = 2.0;
+
+  PP2A_base    = 1.0;
+  k_sep_pp2a   = 2.0;
+
+  eps = 1e-6;
+
+  //// Other declarations:
+  var Clb2, MEN, Cdh1, APC20;
+  var PP2A, Cdk, Cdc14_tot, Net1_tot;
+  const cell, APC20_on;
+  const k_synth_Clb2, k_deg20, k_degCdh1, k_cdk_phos, k_men_phos, k_pp2a_deph, k_cdc14_deph;
+  const k_bind, k_release, k_sep_act, k_MEN_act, k_Cdk_inhib, k_MEN_decay, k_act_Cdh1, k_inact_Cdh1, k_Cdk_Cdh1, PP2A_base, k_sep_pp2a, eps;
+
+  //// Unit definitions:
+  # Omitted (normalized units)
+
+  //// Display Names:
+  cell is "Cell (budding yeast; single compartment)";
+  Net1 is "Net1 (unphosphorylated; RENT component)";
+  Net1P is "Net1-P (Cdk/MEN-phosphorylated)";
+  Cdc14_free is "Cdc14 (released/active)";
+  Net1_Cdc14 is "RENT-bound Cdc14 (inactive)";
+  SepCplx is "Securin?Separase complex (inactive separase)";
+  Separase is "Separase (active, protease and PP2A^Cdc55 regulator)";
+  Clb2 is "Mitotic cyclin Clb2 (proportional to Cdk activity)";
+  Cdk is "Clb2?Cdk activity proxy";
+  PP2A is "PP2A^Cdc55 activity (effective)";
+  MEN is "Mitotic Exit Network activity";
+  Cdh1 is "APC activator Cdh1 (activity)";
+  APC20 is "APC^Cdc20 activity";
+  APC20_on is "APC^Cdc20 induced level";
+  R1_phos is "Net1 phosphorylation by Cdk and MEN";
+  R2_deph is "Net1 dephosphorylation by PP2A^Cdc55 and Cdc14";
+  R3_bind is "Cdc14 sequestration by Net1 (RENT assembly)";
+  R4_release is "Cdc14 release upon Net1 phosphorylation";
+  R5_sep_act is "Separase activation by APC^Cdc20 (securin destruction)";
+end
+
+/*
+Unmapped or simplified elements due to missing explicit equations/parameters in the provided text:
+- Explicit ODEs/parameters from Figure S6 (supplement) not available; normalized placeholders used.
+- MEN detailed components (Tem1, Cdc15, Mob1/Dbf2) and Polo/Bfa1/Bub2 are lumped into the single variable MEN, inhibited by high Cdk and activated by Cdc14; Bfa1 phosphorylation and Polo regulation are not explicitly modeled as separate species.
+- Sic1 (Cdk inhibitor) and APC^Cdh1-dependent Polo degradation are not explicitly represented; Cdh1 activation is modeled phenomenologically by Cdc14 vs Cdk balance.
+- Securin as a free species is not modeled; securin?separase complex (SepCplx) stands for the inhibited separase pool undergoing APC^Cdc20-dependent activation.
+- Quantitative magnitudes (e.g., ?PP2A^Cdc55 activity decreases to less than half at anaphase onset?) are captured qualitatively via PP2A assignment rule; exact time courses from Figure 5 are not parameter-fitted here.
+- The model omits cell-cycle entry regulators and upstream checkpoints; it focuses on the metaphase-to-G1 mitotic exit module described in Figure 7A.
+*/

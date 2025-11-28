@@ -1,0 +1,107 @@
+/* Domain: Molecular/cellular signaling (macrophage polarization via STAT1/STAT6)
+Source: Frank et al., Journal of Theoretical Biology 509 (2021) 110511
+
+Model summary:
+- Two state variables track activated STAT1 (x1) and STAT6 (x2) as proxies for M1/M2 polarization.
+- Dynamics follow coupled ODEs with self-stimulation (stimulating Hill), mutual inhibition (inhibitory Hill), basal activation, and linear deactivation.
+- Asymmetry: x1 production multiplies the inhibitory Hill of x2; x2 production is additive in its stimulating and inhibitory contributions, as specified in Eqs. (1?4).
+- Hill exponents for mutual inhibition (l1,l2) are set to 1 as in the paper; retained as parameters for clarity.
+
+Default parameterization corresponds to ?0 in Table 2.
+*/
+
+model *Frank2021_MacrophagePolarization()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $x1 in cell, $x2 in cell;
+
+  //// Assignment Rules:
+  Hplus_x1 := (x1^n1) / (x1^n1 + k1^n1);
+  Hplus_x2 := (x2^n2) / (x2^n2 + k2^n2);
+  Hminus_x2_on_x1 := (p2^l2) / (p2^l2 + x2^l2);
+  Hminus_x1_on_x2 := (p1^l1) / (p1^l1 + x1^l1);
+
+  //// Rate Rules:
+  x1' = (a1*Hplus_x1 + S1)*Hminus_x2_on_x1 + b1 - q1*x1;
+  x2' = a2*Hplus_x2 + S2*Hminus_x1_on_x2 + b2 - q2*x2;
+
+  //// Species initializations:
+  x1 = 0;
+  x2 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;
+  S2 = 3.75;
+
+  //// Other declarations:
+  const cell, a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Display Names:
+  cell is "Macrophage (well-mixed single compartment)";
+  x1 is "Activated STAT1 (M1 proxy)";
+  x2 is "Activated STAT6 (M2 proxy)";
+  a1 is "Self-stimulation strength for STAT1 (1/day)";
+  a2 is "Self-stimulation strength for STAT6 (1/day)";
+  b1 is "Basal activation rate for STAT1 (1/day)";
+  b2 is "Basal activation rate for STAT6 (1/day)";
+  n1 is "Hill exponent (self-stimulation) STAT1";
+  n2 is "Hill exponent (self-stimulation) STAT6";
+  k1 is "Half-activation threshold (self-stimulation) STAT1";
+  k2 is "Half-activation threshold (self-stimulation) STAT6";
+  l1 is "Hill exponent (mutual inhibition) on STAT2 by STAT1";
+  l2 is "Hill exponent (mutual inhibition) on STAT1 by STAT2";
+  p1 is "Threshold (mutual inhibition) STAT1?inhibits x2";
+  p2 is "Threshold (mutual inhibition) STAT2?inhibits x1";
+  q1 is "Deactivation rate STAT1 (1/day)";
+  q2 is "Deactivation rate STAT6 (1/day)";
+  S1 is "IFNgamma input signal strength (1/day)";
+  S2 is "IL-4 input signal strength (1/day)";
+end
+
+/* Alternate parameter sets from Table 2 (not instantiated above):
+
+Theta1 (only inputs differ from Theta0):
+  S1 = 4;
+  S2 = 4;
+
+Theta2 (enhanced STAT1 self-stimulation, higher deactivation, altered inputs):
+  a1 = 15;
+  a2 = 8;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 22;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5.8;
+  q2 = 5.8;
+  S1 = 5;
+  S2 = 5;
+
+Notes:
+- All rates are per day per the paper?s parameter descriptions.
+- l1 and l2 are set to 1 in all cases, as specified.
+- Initial conditions for x1,x2 were not specified; set to 0 here but can be varied to probe different basins of attraction as in figures.
+*/

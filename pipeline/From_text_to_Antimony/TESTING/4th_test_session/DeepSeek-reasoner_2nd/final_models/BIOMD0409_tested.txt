@@ -1,0 +1,93 @@
+model *Queralt2006_Mitotic_Exit()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Net1 in cell, Net1_P in cell, Clb2 in cell, securin in cell;
+  species $Cdc20 in cell, $Cdh1 in cell, $Cdc14 in cell, $PP2A in cell, $MEN in cell;
+
+  //// Assignment Rules:
+  separase_active := separase_total - securin;
+
+  //// Rate Rules:
+  Cdc20' = k_Cdc20_synth * (1 - Cdc20) - k_Cdc20_degrad * Cdc20;
+  Cdh1' = k_Cdh1_activate * Cdc14 * (1 - Cdh1) - k_Cdh1_inactivate * Clb2 * Cdh1;
+  Cdc14' = k_Cdc14_release * Net1_P * (1 - Cdc14) + k_Cdc14_men * MEN * (1 - Cdc14) - k_Cdc14_sequester * Cdc14;
+  PP2A' = k_PP2A_basal - k_PP2A_degrad * PP2A - k_PP2A_inhibit * separase_active * PP2A;
+  MEN' = k_MEN_activate * Cdc14 * (1 - MEN) - k_MEN_inactivate * Clb2 * MEN;
+
+  //// Reactions:
+  J_securin_degrad: securin -> ; k_securin_degrad * Cdc20 * securin;
+  J_Clb2_degrad_Cdc20: Clb2 -> ; k_Clb2_degrad_Cdc20 * Cdc20 * Clb2;
+  J_Clb2_degrad_Cdh1: Clb2 -> ; k_Clb2_degrad_Cdh1 * Cdh1 * Clb2;
+  J_Net1_phosph_Cdk: Net1 -> Net1_P; k_Net1_phosph_Cdk * Clb2 * Net1;
+  J_Net1_phosph_MEN: Net1 -> Net1_P; k_Net1_phosph_MEN * MEN * Net1;
+  J_Net1_dephosph_PP2A: Net1_P -> Net1; k_Net1_dephosph_PP2A * PP2A * Net1_P;
+  J_Net1_dephosph_Cdc14: Net1_P -> Net1; k_Net1_dephosph_Cdc14 * Cdc14 * Net1_P;
+
+  //// Species initializations:
+  Net1 = 10;
+  Net1_P = 0;
+  Clb2 = 10;
+  securin = 10;
+  Cdc20 = 0;
+  Cdh1 = 0;
+  Cdc14 = 0;
+  PP2A = 10;
+  MEN = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  separase_total = 10;
+  k_securin_degrad = 0.5;
+  k_Clb2_degrad_Cdc20 = 0.3;
+  k_Clb2_degrad_Cdh1 = 0.2;
+  k_Net1_phosph_Cdk = 0.4;
+  k_Net1_phosph_MEN = 0.3;
+  k_Net1_dephosph_PP2A = 0.5;
+  k_Net1_dephosph_Cdc14 = 0.4;
+  k_Cdc20_synth = 1.0;
+  k_Cdc20_degrad = 0.2;
+  k_Cdh1_activate = 0.6;
+  k_Cdh1_inactivate = 0.4;
+  k_Cdc14_release = 0.8;
+  k_Cdc14_men = 0.5;
+  k_Cdc14_sequester = 0.3;
+  k_PP2A_basal = 0.1;
+  k_PP2A_degrad = 0.05;
+  k_PP2A_inhibit = 0.7;
+  k_MEN_activate = 0.5;
+  k_MEN_inactivate = 0.4;
+
+  //// Other declarations:
+  var separase_active;
+  const separase_total, k_securin_degrad, k_Clb2_degrad_Cdc20, k_Clb2_degrad_Cdh1, k_Net1_phosph_Cdk, k_Net1_phosph_MEN, k_Net1_dephosph_PP2A, k_Net1_dephosph_Cdc14, k_Cdc20_synth, k_Cdc20_degrad, k_Cdh1_activate, k_Cdh1_inactivate, k_Cdc14_release, k_Cdc14_men, k_Cdc14_sequester, k_PP2A_basal, k_PP2A_degrad, k_PP2A_inhibit, k_MEN_activate, k_MEN_inactivate;
+
+  //// Display Names:
+  cell is "cell";
+  Net1 is "Net1";
+  Net1_P is "Phosphorylated Net1";
+  Clb2 is "Clb2";
+  securin is "securin";
+  Cdc20 is "Cdc20";
+  Cdh1 is "Cdh1";
+  Cdc14 is "Cdc14";
+  PP2A is "PP2A";
+  MEN is "MEN";
+  separase_active is "Active separase";
+  J_securin_degrad is "Securin degradation";
+  J_Clb2_degrad_Cdc20 is "Clb2 degradation by Cdc20";
+  J_Clb2_degrad_Cdh1 is "Clb2 degradation by Cdh1";
+  J_Net1_phosph_Cdk is "Net1 phosphorylation by Cdk";
+  J_Net1_phosph_MEN is "Net1 phosphorylation by MEN";
+  J_Net1_dephosph_PP2A is "Net1 dephosphorylation by PP2A";
+  J_Net1_dephosph_Cdc14 is "Net1 dephosphorylation by Cdc14";
+
+end
+
+/* 
+Note: This model is based on the mitotic exit network described in Queralt et al. 2006. 
+The parameters and initial conditions are chosen to qualitatively match the behavior in Figure 7B. 
+For accurate simulation, parameter values may need adjustment based on experimental data.
+*/

@@ -1,0 +1,36 @@
+model *Greene2019_ResistanceModel()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species $S in tumor, $R in tumor;
+
+  //// Assignment Rules:
+  u := piecewise(u_on, time >= t_d, 0);  # Treatment control function
+
+  //// Rate Rules:
+  S' = (1 - (S + R))*S - (epsilon + alpha*u)*S - d*u*S;
+  R' = p_r*(1 - (S + R))*R + (epsilon + alpha*u)*S;
+
+  //// Species initializations:
+  S = S0;
+  R = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  epsilon = 1e-6;
+  alpha = 0;
+  d = 1;
+  p_r = 0.2;
+  u_on = 1.5;
+  t_d = 0;
+  S0 = 0.01;
+  V_d = 0.1;
+  V_c = 0.9;
+
+  //// Other declarations:
+  var u;
+  const tumor, epsilon, alpha, d, p_r, u_on, t_d, S0, V_d, V_c;
+
+end

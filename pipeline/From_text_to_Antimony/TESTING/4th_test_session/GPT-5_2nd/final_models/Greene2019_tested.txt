@@ -1,0 +1,74 @@
+model *Greene2019_InducedResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species $S in tumor, $R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;                                  
+  cycle := dt_on + dt_off;                     
+  u := piecewise(0, treat_on == 0, U_on, phase < dt_on, 0);
+
+  //// Rate Rules:
+  S' = (1 - (S + R))*S - (epsilon + alpha*u)*S - d*u*S + gamma_*R;
+  R' = pr*(1 - (S + R))*R + (epsilon + alpha*u)*S - d_R*u*R - gamma_*R;
+  phase' = piecewise(0, treat_on == 0, 1);     
+
+  //// Events:
+  E_start:  at (V >= Vd) : treat_on = 1;                           
+  E_cycle:  at ((treat_on == 1) && (phase >= cycle)) : phase = 0;   
+  E_fail:   at ((treat_on == 1) && (V >= Vc)) : failure = 1;        
+
+  //// Species initializations:
+  S = 0.01;     
+  R = 0;        
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  epsilon = 1e-6;    
+  alpha   = 0.01;    
+  d       = 1;       
+  pr      = 0.2;     
+
+  d_R   = 0;         
+  gamma_ = 0;        
+
+  U_on  = 1.5;       
+  dt_on  = 1;        
+  dt_off = 3;        
+  Vd     = 0.1;      
+  Vc     = 0.9;      
+
+  phase    = 0;      
+  treat_on = 0;      
+  failure  = 0;      
+
+  //// Other declarations:
+  var V, u, cycle, phase, treat_on, failure;
+  const tumor, epsilon, alpha, d, pr, d_R, gamma_, U_on, dt_on, dt_off, Vd, Vc;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  tumor   is "Tumor compartment (nondimensional volume = 1)";
+  S       is "Drug-sensitive tumor subpopulation";
+  R       is "Drug-resistant tumor subpopulation";
+  V       is "Total tumor volume (S + R)";
+  u       is "Effective drug level";
+  d       is "Cytotoxic effect on sensitive cells";
+  d_R     is "Cytotoxic effect on resistant cells";
+  epsilon is "Spontaneous resistance acquisition rate";
+  alpha   is "Drug-induced resistance acquisition rate";
+  pr      is "Resistant growth fraction (relative to sensitive)";
+  gamma_  is "Re-sensitization rate (R -> S)";
+  U_on    is "Dose level during treatment on-window";
+  dt_on   is "Duration of treatment on-window";
+  dt_off  is "Duration of treatment off-window";
+  Vd      is "Detection threshold (start therapy when V >= Vd)";
+  Vc      is "Failure threshold (mark failure when V >= Vc)";
+  phase   is "Cycle phase timer";
+  treat_on is "Therapy active flag";
+  failure is "Treatment failure flag";
+end

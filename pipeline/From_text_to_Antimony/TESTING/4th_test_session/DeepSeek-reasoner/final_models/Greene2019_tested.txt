@@ -1,0 +1,54 @@
+model Greene2019_ResistanceModel()
+
+  //// Compartments and Species:
+  compartment Tumor;
+  species S in Tumor, R in Tumor;
+
+  //// Assignment Rules:
+  u := piecewise(0, time < t_d, u_constant, time >= t_d);
+  V := S + R;
+
+  //// Rate Rules:
+  S' = (1 - (S + R))*S - (epsilon + alpha*u)*S - d*u*S;
+  R' = p_r*(1 - (S + R))*R + (epsilon + alpha*u)*S;
+
+  //// Species initializations:
+  S = 0.01;
+  R = 0;
+
+  //// Compartment initializations:
+  Tumor = 1;
+
+  //// Variable initializations:
+  epsilon = 1e-6;
+  alpha = 0;
+  d = 1;
+  p_r = 0.2;
+  u_constant = 1.5;
+  t_d = 0;
+  V_c = 0.9;
+
+  //// Other declarations:
+  const Tumor, epsilon, d, p_r, u_constant, t_d, V_c, alpha;
+  var u, V;
+
+  //// Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = dimensionless;
+  unit substance = dimensionless;
+
+  //// Display Names:
+  Tumor is "Tumor compartment";
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  u is "Drug concentration";
+  V is "Total tumor volume";
+  epsilon is "Background mutation rate";
+  alpha is "Induction rate";
+  d is "Drug cytotoxicity";
+  p_r is "Resistant cell growth fraction";
+  u_constant is "Constant therapy dose";
+  t_d is "Detection time";
+  V_c is "Critical tumor volume";
+
+end

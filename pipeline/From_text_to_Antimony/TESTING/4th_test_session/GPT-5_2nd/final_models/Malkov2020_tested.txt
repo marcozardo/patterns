@@ -1,0 +1,114 @@
+model *Malkov2020_SEIRS_Reinfection()
+
+  //// Compartments and Species:
+  compartment pop;
+  species S in pop, E in pop, I in pop, R in pop;
+  species Sp in pop, Ss in pop, Ep in pop, Es in pop, Ip in pop, Is in pop;
+
+  //// Assignment Rules:
+  Rtilde := 0.5*(Rtilde1 + Rtilde2);
+  beta := gamma_*Rtilde;
+  Beta_s := Beta_p/2;
+  sigma_s := sigma_p;
+  gamma_s := 2*gamma_p;
+
+  //// Rate Rules:
+  Rtilde1' = -eta1*(Rtilde1 - R1_star);
+  Rtilde2' = -eta2*(Rtilde2 - R2_star);
+
+  //// Reactions:
+  J_inf_base:  S + I -> E + I; g_base*(beta*S*I/N);
+  J_prog_base: E -> I;         g_base*(sigma*E);
+  J_rec_base:  I -> R;         g_base*(gamma_*I);
+  J_wane_base: R -> S;         g_base*(omega*R);
+
+  J_inf_p: Sp -> Ep; g_mild*((Beta_p*Ip + Beta_s*Is)*(Sp/N));
+  J_inf_s: Ss -> Es; g_mild*((Beta_p*Ip + Beta_s*Is)*(Ss/N));
+  J_prog_p: Ep -> Ip; g_mild*(sigma_p*Ep);
+  J_prog_s: Es -> Is; g_mild*(sigma_s*Es);
+  J_rec_p:  Ip -> R;  g_mild*(gamma_p*Ip);
+  J_rec_s:  Is -> R;  g_mild*(gamma_s*Is);
+  J_wane_m: R  -> Ss; g_mild*(omega*R);
+
+  //// Events:
+  E_reinf_base: at ((time >= t_star) && (g_event > 0) && (g_base > 0)): S = S + R, R = 0;
+  E_reinf_mild: at ((time >= t_star) && (g_event > 0) && (g_mild > 0)): Ss = Ss + R, R = 0;
+
+  //// Species initializations:
+  I = 1/1000;
+  E = 43.75*I;
+  R = 0;
+  S = N - E - I - R;
+
+  Ip = 1/1000;
+  Ep = 43.75*Ip;
+  Is = 0;
+  Es = 0;
+  Ss = 0;
+  Sp = N - (Ip + Ep + Is + Es + R);
+
+  //// Compartment initializations:
+  pop = 1;
+
+  //// Variable initializations:
+  N = 1;
+  sigma = 1/5.2;
+  gamma_ = 1/18;
+  omega = 0;
+
+  eta1 = 1/20;
+  eta2 = 1/20;
+  R1_star = 1.6;
+  R2_star = 1.6;
+  R1_0 = 3;
+  R2_0 = 3;
+  Rtilde1 = R1_0;
+  Rtilde2 = R2_0;
+
+  Beta_p = 1/6;
+  sigma_p = 1/5.2;
+  gamma_p = 1/18;
+
+  g_base = 1;
+  g_mild = 0;
+  g_event = 0;
+  t_star = 120;
+
+  //// Other declarations:
+  var Rtilde1, Rtilde2, Rtilde, beta, Beta_s, sigma_s, gamma_s;
+  const pop, N, sigma, gamma_, omega, eta1, eta2, R1_star, R2_star, R1_0, R2_0, Beta_p, sigma_p, gamma_p, g_base, g_mild, g_event, t_star;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  pop is "Population (normalized volume)";
+  N is "Total population (normalized to 1)";
+  S is "Susceptible (base SEIRS)";
+  E is "Exposed (base SEIRS)";
+  I is "Infectious (base SEIRS)";
+  R is "Resistant/Recovered";
+  Sp is "Primary-susceptible (never infected)";
+  Ss is "Secondary-susceptible (after recovery)";
+  Ep is "Primary-exposed";
+  Es is "Secondary-exposed";
+  Ip is "Primary-infected";
+  Is is "Secondary-infected";
+  beta is "Transmission rate (base: gamma * Rtilde)";
+  Rtilde is "Effective reproduction number";
+  Rtilde1 is "Mitigation component 1 of Rtilde";
+  Rtilde2 is "Mitigation component 2 of Rtilde";
+  J_inf_base is "Primary infection (base SEIRS)";
+  J_prog_base is "Latent progression (base SEIRS)";
+  J_rec_base is "Recovery (base SEIRS)";
+  J_wane_base is "Waning immunity (base SEIRS)";
+  J_inf_p is "Infection of primary-susceptible (mild reinfection model)";
+  J_inf_s is "Infection of secondary-susceptible (mild reinfection model)";
+  J_prog_p is "Progression Ep->Ip";
+  J_prog_s is "Progression Es->Is";
+  J_rec_p is "Recovery of primary-infected";
+  J_rec_s is "Recovery of secondary-infected";
+  J_wane_m is "Waning immunity to secondary-susceptible";
+  E_reinf_base is "One-time reinfection event (base)";
+  E_reinf_mild is "One-time reinfection event (mild)";
+
+end

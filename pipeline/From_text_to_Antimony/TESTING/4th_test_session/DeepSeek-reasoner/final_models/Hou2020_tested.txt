@@ -1,0 +1,48 @@
+model *SEIR_COVID19_Wuhan()
+
+  //// Compartments and Species:
+  compartment Population;
+  species $S in Population, $E in Population, $I in Population, $R in Population;
+
+  //// Rate Rules:
+  S' = -r1*beta1*I*S/N - r2*beta2*E*S/N;
+  E' = r1*beta1*I*S/N - sigma*E + r2*beta2*E*S/N;
+  I' = sigma*E - gamma_*I;
+  R' = gamma_*I;
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  Population = 1;
+
+  //// Variable initializations:
+  r1 = 6;
+  r2 = 18;
+  beta1 = 0.4;
+  beta2 = 0.2;
+  sigma = 0.14;
+  gamma_ = 0.048;
+  N = 11081000;
+
+  //// Other declarations:
+  const r1, r2, beta1, beta2, sigma, gamma_, N;
+
+  //// Display Names:
+  S is "Susceptible";
+  E is "Exposed (Latent)";
+  I is "Infectious";
+  R is "Recovered";
+  Population is "Wuhan Population";
+  r1 is "Contact rate of infected individuals";
+  r2 is "Contact rate of latent individuals";
+  beta1 is "Infection rate from infected";
+  beta2 is "Infection rate from exposed";
+  sigma is "Incubation rate (1/incubation period)";
+  gamma_ is "Recovery rate (1/duration of disease)";
+  N is "Total population";
+
+end

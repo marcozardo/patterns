@@ -1,0 +1,85 @@
+/* Domain: population-level (tumor ecology/oncology) 
+Greene, Gevertz, Sontag (2019) model of spontaneous and drug-induced resistance.
+Nondimensionalized two-compartment tumor model with control input u(t):
+dS/dt = (1 - (S+R)) S - (epsilon + alpha*u) S - d*u*S
+dR/dt = pr*(1 - (S+R)) R + (epsilon + alpha*u) S
+Assumptions used here: nonreversible resistance (gamma = 0), no drug-induced death on R (d_R = 0).
+Therapy schedules implemented: constant (mode = 0) and pulsed (mode = 1). */
+
+model *Greene2019_InducedResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species $S in tumor, $R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;                                            // tumor volume
+  Tcycle := dt_on + dt_off;                              // pulse period
+  ts := piecewise(0, time < t_d, time - t_d);            // time since therapy start
+  w := ts - Tcycle*floor(ts/Tcycle);                     // within-cycle time
+  u_const := u_on;                                       // baseline constant dose magnitude
+  u_pulsed := piecewise(u_on, w < dt_on, 0);             // baseline pulsed profile
+  u0 := piecewise(u_const, mode <= 0.5, u_pulsed);       // choose schedule by mode
+  u := piecewise(0, therapy_on <= 0.5, u0);              // gate therapy on/off
+
+  //// Rate Rules:
+  S' = (1 - (S + R))*S - (epsilon + alpha*u)*S - d*u*S;
+  R' = pr*(1 - (S + R))*R + (epsilon + alpha*u)*S;
+
+  //// Events:
+  at(time >= t_d): therapy_on = 1;                       // begin therapy at detection
+  at(V >= V_c): therapy_on = 0, failed = 1;              // stop therapy at failure threshold
+
+  //// Species initializations:
+  S = 0.01;
+  R = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  epsilon = 1e-6;
+  alpha = 0;          // set to 1e-2 for resistance-inducing drug case in paper
+  d = 1;
+  pr = 0.2;
+  u_on = 1.5;
+  dt_on = 1;
+  dt_off = 3;
+  t_d = 0;            // therapy start time; adjust to detection time if desired
+  V_c = 0.9;
+  V_d = 0.1;
+  mode = 0;           // 0 = constant therapy, 1 = pulsed therapy
+  therapy_on = 0;
+  failed = 0;
+
+  //// Other declarations:
+  var V, Tcycle, ts, w, u_const, u_pulsed, u0, u, therapy_on, failed;
+  const tumor, epsilon, alpha, d, pr, u_on, dt_on, dt_off, t_d, V_c, V_d, mode;
+
+  //// Display Names:
+  tumor is "Well-mixed tumor compartment (nondimensional volume)";
+  S is "Sensitive (drug-susceptible) tumor subpopulation";
+  R is "Resistant tumor subpopulation";
+  V is "Total tumor volume (S + R)";
+  epsilon is "Background (spontaneous) resistance acquisition rate";
+  alpha is "Drug-induced resistance rate coefficient";
+  d is "Drug cytotoxic effect on sensitive cells (log-kill)";
+  pr is "Resistant relative growth rate (0 <= pr < 1)";
+  u is "Effective drug intensity (control input)";
+  u_on is "Dose magnitude during treatment ON";
+  dt_on is "Pulse ON duration";
+  dt_off is "Pulse OFF duration";
+  Tcycle is "Pulse period (ON + OFF)";
+  t_d is "Therapy start time (detection time)";
+  V_c is "Failure threshold volume";
+  V_d is "Detection threshold volume";
+  mode is "Therapy mode selector: 0=constant, 1=pulsed";
+  therapy_on is "Therapy gate (set by events)";
+  failed is "Failure flag (set to 1 when V >= V_c)";
+end
+
+/* Unmapped/notes:
+- Detection time t_d is defined in-text as the time when V(t) first reaches V_d; here it is a user-set parameter (default 0). 
+- The model assumes nonreversible resistance (gamma = 0) and no drug effect on R (d_R = 0), consistent with the main analysis.
+- To replicate paper scenarios: use alpha=0 (phenotype-preserving) or alpha=1e-2 (inducing); Table 1 provides example values used above.
+*/

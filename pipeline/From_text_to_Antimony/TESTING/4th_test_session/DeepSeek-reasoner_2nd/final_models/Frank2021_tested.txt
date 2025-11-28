@@ -1,0 +1,62 @@
+model *Macrophage_Polarization_Frank2021()
+
+  //// Compartments and Species:
+  compartment cell;
+  species x1 in cell, x2 in cell;
+
+  //// Assignment Rules:
+  Hplus_x1 := x1^n1 / (x1^n1 + k1^n1);
+  Hminus_x2 := p2^l2 / (p2^l2 + x2^l2);
+  Hplus_x2 := x2^n2 / (x2^n2 + k2^n2);
+  Hminus_x1 := p1^l1 / (p1^l1 + x1^l1);
+
+  //// Rate Rules:
+  x1' = (a1 * Hplus_x1 + S1) * Hminus_x2 + b1 - q1 * x1;
+  x2' = a2 * Hplus_x2 + S2 * Hminus_x1 + b2 - q2 * x2;
+
+  //// Species initializations:
+  x1 = 0;
+  x2 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;
+  S2 = 3.75;
+
+  //// Other declarations:
+  const a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+  unit concentration = 1 dimensionless;
+
+  //// Display Names:
+  cell is "Macrophage";
+  x1 is "Activated STAT1";
+  x2 is "Activated STAT6";
+  S1 is "IFN? signal";
+  S2 is "IL-4 signal";
+  a1 is "STAT1 self-stimulation strength";
+  a2 is "STAT6 self-stimulation strength";
+  b1 is "STAT1 basal activation";
+  b2 is "STAT6 basal activation";
+  q1 is "STAT1 deactivation rate";
+  q2 is "STAT6 deactivation rate";
+
+end

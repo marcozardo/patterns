@@ -1,0 +1,138 @@
+model *IkB_NFkB_Module()
+
+  // Molecular cell-signaling domain: NF-kB / IkB negative-feedback module with IkB?, IkB?, IkB? isoforms, IKK-driven degradation, cytoplasm-nucleus shuttling, and NF-kB?driven IkB synthesis.
+
+  //// Compartments and Species:
+  compartment cyt, nuc;
+  species NFkB_c in cyt, NFkB_n in nuc;
+  species IkBa in cyt, IkBb in cyt, IkBe in cyt;
+  species C_a in cyt, C_b in cyt, C_e in cyt;
+
+  //// Reactions:
+  # IkB? binding/unbinding with cytoplasmic NF-?B
+  Rbind_a:  NFkB_c + IkBa -> C_a; konA*NFkB_c*IkBa;
+  Runbind_a: C_a => NFkB_c + IkBa; koffA*C_a;
+
+  # IkB? binding/unbinding
+  Rbind_b:  NFkB_c + IkBb -> C_b; konB*NFkB_c*IkBb;
+  Runbind_b: C_b => NFkB_c + IkBb; koffB*C_b;
+
+  # IkB? binding/unbinding
+  Rbind_e:  NFkB_c + IkBe -> C_e; konE*NFkB_c*IkBe;
+  Runbind_e: C_e => NFkB_c + IkBe; koffE*C_e;
+
+  # IKK-driven degradation of free IkB (stimulus-dependent)
+  Rdeg_free_a: IkBa => ; kdegA_free*IKKact*IkBa;
+  Rdeg_free_b: IkBb => ; kdegB_free*IKKact*IkBb;
+  Rdeg_free_e: IkBe => ; kdegE_free*IKKact*IkBe;
+
+  # IKK-driven degradation of complexed IkB, releasing NF-?B
+  Rdeg_cplx_a: C_a => NFkB_c; kdegA_cplx*IKKact*C_a;
+  Rdeg_cplx_b: C_b => NFkB_c; kdegB_cplx*IKKact*C_b;
+  Rdeg_cplx_e: C_e => NFkB_c; kdegE_cplx*IKKact*C_e;
+
+  # Basal (IKK-independent) IkB turnover
+  Rbasal_a: IkBa => ; kbasalA*IkBa;
+  Rbasal_b: IkBb => ; kbasalB*IkBb;
+  Rbasal_e: IkBe => ; kbasalE*IkBe;
+
+  # NF-?B?dependent synthesis of IkB isoforms (autoregulation, ? strongest)
+  Rsyn_a:  => IkBa; ksynthA*NFkB_n;
+  Rsyn_b:  => IkBb; ksynthB*NFkB_n;
+  Rsyn_e:  => IkBe; ksynthE*NFkB_n;
+
+  # NF-?B nucleo-cytoplasmic shuttling (free NF-?B only)
+  Rimport:  NFkB_c -> NFkB_n; k_in*NFkB_c;
+  Rexport:  NFkB_n -> NFkB_c; k_out*NFkB_n;
+
+  //// Events:
+  Ev_on:  at (time >= ton):  IKKact = IKK_on;
+  Ev_off: at (time >= toff): IKKact = IKK_base;
+
+  //// Species initializations:
+  NFkB_c = 1;
+  NFkB_n = 0;
+  IkBa = 2;
+  IkBb = 2;
+  IkBe = 2;
+  C_a = 0;
+  C_b = 0;
+  C_e = 0;
+
+  //// Compartment initializations:
+  cyt = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  # Binding/unbinding
+  konA = 1;
+  koffA = 0.1;
+  konB = 0.8;
+  koffB = 0.1;
+  konE = 0.8;
+  koffE = 0.1;
+
+  # IKK-dependent degradation (free and complexed)
+  kdegA_free = 0.02;
+  kdegA_cplx = 0.05;
+  kdegB_free = 0.01;
+  kdegB_cplx = 0.02;
+  kdegE_free = 0.01;
+  kdegE_cplx = 0.02;
+
+  # Basal degradation
+  kbasalA = 0.001;
+  kbasalB = 0.001;
+  kbasalE = 0.001;
+
+  # NF-?B?driven IkB synthesis (? strongest, ?/? slower)
+  ksynthA = 0.5;
+  ksynthB = 0.1;
+  ksynthE = 0.1;
+
+  # NF-?B shuttling
+  k_in = 0.5;
+  k_out = 0.1;
+
+  # Stimulus/IKK control (TNF pulse via IKK activation)
+  ton = 0;        // minutes
+  toff = 60;      // minutes; set for pulse duration; increase for persistent stimulation
+  IKK_on = 1;
+  IKK_base = 0;
+  IKKact = IKK_base;
+
+  //// Other declarations:
+  const cyt, nuc;
+  var IKKact;
+  const konA, koffA, konB, koffB, konE, koffE;
+  const kdegA_free, kdegA_cplx, kdegB_free, kdegB_cplx, kdegE_free, kdegE_cplx;
+  const kbasalA, kbasalB, kbasalE;
+  const ksynthA, ksynthB, ksynthE;
+  const k_in, k_out;
+  const ton, toff, IKK_on, IKK_base;
+
+  //// Display Names:
+  cyt is "Cytoplasm";
+  nuc is "Nucleus";
+  NFkB_c is "NF-kB (cytoplasmic, free)";
+  NFkB_n is "NF-kB (nuclear)";
+  IkBa is "IkB-alpha (cytoplasmic)";
+  IkBb is "IkB-beta (cytoplasmic)";
+  IkBe is "IkB-epsilon (cytoplasmic)";
+  C_a is "NF-kB:IkB-alpha complex";
+  C_b is "NF-kB:IkB-beta complex";
+  C_e is "NF-kB:IkB-epsilon complex";
+  IKKact is "Active IKK (stimulus)";
+  Rsyn_a is "NF-kB-induced IkB-alpha synthesis";
+  Rsyn_b is "NF-kB-induced IkB-beta synthesis";
+  Rsyn_e is "NF-kB-induced IkB-epsilon synthesis";
+  Rimport is "NF-kB nuclear import";
+  Rexport is "NF-kB nuclear export";
+end
+
+/* Unmapped or simplified elements from the source text (not explicitly parameterized or structurally specified):
+- Detailed ODE formulation and parameter values for: mRNA states, distinct free vs. NF-kB?bound IkB stabilities, tertiary IKK?IkB?NF-kB complexes, and explicit transport rates for each component.
+- Distinct kinetics for IkB? and IkB? slower IKK responsiveness are represented here by lower IKK-dependent degradation and synthesis rates but not by separate transport terms.
+- Explicit modeling of promoter thresholding and ?above-threshold? NF-kB_n durations (used in the paper?s analysis) is not included; this can be postprocessed from NFkB_n.
+- Genotype-specific (single-IkB isoform) knockout configurations and parameter sets are not included; they can be emulated by setting the absent isoform?s ksynthX = 0 and initial amounts = 0.
+- Exact time courses for various TNF pulse durations can be emulated by adjusting toff (minutes). For persistent stimulation, set toff to a large time beyond the simulation window. */

@@ -1,0 +1,130 @@
+model *Hoffmann2002_NFkB_Signaling()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species $IKK in cytoplasm, NFkB_cyto in cytoplasm, NFkB_nuc in nucleus;
+  species IkBa_cyto in cytoplasm, IkBb_cyto in cytoplasm, IkBe_cyto in cytoplasm;
+  species IkBa_nuc in nucleus, IkBb_nuc in nucleus, IkBe_nuc in nucleus;
+  species NFkB_IkBa in cytoplasm, NFkB_IkBb in cytoplasm, NFkB_IkBe in cytoplasm;
+  species $TNF in cytoplasm;
+  species IP10_mRNA in nucleus, RANTES_mRNA in nucleus;
+
+  //// Assignment Rules:
+  TNF_stimulus := piecewise(1, (time >= stim_start) && (time <= stim_end), 0);
+  IKK_activity := k_IKK_activation * TNF_stimulus;
+  IkBa_synthesis_rate := k_IkBa_synth * (1 + V_max_IkBa * NFkB_nuc^h_IkBa / (K_m_IkBa^h_IkBa + NFkB_nuc^h_IkBa));
+  IkBb_synthesis_rate := k_IkBb_synth * (1 + V_max_IkBb * NFkB_nuc^h_IkBb / (K_m_IkBb^h_IkBb + NFkB_nuc^h_IkBb));
+  IkBe_synthesis_rate := k_IkBe_synth * (1 + V_max_IkBe * NFkB_nuc^h_IkBe / (K_m_IkBe^h_IkBe + NFkB_nuc^h_IkBe));
+  IP10_expression := k_IP10_synth * NFkB_nuc / (K_IP10 + NFkB_nuc);
+  RANTES_expression := k_RANTES_synth * NFkB_nuc^h_RANTES / (K_RANTES^h_RANTES + NFkB_nuc^h_RANTES);
+
+  //// Rate Rules:
+  IkBa_cyto' = IkBa_synthesis_rate - k_assoc_IkBa * NFkB_cyto * IkBa_cyto + k_dissoc_IkBa * NFkB_IkBa - k_deg_IkBa * IKK_activity * IkBa_cyto;
+  IkBb_cyto' = IkBb_synthesis_rate - k_assoc_IkBb * NFkB_cyto * IkBb_cyto + k_dissoc_IkBb * NFkB_IkBb - k_deg_IkBb * IKK_activity * IkBb_cyto;
+  IkBe_cyto' = IkBe_synthesis_rate - k_assoc_IkBe * NFkB_cyto * IkBe_cyto + k_dissoc_IkBe * NFkB_IkBe - k_deg_IkBe * IKK_activity * IkBe_cyto;
+  NFkB_IkBa' = k_assoc_IkBa * NFkB_cyto * IkBa_cyto - k_dissoc_IkBa * NFkB_IkBa - k_deg_IkBa * IKK_activity * NFkB_IkBa;
+  NFkB_IkBb' = k_assoc_IkBb * NFkB_cyto * IkBb_cyto - k_dissoc_IkBb * NFkB_IkBb - k_deg_IkBb * IKK_activity * NFkB_IkBb;
+  NFkB_IkBe' = k_assoc_IkBe * NFkB_cyto * IkBe_cyto - k_dissoc_IkBe * NFkB_IkBe - k_deg_IkBe * IKK_activity * NFkB_IkBe;
+  NFkB_cyto' = k_export * NFkB_nuc - k_import * NFkB_cyto + k_dissoc_IkBa * NFkB_IkBa + k_dissoc_IkBb * NFkB_IkBb + k_dissoc_IkBe * NFkB_IkBe - k_assoc_IkBa * NFkB_cyto * IkBa_cyto - k_assoc_IkBb * NFkB_cyto * IkBb_cyto - k_assoc_IkBe * NFkB_cyto * IkBe_cyto;
+  NFkB_nuc' = k_import * NFkB_cyto - k_export * NFkB_nuc;
+  IP10_mRNA' = IP10_expression - k_deg_mRNA * IP10_mRNA;
+  RANTES_mRNA' = RANTES_expression - k_deg_mRNA * RANTES_mRNA;
+
+  //// Reactions:
+  // Degradation reactions are handled in rate rules
+
+  //// Events:
+  TNF_pulse: at(time >= stim_start): TNF = 1;
+  TNF_off: at(time >= stim_end): TNF = 0;
+
+  //// Species initializations:
+  NFkB_cyto = 100;
+  NFkB_nuc = 0;
+  IkBa_cyto = 50;
+  IkBb_cyto = 30;
+  IkBe_cyto = 20;
+  NFkB_IkBa = 200;
+  NFkB_IkBb = 100;
+  NFkB_IkBe = 80;
+  IP10_mRNA = 0;
+  RANTES_mRNA = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  // Stimulation parameters
+  stim_start = 0;
+  stim_end = 3600;  // 1 hour default stimulation
+  
+  // IKK activation parameters
+  k_IKK_activation = 0.1;
+  
+  // I?B synthesis parameters
+  k_IkBa_synth = 0.05;
+  k_IkBb_synth = 0.02;
+  k_IkBe_synth = 0.015;
+  V_max_IkBa = 5;
+  V_max_IkBb = 3;
+  V_max_IkBe = 2;
+  K_m_IkBa = 20;
+  K_m_IkBb = 25;
+  K_m_IkBe = 30;
+  h_IkBa = 2;
+  h_IkBb = 2;
+  h_IkBe = 2;
+  
+  // Association/dissociation parameters
+  k_assoc_IkBa = 0.01;
+  k_assoc_IkBb = 0.008;
+  k_assoc_IkBe = 0.006;
+  k_dissoc_IkBa = 0.001;
+  k_dissoc_IkBb = 0.0008;
+  k_dissoc_IkBe = 0.0006;
+  
+  // Degradation parameters
+  k_deg_IkBa = 0.1;
+  k_deg_IkBb = 0.08;
+  k_deg_IkBe = 0.06;
+  
+  // Transport parameters
+  k_import = 0.05;
+  k_export = 0.02;
+  
+  // Gene expression parameters
+  k_IP10_synth = 0.1;
+  k_RANTES_synth = 0.05;
+  K_IP10 = 10;
+  K_RANTES = 30;
+  h_RANTES = 3;
+  k_deg_mRNA = 0.01;
+
+  //// Other declarations:
+  var IkBa_synthesis_rate, IkBb_synthesis_rate, IkBe_synthesis_rate;
+  var IP10_expression, RANTES_expression, TNF_stimulus, IKK_activity;
+  const cytoplasm, nucleus, k_IKK_activation, k_assoc_IkBa, k_assoc_IkBb, k_assoc_IkBe;
+  const k_dissoc_IkBa, k_dissoc_IkBb, k_dissoc_IkBe, k_deg_IkBa, k_deg_IkBb, k_deg_IkBe;
+  const k_import, k_export, k_IkBa_synth, k_IkBb_synth, k_IkBe_synth;
+  const V_max_IkBa, V_max_IkBb, V_max_IkBe, K_m_IkBa, K_m_IkBb, K_m_IkBe;
+  const h_IkBa, h_IkBb, h_IkBe, k_IP10_synth, k_RANTES_synth, K_IP10, K_RANTES;
+  const h_RANTES, k_deg_mRNA;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration_unit = 1e-9 mole / liter;
+
+  //// Display Names:
+  time_unit is "minute";
+  concentration_unit is "nM";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  NFkB_nuc is "Nuclear NF-kB";
+  IkBa_cyto is "Cytoplasmic IkBa";
+  IkBb_cyto is "Cytoplasmic IkBb";
+  IkBe_cyto is "Cytoplasmic IkBe";
+  IP10_mRNA is "IP-10 mRNA";
+  RANTES_mRNA is "RANTES mRNA";
+  TNF_stimulus is "TNF-alpha Stimulus";
+
+end
