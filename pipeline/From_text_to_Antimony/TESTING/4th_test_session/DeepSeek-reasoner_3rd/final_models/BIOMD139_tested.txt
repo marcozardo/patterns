@@ -1,0 +1,117 @@
+model *IkappaB_NFkB_Signaling_Module()
+
+//// Compartments and Species:
+compartment cytoplasm, nucleus;
+species NFkB_c in cytoplasm, NFkB_n in nucleus;
+species IkBa_c in cytoplasm, IkBb_c in cytoplasm, IkBe_c in cytoplasm;
+species IkBa_NFkB_c in cytoplasm, IkBb_NFkB_c in cytoplasm, IkBe_NFkB_c in cytoplasm;
+species $IKK in cytoplasm;
+
+//// Assignment Rules:
+syn_rate_a := k_syn_a * NFkB_n;
+syn_rate_b := k_syn_b * NFkB_n;
+syn_rate_e := k_syn_e * NFkB_n;
+
+//// Rate Rules:
+// No rate rules in this model
+
+//// Reactions:
+bind_a: NFkB_c + IkBa_c -> IkBa_NFkB_c; k_bind_a * NFkB_c * IkBa_c;
+bind_b: NFkB_c + IkBb_c -> IkBb_NFkB_c; k_bind_b * NFkB_c * IkBb_c;
+bind_e: NFkB_c + IkBe_c -> IkBe_NFkB_c; k_bind_e * NFkB_c * IkBe_c;
+deg_a_c: IkBa_NFkB_c -> NFkB_c; k_deg_a * IKK * IkBa_NFkB_c;
+deg_b_c: IkBb_NFkB_c -> NFkB_c; k_deg_b * IKK * IkBb_NFkB_c;
+deg_e_c: IkBe_NFkB_c -> NFkB_c; k_deg_e * IKK * IkBe_NFkB_c;
+deg_a_f: IkBa_c -> ; k_deg_a * IKK * IkBa_c;
+deg_b_f: IkBb_c -> ; k_deg_b * IKK * IkBb_c;
+deg_e_f: IkBe_c -> ; k_deg_e * IKK * IkBe_c;
+syn_a: -> IkBa_c; syn_rate_a;
+syn_b: -> IkBb_c; syn_rate_b;
+syn_e: -> IkBe_c; syn_rate_e;
+trans_in: NFkB_c -> NFkB_n; k_trans_in * NFkB_c;
+trans_out: NFkB_n -> NFkB_c; k_trans_out * NFkB_n;
+
+//// Events:
+// Example event for transient stimulation: 15-minute pulse
+// Uncomment and adjust as needed
+// at time >= 0: IKK = 1;
+// at time >= 15: IKK = 0;
+
+//// Species initializations:
+NFkB_c = 0;
+NFkB_n = 0;
+IkBa_c = 10;
+IkBb_c = 10;
+IkBe_c = 10;
+IkBa_NFkB_c = 50;
+IkBb_NFkB_c = 30;
+IkBe_NFkB_c = 20;
+IKK = 0;
+
+//// Compartment initializations:
+cytoplasm = 1;
+nucleus = 1;
+
+//// Variable initializations:
+k_bind_a = 1;
+k_bind_b = 1;
+k_bind_e = 1;
+k_deg_a = 0.1;
+k_deg_b = 0.1;
+k_deg_e = 0.1;
+k_trans_in = 0.1;
+k_trans_out = 0.1;
+k_syn_a = 0.1;
+k_syn_b = 0.1;
+k_syn_e = 0.1;
+
+//// Other declarations:
+var IKK, syn_rate_a, syn_rate_b, syn_rate_e;
+const k_bind_a, k_bind_b, k_bind_e, k_deg_a, k_deg_b, k_deg_e, k_trans_in, k_trans_out, k_syn_a, k_syn_b, k_syn_e;
+
+//// Unit definitions:
+unit time_unit = 60 second;
+unit concentration_unit = 1e-9 mole;
+
+//// Display Names:
+cytoplasm is "Cytoplasm";
+nucleus is "Nucleus";
+NFkB_c is "NF-?B in cytoplasm";
+NFkB_n is "NF-?B in nucleus";
+IkBa_c is "I?B? in cytoplasm";
+IkBb_c is "I?B? in cytoplasm";
+IkBe_c is "I?B? in cytoplasm";
+IkBa_NFkB_c is "I?B?:NF-?B complex in cytoplasm";
+IkBb_NFkB_c is "I?B?:NF-?B complex in cytoplasm";
+IkBe_NFkB_c is "I?B?:NF-?B complex in cytoplasm";
+IKK is "IKK activity";
+syn_rate_a is "Synthesis rate for I?B?";
+syn_rate_b is "Synthesis rate for I?B?";
+syn_rate_e is "Synthesis rate for I?B?";
+k_bind_a is "Binding rate constant for I?B?";
+k_bind_b is "Binding rate constant for I?B?";
+k_bind_e is "Binding rate constant for I?B?";
+k_deg_a is "Degradation rate constant for I?B?";
+k_deg_b is "Degradation rate constant for I?B?";
+k_deg_e is "Degradation rate constant for I?B?";
+k_trans_in is "Translocation rate into nucleus";
+k_trans_out is "Translocation rate out of nucleus";
+k_syn_a is "Synthesis rate constant for I?B?";
+k_syn_b is "Synthesis rate constant for I?B?";
+k_syn_e is "Synthesis rate constant for I?B?";
+bind_a is "Binding of I?B? to NF-?B";
+bind_b is "Binding of I?B? to NF-?B";
+bind_e is "Binding of I?B? to NF-?B";
+deg_a_c is "Degradation of I?B?:NF-?B complex";
+deg_b_c is "Degradation of I?B?:NF-?B complex";
+deg_e_c is "Degradation of I?B?:NF-?B complex";
+deg_a_f is "Degradation of free I?B?";
+deg_b_f is "Degradation of free I?B?";
+deg_e_f is "Degradation of free I?B?";
+syn_a is "Synthesis of I?B?";
+syn_b is "Synthesis of I?B?";
+syn_e is "Synthesis of I?B?";
+trans_in is "Translocation of NF-?B into nucleus";
+trans_out is "Translocation of NF-?B out of nucleus";
+
+end

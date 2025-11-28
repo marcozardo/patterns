@@ -1,0 +1,132 @@
+model *Queralt2006_MitoticExit_Minimal()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Net1 in cell, Net1_P in cell, Cdc14_free in cell, Cdc14_bound in cell, Clb2 in cell, Securin in cell;
+
+  //// Assignment Rules:
+  Cdk := Clb2;  # proxy for Clb2-Cdk activity
+
+  //// Rate Rules:
+  MEN' = k_men_act1*Cdc14_free*(1 - MEN)/(1 + a_cdk*Cdk) + k_men_act2*(PP2A_base - PP2A)*(1 - MEN) - k_men_inh*MEN;
+  Cdh1' = k_cdh1_act*Cdc14_free*(1 - Cdh1) - k_cdh1_inh*Cdk*Cdh1;
+  PP2A' = k_pp2a_rec*(PP2A_base - PP2A) - k_pp2a_down*Separase*PP2A;
+  Separase' = k_sep_act*Cdc20*Securin - k_sep_inh*Separase;
+
+  //// Reactions:
+  # Net1 phosphorylation promotes Cdc14 release; driven by Cdk and MEN
+  R1_phos: Net1 -> Net1_P; (k_cdk_net1*Cdk*Net1) + (k_men_net1*MEN*Net1);
+  # Net1 dephosphorylation by PP2A^Cdc55 and Cdc14
+  R2_dephos: Net1_P -> Net1; (k_pp2a_net1*PP2A*Net1_P) + (k_cdc14_net1*Cdc14_free*Net1_P);
+  # Cdc14 sequestration by Net1
+  R3_bind: Net1 + Cdc14_free -> Cdc14_bound; k_bind*Net1*Cdc14_free;
+  # Cdc14 release favored by Net1 phosphorylation
+  R4_release: Cdc14_bound -> Net1 + Cdc14_free; (k_rel_base + k_rel_p*Net1_P)*Cdc14_bound;
+  # APC^Cdc20-dependent securin destruction
+  R5_sec_deg: Securin -> ; k_apc20_sec*Cdc20*Securin;
+  # Clb2 turnover: basal synthesis and APC-mediated degradation (Cdc20 early, Cdh1 late)
+  R6_clb2_syn:  => Clb2; k_syn_clb2;
+  R7_clb2_deg20: Clb2 -> ; k_apc20_clb2*Cdc20*Clb2;
+  R8_clb2_degCdh1: Clb2 -> ; k_apcCdh1_clb2*Cdh1*Clb2;
+
+  //// Events:
+  at(time >= t_induce): Cdc20 = Cdc20_on;
+
+  //// Species initializations:
+  Net1 = 0;           # all Net1 initially sequestered with Cdc14 in metaphase
+  Net1_P = 0;         # Net1 unphosphorylated at start
+  Cdc14_free = 0;     # Cdc14 sequestered in nucleolus (bound to Net1)
+  Cdc14_bound = 1;    # sequestered Cdc14-Net1 complex
+  Clb2 = 1;           # high mitotic cyclin at metaphase
+  Securin = 1;        # securin present before APC^Cdc20 activation
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  MEN = 0;            # MEN inactive in metaphase
+  Cdh1 = 0;           # APC^Cdh1 inactive
+  PP2A = 1;           # PP2A^Cdc55 active in metaphase
+  Separase = 0;       # separase inactive (sequestered by securin)
+  Cdc20 = 0;          # Cdc20 synthesis induced at t = t_induce
+
+  k_cdk_net1 = 1;
+  k_men_net1 = 1;
+  k_pp2a_net1 = 1;
+  k_cdc14_net1 = 1;
+  k_bind = 5;
+  k_rel_base = 0.01;
+  k_rel_p = 2;
+
+  k_apc20_sec = 1;
+
+  k_syn_clb2 = 0.05;
+  k_apc20_clb2 = 0.5;
+  k_apcCdh1_clb2 = 0.5;
+
+  k_men_act1 = 0.5;
+  a_cdk = 2;
+  k_men_act2 = 0.5;
+  k_men_inh = 0.1;
+
+  k_cdh1_act = 0.5;
+  k_cdh1_inh = 0.5;
+
+  PP2A_base = 1;
+  k_pp2a_rec = 0.2;
+  k_pp2a_down = 1;
+
+  k_sep_act = 1;
+  k_sep_inh = 0.1;
+
+  Cdc20_on = 1;
+  t_induce = 0;
+
+  //// Other declarations:
+  var MEN, Cdh1, PP2A, Separase, Cdc20;
+  const cell, k_cdk_net1, k_men_net1, k_pp2a_net1, k_cdc14_net1, k_bind, k_rel_base, k_rel_p, k_apc20_sec, k_syn_clb2, k_apc20_clb2, k_apcCdh1_clb2, k_men_act1, a_cdk, k_men_act2, k_men_inh, k_cdh1_act, k_cdh1_inh, PP2A_base, k_pp2a_rec, k_pp2a_down, k_sep_act, k_sep_inh, Cdc20_on, t_induce;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  cell is "Yeast cell";
+  Net1 is "Net1 (unphosphorylated)";
+  Net1_P is "Net1 (phosphorylated)";
+  Cdc14_free is "Cdc14 (released)";
+  Cdc14_bound is "Cdc14 sequestered by Net1";
+  Clb2 is "Mitotic cyclin (Clb2)";
+  Securin is "Securin (Pds1)";
+  Cdk is "Clb2-Cdk activity (proxy)";
+  MEN is "Mitotic Exit Network activity";
+  Cdh1 is "APC activator Cdh1 (active fraction)";
+  PP2A is "PP2A^Cdc55 activity";
+  Separase is "Separase (active)";
+  Cdc20 is "APC^Cdc20 activator";
+  R1_phos is "Net1 phosphorylation by Cdk and MEN";
+  R2_dephos is "Net1 dephosphorylation by PP2A and Cdc14";
+  R3_bind is "Cdc14 sequestration by Net1";
+  R4_release is "Cdc14 release stimulated by Net1 phosphorylation";
+  R5_sec_deg is "APC^Cdc20-mediated securin degradation";
+  R6_clb2_syn is "Basal Clb2 synthesis";
+  R7_clb2_deg20 is "Clb2 degradation by APC^Cdc20";
+  R8_clb2_degCdh1 is "Clb2 degradation by APC^Cdh1";
+
+end
+
+/* 
+Scientific domain: molecular/cellular systems biology (cell cycle regulation in budding yeast).
+
+Unmapped/unspecified details from the source:
+- Exact differential equations and parameter values cited as provided in Figure S6 of the paper are not available in the input, so simplified mass-action/phenomenological kinetics were used to capture:
+  (i) Cdk- and MEN-driven Net1 phosphorylation,
+  (ii) PP2A^Cdc55- and Cdc14-driven Net1 dephosphorylation,
+  (iii) Cdc14 sequestration/release by Net1 with phosphorylation-facilitated release,
+  (iv) APC^Cdc20-triggered securin degradation and separase activation,
+  (v) separase-dependent downregulation of PP2A^Cdc55,
+  (vi) MEN activation by Cdc14 and by PP2A downregulation, with inhibition by Cdk,
+  (vii) Cdh1 activation by Cdc14 and inhibition by Cdk, leading to Clb2 degradation.
+
+- Bfa1 phosphorylation and Polo/Cdc15 mechanistic details are represented implicitly via MEN activation terms but not modeled as separate species due to lack of explicit equations/parameters in the provided text.
+
+- The simulation cue ?Cdc20 synthesis is induced at time = 0? is implemented as an event setting Cdc20 to a defined level at t = 0.
+*/

@@ -1,0 +1,52 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $Sec in cell, $Sep in cell, $P in cell, $N in cell, $C14 in cell, $B in cell, $C20 in cell, $H in cell, $M in cell;
+
+  //// Rate Rules:
+  Sec' = - k1 * C20 * Sec;
+  Sep' = k2 * C20 * Sec - k3 * Sep;
+  P' = - k4 * Sep * P;
+  N' = k5 * B * (1-N) + k6 * M * (1-N) - k7 * P * N - k8 * C14 * N;
+  C14' = k9 * N - k10 * C14;
+  B' = - k11 * C20 * B - k12 * H * B;
+  C20' = k_syn_C20 - k_deg_C20 * C20;
+  H' = k15 * C14 * (1-H) - k16 * B * H;
+  M' = k17 * C14 * (1-M) - k18 * M;
+
+  //// Species initializations:
+  Sec = 1;
+  Sep = 0;
+  P = 1;
+  N = 0;
+  C14 = 0;
+  B = 1;
+  C20 = 0;
+  H = 0;
+  M = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k1 = 1.0;
+  k2 = 1.0;
+  k3 = 0.1;
+  k4 = 1.0;
+  k5 = 1.0;
+  k6 = 1.0;
+  k7 = 1.0;
+  k8 = 0.1;
+  k9 = 1.0;
+  k10 = 0.1;
+  k11 = 0.1;
+  k12 = 0.1;
+  k_syn_C20 = 1.0;
+  k_deg_C20 = 0.1;
+  k15 = 1.0;
+  k16 = 1.0;
+  k17 = 1.0;
+  k18 = 0.1;
+
+end

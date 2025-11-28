@@ -1,0 +1,123 @@
+/* Domain: Molecular cell signaling (NFkB?IkB negative-feedback module in mammalian cells)
+   Source: Hoffmann et al., Science 298:1241 (2002) and erratum (2007)
+   Scope: Coarse-grained ODE model capturing:
+     - IKK-driven IkB degradation
+     - NFkB nuclear translocation
+     - NFkB-induced transcriptional synthesis of IkB isoforms (alpha, beta, epsilon)
+     - Bimodal temporal processing (via stimulus on/off events to emulate pulses vs. persistent TNF)
+   Notes:
+     - This is a reduced, phenomenological encoding consistent with the text and figure summaries provided.
+     - Detailed multi-compartment binding/transport/ternary-complex kinetics and published parameter values are in the SOM of the original article and are not present in the provided text; see unmapped-data comment after end.
+*/
+
+model *NFkB_IkB_Module_Hoffmann2002()
+
+  //// Compartments and Species:
+  compartment Cytoplasm, Nucleus;
+  species IkBa in Cytoplasm, IkBb in Cytoplasm, IkBe in Cytoplasm, NFkB_nuc in Nucleus;
+
+  //// Assignment Rules:
+  NFkB_cyt := NFkB_tot - NFkB_nuc;                       # Cytoplasmic NFkB pool (conserved total)
+  IkB_total := IkBa + IkBb + IkBe;                       # Total cytoplasmic IkB (alpha+beta+epsilon)
+  NFkB_free := 1/(1 + K_bind*IkB_total);                 # Fraction of NFkB not sequestered by IkB (coarse-grained inhibition)
+  NFkB_induction := (NFkB_nuc^nH)/(K_act^nH + NFkB_nuc^nH);  # NFkB-dependent transcriptional activation (Hill function)
+
+  //// Rate Rules:
+  NFkB_nuc' = k_in*NFkB_cyt*NFkB_free - k_out*NFkB_nuc;                 # Nuclear NFkB import/export controlled by IkB sequestration
+  IkBa'     = s_a*NFkB_induction - (kdeg_a_basal + kdeg_a_IKK*IKK_active)*IkBa;  # Fast inducible negative feedback (IkB alpha)
+  IkBb'     = s_b*NFkB_induction - (kdeg_b_basal + kdeg_b_IKK*IKK_active)*IkBb;  # Slow damping (IkB beta)
+  IkBe'     = s_e*NFkB_induction - (kdeg_e_basal + kdeg_e_IKK*IKK_active)*IkBe;  # Slow damping (IkB epsilon)
+
+  //// Reactions:
+  # not present so omitted
+
+  //// Events:
+  at(time >= ton): IKK_active = IKK_on;
+  at(time >= toff): IKK_active = IKK_base;
+
+  //// Species initializations:
+  IkBa = 1;
+  IkBb = 1;
+  IkBe = 1;
+  NFkB_nuc = 0;
+
+  //// Compartment initializations:
+  Cytoplasm = 1;
+  Nucleus = 1;
+
+  //// Variable initializations:
+  NFkB_tot = 1;
+  K_bind = 2;
+  K_act = 0.2;
+  nH = 2;
+
+  k_in = 1;
+  k_out = 0.5;
+
+  s_a = 1.0;
+  s_b = 0.3;
+  s_e = 0.3;
+
+  kdeg_a_basal = 0.05;
+  kdeg_b_basal = 0.02;
+  kdeg_e_basal = 0.02;
+
+  kdeg_a_IKK = 0.5;
+  kdeg_b_IKK = 0.2;
+  kdeg_e_IKK = 0.2;
+
+  IKK_active = 0;
+  IKK_on = 1;
+  IKK_base = 0;
+  ton = 0;      # minutes; set to 0 for immediate stimulation
+  toff = 15;    # minutes; default 15' pulse; set large (e.g., 1e9) for persistent stimulation
+
+  //// Other declarations:
+  var NFkB_cyt, IkB_total, NFkB_free, NFkB_induction, IKK_active;
+  const Cytoplasm, Nucleus, NFkB_tot, K_bind, K_act, nH, k_in, k_out, s_a, s_b, s_e, kdeg_a_basal, kdeg_b_basal, kdeg_e_basal, kdeg_a_IKK, kdeg_b_IKK, kdeg_e_IKK, IKK_on, IKK_base, ton, toff;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;     # minute
+  unit volume_unit = liter;
+  unit substance = 1 mole;        # arbitrary; model is dimensionless-scaled
+
+  //// Display Names:
+  Cytoplasm is "Cytoplasm";
+  Nucleus is "Nucleus";
+  NFkB_nuc is "NFkB (nuclear)";
+  NFkB_cyt is "NFkB (cytoplasmic)";
+  IkBa is "IkB alpha";
+  IkBb is "IkB beta";
+  IkBe is "IkB epsilon";
+  IKK_active is "IKK activity (stimulus proxy)";
+  NFkB_induction is "NFkB-driven transcriptional drive";
+  IkB_total is "Total IkB (alpha+beta+epsilon)";
+  NFkB_free is "Fraction free NFkB";
+  k_in is "NFkB nuclear import rate";
+  k_out is "NFkB nuclear export rate";
+  s_a is "IkB alpha synthesis max";
+  s_b is "IkB beta synthesis max";
+  s_e is "IkB epsilon synthesis max";
+  kdeg_a_basal is "IkB alpha basal degradation";
+  kdeg_b_basal is "IkB beta basal degradation";
+  kdeg_e_basal is "IkB epsilon basal degradation";
+  kdeg_a_IKK is "IkB alpha IKK-mediated degradation";
+  kdeg_b_IKK is "IkB beta IKK-mediated degradation";
+  kdeg_e_IKK is "IkB epsilon IKK-mediated degradation";
+  K_bind is "Effective IkB?NFkB sequestration strength";
+  K_act is "NFkB activation half-saturation";
+  nH is "Hill coefficient for NFkB-induced transcription";
+  ton is "Stimulus ON time (min)";
+  toff is "Stimulus OFF time (min)";
+  IKK_on is "IKK level during stimulation";
+  IKK_base is "IKK level baseline";
+
+end
+
+/* Unmapped data from the provided text (not encoded to avoid speculation):
+   - Detailed mass-action network with binary/tertiary complexes (IKK?IkB, IkB?NFkB, IKK?IkB?NFkB), explicit phosphorylation, ubiquitination steps, and distinct nuclear/cytoplasmic transport rates for each isoform.
+   - Exact parameter values: ~30 parameters in the full model; subset of 17 parameters per single-isoform system; 5 transport parameters constrained by localization ratios; isoform-specific mRNA synthesis and protein stability constants; values fitted in SOM (not provided here).
+   - Genotype-specific models (IkB??/? ??/?, IkB??/? ??/?) with their fitted parameter sets.
+   - Experimental TNF dosing (10 ng/ml), exact IKK activation waveforms, and measurement calibration (EMSA quantitation).
+   - Other unrelated biology in the input (maize bd1 spikelet development; p75NTR/TrkC modulation of myelination) is outside the NFkB?IkB module scope and intentionally not modeled here.
+*/

@@ -1,0 +1,76 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M_inactive in cell, M in cell, X_inactive in cell, X in cell;
+
+  //// Reactions:
+  J_synth: => C; v_i;
+  J_deg: C => ; v_d * X * C / (K_d + C);
+  J_nonspec: C => ; k_d * C;
+  J_M_act: M_inactive -> M; (C / (K_c + C)) * V_M1 * M_inactive / (K1 + M_inactive);
+  J_M_inact: M -> M_inactive; V2 * M / (K2 + M);
+  J_X_act: X_inactive -> X; M * V_M3 * X_inactive / (K3 + X_inactive);
+  J_X_inact: X -> X_inactive; V4 * X / (K4 + X);
+
+  //// Species initializations:
+  C = 0;
+  M_inactive = 1;
+  M = 0;
+  X_inactive = 0.99;
+  X = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  v_i = 0.023;
+  v_d = 0.1;
+  K_d = 0.02;
+  k_d = 0.00333;
+  V_M1 = 0.5;
+  V2 = 0.167;
+  V_M3 = 0.2;
+  V4 = 0.1;
+  K_c = 0.3;
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  //// Other declarations:
+  const cell, v_i, v_d, K_d, k_d, V_M1, V2, V_M3, V4, K_c, K1, K2, K3, K4;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration_unit = 1e-6 mole / liter;
+
+  //// Display Names:
+  cell is "Cell";
+  C is "Cyclin";
+  M_inactive is "Inactive cdc2 kinase";
+  M is "Active cdc2 kinase";
+  X_inactive is "Inactive cyclin protease";
+  X is "Active cyclin protease";
+  J_synth is "Cyclin synthesis";
+  J_deg is "Cyclin degradation by protease";
+  J_nonspec is "Nonspecific cyclin degradation";
+  J_M_act is "cdc2 kinase activation";
+  J_M_inact is "cdc2 kinase inactivation";
+  J_X_act is "Cyclin protease activation";
+  J_X_inact is "Cyclin protease inactivation";
+  v_i is "Cyclin synthesis rate";
+  v_d is "Maximum cyclin degradation rate";
+  K_d is "Michaelis constant for cyclin degradation";
+  k_d is "Nonspecific degradation rate constant";
+  V_M1 is "Maximum rate of cdc2 kinase activation";
+  V2 is "Rate of cdc2 kinase inactivation";
+  V_M3 is "Maximum rate of cyclin protease activation";
+  V4 is "Rate of cyclin protease inactivation";
+  K_c is "Michaelis constant for cyclin activation of phosphatase";
+  K1 is "Michaelis constant for M activation";
+  K2 is "Michaelis constant for M inactivation";
+  K3 is "Michaelis constant for X activation";
+  K4 is "Michaelis constant for X inactivation";
+
+end

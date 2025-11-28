@@ -17,3 +17,6 @@ gpt-5,10,5,0.6,0.9,1.0,0.44,0.81,0.55,1.05,1.31,514e338,inputs_3,Converter + Edi
 deepSeek-reasoner,10,5,0.1,0.4,0.6,inf,0.79,0.24,0.95,0.99,514e338,inputs_3,Converter + Editor
 gemini-2.5-pro,10,5,0.3,0.4,0.8,0.07,1.33,1.07,1.0,0.6,514e338,inputs_1,Converter + Editor
 gemini-2.5-pro,10,6,0.5,0.7,0.9,0.2,0.71,0.42,0.75,0.64,514e338,inputs_2,Converter + Editor
+gemini-2.5-pro,10,7,0.4,0.8,0.8,inf,0.6,0.36,0.95,1.06,514e338,inputs_1,Converter + Editor
+gpt-5,10,6,0.7,0.9,1.0,inf,1.33,0.75,1.1,1.17,514e338,inputs_1,Converter + Editor
+deepSeek-reasoner,10,6,0.4,0.4,0.5,inf,1.23,0.58,1.1,1.04,514e338,inputs_1,Converter + Editor

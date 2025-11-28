@@ -1,0 +1,65 @@
+model *Malkov2020_COVID19_SEIRS()
+
+  //// Compartments and Species:
+  compartment Population;
+  species S in Population, E in Population, I in Population, R in Population;
+  species Rtilde1 in Population, Rtilde2 in Population;
+
+  //// Assignment Rules:
+  Rtilde := (Rtilde1 + Rtilde2)/2;
+  beta := gamma_ * Rtilde;
+
+  //// Rate Rules:
+  S' = -beta*S*I + omega*R;
+  E' = beta*S*I - sigma*E;
+  I' = sigma*E - gamma_*I;
+  R' = gamma_*I - omega*R;
+  Rtilde1' = -eta1*(Rtilde1 - R1star);
+  Rtilde2' = -eta2*(Rtilde2 - R2star);
+
+  //// Species initializations:
+  S = 1 - E - I - R;  # Derived from normalization condition
+  E = 43.75 * I;
+  I = 0.001;          # 0.1% of population initially infected
+  R = 0;
+  Rtilde1 = 3;        # Initial value for Rtilde1
+  Rtilde2 = 3;        # Initial value for Rtilde2
+
+  //// Compartment initializations:
+  Population = 1;     # Normalized population
+
+  //// Variable initializations:
+  # COVID-19 characteristics
+  sigma = 1/5.2;      # Mean incubation period of 5.2 days
+  gamma_ = 1/18;       # Mean infectious period of 18 days
+  
+  # Immunity waning rates (explored in simulations)
+  omega = 0;          # No reinfection (can be set to 1/365, 1/183, 1/120, 1/60)
+  
+  # Time-varying reproduction number parameters
+  R1star = 1.6;       # Long-run value for Rtilde1
+  R2star = 1.6;       # Long-run value for Rtilde2
+  eta1 = 0.1;         # Convergence rate for Rtilde1
+  eta2 = 0.1;         # Convergence rate for Rtilde2
+
+  //// Other declarations:
+  var S, E, I, R, Rtilde1, Rtilde2, Rtilde, beta;
+  const Population, sigma, gamma_, omega, eta1, eta2, R1star, R2star;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+  unit population_unit = 1 individual;
+
+  //// Display Names:
+  S is "Susceptible population";
+  E is "Exposed population";
+  I is "Infected population";
+  R is "Resistant/Recovered population";
+  Rtilde is "Time-varying reproduction number";
+  beta is "Transmission rate";
+  sigma is "Incubation rate";
+  gamma_ is "Recovery rate";
+  omega is "Immunity waning rate";
+  Population is "Total population";
+
+end

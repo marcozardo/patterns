@@ -1,0 +1,113 @@
+model *Dudziuk2019_Hsp70_HSR()
+
+  //// Compartments and Species:
+  compartment cell;
+  species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell, HSF3 in cell, HSE in cell, HSE_HSF3 in cell, mRNA in cell, P in cell;
+
+  //// Assignment Rules:
+  l7_T := piecewise(l7_37, T <= 37, l7_37 + (l7_41 - l7_37)*(T - 37)/(41 - 37), (T > 37) && (T <= 41), l7_41 + (l7_42 - l7_41)*(T - 41)/(42 - 41), (T > 41) && (T <= 42), l7_42 + (l7_43 - l7_42)*(T - 42)/(43 - 42), (T > 42) && (T <= 43), l7_43 + (l7_44 - l7_43)*(T - 43)/(44 - 43), (T > 43) && (T <= 44), l7_44 + (l7_45 - l7_44)*(T - 44)/(45 - 44), (T > 44) && (T <= 45), l7_45);
+  k8_T := k8_max * (1 - 1/(1 + exp(-R_k8*(T - T_k8))));
+  Vden_T := piecewise(0, T <= T0, 1 - 1/(1 + ((T - T0)/(T05 - T0))^n_v));
+  k11_T := k10 * Vden_T/(1 - Vden_T);
+
+  //// Rate Rules:
+  # (none)
+
+  //// Reactions:
+  R1_trimerization: 3 HSF => HSF3; k3*HSF^3;
+  R2_bind_DNA: HSF3 + HSE => HSE_HSF3; k7*HSE*HSF3;
+  R2_unbind_DNA: HSE_HSF3 => HSE + HSF3; l7_T*HSE_HSF3;
+  R3_transcription: HSE_HSF3 => HSE_HSF3 + mRNA; k8_T*HSE_HSF3;
+  R4_inactivation: HSP + HSF3 => HSP_HSF + 2 HSF; l3*HSP*HSF3;
+  R5_bind_sub: HSP + S => HSP_S; k1*HSP*S;
+  R5_unbind_sub: HSP_S => HSP + S; l1*HSP_S;
+  R6_bind_HSF: HSP + HSF => HSP_HSF; k2*HSP*HSF;
+  R6_unbind_HSF: HSP_HSF => HSP + HSF; l2*HSP_HSF;
+  R7_HSP_deg: HSP => ; k9*HSP;
+  R8_refolding: HSP_S => HSP + P; k10*HSP_S;
+  R9_denaturation: P => S; k11_T*P;
+  R10_translation: mRNA => mRNA + HSP; k4*mRNA;
+  R11_mRNA_deg: mRNA => ; k5*mRNA;
+  R12_const_HSP:  => HSP; k6;
+
+  //// Events:
+  # (none)
+
+  //// Species initializations:
+  HSP = 5.206e+01;
+  HSF = 1.363e-03;
+  S = 8.122e-08;
+  HSP_HSF = 1.429e-02;
+  HSP_S = 5.268e-04;
+  HSF3 = 9.082e-06;
+  HSE = 3.996e-06;
+  HSE_HSF3 = 4.484e-09;
+  mRNA = 4.946e-04;
+  P = 1.297e+03;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  T = 37;
+  k1 = 1.260e+01;
+  l1 = 3.028e-03;
+  k2 = 2.180e-01;
+  l2 = 1.162e+00;
+  k3 = 4.465e+05;
+  l3 = 2.392e+00;
+  k4 = 1.885e+01;
+  k5 = 8.709e-04;
+  k6 = 8.899e-02;
+  k7 = 5.892e+03;
+  k9 = 1.888e-03;
+  k10 = 9.813e-02;
+  k8_max = 9.607e+01;
+  R_k8 = 15.93;
+  T_k8 = 42.89;
+  T0 = 35.81;
+  T05 = 47.13;
+  n_v = 6.522;
+  l7_37 = 4.768e+01;
+  l7_41 = 1.233e+00;
+  l7_42 = 6.628e-01;
+  l7_43 = 1.639e-02;
+  l7_44 = 5.001e+01;
+  l7_45 = 8.427e+01;
+
+  //// Other declarations:
+  var l7_T, k8_T, Vden_T, k11_T;
+  const cell, T, k1, l1, k2, l2, k3, l3, k4, k5, k6, k7, k9, k10, k8_max, R_k8, T_k8, T0, T05, n_v, l7_37, l7_41, l7_42, l7_43, l7_44, l7_45;
+
+  //// Unit definitions:
+  # (omitted)
+
+  //// Display Names:
+  cell is "Intracellular volume";
+  HSP is "Heat shock proteins (Hsp70/Hsc70/Hsp90 pool)";
+  HSF is "HSF1 monomer";
+  HSF3 is "HSF1 trimer (active)";
+  HSE is "Heat shock element";
+  HSE_HSF3 is "Transcriptional complex";
+  mRNA is "Hsp70 mRNA";
+  P is "Native proteins";
+  S is "Denatured proteins (substrate)";
+  HSP_HSF is "HSP:HSF complex";
+  HSP_S is "HSP:substrate complex";
+  R1_trimerization is "HSF activation (trimerization)";
+  R2_bind_DNA is "HSF3 binding to HSE";
+  R2_unbind_DNA is "HSF3 dissociation from HSE (temp-dependent)";
+  R3_transcription is "Transcription of Hsp70 mRNA (temp-dependent)";
+  R4_inactivation is "HSF inactivation by HSP";
+  R5_bind_sub is "HSP binds denatured substrate";
+  R5_unbind_sub is "HSP:substrate dissociation";
+  R6_bind_HSF is "HSP binds HSF monomer";
+  R6_unbind_HSF is "HSP:HSF dissociation";
+  R7_HSP_deg is "HSP degradation";
+  R8_refolding is "Refolding of substrate to native protein";
+  R9_denaturation is "Protein denaturation (temp-dependent)";
+  R10_translation is "Translation of Hsp70";
+  R11_mRNA_deg is "Hsp70 mRNA degradation";
+  R12_const_HSP is "Constitutive HSP production";
+
+end

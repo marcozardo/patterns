@@ -1,0 +1,68 @@
+model *Malkov2020_SEIRS_Reinfection()
+
+  //// Compartments and Species:
+  compartment pop;
+  species S in pop, E in pop, I in pop, R in pop;
+
+  //// Assignment Rules:
+  R_tilde := 0.5*(R1 + R2);
+  beta := gamma_*R_tilde;
+
+  //// Rate Rules:
+  R1' = -eta1*(R1 - R1_star);
+  R2' = -eta2*(R2 - R2_star);
+
+  //// Reactions:
+  J_infection: S => E; beta*(S/N)*I;
+  J_progress:  E => I; sigma*E;
+  J_recovery:  I => R; gamma_*I;
+  J_waning:    R => S; omega*R;
+
+  //// Species initializations:
+  I = 1/1000;
+  E = 43.75*I;
+  R = 0;
+  S = N - E - I - R;
+
+  //// Compartment initializations:
+  pop = 1;
+
+  //// Variable initializations:
+  N = 1;
+  sigma = 1/5.2;
+  gamma_ = 1/18;
+  omega = 1/183;
+  R1 = 3.0;
+  R2 = 3.0;
+  R1_star = 1.6;
+  R2_star = 1.6;
+  eta1 = 1/20;
+  eta2 = 1/20;
+
+  //// Other declarations:
+  var R1, R2, R_tilde, beta;
+  const pop, N, sigma, gamma_, omega, R1_star, R2_star, eta1, eta2;
+
+  //// Display Names:
+  pop is "Population (normalized volume)";
+  S is "Susceptible (fraction)";
+  E is "Exposed (fraction)";
+  I is "Infectious (fraction)";
+  R is "Resistant/Recovered (fraction)";
+  J_infection is "New infections";
+  J_progress is "Latent-to-infectious progression";
+  J_recovery is "Recovery";
+  J_waning is "Immunity waning (reinfection path)";
+  R1 is "Component 1 of time-varying reproduction number";
+  R2 is "Component 2 of time-varying reproduction number";
+  R1_star is "Long-run R1";
+  R2_star is "Long-run R2";
+  R_tilde is "Effective reproduction number R~(t)";
+  beta is "Transmission rate beta(t)";
+  sigma is "Progression rate (latent to infectious)";
+  gamma_ is "Recovery rate";
+  omega is "Immunity waning rate";
+  eta1 is "Convergence rate of R1";
+  eta2 is "Convergence rate of R2";
+  N is "Total population (normalized)";
+end

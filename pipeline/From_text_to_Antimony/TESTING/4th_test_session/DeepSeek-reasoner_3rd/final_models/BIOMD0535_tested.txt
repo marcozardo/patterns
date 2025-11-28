@@ -1,0 +1,78 @@
+model *IL6_Crohns_Multiscale()
+
+  //// Compartments and Species:
+  compartment Liver, GI_tract, Circulation;
+  species IL6 in Circulation, IL6 in GI_tract, IL6R in GI_tract, sIL6R in Circulation, 
+          gp130 in GI_tract, STAT3 in GI_tract, pSTAT3 in GI_tract, 
+          IL6_sIL6R_complex in Circulation, IL6_IL6R_complex in GI_tract,
+          Active_signaling_complex in GI_tract, SOCS in GI_tract,
+          CRP in Circulation, sgp130 in Circulation,
+          Anti_IL6 in Circulation, Anti_IL6R in Circulation, sgp130Fc in Circulation;
+
+  //// Assignment Rules:
+  SOCS_production := k_socs_prod * pSTAT3;
+  CRP_production := k_crp_prod * pSTAT3;
+  sIL6R_shedding := k_shed * CRP * IL6R;
+
+  //// Rate Rules:
+  IL6' = k_synth_IL6 - k_deg_IL6 * IL6 - kon_IL6_IL6R * IL6 * IL6R + koff_IL6_IL6R * IL6_IL6R_complex;
+  IL6_IL6R_complex' = kon_IL6_IL6R * IL6 * IL6R - koff_IL6_IL6R * IL6_IL6R_complex - kon_complex_gp130 * IL6_IL6R_complex * gp130;
+  Active_signaling_complex' = kon_complex_gp130 * IL6_IL6R_complex * gp130 - k_deg_complex * Active_signaling_complex;
+  STAT3' = -k_phospho * Active_signaling_complex * STAT3 + k_dephospho * pSTAT3;
+  pSTAT3' = k_phospho * Active_signaling_complex * STAT3 - k_dephospho * pSTAT3;
+  SOCS' = SOCS_production - k_deg_SOCS * SOCS;
+  CRP' = CRP_production - k_deg_CRP * CRP;
+  sIL6R' = sIL6R_shedding - k_deg_sIL6R * sIL6R - kon_IL6_sIL6R * IL6 * sIL6R + koff_IL6_sIL6R * IL6_sIL6R_complex;
+  IL6_sIL6R_complex' = kon_IL6_sIL6R * IL6 * sIL6R - koff_IL6_sIL6R * IL6_sIL6R_complex - kon_complex_sgp130 * IL6_sIL6R_complex * sgp130;
+
+  //// Reactions:
+  Anti_IL6_binding: IL6 + Anti_IL6 -> IL6_Anti_IL6; k_bind_Anti_IL6 * IL6 * Anti_IL6;
+  Anti_IL6R_binding: IL6R + Anti_IL6R -> IL6R_Anti_IL6R; k_bind_Anti_IL6R * IL6R * Anti_IL6R;
+  sgp130Fc_binding: IL6_sIL6R_complex + sgp130Fc -> IL6_sIL6R_sgp130Fc; k_bind_sgp130Fc * IL6_sIL6R_complex * sgp130Fc;
+
+  //// Species initializations:
+  IL6 = 0.001;
+  IL6R = 1.0;
+  sIL6R = 1.6;
+  gp130 = 1.0;
+  STAT3 = 1.0;
+  pSTAT3 = 1.0;
+  SOCS = 0.1;
+  CRP = 0.04;
+  sgp130 = 3.9;
+  Anti_IL6 = 0;
+  Anti_IL6R = 0;
+  sgp130Fc = 0;
+
+  //// Compartment initializations:
+  Liver = 1;
+  GI_tract = 1;
+  Circulation = 1;
+
+  //// Variable initializations:
+  k_synth_IL6 = 0.1;
+  k_deg_IL6 = 0.1;
+  kon_IL6_IL6R = 1.0;
+  koff_IL6_IL6R = 0.1;
+  kon_complex_gp130 = 1.0;
+  k_deg_complex = 0.1;
+  k_phospho = 1.0;
+  k_dephospho = 0.1;
+  k_socs_prod = 0.1;
+  k_deg_SOCS = 0.1;
+  k_crp_prod = 0.1;
+  k_deg_CRP = 0.1;
+  k_shed = 0.01;
+  k_deg_sIL6R = 0.1;
+  kon_IL6_sIL6R = 1.0;
+  koff_IL6_sIL6R = 0.1;
+  kon_complex_sgp130 = 1.0;
+  k_bind_Anti_IL6 = 1.0;
+  k_bind_Anti_IL6R = 1.0;
+  k_bind_sgp130Fc = 1.0;
+
+  //// Other declarations:
+  var IL6, IL6R, sIL6R, gp130, STAT3, pSTAT3, SOCS, CRP, sgp130, Anti_IL6, Anti_IL6R, sgp130Fc;
+  const Liver, GI_tract, Circulation;
+
+end

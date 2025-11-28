@@ -1,0 +1,205 @@
+model *Dwivedi2014_IL6_Crohn_Multiscale()
+
+  //// Compartments and Species:
+  compartment Serum, Liver, GI;
+  species IL6 in Serum, sIL6R in Serum, sgp130 in Serum, IL6_sIL6R in Serum, IL6_sIL6R_sgp130 in Serum, CRP_serum in Serum;
+  species STAT3_L in Liver, pSTAT3_L in Liver, mIL6R_L in Liver, RAct_L in Liver, IL6_L in Liver, CRP_L in Liver;
+  species STAT3_G in GI, pSTAT3_G in GI, mIL6R_G in GI, RAct_G in GI, IL6_G in GI, Gene_GI in GI;
+
+  //// Assignment Rules:
+  Stim_L := a_classic*RAct_L + a_trans*IL6_sIL6R;    # net receptor stimulus (classical + trans) in liver
+  Stim_G := a_classic*RAct_G + a_trans*IL6_sIL6R;    # net receptor stimulus (classical + trans) in GI
+
+  //// Rate Rules:
+  // not present so omitted
+
+  //// Reactions:
+  # Serum complex formation and sequestration by sgp130 (mass action, reversible written as forward - reverse)
+  R1_bind: IL6 + sIL6R -> IL6_sIL6R; kf1*IL6*sIL6R - kr1*IL6_sIL6R;
+  R2_sequest: IL6_sIL6R + sgp130 -> IL6_sIL6R_sgp130; kf2*IL6_sIL6R*sgp130 - kr2*IL6_sIL6R_sgp130;
+
+  # Complex clearance/turnover
+  R3_cx_deg: IL6_sIL6R -> ; kdeg_complex1*IL6_sIL6R;
+  R4_tri_deg: IL6_sIL6R_sgp130 -> ; kdeg_complex2*IL6_sIL6R_sgp130;
+
+  # sIL-6R production (basal + CRP-driven shedding surrogate) and degradation in serum
+  R5_sR_syn:  => sIL6R; ksyn_sIL6R_basal + kshed_CRPF*CRP_serum;
+  R6_sR_deg: sIL6R -> ; kdeg_sIL6R*sIL6R;
+
+  # sgp130 production and degradation in serum
+  R7_sgp130_syn:  => sgp130; ksyn_sgp130;
+  R8_sgp130_deg: sgp130 -> ; kdeg_sgp130*sgp130;
+
+  # Gut IL-6 production/turnover and exchange with serum
+  R9_gut_IL6_syn:  => IL6_G; ksyn_IL6_G;
+  R10_gut_IL6_deg: IL6_G -> ; kdeg_IL6_G*IL6_G;
+  R11_gut_to_serum: IL6_G => IL6; ke_GS*IL6_G;
+  R12_serum_to_gut: IL6 => IL6_G; ke_SG*IL6;
+
+  # Liver IL-6 production/turnover and exchange with serum
+  R13_liv_IL6_syn:  => IL6_L; ksyn_IL6_L;
+  R14_liv_IL6_deg: IL6_L -> ; kdeg_IL6_L*IL6_L;
+  R15_liver_to_serum: IL6_L => IL6; ke_LS*IL6_L;
+  R16_serum_to_liver: IL6 => IL6_L; ke_SL*IL6;
+
+  # Serum IL-6 background synthesis and degradation
+  R17_serum_IL6_syn:  => IL6; ksyn_IL6_S;
+  R18_serum_IL6_deg: IL6 -> ; kdeg_IL6_S*IL6;
+
+  # Classical pathway receptor activation in organs (effective mIL6R binding to IL6)
+  R19_L_classic_bind: IL6_L + mIL6R_L -> RAct_L; kf_c_L*IL6_L*mIL6R_L - kr_c_L*RAct_L;
+  R20_L_RAct_turnover: RAct_L -> ; kdeg_RAct*RAct_L;
+  R21_G_classic_bind: IL6_G + mIL6R_G -> RAct_G; kf_c_G*IL6_G*mIL6R_G - kr_c_G*RAct_G;
+  R22_G_RAct_turnover: RAct_G -> ; kdeg_RAct*RAct_G;
+
+  # STAT3 phosphorylation/dephosphorylation (MM kinetics; stimulus from classical + trans)
+  R23_L_STAT3_phos: STAT3_L -> pSTAT3_L; VmnPhos_L*(Stim_L/(KrmPhosL + Stim_L))*STAT3_L;
+  R24_L_pSTAT3_dephos: pSTAT3_L -> STAT3_L; VmnDephos*(pSTAT3_L/(KrmDephos + pSTAT3_L));
+  R25_G_STAT3_phos: STAT3_G -> pSTAT3_G; VmnPhos_G*(Stim_G/(KrmPhosG + Stim_G))*STAT3_G;
+  R26_G_pSTAT3_dephos: pSTAT3_G -> STAT3_G; VmnDephos*(pSTAT3_G/(KrmDephos + pSTAT3_G));
+
+  # CRP synthesis in liver (pSTAT3-driven, Michaelis-Menten), secretion to serum, and serum clearance
+  R27_CRP_synth_L:  => CRP_L; VmnCRP*(pSTAT3_L/(K_CRPP + pSTAT3_L));
+  R28_CRP_secrete: CRP_L => CRP_serum; ksec_CRP*CRP_L;
+  R29_CRP_serum_clear: CRP_serum -> ; kdeg_CRP_serum*CRP_serum;
+
+  # Generic pSTAT3-induced gene products in GI (surrogate for inflammatory mediators)
+  R30_GeneGI_synth:  => Gene_GI; VmnGene_GI*(pSTAT3_G/(K_Gene_GI + pSTAT3_G));
+  R31_GeneGI_deg: Gene_GI -> ; kdeg_Gene_GI*Gene_GI;
+
+  //// Events:
+  // not present so omitted
+
+  //// Species initializations:
+  IL6 = 4.219e-4;                # Serum IL-6 (nmol/l) ~10 pg/ml CD baseline (MW 23.7 kDa)
+  sIL6R = 2.8;                   # Serum sIL-6R (nmol/l) ~140 ng/ml (50 kDa)
+  sgp130 = 2.8;                  # Serum sgp130 (nmol/l) ~280 ng/ml (100 kDa)
+  IL6_sIL6R = 0;
+  IL6_sIL6R_sgp130 = 0;
+  CRP_serum = 280;               # Serum CRP (nmol/l) ~7 mg/l (25 kDa)
+
+  STAT3_L = 1;
+  pSTAT3_L = 1;
+  mIL6R_L = 1;
+  RAct_L = 0;
+  IL6_L = 0.001;
+  CRP_L = 0;
+
+  STAT3_G = 1;
+  pSTAT3_G = 3;                  # Gut pSTAT3 higher in CD (fold-change surrogate)
+  mIL6R_G = 1;
+  RAct_G = 0;
+  IL6_G = 0.01055;               # Gut IL-6 (nmol/l) ~250 pg/ml CD baseline
+  Gene_GI = 0;
+
+  //// Compartment initializations:
+  Serum = 1;
+  Liver = 1;
+  GI = 1;
+
+  //// Variable initializations:
+  # Complex kinetics and turnover
+  kf1 = 1;                       # l/(nmol*hr)
+  kr1 = 0.1;                     # 1/hr
+  kf2 = 1;                       # l/(nmol*hr)
+  kr2 = 0.1;                     # 1/hr
+  kdeg_complex1 = 0.05;          # 1/hr
+  kdeg_complex2 = 0.05;          # 1/hr
+
+  # sIL-6R dynamics (basal + CRP-driven shedding surrogate)
+  ksyn_sIL6R_basal = 0.03;       # nmol/(l*hr)
+  kshed_CRPF = 0.001;            # l/(nmol*hr)
+  kdeg_sIL6R = 0.03;             # 1/hr
+
+  # sgp130 dynamics
+  ksyn_sgp130 = 0.084;           # nmol/(l*hr) -> sustains ~2.8 nmol/l at kdeg=0.03
+  kdeg_sgp130 = 0.03;            # 1/hr
+
+  # Gut IL-6 production, degradation, exchange with serum
+  ksyn_IL6_G = 0.007385;         # nmol/(l*hr)
+  kdeg_IL6_G = 0.2;              # 1/hr
+  ke_GS = 0.5;                   # 1/hr (GI -> Serum)
+  ke_SG = 0.1;                   # 1/hr (Serum -> GI)
+
+  # Liver IL-6 production, degradation, exchange with serum
+  ksyn_IL6_L = 0.0006;           # nmol/(l*hr)
+  kdeg_IL6_L = 0.2;              # 1/hr
+  ke_LS = 0.3;                   # 1/hr (Liver -> Serum)
+  ke_SL = 0.05;                  # 1/hr (Serum -> Liver)
+
+  # Serum IL-6 background dynamics
+  ksyn_IL6_S = 5.0e-5;           # nmol/(l*hr)
+  kdeg_IL6_S = 0.1;              # 1/hr
+
+  # Classical pathway effective receptor binding and active complex turnover
+  kf_c_L = 1;                    # l/(nmol*hr)
+  kr_c_L = 0.5;                  # 1/hr
+  kf_c_G = 1;                    # l/(nmol*hr)
+  kr_c_G = 0.5;                  # 1/hr
+  kdeg_RAct = 0.2;               # 1/hr
+
+  # STAT3 phosphorylation/dephosphorylation kinetics
+  VmnPhos_L = 1;                 # nmol/(l*hr)
+  KrmPhosL = 0.5;                # nmol/l
+  VmnPhos_G = 1;                 # nmol/(l*hr)
+  KrmPhosG = 0.5;                # nmol/l
+  VmnDephos = 0.5;               # nmol/(l*hr)
+  KrmDephos = 0.5;               # nmol/l
+
+  # CRP synthesis (liver), secretion to serum, and serum clearance
+  VmnCRP = 200;                  # nmol/(l*hr)
+  K_CRPP = 1;                    # nmol/l
+  ksec_CRP = 0.5;                # 1/hr
+  kdeg_CRP_serum = 0.02;         # 1/hr
+
+  # GI pSTAT3-induced gene products (surrogate)
+  VmnGene_GI = 10;               # nmol/(l*hr)
+  K_Gene_GI = 1;                 # nmol/l
+  kdeg_Gene_GI = 0.1;            # 1/hr
+
+  # Stimulus weighting (classical vs trans-signaling contributions)
+  a_classic = 1;                 # dimensionless
+  a_trans = 1;                   # dimensionless
+
+  //// Other declarations:
+  var Stim_L, Stim_G;
+  const Serum, Liver, GI, kf1, kr1, kf2, kr2, kdeg_complex1, kdeg_complex2, ksyn_sIL6R_basal, kshed_CRPF, kdeg_sIL6R, ksyn_sgp130, kdeg_sgp130, ksyn_IL6_G, kdeg_IL6_G, ke_GS, ke_SG, ksyn_IL6_L, kdeg_IL6_L, ke_LS, ke_SL, ksyn_IL6_S, kdeg_IL6_S, kf_c_L, kr_c_L, kf_c_G, kr_c_G, kdeg_RAct, VmnPhos_L, KrmPhosL, VmnPhos_G, KrmPhosG, VmnDephos, KrmDephos, VmnCRP, K_CRPP, ksec_CRP, kdeg_CRP_serum, VmnGene_GI, K_Gene_GI, kdeg_Gene_GI, a_classic, a_trans;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole / liter;   # nmol/l
+  unit time_unit = 3600 second;         # hour
+
+  //// Display Names:
+  Serum is "Circulation (serum/plasma)";
+  Liver is "Liver compartment";
+  GI is "GI tract compartment";
+  IL6 is "Serum IL-6";
+  sIL6R is "Serum soluble IL-6R?";
+  sgp130 is "Serum soluble gp130";
+  IL6_sIL6R is "IL-6:sIL-6R complex";
+  IL6_sIL6R_sgp130 is "IL-6:sIL-6R:sgp130 ternary";
+  CRP_serum is "Serum C-reactive protein";
+  STAT3_L is "STAT3 (liver)";
+  pSTAT3_L is "pSTAT3 (liver)";
+  mIL6R_L is "Membrane IL-6R (liver)";
+  RAct_L is "Active IL-6R complex (liver)";
+  IL6_L is "IL-6 (liver interstitial)";
+  CRP_L is "CRP (liver intracellular)";
+  STAT3_G is "STAT3 (GI)";
+  pSTAT3_G is "pSTAT3 (GI)";
+  mIL6R_G is "Membrane IL-6R (GI)";
+  RAct_G is "Active IL-6R complex (GI)";
+  IL6_G is "IL-6 (GI interstitial)";
+  Gene_GI is "pSTAT3-induced gene products (GI)";
+  Stim_L is "Liver stimulus (classical + trans)";
+  Stim_G is "GI stimulus (classical + trans)";
+end
+
+/* Unmapped/omitted elements from the source (not explicitly encoded to avoid speculation):
+- Full intracellular Jak/STAT network topology (dimerization, nuclear translocation, SOCS feedback).
+- Detailed PK module for monoclonal antibodies (absorption, distribution, clearance, target-mediated drug disposition).
+- Drug?target binding to IL-6, IL-6R?, and IL-6:sIL-6R complex, and dosing regimens/events.
+- Explicit modeling of membrane gp130 kinetics and hexameric receptor assembly.
+- Heterogeneity of cell populations and additional cytokine pathways (e.g., IL-10, TNF-?).
+- Parameter values provided here are plausible placeholders consistent with stated kinetics (mass action or Michaelis?Menten, hr timebase, nmol/l concentrations) but are not fitted to the original datasets.
+*/

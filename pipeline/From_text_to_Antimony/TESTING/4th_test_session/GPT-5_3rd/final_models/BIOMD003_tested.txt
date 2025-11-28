@@ -1,0 +1,49 @@
+model *Goldbeter1991_MinimalCascade()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  //// Rate Rules:
+  C' = vi - vd*X*C/(Kd + C) - kd*C;
+  M' = V1*((1 - M)/(K1 + (1 - M))) - V2*(M/(K2 + M));
+  X' = V3*((1 - X)/(K3 + (1 - X))) - V4*(X/(K4 + X));
+
+  //// Reactions:
+  // not present so omitted
+
+  //// Events:
+  // not present so omitted
+
+  //// Species initializations:
+  C = 0;
+  M = 0;
+  X = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  vi = 0.023;
+  vd = 0.1;
+  kd = 0;
+  Kd = 0.02;
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+  VM1 = 0.5;
+  V2 = 0.167;
+  VM3 = 0.2;
+  V4 = 0.1;
+  Kc = 0.3;
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, vi, vd, kd, Kd, K1, K2, K3, K4, VM1, V2, VM3, V4, Kc;
+
+end

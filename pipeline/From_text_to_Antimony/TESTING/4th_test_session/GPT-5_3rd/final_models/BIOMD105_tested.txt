@@ -1,0 +1,193 @@
+/* Domain: Molecular/cellular systems biology (protein homeostasis, ubiquitin?proteasome system)
+   Source: Proctor et al., BMC Systems Biology (2007) ?An in silico model of the ubiquitin-proteasome system that incorporates normal homeostasis and age-related decline?
+   Notes:
+   - Single-cell, single-compartment model using molecule counts (arbitrary units).
+   - ATP/ADP/AMP and ROS are treated as boundary species (kept constant), as described.
+   - Polyubiquitin chain lengths up to 8 are modeled; degradation requires chain length >= 4.
+   - Deubiquitination proceeds stepwise for both free and proteasome-bound substrates.
+   - Aggregation and sequestration pathways included; aggregates can sequester proteasomes.
+   - Event included to mimic ts20 E1 shutdown (k62 set to 0 at t = 1800 s).
+*/
+
+model *Proctor2007_UPS()
+
+  //// Compartments and Species:
+  compartment cell;
+  species NatP in cell, MisP in cell, Ub in cell, E1 in cell, E2 in cell, E3 in cell, DUB in cell, Proteasome in cell;
+  species $ATP in cell, $ADP in cell, $AMP in cell, $ROS in cell;
+  species E3_MisP in cell, E1_Ub in cell, E2_Ub in cell;
+  species MisP_Ub in cell, MisP_Ub2 in cell, MisP_Ub3 in cell, MisP_Ub4 in cell, MisP_Ub5 in cell, MisP_Ub6 in cell, MisP_Ub7 in cell, MisP_Ub8 in cell;
+  species MisP_Ub4_Proteasome in cell, MisP_Ub5_Proteasome in cell, MisP_Ub6_Proteasome in cell, MisP_Ub7_Proteasome in cell, MisP_Ub8_Proteasome in cell;
+  species AggP in cell, SeqAggP in cell, AggP_Proteasome in cell;
+  species degUb4 in cell, degUb5 in cell, degUb6 in cell, degUb7 in cell, degUb8 in cell;
+
+  //// Reactions:
+  R_synthesis:  => NatP; k1;
+  R_misfolding: NatP + ROS => MisP + ROS; k2*NatP*ROS;
+  R_refolding:  MisP => NatP; k3*MisP;
+
+  R_E3_bind:    E3 + MisP -> E3_MisP; k61*E3*MisP;
+  R_E3_release: E3_MisP -> E3 + MisP; k61r*E3_MisP;
+
+  R_E1_activation: E1 + Ub + ATP => E1_Ub + AMP; k62*E1*Ub*(ATP/(5000 + ATP));
+  R_E2_loading:    E2 + E1_Ub    => E2_Ub + E1;  k63*E2*E1_Ub;
+  R_monoUb:        E2_Ub + E3_MisP => E2 + E3 + MisP_Ub; k64*E2_Ub*E3_MisP;
+
+  R_poly1: E2_Ub + MisP_Ub  => E2 + MisP_Ub2; k65*E2_Ub*MisP_Ub;
+  R_poly2: E2_Ub + MisP_Ub2 => E2 + MisP_Ub3; k65*E2_Ub*MisP_Ub2;
+  R_poly3: E2_Ub + MisP_Ub3 => E2 + MisP_Ub4; k65*E2_Ub*MisP_Ub3;
+  R_poly4: E2_Ub + MisP_Ub4 => E2 + MisP_Ub5; k65*E2_Ub*MisP_Ub4;
+  R_poly5: E2_Ub + MisP_Ub5 => E2 + MisP_Ub6; k65*E2_Ub*MisP_Ub5;
+  R_poly6: E2_Ub + MisP_Ub6 => E2 + MisP_Ub7; k65*E2_Ub*MisP_Ub6;
+  R_poly7: E2_Ub + MisP_Ub7 => E2 + MisP_Ub8; k65*E2_Ub*MisP_Ub7;
+
+  R_DUB_free8: DUB + MisP_Ub8 => DUB + MisP_Ub7 + Ub; k66*DUB*MisP_Ub8;
+  R_DUB_free7: DUB + MisP_Ub7 => DUB + MisP_Ub6 + Ub; k66*DUB*MisP_Ub7;
+  R_DUB_free6: DUB + MisP_Ub6 => DUB + MisP_Ub5 + Ub; k66*DUB*MisP_Ub6;
+  R_DUB_free5: DUB + MisP_Ub5 => DUB + MisP_Ub4 + Ub; k66*DUB*MisP_Ub5;
+  R_DUB_free4: DUB + MisP_Ub4 => DUB + MisP_Ub3 + Ub; k66*DUB*MisP_Ub4;
+  R_DUB_free3: DUB + MisP_Ub3 => DUB + MisP_Ub2 + Ub; k66*DUB*MisP_Ub3;
+  R_DUB_free2: DUB + MisP_Ub2 => DUB + MisP_Ub  + Ub; k66*DUB*MisP_Ub2;
+  R_DUB_free1: DUB + MisP_Ub  => DUB + MisP     + Ub; k66*DUB*MisP_Ub;
+
+  R_bind4: MisP_Ub4 + Proteasome => MisP_Ub4_Proteasome; k67*MisP_Ub4*Proteasome;
+  R_bind5: MisP_Ub5 + Proteasome => MisP_Ub5_Proteasome; k67*MisP_Ub5*Proteasome;
+  R_bind6: MisP_Ub6 + Proteasome => MisP_Ub6_Proteasome; k67*MisP_Ub6*Proteasome;
+  R_bind7: MisP_Ub7 + Proteasome => MisP_Ub7_Proteasome; k67*MisP_Ub7*Proteasome;
+  R_bind8: MisP_Ub8 + Proteasome => MisP_Ub8_Proteasome; k67*MisP_Ub8*Proteasome;
+
+  R_DUB_bound8: DUB + MisP_Ub8_Proteasome => DUB + Ub + MisP_Ub7_Proteasome; k68*DUB*MisP_Ub8_Proteasome;
+  R_DUB_bound7: DUB + MisP_Ub7_Proteasome => DUB + Ub + MisP_Ub6_Proteasome; k68*DUB*MisP_Ub7_Proteasome;
+  R_DUB_bound6: DUB + MisP_Ub6_Proteasome => DUB + Ub + MisP_Ub5_Proteasome; k68*DUB*MisP_Ub6_Proteasome;
+  R_DUB_bound5: DUB + MisP_Ub5_Proteasome => DUB + Ub + MisP_Ub4_Proteasome; k68*DUB*MisP_Ub5_Proteasome;
+  R_DUB_bound4_release: DUB + MisP_Ub4_Proteasome => DUB + Ub + MisP_Ub3 + Proteasome; k68*DUB*MisP_Ub4_Proteasome;
+
+  R_deg4: ATP + MisP_Ub4_Proteasome => ADP + Proteasome + 4 Ub + degUb4; k69*MisP_Ub4_Proteasome*(ATP/(5000 + ATP));
+  R_deg5: ATP + MisP_Ub5_Proteasome => ADP + Proteasome + 5 Ub + degUb5; k69*MisP_Ub5_Proteasome*(ATP/(5000 + ATP));
+  R_deg6: ATP + MisP_Ub6_Proteasome => ADP + Proteasome + 6 Ub + degUb6; k69*MisP_Ub6_Proteasome*(ATP/(5000 + ATP));
+  R_deg7: ATP + MisP_Ub7_Proteasome => ADP + Proteasome + 7 Ub + degUb7; k69*MisP_Ub7_Proteasome*(ATP/(5000 + ATP));
+  R_deg8: ATP + MisP_Ub8_Proteasome => ADP + Proteasome + 8 Ub + degUb8; k69*MisP_Ub8_Proteasome*(ATP/(5000 + ATP));
+
+  R_agg1: 2 MisP => AggP; k71*MisP*MisP;
+  R_agg2: MisP + AggP => 2 AggP; k71*MisP*AggP;
+
+  R_agg3: 2 MisP_Ub => AggP; k72*MisP_Ub*MisP_Ub;
+  R_agg4: MisP + MisP_Ub => AggP; k72*MisP*MisP_Ub;
+  R_agg5: 2 MisP_Ub8 => AggP; k72*MisP_Ub8*MisP_Ub8;
+  R_agg6: MisP_Ub7 + MisP_Ub8 => AggP; k72*MisP_Ub7*MisP_Ub8;
+  R_agg7: MisP_Ub + AggP => 2 AggP; k72*MisP_Ub*AggP;
+
+  R_sequester: AggP => SeqAggP; k73*AggP;
+  R_agg_bind_prot: AggP + Proteasome => AggP_Proteasome; k74*AggP*Proteasome;
+
+  //// Events:
+  E1_shutdown: at(time >= 1800): k62 = 0;
+
+  //// Species initializations:
+  NatP = 500;
+  MisP = 0;
+  Ub = 500;
+  E1 = 100;
+  E2 = 100;
+  E3 = 100;
+  DUB = 200;
+  Proteasome = 100;
+  ATP = 10000;
+  ADP = 1000;
+  AMP = 1000;
+  ROS = 10;
+  E3_MisP = 0;
+  E1_Ub = 0;
+  E2_Ub = 0;
+  MisP_Ub = 0;
+  MisP_Ub2 = 0;
+  MisP_Ub3 = 0;
+  MisP_Ub4 = 0;
+  MisP_Ub5 = 0;
+  MisP_Ub6 = 0;
+  MisP_Ub7 = 0;
+  MisP_Ub8 = 0;
+  MisP_Ub4_Proteasome = 0;
+  MisP_Ub5_Proteasome = 0;
+  MisP_Ub6_Proteasome = 0;
+  MisP_Ub7_Proteasome = 0;
+  MisP_Ub8_Proteasome = 0;
+  AggP = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+  degUb4 = 0;
+  degUb5 = 0;
+  degUb6 = 0;
+  degUb7 = 0;
+  degUb8 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k1 = 0.01;
+  k2 = 2e-6;
+  k3 = 4e-6;
+  k61 = 1.7e-5;
+  k61r = 2e-4;
+  k62 = 2e-4;
+  k63 = 1e-3;
+  k64 = 1e-3;
+  k65 = 1e-2;
+  k66 = 1e-5;
+  k67 = 1e-5;
+  k68 = 1e-5;
+  k69 = 1e-3;
+  k71 = 1e-8;
+  k72 = 1e-8;
+  k73 = 1e-3;
+  k74 = 1e-5;
+
+  //// Other declarations:
+  var k62;
+  const cell, k1, k2, k3, k61, k61r, k63, k64, k65, k66, k67, k68, k69, k71, k72, k73, k74;
+
+  //// Display Names:
+  cell is "Cellular compartment";
+  NatP is "Native protein";
+  MisP is "Misfolded protein";
+  Ub is "Ubiquitin (free)";
+  E1 is "Ubiquitin-activating enzyme (E1)";
+  E2 is "Ubiquitin-conjugating enzyme (E2)";
+  E3 is "Ubiquitin ligase (E3, HECT-type)";
+  DUB is "Deubiquitinating enzyme";
+  Proteasome is "26S proteasome";
+  ATP is "ATP (boundary)";
+  ADP is "ADP (boundary)";
+  AMP is "AMP (boundary)";
+  ROS is "Reactive oxygen species (boundary)";
+  E3_MisP is "E3 bound to misfolded protein";
+  E1_Ub is "E1~Ub (activated ubiquitin)";
+  E2_Ub is "E2~Ub";
+  MisP_Ub is "Monoubiquitinated MisP";
+  MisP_Ub2 is "MisP with 2 Ub";
+  MisP_Ub3 is "MisP with 3 Ub";
+  MisP_Ub4 is "MisP with 4 Ub";
+  MisP_Ub5 is "MisP with 5 Ub";
+  MisP_Ub6 is "MisP with 6 Ub";
+  MisP_Ub7 is "MisP with 7 Ub";
+  MisP_Ub8 is "MisP with 8 Ub";
+  MisP_Ub4_Proteasome is "Ub4-MisP bound to proteasome";
+  MisP_Ub5_Proteasome is "Ub5-MisP bound to proteasome";
+  MisP_Ub6_Proteasome is "Ub6-MisP bound to proteasome";
+  MisP_Ub7_Proteasome is "Ub7-MisP bound to proteasome";
+  MisP_Ub8_Proteasome is "Ub8-MisP bound to proteasome";
+  AggP is "Aggregated protein";
+  SeqAggP is "Sequestered aggregates";
+  AggP_Proteasome is "Aggregates sequestering proteasome";
+  degUb4 is "Degradation counter (Ub4 substrates)";
+  degUb5 is "Degradation counter (Ub5 substrates)";
+  degUb6 is "Degradation counter (Ub6 substrates)";
+  degUb7 is "Degradation counter (Ub7 substrates)";
+  degUb8 is "Degradation counter (Ub8 substrates)";
+end
+
+/* Unmapped/omitted details due to source formatting gaps:
+- Some table cells in Table 2/3 showed placeholders (???) from PDF parsing; where ambiguous, rates were taken from the Methods text (k61..k69, k71..k74) and representative aggregation reactions were included as described.
+- Stochastic combinatorial correction terms (#X*(#X-1)/2) from the original SBML shorthand were implemented here as standard mass-action terms for deterministic simulation compatibility.
+*/

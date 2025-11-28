@@ -1,0 +1,148 @@
+/* Domain: molecular/cellular systems biology (oxygen-sensing: HIF hydroxylation network)
+
+This Antimony model encodes a dimensionless version of the Schmierer et al. 2010 kinetic framework
+for HIF? CAD-hydroxylation by FIH with competition/sequestration by ankyrin-repeat (ARD) proteins.
+
+State variables (dimensionless):
+- Htot: total HIF?
+- H: non-CAD-hydroxylated HIF?
+- A: unhydroxylated ankyrin repeats (ARD targets for FIH)
+
+Auxiliary (assignment) variables:
+- HOH = Htot - H: CAD-hydroxylated HIF? (by conservation)
+- AOH = Atot - A: hydroxylated AR repeats (by conservation)
+- v_p: PHD-dependent ODD-hydroxylation rate (drives HIF? degradation)
+- v_FH: FIH-dependent HIF? CAD-hydroxylation rate
+- v_FA: FIH-dependent AR hydroxylation rate
+- HRE_CAD, HRE_CADOH, HRE_total: steady-state HRE occupancy proxies
+
+Dynamics (dimensionless time ?, scaled by basal HIF? degradation as in the paper):
+- dHtot/d? = 1 - Htot*(1 + v_p)
+- dH/d?    = 1 - H*(1 + v_p + v_FH)
+- ? dA/d?  = Atot - A*(1 + ?*v_FA)  => A' = (Atot - A)/? - A*v_FA
+
+Oxygen dependence:
+- PHD: O2p = O2tilde/(1 + O2tilde)
+- FIH: O2f = O2tilde/(alpha + O2tilde), with alpha = K_M^F / K_M^P
+
+FIH competition/sequestration by ARDs:
+- Effective competitive term in FIH action on HIF uses Ki_FH_eff = KD_FH*(1 + A/KD_FA + gamma*AOH/KD_FA)
+- AR hydroxylation is reduced by (pseudo)competition with HIF via KD_FA*(1 + H/KD_FH) in the denominator
+
+Default parameters correspond to values summarized in Table 2 (dimensionless) where possible.
+*/
+
+model *Schmierer2010_FIH_ARD_HIF_FullModel()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Htot in cell, H in cell, A in cell;
+
+  //// Assignment Rules:
+  HOH := Htot - H;                                  # CAD-hydroxylated HIF? (by conservation)
+  AOH := Atot - A;                                  # Hydroxylated AR repeats (by conservation)
+
+  O2p := O2tilde/(1 + O2tilde);                     # Oxygen dependence for PHD
+  O2f := O2tilde/(alpha + O2tilde);                 # Oxygen dependence for FIH
+
+  # Effective competitive inhibition of FIH acting on HIF by AR (unhydrox. and hydrox.) binding:
+  Ki_FH_eff := KD_FH*(1 + A/KD_FA + gamma_*AOH/KD_FA);
+
+  # Hydroxylation rate functions (dimensionless v's):
+  v_p  := kcatP*Ptot * O2p * (Htot/(KD_P + Htot));                                             # PHD on HIF? (ODD)
+  kcatFH := phi*kcatFA;                                                                        # set kcatFH via ratio phi
+  v_FH := kcatFH*Ftot * O2f * (H/(Ki_FH_eff + H));                                             # FIH on HIF? (CAD)
+  v_FA := kcatFA*Ftot * O2f / ( KD_FA*(1 + H/KD_FH) + A + gamma_*AOH ) * A;                    # FIH on AR repeats
+
+  # HRE occupancy proxies (instantaneous binding equilibrium; identical affinity assumption):
+  HRE_CAD   := H   /(KD_HRE + Htot);
+  HRE_CADOH := HOH /(KD_HRE + Htot);
+  HRE_total := (H + HOH)/(KD_HRE + Htot);
+
+  //// Rate Rules:
+  Htot' = 1 - Htot*(1 + v_p);
+  H'    = 1 - H*(1 + v_p + v_FH);
+  A'    = (Atot - A)/eta - A*v_FA;
+
+  //// Reactions:
+  // No explicit mass-action reactions; dynamics are defined by rate rules above.
+
+  //// Species initializations:
+  Htot = 1;
+  H    = 1;
+  A    = Atot;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Core concentrations (dimensionless totals):
+  Atot   = 100;     # total FIH-target AR repeats
+  Ptot   = 0.2;     # total PHD
+  Ftot   = 1;       # total FIH
+
+  # Oxygen (relative to PHD KM; 0..1 typical):
+  O2tilde = 0.2;
+
+  # Kinetic/affinity parameters:
+  kcatP  = 500;     # (kcat for ODD-hydroxylation)/(basal HIF? deg. rate)
+  kcatFA = 100;     # sets v_max for AR hydroxylation (dimensionless)
+  phi    = 1;       # kcatFH/kcatFA
+  KD_P   = 1;       # PHD-HIF dissociation constant
+  KD_FH  = 1;       # FIH-HIF dissociation constant
+  KD_FA  = 1;       # FIH-AR dissociation constant (unhydroxylated)
+  gamma_ = 0.02;    # relative affinity (hydroxylated AR)/(unhydroxylated AR) for FIH
+  alpha  = 0.33;    # (KM of FIH for O2)/(KM of PHD for O2)
+  eta    = 5;       # (basal HIF? degradation rate)/(AR degradation rate)
+  KD_HRE = 0.3;     # HIF/HRE dissociation constant
+
+  //// Other declarations:
+  var O2tilde, v_p, v_FH, v_FA, HOH, AOH, O2p, O2f, Ki_FH_eff, HRE_CAD, HRE_CADOH, HRE_total, kcatFH;
+  const cell, Atot, Ptot, Ftot, kcatP, kcatFA, KD_P, KD_FH, KD_FA, KD_HRE, alpha, phi, eta, gamma_;
+
+  //// Unit definitions:
+  # Omitted (dimensionless formulation)
+
+  //// Display Names:
+  cell is "default compartment";
+  Htot is "Total HIF? (dimensionless)";
+  H is "Non-CAD-hydroxylated HIF?";
+  HOH is "CAD-hydroxylated HIF?";
+  A is "Unhydroxylated AR repeats";
+  AOH is "Hydroxylated AR repeats";
+  v_p is "PHD ODD-hydroxylation rate";
+  v_FH is "FIH CAD-hydroxylation rate (HIF?)";
+  v_FA is "FIH AR-hydroxylation rate";
+  O2tilde is "Oxygen (relative to PHD KM)";
+  O2p is "PHD oxygen saturation term";
+  O2f is "FIH oxygen saturation term";
+  Ki_FH_eff is "Effective FIH-HIF inhibition constant (by AR competition)";
+  KD_HRE is "HIF/HRE dissociation constant";
+  HRE_CAD is "HRE occupancy by non-CAD-OH HIF?";
+  HRE_CADOH is "HRE occupancy by CAD-OH HIF?";
+  HRE_total is "HRE occupancy by any HIF?";
+end
+
+/* Notes and mapping to paper:
+
+- This is a compact executable encoding of the "Full Model" ODEs (Eqs. 1?3), using competition-modified
+  rate laws for FIH action on HIF? and AR repeats analogous to Eqs. (6), (8), and (9).
+- Conservation relations implement CAD-hydroxylated forms: HOH = Htot - H and AOH = Atot - A.
+- Oxygen dependences follow the text: PHD uses O2/(1+O2), FIH uses O2/(alpha+O2).
+- Table 2 dimensionless defaults used where specified; others chosen to match figure regimes (e.g., Atot=100).
+
+Potential transcription ambiguity:
+- The published text fragment for v_FA displayed an inverse oxygen factor (1/(O2/(alpha+O2))), which would
+  imply faster AR hydroxylation at lower oxygen, contradicting SKM2 Eq. (12) and the narrative. Here we use
+  the increasing oxygen dependence v_FA ? O2/(alpha+O2), consistent with SKM2 and the stated biology.
+
+Simplifications relative to the "full model kinetics":
+- The exact binding-correction forms for H_p and H_F (free-to-bind fractions) referenced alongside Eqs. (4?7)
+  were not fully specified in the provided excerpt. We approximate these using Michaelis-Menten-like forms
+  with effective competitive terms (Ki_FH_eff and KD_FA*(1 + H/KD_FH)) capturing sequestration and product
+  weakening (?) as in Eq. (8) and the denominator structure of Eq. (9).
+
+How to simulate:
+- Vary O2tilde (0?1) to explore oxygen dose?response; adjust Atot (e.g., 0, 10, 50, 100, 200, 500) to reproduce
+  threshold shifting/ultrasensitivity; tune gamma (0?0.1) and eta (1?10) for product binding and turnover effects.
+*/
