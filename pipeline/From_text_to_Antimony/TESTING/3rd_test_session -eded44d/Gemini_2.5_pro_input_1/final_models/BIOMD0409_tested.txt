@@ -1,0 +1,157 @@
+model *Queralt2006_MitoticExit()
+  /* 
+  This model represents the quantitative model for mitotic exit in budding yeast
+  as described by Queralt et al. (2006). The model is primarily based on the
+  wiring diagram presented in Figure 7A and the accompanying descriptions.
+  Since the specific differential equations and parameter values from the
+  supplementary materials were not provided, this Antimony implementation
+  reconstructs the network using standard mass-action kinetics. All parameter
+  values are placeholders intended to produce qualitatively correct behavior
+  (i.e., progression from a metaphase-like state to a G1-like state upon
+  Cdc20 induction).
+  */
+
+  //// Compartments and Species:
+  compartment cell;
+  species Clb2 in cell;          // Mitotic cyclin, proxy for Cdk activity
+  species Cdc20 in cell;         // Anaphase Promoting Complex (APC) activator
+  species Sec_Sep in cell;       // Securin-Separase complex
+  species Separase in cell;      // Active separase
+  species PP2A in cell;          // Active PP2A^Cdc55 phosphatase
+  species PP2Ai in cell;         // Inactive PP2A^Cdc55 phosphatase
+  species MEN in cell;           // Active Mitotic Exit Network
+  species MENi in cell;          // Inactive Mitotic Exit Network
+  species Cdh1 in cell;          // Active APC activator Cdh1
+  species Cdh1i in cell;         // Inactive Cdh1
+  species $Net1P in cell;         // Phosphorylated Net1, proxy for released Cdc14
+
+  //// Assignment Rules:
+  // Free Cdc14 is assumed to be equal to the amount of phosphorylated Net1.
+  Cdc14 := Net1P;
+  // The amount of Cdc14 sequestered in the Net1-Cdc14 complex.
+  Net1_Cdc14 := Net1T - Net1P;
+
+  // Rate expressions for the Net1P rate rule. This separates the complex ODE for clarity.
+  V_phos_Net1 := (k_phos_Clb2 * Clb2 + k_phos_MEN * MEN) * Net1_Cdc14;
+  V_dephos_Net1 := (k_dephos_PP2A * PP2A + k_dephos_Cdc14 * Cdc14) * Net1P;
+
+  //// Rate Rules:
+  // The dynamics of Net1 phosphorylation control the release of Cdc14.
+  // It is phosphorylated by Cdk(Clb2) and MEN, and dephosphorylated by PP2A and Cdc14 itself.
+  Net1P' = V_phos_Net1 - V_dephos_Net1;
+
+  //// Reactions:
+  // Clb2 synthesis and degradation by APC/C-Cdc20 and APC/C-Cdh1.
+  R1_Clb2_syn: => Clb2; k_syn_Clb2;
+  R2_Clb2_deg: Clb2 => ; (k_d_Clb2_Cdc20 * Cdc20 + k_d_Clb2_Cdh1 * Cdh1) * Clb2;
+
+  // Cdc20 synthesis (induced at simulation start) and degradation.
+  R3_Cdc20_syn: => Cdc20; k_syn_Cdc20_val;
+  R4_Cdc20_deg: Cdc20 => ; k_d_Cdc20 * Cdc20;
+
+  // Degradation of Securin from the Securin-Separase complex, releasing active Separase.
+  R5_Sec_deg: Sec_Sep => Separase; k_d_Sec * Cdc20 * Sec_Sep;
+
+  // Reversible inactivation of PP2A by Separase.
+  R6_PP2A_inact: PP2A => PP2Ai; k_inact_PP2A * Separase * PP2A;
+  R7_PP2A_act: PP2Ai => PP2A; k_act_PP2A * PP2Ai;
+
+  // Reversible activation of the Mitotic Exit Network (MEN).
+  // MEN is activated by Cdc14 and inactivated by Cdk(Clb2).
+  R8_MEN_act: MENi => MEN; k_act_MEN * Cdc14 * MENi;
+  R9_MEN_inact: MEN => MENi; k_inact_MEN * Clb2 * MEN;
+
+  // Reversible activation of Cdh1.
+  // Cdh1 is activated by Cdc14 and inactivated by Cdk(Clb2).
+  R10_Cdh1_act: Cdh1i => Cdh1; k_act_Cdh1 * Cdc14 * Cdh1i;
+  R11_Cdh1_inact: Cdh1 => Cdh1i; k_inact_Cdh1 * Clb2 * Cdh1;
+
+  //// Events:
+  // The simulation starts in metaphase. At t=0, Cdc20 synthesis is induced.
+  E1_Cdc20_induction: at (time >= 0): k_syn_Cdc20_val = k_syn_Cdc20;
+
+  //// Species initializations:
+  // Metaphase initial conditions. Totals of conserved moieties are the sum of their forms.
+  Clb2 = 1.0;
+  Cdc20 = 0;
+  Sec_Sep = 1.0;
+  Separase = 0;
+  PP2A = 1.0;
+  PP2Ai = 0;
+  MEN = 0;
+  MENi = 1.0;
+  Cdh1 = 0;
+  Cdh1i = 1.0;
+  Net1P = 0.01; // Cdc14 is almost fully sequestered
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Total amount of Net1.
+  Net1T = 1.0;
+
+  // Placeholder kinetic parameters.
+  k_syn_Clb2 = 0.03;
+  k_d_Clb2_Cdc20 = 0.2;
+  k_d_Clb2_Cdh1 = 1.0;
+
+  k_syn_Cdc20 = 0.05;
+  k_syn_Cdc20_val = 0; // Controlled by the event E1.
+  k_d_Cdc20 = 0.1;
+
+  k_d_Sec = 1.0;
+
+  k_inact_PP2A = 1.0;
+  k_act_PP2A = 0.1;
+
+  k_act_MEN = 1.0;
+  k_inact_MEN = 2.0;
+
+  k_act_Cdh1 = 1.0;
+  k_inact_Cdh1 = 2.0;
+
+  // Parameters for the Net1P rate rule
+  k_phos_Clb2 = 1.0;
+  k_phos_MEN = 2.0;
+  k_dephos_PP2A = 1.0;
+  k_dephos_Cdc14 = 0.2; // Represents Cdc14's contribution to Net1 dephosphorylation
+
+  //// Other declarations:
+  const cell, Net1T;
+  const k_syn_Clb2, k_d_Clb2_Cdc20, k_d_Clb2_Cdh1, k_syn_Cdc20, k_d_Cdc20;
+  const k_d_Sec, k_inact_PP2A, k_act_PP2A, k_act_MEN, k_inact_MEN;
+  const k_act_Cdh1, k_inact_Cdh1;
+  const k_phos_Clb2, k_phos_MEN, k_dephos_PP2A, k_dephos_Cdc14;
+
+  var k_syn_Cdc20_val;
+  var Cdc14, Net1_Cdc14, V_phos_Net1, V_dephos_Net1;
+
+  //// Display Names:
+  cell is "Yeast Cell";
+  Clb2 is "Mitotic Cyclin (Clb2-Cdk)";
+  Cdc20 is "APC/C Activator Cdc20";
+  Sec_Sep is "Securin-Separase Complex";
+  Separase is "Free Separase";
+  PP2A is "Active PP2A-Cdc55 Phosphatase";
+  PP2Ai is "Inactive PP2A-Cdc55";
+  MEN is "Active Mitotic Exit Network";
+  MENi is "Inactive MEN";
+  Cdh1 is "Active APC/C Activator Cdh1";
+  Cdh1i is "Inactive Cdh1";
+  Net1P is "Phosphorylated Net1";
+  Net1_Cdc14 is "Net1-Cdc14 Complex (Sequestered Cdc14)";
+  Cdc14 is "Free Cdc14 Phosphatase";
+  R1_Clb2_syn is "Clb2 synthesis";
+  R2_Clb2_deg is "Clb2 degradation";
+  R3_Cdc20_syn is "Cdc20 synthesis";
+  R4_Cdc20_deg is "Cdc20 degradation";
+  R5_Sec_deg is "Securin degradation and Separase release";
+  R6_PP2A_inact is "PP2A inactivation by Separase";
+  R7_PP2A_act is "PP2A activation";
+  R8_MEN_act is "MEN activation by Cdc14";
+  R9_MEN_inact is "MEN inactivation by Clb2";
+  R10_Cdh1_act is "Cdh1 activation by Cdc14";
+  R11_Cdh1_inact is "Cdh1 inactivation by Clb2";
+  E1_Cdc20_induction is "Induction of Cdc20 synthesis at anaphase onset";
+end

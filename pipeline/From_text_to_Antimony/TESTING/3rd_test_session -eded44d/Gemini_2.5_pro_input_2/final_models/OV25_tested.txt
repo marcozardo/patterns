@@ -1,0 +1,103 @@
+model *Gevertz2020_OncolyticVirotherapy()
+
+  /*
+    Model based on "Identifying a Minimal Model of Oncolytic Virotherapy to
+    Guide Experimental Efforts" by Gevertz JL, Wares JR (2020).
+    This Antimony code represents the "original model" described by equations (1)-(6)
+    in the paper, which includes the dynamics of naive T cells (A). The paper's
+    main conclusion is that a simpler "minimal model" (without species A) is
+    sufficient, but the original model is encoded here to capture all initially
+    hypothesized interactions.
+  */
+
+  //// Compartments and Species:
+  compartment tumor;
+  species U in tumor, I in tumor, V in tumor, T in tumor, A in tumor, D in tumor;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Rate Rules:
+  U' = r*U - beta*U*V/N - (kappa_0 + c_kill*I)*U*T/N;
+  I' = beta*U*V/N - delta_I*I - (kappa_0 + c_kill*I)*I*T/N;
+  V' = u_V + alpha*delta_I*I - delta_V*V;
+  T' = c_T*I + chi_A*A + chi_D*D - delta_T*T;
+  A' = c_A*I - delta_A*A;
+  D' = u_D - delta_D*D;
+
+  //// Species initializations:
+  U = U_0;   // Initial uninfected tumor volume
+  I = 0;     // Initial infected tumor volume
+  V = 0;     // Initial oncolytic adenovirus population
+  T = 0;     // Initial tumor-targeting T cell population
+  A = 0;     // Initial Naive T cell population
+  D = 0;     // Initial injected dendritic cell population
+
+  //// Compartment initializations:
+  tumor = 1; // Volume is not specified, assumed to be 1 for concentration/amount equivalence
+
+  //// Variable initializations:
+  // Best-fit parameter values from Table 1 for the original model
+  r = 0.3198;
+  beta = 0.00100854; // Symbol in paper: ??
+  c_A = 0.000517;
+  c_T = 1.6984;
+  c_kill = 5.954e7;  // Symbol in paper: Ckill
+  chi_D = 4.6754;    // Symbol in paper: ??D
+
+  // Initial condition for U, placeholder value estimated from plots in Figure 4
+  U_0 = 50;
+
+  // Treatment input rates, default to 0 (no treatment).
+  // These are intended to be modified (e.g., by events) to simulate treatment protocols.
+  u_V = 0;
+  u_D = 0;
+
+  // The following parameters are part of the model but their values were not found
+  // in the provided text. Placeholder values have been assigned.
+  kappa_0 = 0.1;   // Placeholder value
+  delta_I = 0.5;   // Placeholder value
+  alpha = 100;     // Placeholder value
+  delta_V = 1;     // Placeholder value
+  chi_A = 0.1;     // Placeholder value
+  delta_T = 0.1;   // Placeholder value
+  delta_A = 0.1;   // Placeholder value
+  delta_D = 0.5;   // Placeholder value
+
+  //// Other declarations:
+  var N, u_V, u_D;
+  const tumor, r, beta, kappa_0, c_kill, delta_I, alpha, delta_V;
+  const c_T, chi_A, chi_D, delta_T, c_A, delta_A, delta_D, U_0;
+
+  //// Unit definitions:
+  unit volume = 1e-9 litre; // for mm^3
+  unit time_unit = 86400 second; // for day
+
+  //// Display Names:
+  time_unit is "day";
+  volume is "cubic millimeter";
+  tumor is "Tumor microenvironment";
+  U is "Uninfected tumor cell volume";
+  I is "Infected tumor cell volume";
+  V is "Oncolytic adenovirus population";
+  T is "Tumor-targeting T cell population";
+  A is "Naive T cell population";
+  D is "Injected dendritic cell population";
+  N is "Total cell volume";
+  r is "Tumor growth rate";
+  beta is "Infection rate";
+  kappa_0 is "Basal T cell killing rate of tumor cells";
+  c_kill is "Enhanced T cell killing rate modifier";
+  delta_I is "Infected cell lysis rate";
+  alpha is "Virions released per lysed cell";
+  delta_V is "Virus natural decay rate";
+  c_T is "T cell stimulation rate by 4-1BBL";
+  chi_A is "T cell production rate from naive T cells";
+  chi_D is "T cell production rate from DCs";
+  delta_T is "T cell death rate";
+  c_A is "Naive T cell stimulation rate by IL-12";
+  delta_A is "Naive T cell death rate";
+  delta_D is "DC decay rate";
+  u_V is "OV injection rate";
+  u_D is "DC injection rate";
+end

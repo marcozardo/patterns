@@ -1,0 +1,103 @@
+```antimony
+model Schmierer2010_HIF_FIH_ARD()
+  /*
+  Model based on the "Full Model" from:
+  Schmierer et al. BMC Systems Biology 2010, 4:139
+  "Hypoxia-dependent sequestration of an oxygen sensor by a widespread structural motif
+  can shape the hypoxic response - a predictive kinetic model"
+  
+  The model is dimensionless as described in the paper.
+  */
+
+  //// Compartments and Species:
+  compartment cell;
+  species $H_tot in cell, $H in cell, $A in cell;
+  species $H_OH in cell, $A_OH in cell;
+  species $HRE_CAD in cell, $HRE_CADOH in cell;
+
+  //// Assignment Rules:
+  # Mass conservation rules
+  H_OH := H_tot - H;
+  A_OH := A_tot - A;
+
+  # Intermediate rate parameters and expressions
+  # Assuming k_cat_FH = k_cat_P as stated ("turnover rate are set to match the values for PHD").
+  k_cat_FH := k_cat_P;
+  # Assuming k_cat_FA = k_cat_P based on k_cat_FH = k_cat_P and rho = 1, which reconciles
+  # the conflicting definitions for rho in the paper's Table 2.
+  k_cat_FA := k_cat_P;
+  
+  K_i_FH := K_D_FH * (1 + A / K_D_FA + gamma * A_OH / K_D_FA);
+
+  # Hydroxylation rate functions (dimensionless)
+  # v_p: PHD-dependent HIF-alpha ODD-hydroxylation (Eq. 4, simplified with H_p = H_tot)
+  v_p := k_cat_P * P_tot * (1 / (K_D_P + H_tot + P_tot)) * (O2 / (1 + O2));
+
+  # v_FH: FIH-dependent HIF-alpha CAD-hydroxylation (Eq. 6, simplified with H_F = H)
+  v_FH := k_cat_FH * F_tot * (1 / (K_i_FH + H + F_tot)) * (O2 / (alpha_ + O2));
+
+  # v_FA: FIH-dependent AR-hydroxylation (Eq. 9, simplified with H_F = H)
+  v_FA := (k_cat_FA * F_tot) / (K_D_FA * (1 + H / K_D_FH) + A + gamma * A_OH) * (O2 / (alpha_ + O2));
+
+  # Output expressions for HRE occupancy
+  HRE_CAD := H / (K_D_HRE + H_tot);
+  HRE_CADOH := H_OH / (K_D_HRE + H_tot);
+
+  //// Rate Rules:
+  # Ordinary differential equations from the Full Model (Eqs. 1-3)
+  H_tot' = 1 - H_tot*(1 + v_p);
+  H' = 1 - H*(1 + v_p + v_FH);
+  A' = (A_tot - A*(1 + epsilon*v_FA))/epsilon;
+
+  //// Species initializations:
+  H_tot = 0;
+  H = 0;
+  A = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Dimensionless parameter values from Table 2
+  P_tot = 0.2;
+  K_D_P = 1;
+  k_cat_P = 500;
+  F_tot = 1;
+  K_D_FH = 1;
+  rho = 1;
+  alpha_ = 0.33;
+  K_D_FA = 1;
+  K_D_HRE = 0.3;
+  # Varied parameters, set to example values from figures
+  A_tot = 100;
+  gamma = 0.02;
+  epsilon = 5;
+  O2 = 1; # Represents normoxia
+
+  //// Other declarations:
+  const cell, P_tot, K_D_P, k_cat_P, F_tot, K_D_FH, rho, alpha_, K_D_FA, K_D_HRE;
+  var A_tot, gamma, epsilon, O2, k_cat_FH, k_cat_FA, K_i_FH, v_p, v_FH, v_FA;
+
+  //// Display Names:
+  H_tot is "Total HIF-alpha";
+  H is "Non-CAD-hydroxylated HIF-alpha";
+  A is "Unhydroxylated FIH target repeats";
+  H_OH is "CAD-hydroxylated HIF-alpha";
+  A_OH is "Hydroxylated FIH target repeats";
+  HRE_CAD is "Fraction of HRE occupied by non-CAD-hydroxylated HIF";
+  HRE_CADOH is "Fraction of HRE occupied by CAD-hydroxylated HIF";
+  O2 is "Relative oxygen concentration";
+  P_tot is "Total PHD concentration";
+  K_D_P is "Dissociation constant of PHD/HIF-alpha binding";
+  k_cat_P is "Normalized kcat for ODD-hydroxylation";
+  F_tot is "Total FIH concentration";
+  K_D_FH is "Dissociation constant of FIH/HIF-alpha binding";
+  rho is "Ratio of kcat for CAD-hydroxylation to kcat for ARD-hydroxylation";
+  alpha_ is "Ratio of FIH KM for oxygen to PHD KM for oxygen";
+  A_tot is "Total concentration of FIH target ARs";
+  K_D_FA is "Dissociation constant of FIH/ARD binding";
+  gamma is "Relative FIH affinity for hydroxylated ARs";
+  epsilon is "Ratio of basal HIF-alpha degradation rate to AR degradation rate";
+  K_D_HRE is "Dissociation constant of HIF/HRE binding";
+end
+```

@@ -1,0 +1,114 @@
+/*
+ * This Antimony file contains three models based on the paper:
+ * "Simulation of coronavirus disease 2019 (COVID-19) scenarios with
+ *  possibility of reinfection" by Egor Malkov (2020).
+ *
+ * Model 1: Malkov2020_SEIRS_TimeVaryingR
+ *   - The main model from Section 2.
+ *   - A SEIRS model where recovered individuals can become susceptible again.
+ *   - Features a time-varying transmission rate controlled by a set of ODEs
+ *     to simulate different mitigation policy scenarios.
+ *
+ * Model 2: Malkov2020_SEIRS_MilderReinfection
+ *   - An alternative model from Section 4.1.
+ *   - Assumes that reinfected individuals experience a milder form of the disease.
+ *   - Expands the model to seven compartments to distinguish between primary
+ *     and secondary infections.
+ *
+ * Model 3: Malkov2020_SEIR_OneTimeReinfection
+ *   - A second alternative model from Section 4.2.
+ *   - A standard SEIR model (no continuous immunity waning).
+ *   - Models reinfection as a single event at a specific time (t_star), where all
+ *     recovered individuals become susceptible again.
+ */
+
+// Model 1: Main SEIRS model with time-varying reproduction number
+model *Malkov2020_SEIRS_TimeVaryingR()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  // Transmission rate beta is proportional to the time-varying reproduction number R_tilde
+  beta := gamma * R_tilde;
+  // Time-varying reproduction number is the average of two components
+  R_tilde := 0.5 * (R_tilde1 + R_tilde2);
+
+  //// Rate Rules:
+  // The two components of the reproduction number evolve according to ODEs,
+  // allowing simulation of dynamic mitigation strategies.
+  R_tilde1' = -eta1 * (R_tilde1 - R1_star);
+  R_tilde2' = -eta2 * (R_tilde2 - R2_star);
+
+  //// Reactions:
+  // S -> E: Susceptible individuals become Exposed upon contact with Infected
+  infection: S => E; beta * S * I / N;
+  // E -> I: Exposed individuals become Infectious
+  progression: E => I; sigma * E;
+  // I -> R: Infectious individuals Recover and become Resistant
+  recovery: I => R; gamma * I;
+  // R -> S: Resistant individuals lose immunity and become Susceptible again
+  waning: R => S; omega * R;
+
+  //// Species initializations:
+  I = 1/1000;         // Initial fraction of infected population
+  E = 43.75 * I;      // Initial fraction of exposed population
+  R = 0;              // Initial fraction of resistant population
+  S = 1 - (E + I + R); // Remainder of the population is susceptible
+
+  //// Compartment initializations:
+  population = 1; // Population is normalized to 1
+
+  //// Variable initializations:
+  N = 1; // Total population size
+
+  // Epidemiological parameters
+  sigma = 1/5.2;  // Incubation rate (1 / 5.2 days)
+  gamma = 1/18;   // Recovery rate (1 / 18 days)
+  omega = 1/183;  // Immunity waning rate (1 / 183 days), a representative value from the studied range.
+                  // The paper explores omega in {0, 1/365, 1/183, 1/120, 1/60}
+
+  // Parameters for the time-varying reproduction number.
+  // Default values correspond to Scenario 2 (Gradual Decrease, moderate speed).
+  // To simulate other scenarios, modify these parameters.
+  //
+  // Scenario 1 (Constant R0):
+  // R0 = 2.5; // example value
+  // R_tilde1 = R0; R_tilde2 = R0;
+  // eta1 = 0; eta2 = 0;
+  // R1_star = R0; R2_star = R0;
+  //
+  // Scenario 3 (U-shaped mitigation):
+  // R_tilde1 = 10; R_tilde2 = -4;
+  // eta1 = 1/35; eta2 = 1/100;
+  // R1_star = -10; R2_star = 4;
+  
+  // Default parameters for Scenario 2 (moderate speed)
+  R_tilde1 = 3.0; // Initial value for the first component of R_tilde
+  R_tilde2 = 3.0; // Initial value for the second component of R_tilde
+  eta1 = 1/20;    // Convergence speed for the first component (moderate)
+  eta2 = 1/20;    // Convergence speed for the second component (moderate)
+  R1_star = 1.6;  // Long-run value for the first component
+  R2_star = 1.6;  // Long-run value for the second component
+  
+  //// Other declarations:
+  const population, N, sigma, gamma, omega, eta1, eta2, R1_star, R2_star;
+  var beta, R_tilde, R_tilde1, R_tilde2;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second; // day
+  unit substance = 1 dimensionless;
+
+  //// Display Names:
+  time_unit is "day";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant";
+  beta is "Transmission Rate";
+  R_tilde is "Effective Reproduction Number";
+  sigma is "Incubation Rate";
+  gamma is "Recovery Rate";
+  omega is "Immunity Waning Rate";
+end

@@ -1,0 +1,96 @@
+/*
+ * Frank et al. (2021). Bifurcation and sensitivity analysis reveal key drivers
+ * of multistability in a model of macrophage polarization.
+ * Journal of Theoretical Biology, 509, 110511.
+ *
+ * This model represents the dynamics of macrophage polarization based on the
+ * activation levels of STAT1 (x1) and STAT6 (x2).
+ * The default parameters correspond to the bistable case (Theta_0) from Table 2.
+ */
+model *Frank2021_MacrophagePolarization()
+
+  //// Compartments and Species:
+  compartment macrophage;
+  species x1 in macrophage, x2 in macrophage;
+
+  //// Rate Rules:
+  x1' = (a1 * (x1^n1 / (x1^n1 + k1^n1)) + S1) * (p2^l2 / (p2^l2 + x2^l2)) + b1 - q1*x1;
+  x2' = a2 * (x2^n2 / (x2^n2 + k2^n2)) + S2 * (p1^l1 / (p1^l1 + x1^l1)) + b2 - q2*x2;
+
+  //// Species initializations:
+  // The system is multistable, so the final steady state depends on the initial conditions.
+  // Initial conditions are set to a low state (0,0) as a default.
+  x1 = 0;
+  x2 = 0;
+
+  //// Compartment initializations:
+  macrophage = 1; // Assuming unit volume for a concentration-based model.
+
+  //// Variable initializations:
+  # Parameters for the bistable case (Theta_0) from Table 2
+  a1 = 5;      # Strength of self-stimulation for x1 (1/day)
+  a2 = 5;      # Strength of self-stimulation for x2 (1/day)
+  b1 = 0.05;   # Basal activation rate for x1 (1/day)
+  b2 = 0.05;   # Basal activation rate for x2 (1/day)
+  n1 = 6;      # Exponent in the Hill function for x1 self-stimulation
+  n2 = 6;      # Exponent in the Hill function for x2 self-stimulation
+  k1 = 1;      # Threshold in the Hill function for x1 self-stimulation
+  k2 = 1;      # Threshold in the Hill function for x2 self-stimulation
+  l1 = 1;      # Exponent in the Hill function for mutual inhibition by x1
+  l2 = 1;      # Exponent in the Hill function for mutual inhibition by x2
+  p1 = 0.5;    # Threshold in the Hill function for mutual inhibition by x1
+  p2 = 1;      # Threshold in the Hill function for mutual inhibition by x2
+  q1 = 5;      # Deactivation rate for x1 (1/day)
+  q2 = 5;      # Deactivation rate for x2 (1/day)
+  S1 = 3.75;   # Input signal strength for x1 (IFN-gamma) (1/day)
+  S2 = 3.75;   # Input signal strength for x2 (IL-4) (1/day)
+
+  //// Other declarations:
+  const macrophage, a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+
+  //// Display Names:
+  time_unit is "day";
+  macrophage is "Macrophage";
+  x1 is "Activated STAT1";
+  x2 is "Activated STAT6";
+  S1 is "Input signal strength (IFN-gamma)";
+  S2 is "Input signal strength (IL-4)";
+  a1 is "Strength of self-stimulation for STAT1";
+  a2 is "Strength of self-stimulation for STAT6";
+  b1 is "Basal activation rate for STAT1";
+  b2 is "Basal activation rate for STAT6";
+  n1 is "Hill exponent for STAT1 self-stimulation";
+  n2 is "Hill exponent for STAT6 self-stimulation";
+  k1 is "Hill threshold for STAT1 self-stimulation";
+  k2 is "Hill threshold for STAT6 self-stimulation";
+  l1 is "Hill exponent for inhibition by STAT1";
+  l2 is "Hill exponent for inhibition by STAT6";
+  p1 is "Hill threshold for inhibition by STAT1";
+  p2 is "Hill threshold for inhibition by STAT6";
+  q1 is "Deactivation rate of STAT1";
+  q2 is "Deactivation rate of STAT6";
+
+end
+
+/*
+Additional parameter sets from Table 2 for exploring different dynamic regimes:
+
+Theta_1 (Tristable case):
+  S1 = 4;
+  S2 = 4;
+  (all other parameters as in Theta_0)
+
+Theta_2 (Quadstable case):
+  a1 = 15;
+  a2 = 8;
+  n1 = 22;
+  n2 = 6;
+  q1 = 5.8;
+  q2 = 5.8;
+  S1 = 5;
+  S2 = 5;
+  (b1, b2, k1, k2, l1, l2, p1, p2 are as in Theta_0)
+*/

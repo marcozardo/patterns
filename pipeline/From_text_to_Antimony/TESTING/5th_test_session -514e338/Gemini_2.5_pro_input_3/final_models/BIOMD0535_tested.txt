@@ -1,0 +1,123 @@
+model *Dwivedi2014_Crohns_IL6_multiscale()
+
+    // This model represents the multiscale systems model of interleukin (IL)-6-mediated 
+    // immune regulation in Crohn's disease as described by Dwivedi et al. (2014).
+    // It integrates organ-level dynamics between the Gut, Liver, and Circulation.
+    // The model is parameterized for the Crohn's disease state based on biomarker
+    // data from Table 1 in the publication.
+    // Note: Kinetic parameter values are not provided in the paper; placeholders are used.
+
+    //// Compartments and Species:
+    compartment Gut, Liver, Circulation;
+
+    species IL6_Gut in Gut, pSTAT3_Gut in Gut;
+    species CRP_Liver in Liver;
+    species IL6_Circ in Circulation, sIL6R_Circ in Circulation, CRP_Circ in Circulation;
+    species sgp130_Circ in Circulation, IL6_sIL6R_Circ in Circulation;
+    species IL6_sIL6R_sgp130_Circ in Circulation;
+
+    //// Reactions:
+    // IL-6 dynamics
+    J1:  => IL6_Gut; ksynfIL6Gut;                                          // Synthesis of IL-6 in the Gut
+    J2: IL6_Gut => ; kdegIL6Gut * IL6_Gut;                                 // Degradation of IL-6 in the Gut
+    J3: IL6_Gut -> IL6_Circ; q_IL6 * (IL6_Gut - IL6_Circ);                 // Exchange of IL-6 between Gut and Circulation
+    J4: IL6_Circ => ; kdegIL6Circ * IL6_Circ;                             // Degradation of IL-6 in Circulation
+
+    // sIL-6R dynamics (soluble IL-6 Receptor)
+    J5:  => sIL6R_Circ; ksynfSR_basal + ksynfSR_CRP * CRP_Circ;            // Basal and CRP-mediated synthesis of sIL-6R
+    J6: sIL6R_Circ => ; kdegSR * sIL6R_Circ;                              // Degradation of sIL-6R
+
+    // Complex formation in Circulation
+    J7: IL6_Circ + sIL6R_Circ -> IL6_sIL6R_Circ; kon_c1*IL6_Circ*sIL6R_Circ - koff_c1*IL6_sIL6R_Circ; // IL-6 and sIL-6R binding
+    J8: IL6_sIL6R_Circ => ; kdeg_c1 * IL6_sIL6R_Circ;                     // Degradation of IL-6/sIL-6R complex
+
+    // sgp130 dynamics and sequestration
+    J9:  => sgp130_Circ; ksynfsgp130;                                     // Synthesis of sgp130
+    J10: sgp130_Circ => ; kdeg_sgp130 * sgp130_Circ;                       // Degradation of sgp130
+    J11: IL6_sIL6R_Circ + sgp130_Circ -> IL6_sIL6R_sgp130_Circ; kon_c2*IL6_sIL6R_Circ*sgp130_Circ - koff_c2*IL6_sIL6R_sgp130_Circ; // Sequestration by sgp130
+    J12: IL6_sIL6R_sgp130_Circ => ; kdeg_c2 * IL6_sIL6R_sgp130_Circ;        // Degradation of the trimeric complex
+
+    // CRP dynamics (C-Reactive Protein)
+    J13:  => CRP_Liver; (Vmax_CRP * IL6_Circ) / (Km_CRP + IL6_Circ);       // IL-6 mediated synthesis of CRP in the Liver
+    J14: CRP_Liver => CRP_Circ; kCRPSecretion * CRP_Liver;                // Secretion of CRP from Liver to Circulation
+    J15: CRP_Circ => ; kdegCRP * CRP_Circ;                                // Degradation of CRP in Circulation
+
+    // pSTAT3 dynamics in Gut
+    J16:  => pSTAT3_Gut; (Vmax_pSTAT3 * IL6_Gut) / (Km_pSTAT3 + IL6_Gut);  // IL-6 mediated activation of STAT3
+    J17: pSTAT3_Gut => ; k_dephos * pSTAT3_Gut;                           // Dephosphorylation of pSTAT3
+
+
+    //// Species initializations:
+    // Initial concentrations are for Crohn's patient, converted from Table 1.
+    // Concentrations are in nmol/L.
+    IL6_Gut = 0.0105;     // 250 pg/ml
+    pSTAT3_Gut = 3.0;     // 3 au (fold change)
+    CRP_Liver = 100;      // Placeholder value, not specified in publication
+    IL6_Circ = 0.000422;  // 10 pg/ml
+    sIL6R_Circ = 2.8;     // 140 ng/ml
+    CRP_Circ = 280;       // 7 mg/l
+    sgp130_Circ = 2.8;    // 280 ng/ml
+    IL6_sIL6R_Circ = 0;
+    IL6_sIL6R_sgp130_Circ = 0;
+
+    //// Compartment initializations:
+    Gut = 1;         // L, placeholder value
+    Liver = 1;       // L, placeholder value
+    Circulation = 1; // L, placeholder value
+
+    //// Variable initializations:
+    // Note: Parameter values are not specified in the publication and are set to
+    // plausible placeholder values for model execution. The original paper performed
+    // parameter estimation against experimental data.
+    ksynfIL6Gut = 0.001;    // nmol/L/hr
+    kdegIL6Gut = 0.1;       // 1/hr
+    q_IL6 = 1.0;            // L/hr
+    kdegIL6Circ = 0.1;      // 1/hr
+    ksynfSR_basal = 0.1;    // nmol/L/hr
+    ksynfSR_CRP = 0.001;    // 1/hr
+    kdegSR = 0.1;           // 1/hr
+    kon_c1 = 1;             // 1/(nmol*hr)
+    koff_c1 = 0.1;          // 1/hr
+    kdeg_c1 = 0.1;          // 1/hr
+    ksynfsgp130 = 0.1;      // nmol/L/hr
+    kdeg_sgp130 = 0.1;      // 1/hr
+    kon_c2 = 1;             // 1/(nmol*hr)
+    koff_c2 = 0.1;          // 1/hr
+    kdeg_c2 = 0.1;          // 1/hr
+    Vmax_CRP = 10;          // nmol/L/hr
+    Km_CRP = 0.01;          // nmol/L
+    kCRPSecretion = 0.1;    // 1/hr
+    kdegCRP = 0.1;          // 1/hr
+    Vmax_pSTAT3 = 1;        // nmol/L/hr
+    Km_pSTAT3 = 0.01;       // nmol/L
+    k_dephos = 0.1;         // 1/hr
+
+    //// Other declarations:
+    const Gut, Liver, Circulation;
+    const ksynfIL6Gut, kdegIL6Gut, q_IL6, kdegIL6Circ, ksynfSR_basal;
+    const ksynfSR_CRP, kdegSR, kon_c1, koff_c1, kdeg_c1, ksynfsgp130;
+    const kdeg_sgp130, kon_c2, koff_c2, kdeg_c2, Vmax_CRP, Km_CRP;
+    const kCRPSecretion, kdegCRP, Vmax_pSTAT3, Km_pSTAT3, k_dephos;
+
+    //// Unit definitions:
+    unit substance = 1e-9 mole;
+    unit volume = 1 liter;
+    unit time_unit = 3600 second;
+    unit concentration = substance / volume;
+    unit per_hour = 1 / time_unit;
+
+    //// Display Names:
+    time_unit is "hour";
+    Gut is "Gastrointestinal Tract Compartment";
+    Liver is "Liver Compartment";
+    Circulation is "Circulation Compartment";
+    IL6_Gut is "Gut IL-6";
+    pSTAT3_Gut is "Gut pSTAT3";
+    CRP_Liver is "Liver CRP";
+    IL6_Circ is "Serum IL-6";
+    sIL6R_Circ is "Serum sIL-6R";
+    CRP_Circ is "Serum CRP";
+    sgp130_Circ is "Serum sgp130";
+    IL6_sIL6R_Circ is "Serum IL-6/sIL-6R Complex";
+    IL6_sIL6R_sgp130_Circ is "Serum IL-6/sIL-6R/sgp130 Complex";
+end

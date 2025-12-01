@@ -1,0 +1,124 @@
+/*
+ * This model is based on the wiring diagram (Figure 7A) and descriptive text
+ * from Queralt et al., Cell (2006). The model describes the core regulatory network
+ * controlling mitotic exit in budding yeast.
+ *
+ * The kinetic parameters have not been provided in the paper and are chosen
+ * here for illustrative purposes to qualitatively reproduce the dynamics
+ * shown in Figure 7B (Wild-type exit). The equations are formulated based on
+ * standard representations of biochemical networks involving protein modification
+ * cycles and degradation.
+ */
+model *Queralt2006_MitoticExit_BuddingYeast()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Clb2 in cell, Cdc20 in cell, Securin in cell, PP2A in cell;
+  species Net1P in cell, MEN in cell, Cdh1 in cell;
+  species $Separase in cell, $Cdc14 in cell, $Net1 in cell;
+
+  //// Assignment Rules:
+  Separase := Sep_T - Securin;
+  Cdc14 := Net1P;
+  Net1 := Net1_T - Net1P;
+
+  //// Reactions:
+  # Clb2 (mitotic cyclin-Cdk complex) dynamics
+  J_Clb2: -> Clb2; ks_clb - (kd_clb_0 + kd_clb_cdc20*Cdc20 + kd_clb_cdh1*Cdh1)*Clb2;
+
+  # Cdc20 (APC activator) synthesis and degradation
+  J_Cdc20: -> Cdc20; ks_cdc20 - (kd_cdc20_0 + kd_cdc20_cdh1*Cdh1)*Cdc20;
+
+  # Securin degradation mediated by APC-Cdc20
+  J_Securin: Securin -> ; kd_securin_cdc20*Cdc20*Securin;
+
+  # PP2A (phosphatase) activity, inhibited by Separase
+  J_PP2A: -> PP2A; ka_pp2a*(PP2A_T - PP2A) - ki_pp2a*Separase*PP2A;
+
+  # Net1 phosphorylation/dephosphorylation cycle
+  J_Net1P: -> Net1P; (kp_net1_clb*Clb2 + kp_net1_men*MEN)*Net1 - (kdp_net1_pp2a*PP2A + kdp_net1_cdc14*Cdc14)*Net1P;
+
+  # MEN (Mitotic Exit Network) activation/inactivation
+  # Activated by Cdc14, inhibited by Clb2-Cdk and PP2A
+  J_MEN: -> MEN; ka_men_cdc14*Cdc14*(MEN_T - MEN) - (ki_men_clb*Clb2 + ki_men_pp2a*PP2A)*MEN;
+
+  # Cdh1 (APC activator) activation/inactivation, forming a bistable switch with Clb2-Cdk
+  J_Cdh1:-> Cdh1; ka_cdh1_cdc14*Cdc14*(Cdh1_T - Cdh1) - ki_cdh1_clb*Clb2*Cdh1;
+
+  //// Species initializations:
+  # Initial conditions represent a metaphase-arrested state
+  Clb2 = 1;        # High Cdk activity
+  Cdc20 = 0;       # Inactive APC/C
+  Securin = 1;     # Securin present, Separase inhibited
+  PP2A = 1;        # PP2A is fully active
+  Net1P = 0.01;    # Net1 is mostly unphosphorylated, Cdc14 sequestered
+  MEN = 0;         # MEN is inactive
+  Cdh1 = 0;        # Cdh1 is inactive
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Total protein concentrations (normalized)
+  Sep_T = 1.0;
+  PP2A_T = 1.0;
+  Net1_T = 1.0;
+  MEN_T = 1.0;
+  Cdh1_T = 1.0;
+
+  # Rate constants (illustrative values)
+  ks_clb = 0.03;
+  kd_clb_0 = 0.03;
+  kd_clb_cdc20 = 1.0;
+  kd_clb_cdh1 = 1.0;
+
+  ks_cdc20 = 0.1;
+  kd_cdc20_0 = 0.1;
+  kd_cdc20_cdh1 = 1.0;
+
+  kd_securin_cdc20 = 1.0;
+
+  ka_pp2a = 0.1;
+  ki_pp2a = 1.0;
+
+  kp_net1_clb = 1.0;
+  kp_net1_men = 1.0;
+  kdp_net1_pp2a = 0.5;
+  kdp_net1_cdc14 = 0.2;
+
+  ka_men_cdc14 = 0.5;
+  ki_men_clb = 1.0;
+  ki_men_pp2a = 1.0;
+
+  ka_cdh1_cdc14 = 1.0;
+  ki_cdh1_clb = 2.0;
+
+  //// Other declarations:
+  const cell, Sep_T, PP2A_T, Net1_T, MEN_T, Cdh1_T;
+  const ks_clb, kd_clb_0, kd_clb_cdc20, kd_clb_cdh1;
+  const ks_cdc20, kd_cdc20_0, kd_cdc20_cdh1;
+  const kd_securin_cdc20;
+  const ka_pp2a, ki_pp2a;
+  const kp_net1_clb, kp_net1_men, kdp_net1_pp2a, kdp_net1_cdc14;
+  const ka_men_cdc14, ki_men_clb, ki_men_pp2a;
+  const ka_cdh1_cdc14, ki_cdh1_clb;
+
+  //// Display Names:
+  Clb2 is "Clb2-Cdk complex";
+  Cdc20 is "Active Cdc20";
+  Securin is "Securin (Separase inhibitor)";
+  PP2A is "Active PP2A-Cdc55 phosphatase";
+  Net1P is "Phosphorylated Net1";
+  MEN is "Active Mitotic Exit Network";
+  Cdh1 is "Active Cdh1";
+  Separase is "Free Separase";
+  Cdc14 is "Free Cdc14 phosphatase";
+  Net1 is "Unphosphorylated Net1-Cdc14 complex";
+  J_Clb2 is "Clb2 synthesis and degradation";
+  J_Cdc20 is "Cdc20 synthesis and degradation";
+  J_Securin is "Securin degradation";
+  J_PP2A is "PP2A activation state dynamics";
+  J_Net1P is "Net1 phosphorylation state dynamics";
+  J_MEN is "MEN activation state dynamics";
+  J_Cdh1 is "Cdh1 activation state dynamics";
+end

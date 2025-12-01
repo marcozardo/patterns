@@ -1,0 +1,98 @@
+model *Dudziuk2019_HSR_model()
+
+    //// Compartments and Species:
+    compartment cell;
+    species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell;
+    species HSF3 in cell, HSE in cell, HSE_HSF3 in cell, mRNA in cell, P in cell;
+
+    //// Assignment Rules:
+    HSP_tot := HSP + HSP_S + HSP_HSF;
+    Hsp70_tot := HSP_tot - HSC_tot;
+    HSF3_tot := HSF3 + HSE_HSF3;
+    V_den_T := 1 - (1 + ((T - T0)/(T_half - T0))^nv)^-1;
+    l7_T := l7_37 * (T <= 37) + l7_37 * (-T + T_41) * (T > 37) * (T <= T_41)/(T_41-T_37) + l7_41 * (T - T_37) * (T > 37) * (T <= T_41)/(T_41-T_37) + l7_41 * (-T + T_42) * (T > 41) * (T <= T_42)/(T_42-T_41) + l7_42 * (T - T_41) * (T > 41) * (T <= T_42)/(T_42-T_41) + l7_42 * (-T + T_43) * (T > 42) * (T <= T_43)/(T_43-T_42) + l7_43 * (T - T_42) * (T > 42) * (T <= T_43)/(T_43-T_42) + l7_43 * (-T + T_44) * (T > 43) * (T <= T_44)/(T_44-T_43) + l7_44 * (T - T_43) * (T > 43) * (T <= T_44)/(T_44-T_43) + l7_44 * (-T + T_45) * (T > 44) * (T <= 45)/(T_45-T_44) + l7_45 * (T - T_44) * (T > 44) * (T <= 45)/(T_45-T_44) + l7_45 * (T > 45);
+    k8_T := k8_max*(1 - 1/(1+exp(-R_k8*(T - T_k8))));
+    k11_T := k10 * (V_den_T/(1-V_den_T));
+
+    //// Reactions:
+    J1: HSP + S -> HSP_S; k1 * HSP * S;
+    J2: HSP_S -> HSP + S; l1 * HSP_S;
+    J3: HSP + HSF -> HSP_HSF; k2 * HSP * HSF;
+    J4: HSP_HSF -> HSP + HSF; l2 * HSP_HSF;
+    J5: 3 HSF -> HSF3; k3 * HSF^3;
+    J6: HSP + HSF3 -> HSP_HSF + 2 HSF; l3 * HSP * HSF3;
+    J7: mRNA -> mRNA + HSP; k4 * mRNA;
+    J8: mRNA -> ; k5 * mRNA;
+    J9: -> HSP; k6;
+    J10: HSF3 + HSE -> HSE_HSF3; k7 * HSF3 * HSE;
+    J11: HSE_HSF3 -> HSF3 + HSE; l7_T * HSE_HSF3;
+    J12: HSE_HSF3 -> HSE_HSF3 + mRNA; k8_T * HSE_HSF3;
+    J13: HSP -> ; k9 * HSP;
+    J14: HSP_S -> HSP + P; k10 * HSP_S;
+    J15: P -> S; k11_T * P;
+
+    //// Species initializations:
+    HSP = HSP0;
+    HSF = HSF0;
+    S = S0;
+    HSP_HSF = HSP_HSF0;
+    HSP_S = HSP_S0;
+    HSF3 = HSF30;
+    HSE = HSE0;
+    HSE_HSF3 = HSE_HSF30;
+    mRNA = mRNA0;
+    P = P0;
+
+    //// Compartment initializations:
+    cell = 1;
+
+    //// Variable initializations:
+    T_37 = 37.0;
+    T_41 = 41.0;
+    T_42 = 42.0;
+    T_43 = 43.0;
+    T_44 = 44.0;
+    T_45 = 45.0;
+    l7_37 = 47.68;
+    l7_41 = 1.233;
+    l7_42 = 0.6628;
+    l7_43 = 0.01639;
+    l7_44 = 50.01;
+    l7_45 = 84.27;
+    k8_max = 96.07;
+    R_k8 = 15.93;
+    T_k8 = 42.89;
+    T_eps = 0.01;
+    T0 = 35.81;
+    T_half = 47.13;
+    nv = 6.522;
+    T = 37;
+    k1 = 12.60;
+    l1 = 3.028e-3;
+    k2 = 0.2180;
+    l2 = 1.162;
+    k3 = 4.465e5;
+    l3 = 2.392;
+    k4 = 18.85;
+    k5 = 8.709e-4;
+    k6 = 0.08899;
+    k7 = 5892;
+    k9 = 1.888e-3;
+    k10 = 9.813e-2;
+    HSE_tot = 4.0e-6;
+    HSF_tot = 1.568e-2;
+    P_tot_cons = 1.297e3;
+    HSP0 = 5.206e+01;
+    HSC_tot = 4.713e+01;
+    HSF0 = 1.363e-03;
+    S0 = 8.122e-08;
+    HSP_HSF0 = 1.429e-02;
+    HSP_S0 = 5.268e-04;
+    HSF30 = 9.082e-06;
+    HSE0 = 3.996e-06;
+    HSE_HSF30 = 4.484e-09;
+    mRNA0 = 4.946e-04;
+    P0 = 1.297e+03;
+
+end
+

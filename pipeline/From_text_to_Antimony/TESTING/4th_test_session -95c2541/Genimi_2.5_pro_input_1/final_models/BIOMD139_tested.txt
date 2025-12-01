@@ -1,0 +1,153 @@
+model *Hoffmann2002_IkkNFkB()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFkB_c in cytoplasm, NFkB_n in nucleus;
+  species IkBa_c in cytoplasm, IkBa_n in nucleus;
+  species IkBb_c in cytoplasm, IkBe_c in cytoplasm;
+  species NFkB_IkBa_c in cytoplasm, NFkB_IkBa_n in nucleus;
+  species NFkB_IkBb_c in cytoplasm, NFkB_IkBe_c in cytoplasm;
+  species mRNA_IkBa in cytoplasm, mRNA_IkBb in cytoplasm, mRNA_IkBe in cytoplasm;
+
+  //// Reactions:
+  # IKK-mediated degradation of I-kappa-B proteins from NF-kB complexes (cytoplasm)
+  # This releases free NF-kB in the cytoplasm.
+  R_degradation_a: NFkB_IkBa_c => NFkB_c; kc_a * IKK * NFkB_IkBa_c * cytoplasm;
+  R_degradation_b: NFkB_IkBb_c => NFkB_c; kc_b * IKK * NFkB_IkBb_c * cytoplasm;
+  R_degradation_e: NFkB_IkBe_c => NFkB_c; kc_e * IKK * NFkB_IkBe_c * cytoplasm;
+
+  # Association and dissociation of NF-kB and I-kappa-B (cytoplasm)
+  R_assoc_a_c: NFkB_c + IkBa_c -> NFkB_IkBa_c; ka_a * NFkB_c * IkBa_c - kd_a * NFkB_IkBa_c;
+  R_assoc_b_c: NFkB_c + IkBb_c -> NFkB_IkBb_c; ka_b * NFkB_c * IkBb_c - kd_b * NFkB_IkBb_c;
+  R_assoc_e_c: NFkB_c + IkBe_c -> NFkB_IkBe_c; ka_e * NFkB_c * IkBe_c - kd_e * NFkB_IkBe_c;
+
+  # Basal degradation of free I-kappa-B proteins (cytoplasm)
+  R_prot_deg_a_c: IkBa_c => ; deg_p_a * IkBa_c * cytoplasm;
+  R_prot_deg_b_c: IkBb_c => ; deg_p_b * IkBb_c * cytoplasm;
+  R_prot_deg_e_c: IkBe_c => ; deg_p_e * IkBe_c * cytoplasm;
+  
+  # Translation of I-kappa-B proteins from mRNA (cytoplasm)
+  R_translation_a: => IkBa_c; tl_a * mRNA_IkBa * cytoplasm;
+  R_translation_b: => IkBb_c; tl_b * mRNA_IkBb * cytoplasm;
+  R_translation_e: => IkBe_c; tl_e * mRNA_IkBe * cytoplasm;
+
+  # Transport of proteins between cytoplasm and nucleus
+  R_import_NFkB: NFkB_c => NFkB_n; ki_N * NFkB_c;
+  R_import_IkBa: IkBa_c => IkBa_n; ki_a * IkBa_c;
+  R_export_IkBa: IkBa_n => IkBa_c; ke_a * IkBa_n;
+  R_export_complex: NFkB_IkBa_n => NFkB_IkBa_c; ke_N_a * NFkB_IkBa_n;
+
+  # Association and dissociation of NF-kB and I-kappa-B-alpha (nucleus)
+  R_assoc_a_n: NFkB_n + IkBa_n -> NFkB_IkBa_n; ka_a * NFkB_n * IkBa_n - kd_a * NFkB_IkBa_n;
+
+  # Transcription of I-kappa-B mRNA, induced by nuclear NF-kB
+  R_transcription_a: => mRNA_IkBa; (ts_a_basal + ts_a_ind * NFkB_n) * nucleus;
+  R_transcription_b: => mRNA_IkBb; (ts_b_basal + ts_b_ind * NFkB_n) * nucleus;
+  R_transcription_e: => mRNA_IkBe; (ts_e_basal + ts_e_ind * NFkB_n) * nucleus;
+
+  # Degradation of mRNA (cytoplasm)
+  R_mRNA_deg_a: mRNA_IkBa => ; deg_m_a * mRNA_IkBa * cytoplasm;
+  R_mRNA_deg_b: mRNA_IkBb => ; deg_m_b * mRNA_IkBb * cytoplasm;
+  R_mRNA_deg_e: mRNA_IkBe => ; deg_m_e * mRNA_IkBe * cytoplasm;
+  
+  # Basal degradation of free I-kappa-B-alpha (nucleus)
+  R_prot_deg_a_n: IkBa_n => ; deg_p_a * IkBa_n * nucleus;
+
+  //// Events:
+  # Simulation of persistent TNF-alpha stimulation by activating IKK at time > 0
+  E1: at (time > 0): IKK = 1.0;
+
+  //// Species initializations:
+  # Pre-stimulation steady state: most NF-kB is sequestered in the cytoplasm
+  NFkB_c = 1;
+  NFkB_IkBa_c = 90;
+  NFkB_IkBb_c = 5;
+  NFkB_IkBe_c = 4;
+  NFkB_n = 0;
+  NFkB_IkBa_n = 0;
+  
+  IkBa_c = 10;
+  IkBb_c = 10;
+  IkBe_c = 10;
+  IkBa_n = 1;
+
+  mRNA_IkBa = 1;
+  mRNA_IkBb = 1;
+  mRNA_IkBe = 1;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  IKK = 0; # IKK activity level, controlled by stimulus event
+
+  # IKK-mediated degradation rates (kc_a is highest for fast response)
+  kc_a = 0.5;
+  kc_b = 0.1;
+  kc_e = 0.1;
+  
+  # Association rates
+  ka_a = 0.1;
+  ka_b = 0.1;
+  ka_e = 0.1;
+  
+  # Dissociation rates (beta and epsilon form more stable complexes)
+  kd_a = 0.05;
+  kd_b = 0.01;
+  kd_e = 0.01;
+
+  # Protein degradation rates
+  deg_p_a = 0.01;
+  deg_p_b = 0.005;
+  deg_p_e = 0.005;
+
+  # Translation rates
+  tl_a = 0.2;
+  tl_b = 0.1;
+  tl_e = 0.1;
+  
+  # Transport rates
+  ki_N = 0.1;   # NF-kB import
+  ki_a = 0.1;   # IkBa import
+  ke_a = 0.05;  # IkBa export
+  ke_N_a = 0.2; # Complex export (key for feedback)
+  
+  # Transcription rates (ts_a_ind is highest for strong feedback)
+  ts_a_basal = 0.01;
+  ts_a_ind = 0.2;
+  ts_b_basal = 0.01;
+  ts_b_ind = 0.02;
+  ts_e_basal = 0.01;
+  ts_e_ind = 0.02;
+  
+  # mRNA degradation rates
+  deg_m_a = 0.1;
+  deg_m_b = 0.05;
+  deg_m_e = 0.05;
+
+  //// Other declarations:
+  var IKK;
+  const cytoplasm, nucleus;
+  const kc_a, kc_b, kc_e, ka_a, kd_a, ka_b, kd_b, ka_e, kd_e;
+  const deg_p_a, deg_p_b, deg_p_e, tl_a, tl_b, tl_e;
+  const ki_N, ki_a, ke_a, ke_N_a;
+  const ts_a_basal, ts_a_ind, ts_b_basal, ts_b_ind, ts_e_basal, ts_e_ind;
+  const deg_m_a, deg_m_b, deg_m_e;
+
+  //// Display Names:
+  IKK is "I-kappa-B Kinase activity";
+  NFkB_c is "Cytoplasmic NF-kappa-B";
+  NFkB_n is "Nuclear NF-kappa-B";
+  IkBa_c is "Cytoplasmic I-kappa-B-alpha";
+  IkBb_c is "Cytoplasmic I-kappa-B-beta";
+  IkBe_c is "Cytoplasmic I-kappa-B-epsilon";
+  IkBa_n is "Nuclear I-kappa-B-alpha";
+  NFkB_IkBa_c is "Cytoplasmic NF-kappa-B:I-kappa-B-alpha complex";
+  NFkB_IkBb_c is "Cytoplasmic NF-kappa-B:I-kappa-B-beta complex";
+  NFkB_IkBe_c is "Cytoplasmic NF-kappa-B:I-kappa-B-epsilon complex";
+  NFkB_IkBa_n is "Nuclear NF-kappa-B:I-kappa-B-alpha complex";
+  mRNA_IkBa is "I-kappa-B-alpha mRNA";
+  mRNA_IkBb is "I-kappa-B-beta mRNA";
+  mRNA_IkBe is "I-kappa-B-epsilon mRNA";
+end

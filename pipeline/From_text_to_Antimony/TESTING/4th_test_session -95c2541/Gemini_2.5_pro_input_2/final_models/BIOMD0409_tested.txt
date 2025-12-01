@@ -1,0 +1,116 @@
+model *Queralt2006_MitoticExit()
+
+  // This model represents the core regulatory network for mitotic exit in budding yeast,
+  // based on the descriptions and wiring diagram (Figure 7A) in Queralt et al., 2006.
+  // The model captures the interplay between APC/C, Separase, PP2A, Cdc14, and the MEN.
+
+  //// Compartments and Species:
+  compartment cell;
+  species Cdc20 in cell;              // APC/C activator
+  species Clb2 in cell;               // Mitotic cyclin, proxy for Cdk1 activity
+  species SecurinSeparase in cell;    // Inactive Separase complexed with Securin
+  species Separase in cell;           // Active Separase protease
+  species PP2A_act in cell;           // Active PP2A-Cdc55 phosphatase
+  species PP2A_inact in cell;         // Inactive PP2A-Cdc55
+  species Cdc14_inact_complex in cell;// Cdc14 phosphatase sequestered by Net1
+  species Cdc14_act in cell;          // Active Cdc14 phosphatase
+  species Net1_P in cell;             // Phosphorylated Net1, which releases Cdc14
+  species MEN_act in cell;            // Active Mitotic Exit Network
+  species MEN_inact in cell;          // Inactive Mitotic Exit Network
+  species Cdh1_act in cell;           // Active APC/C-Cdh1 E3 ligase
+  species Cdh1_inact in cell;         // Inactive APC/C-Cdh1
+
+  //// Reactions:
+  // Cdc20 dynamics: synthesis is induced at t=0, followed by degradation.
+  J_Cdc20_syn: => Cdc20; k_syn_cdc20;
+  J_Cdc20_deg: Cdc20 => ; k_deg_cdc20 * Cdc20;
+
+  // Clb2 (Cdk activity) dynamics: constant synthesis countered by degradation via APC/C-Cdc20 and APC/C-Cdh1.
+  J_Clb2_syn: => Clb2; k_syn_clb2;
+  J_Clb2_deg: Clb2 => ; (k_deg_clb2_c20*Cdc20 + k_deg_clb2_cdh1*Cdh1_act) * Clb2;
+
+  // Separase activation: Cdc20-dependent degradation of Securin releases active Separase.
+  J_Sep_act: SecurinSeparase => Separase; k_act_sep * Cdc20 * SecurinSeparase;
+
+  // PP2A regulation: Active Separase inactivates PP2A_act; there is a constant reactivation.
+  J_PP2A_inact: PP2A_act => PP2A_inact; k_inact_pp2a * Separase * PP2A_act;
+  J_PP2A_act:   PP2A_inact => PP2A_act; k_act_pp2a * PP2A_inact;
+
+  // Cdc14 release and sequestration cycle, centered on Net1 phosphorylation state.
+  // Release is driven by Cdk (Clb2) and MEN phosphorylating Net1 in the complex.
+  J_Cdc14_release: Cdc14_inact_complex => Cdc14_act + Net1_P; (k_phos_cdk*Clb2 + k_phos_men*MEN_act) * Cdc14_inact_complex;
+  // Sequestration is driven by dephosphorylation of Net1_P by PP2A and Cdc14 itself, leading to rebinding.
+  J_Cdc14_sequest: Cdc14_act + Net1_P => Cdc14_inact_complex; (k_dephos_pp2a*PP2A_act + k_dephos_cdc14*Cdc14_act) * Net1_P * Cdc14_act;
+
+  // Mitotic Exit Network (MEN) regulation.
+  // Activated by Cdc14, inactivated by a basal rate and by Cdk (Clb2).
+  J_MEN_act:   MEN_inact => MEN_act; k_act_men * Cdc14_act * MEN_inact;
+  J_MEN_inact: MEN_act => MEN_inact; (k_inact_men_basal + k_inact_men_cdk*Clb2) * MEN_act;
+
+  // Cdh1 regulation.
+  // Activated by Cdc14-dependent dephosphorylation, inactivated by Cdk (Clb2)-dependent phosphorylation.
+  J_Cdh1_act:   Cdh1_inact => Cdh1_act; k_act_cdh1 * Cdc14_act * Cdh1_inact;
+  J_Cdh1_inact: Cdh1_act => Cdh1_inact; k_inact_cdh1 * Clb2 * Cdh1_act;
+
+  //// Species initializations:
+  // Initial conditions represent a metaphase arrest due to Cdc20 depletion.
+  Cdc20 = 0;              // No Cdc20 at the start.
+  Clb2 = 1;               // High mitotic Cdk activity.
+  SecurinSeparase = 1;    // Total Separase is 1, all inhibited by Securin.
+  Separase = 0;
+  PP2A_act = 1;           // Total PP2A is 1, all active.
+  PP2A_inact = 0;
+  Cdc14_inact_complex = 1;// Total Cdc14 is 1, all sequestered.
+  Cdc14_act = 0;
+  Net1_P = 0;             // Net1 is not phosphorylated.
+  MEN_inact = 1;          // Total MEN is 1, all inactive.
+  MEN_act = 0;
+  Cdh1_inact = 1;         // Total Cdh1 is 1, all inactive.
+  Cdh1_act = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_syn_cdc20 = 1.0;
+  k_deg_cdc20 = 1.0;
+  k_syn_clb2 = 1.0;
+  k_deg_clb2_c20 = 1.0;
+  k_deg_clb2_cdh1 = 1.0;
+  k_act_sep = 1.0;
+  k_inact_pp2a = 1.0;
+  k_act_pp2a = 1.0;
+  k_phos_cdk = 1.0;
+  k_phos_men = 1.0;
+  k_dephos_pp2a = 1.0;
+  k_dephos_cdc14 = 1.0;
+  k_act_men = 1.0;
+  k_inact_men_basal = 1.0;
+  k_inact_men_cdk = 1.0;
+  k_act_cdh1 = 1.0;
+  k_inact_cdh1 = 1.0;
+
+  //// Other declarations:
+  const cell;
+  // Kinetic parameters (symbolic representation)
+  const k_syn_cdc20, k_deg_cdc20, k_syn_clb2, k_deg_clb2_c20, k_deg_clb2_cdh1;
+  const k_act_sep, k_inact_pp2a, k_act_pp2a, k_phos_cdk, k_phos_men;
+  const k_dephos_pp2a, k_dephos_cdc14, k_act_men, k_inact_men_basal;
+  const k_inact_men_cdk, k_act_cdh1, k_inact_cdh1;
+
+  //// Display Names:
+  cell is "Yeast Cell";
+  Cdc20 is "Cdc20";
+  Clb2 is "Clb2-Cdk activity";
+  SecurinSeparase is "Securin-Separase complex";
+  Separase is "Active Separase";
+  PP2A_act is "Active PP2A_Cdc55";
+  PP2A_inact is "Inactive PP2A_Cdc55";
+  Cdc14_inact_complex is "Inactive Cdc14-Net1 complex";
+  Cdc14_act is "Active Cdc14";
+  Net1_P is "Phosphorylated Net1";
+  MEN_act is "Active MEN";
+  MEN_inact is "Inactive MEN";
+  Cdh1_act is "Active Cdh1";
+  Cdh1_inact is "Inactive Cdh1";
+end

@@ -1,0 +1,55 @@
+model *Greene2019_DrugResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;
+
+  //// Reactions:
+  growth_S:  => S; S * (1 - (S + R));
+  growth_R:  => R; p_r * R * (1 - (S + R));
+  mutation_S_to_R: S => R; (epsilon + alpha * u) * S;
+  drug_kill_S: S => ; d * u * S;
+
+  //// Species initializations:
+  S = 0.01;  // Initial sensitive population, dimensionless
+  R = 0;     // Initial resistant population, dimensionless
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  p_r = 0.2;      // Resistant growth fraction
+  epsilon = 1e-6; // Background mutation rate
+  alpha = 1e-2;   // Drug-induced resistance rate (for resistance-inducing case)
+  d = 1;          // Cytotoxicity of sensitive cells
+  u = 1.5;        // Treatment magnitude, constant dose (Uon)
+  // Simulation control parameters from Table 1, not used directly in model equations
+  Vd = 0.1;       // Detectable tumor volume
+  Vc = 0.9;       // Tumor volume defining treatment failure
+  // Pulsed therapy parameters from Table 1
+  Aton = 1;     // Pulsed treatment window
+  At_off = 3;   // Pulsed holiday length
+
+  //// Other declarations:
+  var V;
+  const tumor, p_r, epsilon, alpha, d, u, Vd, Vc, Aton, At_off;
+
+  //// Display Names:
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  V is "Total tumor volume";
+  tumor is "Tumor compartment";
+  p_r is "Resistant growth fraction";
+  epsilon is "Background mutation rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Cytotoxicity of sensitive cells";
+  u is "Treatment magnitude";
+  growth_S is "Growth of sensitive cells";
+  growth_R is "Growth of resistant cells";
+  mutation_S_to_R is "Transition from sensitive to resistant";
+  drug_kill_S is "Drug-induced death of sensitive cells";
+
+end

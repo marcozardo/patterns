@@ -1,0 +1,109 @@
+```antimony
+model *Dudziuk2019_hsp70_induction*()
+  
+  //// Compartments and Species:
+  compartment cell;
+  species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell;
+  species HSF3 in cell, HSE in cell, HSE_HSF3 in cell, mRNA in cell, P in cell;
+
+  //// Assignment Rules:
+  k11_T := k10*(Vden/(1 - Vden));
+  k8_T := k8_max*(1 - 1/(1 + (exp( -R_k8 * (T - T_k8)))));
+  l7_T := piecewise(l7_37, T <= 37, (l7_41 - l7_37)/(41 - 37)*(T - 37) + l7_37, (T > 37) && (T <= 41), (l7_42 - l7_41)/(42 - 41)*(T - 41) + l7_41, (T > 41) && (T <= 42), (l7_43 - l7_42)/(43 - 42)*(T - 42) + l7_42, (T > 42) && (T <= 43), (l7_44 - l7_43)/(44 - 43)*(T - 43) + l7_43, (T > 43) && (T <= 44), (l7_45 - l7_44)/(45 - 44)*(T - 44) + l7_44, (T > 44) && (T <= 45));
+  Vden := 1 - (1 + ((T - T0)/(T0_5 - T0))^nv)^-1;
+
+  //// Reactions:
+  # HSF activation
+  reac1: 3HSF => HSF3; k3*(HSF)^3;
+  # HSF3-to-DNA interactions
+  reac2: HSF3 + HSE <-> HSE_HSF3; cell*(k7*HSF3*HSE - l7_T*HSE_HSF3);
+  # transcription
+  reac3: HSE_HSF3 => HSE_HSF3 + mRNA; k8_T*HSE_HSF3*cell;
+  # HSF inactivation
+  reac4: HSP + HSF3 => HSP_HSF + 2*HSF; l3*HSP*HSF3*cell;
+  # HSP-to-substrate interactions
+  reac5: HSP + S <-> HSP_S; cell*(k1*HSP*S - l1*HSP_S);
+  # HSP-to-HSF interactions
+  reac6: HSP + HSF <-> HSP_HSF; cell*(k2*HSP*HSF - l2*HSP_HSF);
+  # HSP degradation
+  reac7: HSP => ; k9*HSP*cell;
+  # protein refolding
+  reac8: HSP_S => HSP + P; k10*HSP_S*cell;
+  # protein denaturation ->
+  reac9: P => S; k11_T*P*cell;
+  # The original paper writes this as a reversible reaction (2.9) P <-> S.
+  # But the rate law given only accounts for the forward reaction with k11.
+  # The ODEs presented (3.3 & 3.10) also only show the forward reaction.
+  # Assuming the text description is more complete.
+  # Re-evaluating based on the model context: The reaction is reversible, but the reverse rate constant is not explicitly defined in the rate law section 
+  # of the paper.  However, equation (2.15) suggests a model where refolding (HSP:S -> P) opposes denaturation (P -> S),
+  # thus the reverse reaction of P<->S is implicitly handled by the protein refolding pathway.
+  
+  # translation
+  reac10: mRNA => mRNA + HSP; k4*mRNA*cell;
+  # Hsp70 mRNA degradation
+  reac11: mRNA => ; k5*mRNA*cell;
+  # constitutive HSP production
+  reac12: => HSP; k6 * cell;
+  
+  //// Species initializations:
+  HSP = 5.206e+01; # concentration in micromolar
+  HSF = 1.363e-03; # concentration in micromolar
+  S = 8.122e-08; # concentration in micromolar
+  HSP_HSF = 1.429e-02; # concentration in micromolar
+  HSP_S = 5.268e-04; # concentration in micromolar
+  HSF3 = 9.082e-06; # concentration in micromolar
+  HSE = 3.996e-06; # concentration in micromolar
+  HSE_HSF3 = 4.484e-09; # concentration in micromolar
+  mRNA = 4.946e-04; # concentration in micromolar
+  P = 1.297e+03; # concentration in micromolar
+
+  //// Compartment initializations:
+  cell = 1; # unspecified volume assumed as 1
+
+  //// Variable initializations:
+  k1 = 1.260e+01; # Units: / uM / min
+  l1 = 3.028e-03; # Units: /min
+  k2 = 2.180e-01; # Units: /uM / min
+  l2 = 1.162e+00; # Units: /min
+  k3 = 4.465e+05; # Units: /uM^2 / min (Note: This is for 3*HSF -> HSF3, so units should be per M^2 per time)
+  l3 = 2.392e+00; # Units: /uM / min
+  k4 = 1.885e+01; # Units: /min
+  k5 = 8.709e-04; # Units: /min
+  k6 = 8.899e-02; # Units: uM / min
+  k7 = 5.892e+03; # Units: /uM /min
+  
+  # Temperature dependent rate constant for HSE:HSF3 dissociation
+  l7_37 = 4.768e+01; # Units: /min at 37 C
+  l7_41 = 1.233e+00; # Units: /min at 41 C
+  l7_42 = 6.628e-01; # Units: /min at 42 C
+  l7_43 = 1.639e-02; # Units: /min at 43 C
+  l7_44 = 5.001e+01; # Units: /min at 44 C
+  l7_45 = 8.427e+01; # Units: /min at 45 C
+  
+  # Parameters for k8^T (transcription)
+  k8_max = 9.607e+01; # Units: /min
+  R_k8 = 15.93; # unitless
+  T_k8 = 42.89; # C
+  
+  k9 = 1.888e-03; # Units: /min
+  k10 = 9.813e-02; # Units: /min
+  
+  # Parameters for Vden calculation
+  T0 = 35.81; # C
+  T0_5 = 47.13; # C
+  nv = 6.522; # unitless
+  
+  # Non-reacting parameter for temperature
+  T = 37;
+  
+  //// Other declarations:
+  const k1, l1, k2, l2, k3, l3, k4, k5, k6, k7, k9, k10, k8_max, R_k8, T_k8, T0, T0_5, nv, cell;
+  const l7_37, l7_41, l7_42, l7_43, l7_44, l7_45;
+  var k8_T, l7_T, k11_T, Vden, T;
+  
+  //// Events:
+  at(time>0): T = 42; # Simulating a heat shock
+  
+end
+```

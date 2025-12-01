@@ -1,0 +1,84 @@
+model *Gevertz2019_OncolyticVirotherapy_MinimalModel()
+
+  //// Compartments and Species:
+  compartment tumor_environment;
+  species $U in tumor_environment, $I in tumor_environment, $V in tumor_environment;
+  species $T in tumor_environment, $D in tumor_environment;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Rate Rules:
+  U' = r*U - beta*U*V/N - (kappa0 + c_kill*I)*U*T/N;
+  I' = beta*U*V/N - delta_I*I - (kappa0 + c_kill*I)*I*T/N;
+  V' = u_V + alpha*delta_I*I - delta_V*V;
+  T' = c_T*I + chi_D*D - delta_T*T;
+  D' = u_D - delta_D*D;
+
+  //// Species initializations:
+  U = U_0;   // Initial uninfected tumor volume
+  I = 0;     // Initial infected tumor volume
+  V = 0;     // Initial oncolytic adenovirus
+  T = 0;     // Initial tumor-targeting T cells
+  D = 0;     // Initial injected dendritic cells
+
+  //// Compartment initializations:
+  tumor_environment = 1; // Arbitrary volume, as model is density-dependent
+
+  //// Variable initializations:
+  # Best-fit parameter values from Table 2 for the minimal model
+  r = 0.3198;
+  beta = 0.00100854;
+  c_T = 1.428064;
+  c_kill = 6.234e7;
+  chi_D = 4.901894;
+
+  # Parameter values not provided in the text. Using placeholder values for model executability.
+  U_0 = 10;         # Placeholder for initial tumor volume (e.g., mm^3)
+  kappa0 = 0.1;     # Placeholder for basal T-cell killing rate
+  delta_I = 0.5;    # Placeholder for infected cell lysis rate
+  alpha = 100;      # Placeholder for virions released per cell lysis
+  delta_V = 1;      # Placeholder for virus decay rate
+  delta_T = 0.1;    # Placeholder for T-cell death rate
+  delta_D = 0.2;    # Placeholder for DC decay rate
+
+  # Treatment inputs, set to 0 for baseline model.
+  # These would be controlled by events or piecewise functions in a simulation.
+  u_V = 0;
+  u_D = 0;
+
+  //// Other declarations:
+  var U, I, V, T, D, N, u_V, u_D;
+  const tumor_environment;
+  const r, beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, U_0;
+
+  //// Unit definitions:
+  unit substance = 1e-9 litre; # Corresponds to mm^3
+  unit time_unit = 86400 second; # Corresponds to day
+
+  //// Display Names:
+  substance is "cubic millimeter";
+  time_unit is "day";
+  tumor_environment is "Tumor Microenvironment";
+  U is "Uninfected tumor cell volume";
+  I is "Infected tumor cell volume";
+  V is "Oncolytic adenovirus";
+  T is "Tumor-targeting T cells";
+  D is "Injected dendritic cells";
+  N is "Total volume of cells";
+  r is "Tumor growth rate";
+  beta is "Tumor infection rate";
+  kappa0 is "Basal T-cell killing rate";
+  c_kill is "Enhanced T-cell killing rate";
+  delta_I is "Infected cell lysis rate";
+  alpha is "Virions released per cell lysis";
+  delta_V is "Virus natural decay rate";
+  c_T is "T-cell recruitment rate by 4-1BBL and IL-12";
+  chi_D is "T-cell production rate by DCs";
+  delta_T is "T-cell natural death rate";
+  delta_D is "DC decay rate";
+  u_V is "Oncolytic virus treatment input rate";
+  u_D is "Dendritic cell treatment input rate";
+  U_0 is "Initial uninfected tumor volume";
+
+end

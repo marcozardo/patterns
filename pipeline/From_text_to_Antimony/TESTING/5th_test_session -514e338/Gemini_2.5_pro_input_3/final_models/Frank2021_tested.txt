@@ -1,0 +1,93 @@
+/*
+ * ## Model Source
+ * Frank AS, Larripa K, Ryu H, Snodgrass RG, R??????blitz S (2021).
+ * Bifurcation and sensitivity analysis reveal key drivers of multistability in a model of macrophage polarization.
+ * Journal of Theoretical Biology 509: 110511.
+ * DOI: 10.1016/j.jtbi.2020.110511
+ *
+ * ## Model Notes
+ * This model describes the dynamics of macrophage polarization, tracking the activation
+ * levels of STAT1 (x1) and STAT6 (x2) as proxies for M1 and M2 phenotypes, respectively.
+ * The model is based on a system of two coupled ordinary differential equations adapted
+ * from a T-cell model by Yates et al. (2004), but with an important asymmetry in the
+ * inhibition terms.
+ *
+ * The provided parameter values correspond to the initial set "Theta_0" from Table 2 of the publication.
+ * The paper also analyzes two other parameter sets, "Theta_1" and "Theta_2", which are provided
+ * below for reference.
+ *
+ * Theta_1: Same as Theta_0, but S1 = 4, S2 = 4.
+ * Theta_2: a1=15, a2=8, b1=0.05, b2=0.05, n1=22, n2=6, k1=1, k2=1, l1=1, l2=1, p1=0.5, p2=1, q1=5.8, q2=5.8, S1=5, S2=5.
+ */
+
+model *Frank2021_MacrophagePolarization()
+
+  //// Compartments and Species:
+  compartment macrophage;
+  species $x1 in macrophage, $x2 in macrophage;
+
+  //// Rate Rules:
+  # Equation (1) from the paper
+  x1' = (a1 * (x1^n1 / (x1^n1 + k1^n1)) + S1) * (p2^l2 / (p2^l2 + x2^l2)) + b1 - q1*x1;
+  # Equation (2) from the paper
+  x2' = a2 * (x2^n2 / (x2^n2 + k2^n2)) + S2 * (p1^l1 / (p1^l1 + x1^l1)) + b2 - q2*x2;
+
+  //// Species initializations:
+  # Initial conditions representing a naive/unactivated state.
+  x1 = 0;
+  x2 = 0;
+
+  //// Compartment initializations:
+  macrophage = 1;
+
+  //// Variable initializations:
+  # Parameter values from set Theta_0 in Table 2
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;
+  S2 = 3.75;
+
+  //// Other declarations:
+  const macrophage;
+  const a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Unit definitions:
+  unit day = 86400 * second;
+  unit per_day = 1 / day;
+  unit substance = dimensionless; # arbitrary unit
+  unit time_unit = day;
+
+  //// Display Names:
+  time_unit is "day";
+  x1 is "Activated STAT1";
+  x2 is "Activated STAT6";
+  a1 is "Strength of self-stimulation for x1";
+  a2 is "Strength of self-stimulation for x2";
+  b1 is "Basal activation rate for x1";
+  b2 is "Basal activation rate for x2";
+  n1 is "Hill exponent for self-stimulation of x1";
+  n2 is "Hill exponent for self-stimulation of x2";
+  k1 is "Threshold for self-stimulation of x1";
+  k2 is "Threshold for self-stimulation of x2";
+  l1 is "Hill exponent for inhibition by x1";
+  l2 is "Hill exponent for inhibition by x2";
+  p1 is "Threshold for inhibition by x1";
+  p2 is "Threshold for inhibition by x2";
+  q1 is "Deactivation rate for x1";
+  q2 is "Deactivation rate for x2";
+  S1 is "Input signal strength (IFN-gamma)";
+  S2 is "Input signal strength (IL-4)";
+
+end

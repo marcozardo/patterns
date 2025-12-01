@@ -1,0 +1,72 @@
+model *Hou2020_COVID19_SEIR()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Reactions:
+  # Infection of susceptible individuals by infectious individuals
+  infection_by_I: S -> E; r1 * beta1 * I * S / N;
+
+  # Infection of susceptible individuals by exposed (latent) individuals
+  infection_by_E: S -> E; r2 * beta2 * E * S / N;
+
+  # Transition of exposed individuals to the infectious state
+  incubation: E -> I; alpha * E;
+
+  # Recovery of infectious individuals
+  recovery: I -> R; gamma_ * I;
+
+  //// Species initializations:
+  # Initial number of susceptible individuals on Dec 31, 2019
+  S = 11080778;
+  # Initial number of exposed (latent) individuals
+  E = 193;
+  # Initial number of infectious individuals
+  I = 27;
+  # Initial number of recovered individuals
+  R = 2;
+
+  //// Compartment initializations:
+  # The model considers a single population, volume is set to 1 for simplicity.
+  population = 1;
+
+  //// Variable initializations:
+  # Total population of Wuhan city, N = S+E+I+R
+  N = 11081000;
+  # Contact rate of infected individuals
+  r1 = 6;
+  # Contact rate of latent individuals (varied from 6 to 18 in the paper)
+  r2 = 18;
+  # Probability of infection from symptomatic individuals (I).
+  # Note: Table 1 gives 0.4, while the text mentions 4% (0.04). The table value is used here.
+  beta1 = 0.4;
+  # Probability of infection from latent individuals (E), assumed to be half of beta1.
+  beta2 = 0.2;
+  # Incubation rate (1/7 days)
+  alpha = 0.14;
+  # Recovery rate (1/21 days)
+  gamma_ = 0.048;
+
+  //// Other declarations:
+  const population, N, r1, r2, beta1, beta2, alpha, gamma_;
+
+  //// Display Names:
+  population is "Wuhan City";
+  S is "Susceptible individuals";
+  E is "Exposed individuals";
+  I is "Infectious individuals";
+  R is "Recovered individuals";
+  N is "Total population";
+  r1 is "Contact rate of infected individuals";
+  r2 is "Contact rate of latent individuals";
+  beta1 is "Infection probability from an infected individual";
+  beta2 is "Infection probability from an exposed individual";
+  alpha is "Incubation rate";
+  gamma_ is "Recovery rate";
+  infection_by_I is "Infection by infectious individuals";
+  infection_by_E is "Infection by exposed individuals";
+  incubation is "Progression to infectious state";
+  recovery is "Recovery from infection";
+
+end

@@ -1,0 +1,92 @@
+```antimony
+model Dudziuk2019_hsp70_heat_induction()
+
+    //// Compartments and Species:
+    compartment cell;
+    species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell;
+    species HSF_3 in cell, HSE in cell, HSE_HSF_3 in cell, mRNA in cell, P in cell;
+
+    //// Assignment Rules:
+    HSP_tot := HSP + HSP_HSF + HSP_S;
+    HSF_tot := HSF + HSP_HSF + 3*HSF_3 + 3*HSE_HSF_3;
+    HSE_tot := HSE + HSE_HSF_3;
+    k8t := k8max*(1 - 1/(1 + exp(-Rk8*(T - Tk8))));
+    Vden_T := 1 - (1 + ((T - T0)/(T05 - T0))^nv)^-1;
+    k11t := k10*Vden_T/(1 - Vden_T);
+    l7t := piecewise(l7_45, T == 45, l7_44, T == 44, l7_43, T == 43, l7_42, T == 42, l7_41, T == 41, l7_37);
+
+    //// Reactions:
+    HSF_activation: 3 HSF -> HSF_3; k3*HSF^3;
+    HSF3_to_DNA: HSF_3 + HSE <-> HSE_HSF_3; k7*HSF_3*HSE - l7t*HSE_HSF_3;
+    transcription: HSE_HSF_3 -> HSE_HSF_3 + mRNA; k8t*HSE_HSF_3;
+    HSF_inactivation: HSP + HSF_3 -> HSP_HSF + 2 HSF; l3*HSP*HSF_3;
+    HSP_to_substrate: HSP + S <-> HSP_S; k1*HSP*S - l1*HSP_S;
+    HSP_to_HSF: HSP + HSF <-> HSP_HSF; k2*HSP*HSF - l2*HSP_HSF;
+    HSP_degradation: HSP ->; k9*HSP;
+    protein_refolding: HSP_S -> HSP + P; k10*HSP_S;
+    protein_denaturation: P -> S; k11t*P;
+    translation: mRNA -> mRNA + HSP; k4*mRNA;
+    mRNA_degradation: mRNA ->; k5*mRNA;
+    constitutive_HSP_production:  -> HSP; k6;
+
+    //// Species initializations:
+    HSP = 52.06;
+    HSF = 0.001363;
+    S = 8.122e-08;
+    HSP_HSF = 0.01429;
+    HSP_S = 0.0005268;
+    HSF_3 = 9.082e-06;
+    HSE = 0.000003996;
+    HSE_HSF_3 = 4.484e-09;
+    mRNA = 0.0004946;
+    P = 1297;
+
+    //// Compartment initializations:
+    cell = 1;
+
+    //// Variable initializations:
+    k3 = 4.465e+05;
+    k7 = 5892;
+    l3 = 2.392;
+    k1 = 12.6;
+    l1 = 0.003028;
+    k2 = 0.218;
+    l2 = 1.162;
+    k9 = 0.001888;
+    k10 = 0.09813;
+    k4 = 18.85;
+    k5 = 0.0008709;
+    k6 = 0.08899;
+    l7_37 = 47.68;
+    l7_41 = 1.233;
+    l7_42 = 0.6628;
+    l7_43 = 0.01639;
+    l7_44 = 50.01;
+    l7_45 = 84.27;
+    k8max = 96.07;
+    Rk8 = 15.93;
+    Tk8 = 42.89;
+    T0 = 35.81;
+    T05 = 47.13;
+    nv = 6.522;
+    T = 37;
+    HSP_totp = 52.07;
+    HSF_totp = 0.01568;
+    HSE_totp = 0.000004;
+
+    //// Other declarations:
+    var HSP, HSF, S, HSP_HSF, HSP_S, HSF_3, HSE, HSE_HSF_3, mRNA, P, T, Vden_T, k8t, k11t, l7t;
+    const cell, k3, k7, l3, k1, l1, k2, l2, k9, k10, k4, k5, k6;
+    const l7_37, l7_41, l7_42, l7_43, l7_44, l7_45;
+    const T0, T05, nv, Rk8, Tk8, k8max;
+    const HSP_totp, HSF_totp, HSE_totp;
+
+    //// Unit definitions:
+    unit time_unit = minute;
+    unit substance = 1e-6 mole;
+    unit volume = litre;
+    unit length = metre;
+    unit area = metre^2;
+
+end
+```

@@ -1,0 +1,78 @@
+model *Kimmel2021_CART_therapy()
+
+  /*
+  This model is based on the publication:
+  Kimmel GJ, Locke FL, Altrock PM. 2021 The roles of T cell competition and
+  stochastic extinction events in chimeric antigen receptor T cell therapy.
+  Proc. R. Soc. B 288: 20210229.
+  https://doi.org/10.1098/rspb.2021.0229
+  */
+
+  //// Compartments and Species:
+  compartment system;
+  species N in system, C in system, B in system;
+
+  //// Assignment Rules:
+  T := N + C;  // Total lymphocyte count
+  // The functional form for r_C is taken from Figure 2b, as the one in the main text appears to have a typo.
+  r_C := rho_C + b*(T - K_N)^2 / (a*T^2 + (T - K_N)^2);
+
+  //// Rate Rules:
+  // Equation 2.1: Gompertz growth for normal T cells
+  N' = -r_N * N * log((N + C) / K_N);
+
+  // Equation 2.2: Growth dynamics for CAR T cells
+  C' = -r_C * C * log((N + C) / K_C);
+
+  // Equation 2.3: Tumour cell dynamics with killing by CAR T cells
+  B' = r_B * B - gamma_B * B * C / (k_B + C);
+
+  //// Reactions:
+  // No reactions defined, the model is described by rate rules.
+
+  //// Species initializations:
+  N = 3.00e9;   // Initial median normal T cell number (cells)
+  C = 1.80e8;   // Initial CAR T cell number (cells)
+  B = 9.486e10; // Initial median tumour cell number (cells)
+
+  //// Compartment initializations:
+  system = 1; // Arbitrary volume, since model uses cell counts.
+
+  //// Variable initializations:
+  K_N = 2.50e11;    // Normal T cell carrying capacity (cells)
+  K_C = 6.96e10;    // CAR T cell carrying capacity (cells)
+  r_N = 0.17;       // Normal T cell net growth rate (1/day)
+  rho_C = 0.0251;   // Baseline CAR T net growth rate (1/day)
+  a = 0.423;        // Signalling inefficiency factor in r_C (dimensionless)
+  b = 0.525;        // Immune reconstitution impact in r_C (1/day)
+  // Tumour net growth rate is given as a range in Table 1.
+  // The 'medium' value from the text (figure 3b description) is used here.
+  r_B = 0.19;       // Tumour net growth rate (1/day)
+  gamma_B = 1.15;   // Tumour-killing rate by effector CAR (1/day)
+  k_B = 2.024e9;    // Killing rate saturation parameter (cells)
+
+  //// Other declarations:
+  var T, r_C;
+  const system, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second; // day
+  unit substance = 1 item;      // cell
+
+  //// Display Names:
+  time_unit is "day";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "CD19+ tumour cells";
+  T is "Total lymphocyte count";
+  r_C is "CAR T cell growth rate function";
+  K_N is "Normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "Normal T cell net growth rate";
+  rho_C is "Baseline CAR T net growth rate";
+  a is "Signalling inefficiency factor in r_C";
+  b is "Immune reconstitution impact in r_C";
+  r_B is "Tumour net growth rate";
+  gamma_B is "Tumour-killing rate by effector CAR";
+  k_B is "Killing rate saturation parameter";
+end

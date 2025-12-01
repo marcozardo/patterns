@@ -1,0 +1,85 @@
+model *Greene2019_DrugResistance()
+
+  /*
+  This model is based on the paper:
+  "Mathematical Approach to Differentiate Spontaneous and Induced Evolution to
+  Drug Resistance During Cancer Treatment"
+  by James M. Greene, Jana L. Gevertz, and Eduardo D. Sontag (2019).
+  Clin Cancer Inform. DOI: 10.1200/CCI.18.00087
+
+  It describes the dynamics of a tumor composed of drug-sensitive (S) and
+  drug-resistant (R) cells. The model incorporates both spontaneous and
+  drug-induced transitions to resistance. This implementation uses the
+  non-dimensionalized ordinary differential equations (Eqs. 4 and 5) from
+  the paper.
+  */
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  # Total tumor volume
+  V := S + R;
+
+  # Effective drug dose u(t).
+  # This rule implements the pulsed therapy protocol described in the paper.
+  # Treatment starts at time td and consists of pulses of duration Aton
+  # followed by holidays of duration delta_t_off.
+  # To simulate constant therapy, this rule can be changed to:
+  # u := piecewise(Uon, time >= td, 0);
+  u := piecewise(Uon, and(time >= td, (time - td) % (Aton + delta_t_off) < Aton), 0);
+
+  //// Rate Rules:
+  S' = (1 - V)*S - (epsilon + alpha*u)*S - d*u*S;
+  R' = pr*(1 - V)*R + (epsilon + alpha*u)*S;
+
+  //// Species initializations:
+  S = 0.01;  # S0, initial sensitive population
+  R = 0;     # R0, initial resistant population
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Parameters from Table 1 and the main text
+  Vd = 0.1;
+  Vc = 0.9;
+  epsilon = 1e-6;
+  d = 1;
+  pr = 0.2;
+  Uon = 1.5;
+  Aton = 1;
+  delta_t_off = 3;
+
+  # The paper compares a phenotype-preserving drug (alpha=0) with a
+  # resistance-inducing drug (alpha = 10^-2 = 0.01).
+  # Default value is for the resistance-inducing case.
+  alpha = 0.01;
+
+  # td is the time to reach detectable tumor volume Vd, at which treatment starts.
+  # This value is not given in the paper and must be determined from a
+  # simulation without treatment. A value of 25 is estimated from Figure 2.
+  td = 25;
+
+  //// Other declarations:
+  var V, u;
+  const tumor, Vd, Vc, epsilon, d, pr, Uon, Aton, delta_t_off, alpha, td;
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  S is "Sensitive cancer cells";
+  R is "Resistant cancer cells";
+  V is "Total tumor volume (S+R)";
+  u is "Effective drug dose";
+  epsilon is "Spontaneous (background) mutation rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Cytotoxicity of drug on sensitive cells";
+  pr is "Resistant cell growth fraction";
+  Uon is "Treatment magnitude (dose)";
+  Aton is "Pulsed treatment window length";
+  delta_t_off is "Pulsed treatment holiday length";
+  Vd is "Detectable tumor volume";
+  Vc is "Tumor volume defining treatment failure";
+  td is "Time of treatment initiation";
+end

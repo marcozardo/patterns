@@ -1,0 +1,215 @@
+model *Hoffmann2002_NFkB()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+
+  // IKK species in cytoplasm
+  species IKKa in cytoplasm, IKKi in cytoplasm;
+
+  // Transcripts in cytoplasm
+  species tIkBa in cytoplasm, tIkBb in cytoplasm, tIkBe in cytoplasm;
+
+  // IkB proteins in cytoplasm and nucleus
+  species IkBa_c in cytoplasm, IkBa_n in nucleus;
+  species IkBb_c in cytoplasm, IkBb_n in nucleus;
+  species IkBe_c in cytoplasm, IkBe_n in nucleus;
+
+  // NFkB in cytoplasm and nucleus
+  species NFkB_c in cytoplasm, NFkB_n in nucleus;
+
+  // NFkB-IkB complexes in cytoplasm and nucleus
+  species NFkBIkBa_c in cytoplasm, NFkBIkBa_n in nucleus;
+  species NFkBIkBb_c in cytoplasm, NFkBIkBb_n in nucleus;
+  species NFkBIkBe_c in cytoplasm, NFkBIkBe_n in nucleus;
+
+  //// Assignment Rules:
+  // IKK-induced degradation rates
+  IKK_induced_degradation_a := k_degradation_a * IKKa;
+  IKK_induced_degradation_b := k_degradation_b * IKKa;
+  IKK_induced_degradation_e := k_degradation_e * IKKa;
+
+  //// Reactions:
+  // IKK activation/inactivation
+  R1: IKKi -> IKKa; k_activation * IKKi;
+  R2: IKKa -> IKKi; k_inactivation * IKKa;
+
+  // IkBa reactions
+  // Synthesis and degradation of IkBa transcript
+  R3:  -> tIkBa; c1a * NFkB_n + c2a; // Constitutive and NF-kB induced transcription
+  R4: tIkBa -> ; c3a * tIkBa;  // Transcript degradation
+  R5:  -> IkBa_c; c4a * tIkBa; // Translation
+
+  // Degradation of IkBa protein
+  R6: IkBa_c -> ; (k_degradation_ni_a + IKK_induced_degradation_a) * IkBa_c; // Free IkBa degradation
+  R7: NFkBIkBa_c -> NFkB_c; (k_degradation_ni_a + IKK_induced_degradation_a) * NFkBIkBa_c; // Bound IkBa degradation, releasing NF-kB
+
+  // Association and dissociation of NFkB and IkBa
+  R8: NFkB_c + IkBa_c -> NFkBIkBa_c; ka1 * NFkB_c * IkBa_c;
+  R9: NFkBIkBa_c -> NFkB_c + IkBa_c; kd1 * NFkBIkBa_c;
+  R10: NFkB_n + IkBa_n -> NFkBIkBa_n; ka1 * NFkB_n * IkBa_n;
+  R11: NFkBIkBa_n -> NFkB_n + IkBa_n; kd1 * NFkBIkBa_n;
+
+  // Transport of IkBa
+  R12: IkBa_c -> IkBa_n; ki1 * IkBa_c;
+  R13: IkBa_n -> IkBa_c; ke1 * IkBa_n;
+  R14: NFkBIkBa_n -> NFkBIkBa_c; ke_c1 * NFkBIkBa_n;
+
+  // IkBb reactions (constitutive transcription)
+  R15:  -> tIkBb; c2b; // Constitutive transcription
+  R16: tIkBb -> ; c3b * tIkBb; // Transcript degradation
+  R17:  -> IkBb_c; c4b * tIkBb; // Translation
+
+  // Degradation of IkBb protein
+  R18: IkBb_c -> ; (k_degradation_ni_b + IKK_induced_degradation_b) * IkBb_c;
+  R19: NFkBIkBb_c -> NFkB_c; (k_degradation_ni_b + IKK_induced_degradation_b) * NFkBIkBb_c;
+
+  // Association and dissociation of NFkB and IkBb
+  R20: NFkB_c + IkBb_c -> NFkBIkBb_c; ka2 * NFkB_c * IkBb_c;
+  R21: NFkBIkBb_c -> NFkB_c + IkBb_c; kd2 * NFkBIkBb_c;
+  R22: NFkB_n + IkBb_n -> NFkBIkBb_n; ka2 * NFkB_n * IkBb_n;
+  R23: NFkBIkBb_n -> NFkB_n + IkBb_n; kd2 * NFkBIkBb_n;
+
+  // Transport of IkBb
+  R24: IkBb_c -> IkBb_n; ki2 * IkBb_c;
+  R25: IkBb_n -> IkBb_c; ke2 * IkBb_n;
+  R26: NFkBIkBb_n -> NFkBIkBb_c; ke_c2 * NFkBIkBb_n;
+
+  // IkBe reactions (constitutive transcription)
+  R27:  -> tIkBe; c2e; // Constitutive transcription
+  R28: tIkBe -> ; c3e * tIkBe; // Transcript degradation
+  R29:  -> IkBe_c; c4e * tIkBe; // Translation
+
+  // Degradation of IkBe protein
+  R30: IkBe_c -> ; (k_degradation_ni_e + IKK_induced_degradation_e) * IkBe_c;
+  R31: NFkBIkBe_c -> NFkB_c; (k_degradation_ni_e + IKK_induced_degradation_e) * NFkBIkBe_c;
+
+  // Association and dissociation of NFkB and IkBe
+  R32: NFkB_c + IkBe_c -> NFkBIkBe_c; ka3 * NFkB_c * IkBe_c;
+  R33: NFkBIkBe_c -> NFkB_c + IkBe_c; kd3 * NFkBIkBe_c;
+  R34: NFkB_n + IkBe_n -> NFkBIkBe_n; ka3 * NFkB_n * IkBe_n;
+  R35: NFkBIkBe_n -> NFkB_n + IkBe_n; kd3 * NFkBIkBe_n;
+
+  // Transport of IkBe
+  R36: IkBe_c -> IkBe_n; ki3 * IkBe_c;
+  R37: IkBe_n -> IkBe_c; ke3 * IkBe_n;
+  R38: NFkBIkBe_n -> NFkBIkBe_c; ke_c3 * NFkBIkBe_n;
+
+  // Transport of NFkB
+  R39: NFkB_c -> NFkB_n; ki_nfkb * NFkB_c;
+  // I-kB mediated export of nuclear NF-kB
+  R40: NFkB_n -> NFkB_c; ke_nfkb1 * IkBa_n * NFkB_n;
+  R41: NFkB_n -> NFkB_c; ke_nfkb2 * IkBb_n * NFkB_n;
+  R42: NFkB_n -> NFkB_c; ke_nfkb3 * IkBe_n * NFkB_n;
+
+  //// Species initializations:
+  // Initial conditions correspond to the unstimulated steady state
+  IKKa = 0; // No active IKK before stimulus
+  IKKi = 0.1;
+
+  tIkBa = 0.00355;
+  tIkBb = 0.03361;
+  tIkBe = 0.00373;
+
+  IkBa_c = 0.0355;
+  IkBb_c = 0.3361;
+  IkBe_c = 0.0373;
+
+  IkBa_n = 0.0071;
+  IkBb_n = 0.0336;
+  IkBe_n = 0.00373;
+
+  NFkB_c = 0.057;
+  NFkB_n = 0;
+
+  NFkBIkBa_c = 0.033;
+  NFkBIkBb_c = 0.0097;
+  NFkBIkBe_c = 0.0003;
+
+  NFkBIkBa_n = 0;
+  NFkBIkBb_n = 0;
+  NFkBIkBe_n = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  IKK_total = 0.1;
+
+  // IKK kinetics for persistent stimulus
+  k_activation = 0.06;
+  k_inactivation = 0.03;
+
+  // IkBa parameters
+  c1a = 5.0e-4;   // NFkB-induced transcription rate
+  c2a = 5.0e-6;   // Constitutive transcription rate
+  c3a = 0.001;    // mRNA degradation rate
+  c4a = 0.1;      // Translation rate
+  k_degradation_a = 0.003; // IKK-mediated degradation multiplier
+  k_degradation_ni_a = 5e-4; // Constitutive degradation rate
+  ka1 = 0.1;      // Association rate with NFkB
+  kd1 = 0.006;    // Dissociation rate from NFkB
+  ki1 = 0.02;     // Nuclear import rate
+  ke1 = 0.01;     // Nuclear export rate
+  ke_c1 = 0.03;   // Complex nuclear export rate
+
+  // IkBb parameters
+  c2b = 5.0e-5;
+  c3b = 0.0015;
+  c4b = 1;
+  k_degradation_b = 0.003;
+  k_degradation_ni_b = 1.6e-5;
+  ka2 = 0.1;
+  kd2 = 0.0006;
+  ki2 = 0.01;
+  ke2 = 0.001;
+  ke_c2 = 0.03;
+
+  // IkBe parameters
+  c2e = 4.0e-6;
+  c3e = 0.00108;
+  c4e = 1;
+  k_degradation_e = 0.003;
+  k_degradation_ni_e = 1.3e-5;
+  ka3 = 0.1;
+  kd3 = 0.0004;
+  ki3 = 0.01;
+  ke3 = 0.001;
+  ke_c3 = 0.03;
+
+  // NFkB transport parameters
+  ki_nfkb = 0.05; // Nuclear import rate
+  ke_nfkb1 = 0.06; // IkBa-mediated export rate
+  ke_nfkb2 = 0.006; // IkBb-mediated export rate
+  ke_nfkb3 = 0.006; // IkBe-mediated export rate
+
+  //// Other declarations:
+  const cytoplasm, nucleus, IKK_total;
+  const k_activation, k_inactivation;
+  const c1a, c2a, c3a, c4a, k_degradation_a, k_degradation_ni_a, ka1, kd1, ki1, ke1, ke_c1;
+  const c2b, c3b, c4b, k_degradation_b, k_degradation_ni_b, ka2, kd2, ki2, ke2, ke_c2;
+  const c2e, c3e, c4e, k_degradation_e, k_degradation_ni_e, ka3, kd3, ki3, ke3, ke_c3;
+  const ki_nfkb, ke_nfkb1, ke_nfkb2, ke_nfkb3;
+  var IKK_induced_degradation_a, IKK_induced_degradation_b, IKK_induced_degradation_e;
+
+  //// Display Names:
+  IKKa is "Active IKK";
+  IKKi is "Inactive IKK";
+  NFkB_n is "Nuclear NF-kB";
+  NFkB_c is "Cytoplasmic NF-kB";
+  IkBa_c is "Cytoplasmic IkBa";
+  IkBb_c is "Cytoplasmic IkBb";
+  IkBe_c is "Cytoplasmic IkBe";
+  IkBa_n is "Nuclear IkBa";
+  IkBb_n is "Nuclear IkBb";
+  IkBe_n is "Nuclear IkBe";
+  tIkBa is "IkBa mRNA";
+  tIkBb is "IkBb mRNA";
+  tIkBe is "IkBe mRNA";
+  NFkBIkBa_c is "Cytoplasmic NFkB-IkBa complex";
+  NFkBIkBa_n is "Nuclear NFkB-IkBa complex";
+  R3 is "IkBa transcription";
+  R5 is "IkBa translation";
+  R39 is "NF-kB nuclear import";
+end
+

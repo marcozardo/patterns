@@ -1,0 +1,232 @@
+/*
+This Antimony model represents the I??????B-NF-??????B signaling module as described
+by Hoffmann et al. in Science (2002). The model captures the core dynamics
+of NF-??????B activation, nuclear translocation, and feedback regulation by its
+three inhibitor isoforms: I??????B??????, I??????B??????, and I??????B??????.
+
+The model is based on the qualitative descriptions and pathway diagrams in the
+provided text. It includes separate compartments for the cytoplasm and nucleus,
+and models the synthesis, degradation, complex formation, and transport of all
+key molecular species.
+
+Key features from the paper are incorporated:
+- IKK-mediated degradation of I??????B proteins upon stimulation (e.g., by TNF??????).
+- Release and nuclear import of free NF-??????B.
+- A strong, NF-??????B-dependent negative feedback loop mediated by I??????B?????? synthesis.
+- Slower, stabilizing roles for I??????B?????? and I??????B??????, which dampen oscillations.
+
+NOTE: The source text does not provide specific kinetic rate laws or parameter values,
+as these were detailed in the supplementary materials (not provided). Therefore,
+plausible mass-action and simplified enzymatic kinetics have been used. All parameter
+values are placeholders intended to make the model executable and reflect the qualitative
+behavior described in the paper. They are not experimentally derived from this text.
+*/
+model *Hoffmann2002_IkB_NFkB_Signaling()
+
+    //// Compartments and Species:
+    compartment cytoplasm, nucleus;
+
+    // NF-kB Species
+    species NFkB_c in cytoplasm, NFkB_n in nucleus;
+
+    // IkB-alpha Species and Complexes
+    species mRNA_IkBa in cytoplasm;
+    species IkBa_c in cytoplasm, IkBa_n in nucleus;
+    species NFkB_IkBa_c in cytoplasm, NFkB_IkBa_n in nucleus;
+
+    // IkB-beta Species and Complexes
+    species mRNA_IkBb in cytoplasm;
+    species IkBb_c in cytoplasm, IkBb_n in nucleus;
+    species NFkB_IkBb_c in cytoplasm, NFkB_IkBb_n in nucleus;
+
+    // IkB-epsilon Species and Complexes
+    species mRNA_IkBe in cytoplasm;
+    species IkBe_c in cytoplasm, IkBe_n in nucleus;
+    species NFkB_IkBe_c in cytoplasm, NFkB_IkBe_n in nucleus;
+
+
+    //// Assignment Rules:
+    // IKK activity is controlled by an external stimulus (e.g., TNF).
+    // It is modeled as a piecewise function active between stim_start and stim_end.
+    IKK_activity := piecewise(1, time >= stim_start and time < stim_end, 0);
+
+
+    //// Reactions:
+    // --- I-kappa-B Alpha Regulation ---
+    // NF-kB-dependent transcription of IkBa mRNA (strong feedback)
+    J_trscr_a:  => mRNA_IkBa; (c1a + c2a*NFkB_n)*nucleus;
+    // Translation of IkBa
+    J_trsl_a: mRNA_IkBa => mRNA_IkBa + IkBa_c; c3a*mRNA_IkBa;
+    // Degradation of IkBa mRNA
+    J_degr_mrna_a: mRNA_IkBa => ; c4a*mRNA_IkBa;
+    // IKK-induced degradation of free IkBa
+    J_degr_prot_a: IkBa_c => ; (e1a*IKK_activity)*IkBa_c;
+    // Association/dissociation of NFkB and IkBa in cytoplasm
+    J_assoc_c_a: NFkB_c + IkBa_c -> NFkB_IkBa_c; a1a*NFkB_c*IkBa_c - d1a*NFkB_IkBa_c;
+    // IKK-induced degradation of the NFkB:IkBa complex, releasing NFkB
+    J_degr_complex_a: NFkB_IkBa_c => NFkB_c; (e2a*IKK_activity)*NFkB_IkBa_c;
+    // Nuclear import/export of free IkBa
+    J_trans_prot_a: IkBa_c -> IkBa_n; i1a*IkBa_c - o1a*IkBa_n;
+    // Association/dissociation of NFkB and IkBa in nucleus
+    J_assoc_n_a: NFkB_n + IkBa_n -> NFkB_IkBa_n; a2a*NFkB_n*IkBa_n - d2a*NFkB_IkBa_n;
+    // Nuclear export of the NFkB:IkBa complex
+    J_export_complex_a: NFkB_IkBa_n => NFkB_IkBa_c; o2a*NFkB_IkBa_n;
+
+    // --- I-kappa-B Beta Regulation ---
+    // Basal transcription of IkBb mRNA (weak feedback)
+    J_trscr_b:  => mRNA_IkBb; (c1b + c2b*NFkB_n)*nucleus;
+    // Translation of IkBb
+    J_trsl_b: mRNA_IkBb => mRNA_IkBb + IkBb_c; c3b*mRNA_IkBb;
+    // Degradation of IkBb mRNA
+    J_degr_mrna_b: mRNA_IkBb => ; c4b*mRNA_IkBb;
+    // IKK-induced degradation of free IkBb
+    J_degr_prot_b: IkBb_c => ; (e1b*IKK_activity)*IkBb_c;
+    // Association/dissociation of NFkB and IkBb in cytoplasm
+    J_assoc_c_b: NFkB_c + IkBb_c -> NFkB_IkBb_c; a1b*NFkB_c*IkBb_c - d1b*NFkB_IkBb_c;
+    // IKK-induced degradation of the NFkB:IkBb complex, releasing NFkB
+    J_degr_complex_b: NFkB_IkBb_c => NFkB_c; (e2b*IKK_activity)*NFkB_IkBb_c;
+    // Nuclear import/export of free IkBb
+    J_trans_prot_b: IkBb_c -> IkBb_n; i1b*IkBb_c - o1b*IkBb_n;
+    // Association/dissociation of NFkB and IkBb in nucleus
+    J_assoc_n_b: NFkB_n + IkBb_n -> NFkB_IkBb_n; a2b*NFkB_n*IkBb_n - d2b*NFkB_IkBb_n;
+    // Nuclear export of the NFkB:IkBb complex
+    J_export_complex_b: NFkB_IkBb_n => NFkB_IkBb_c; o2b*NFkB_IkBb_n;
+
+    // --- I-kappa-B Epsilon Regulation ---
+    // Basal transcription of IkBe mRNA (weak feedback)
+    J_trscr_e:  => mRNA_IkBe; (c1e + c2e*NFkB_n)*nucleus;
+    // Translation of IkBe
+    J_trsl_e: mRNA_IkBe => mRNA_IkBe + IkBe_c; c3e*mRNA_IkBe;
+    // Degradation of IkBe mRNA
+    J_degr_mrna_e: mRNA_IkBe => ; c4e*mRNA_IkBe;
+    // IKK-induced degradation of free IkBe
+    J_degr_prot_e: IkBe_c => ; (e1e*IKK_activity)*IkBe_c;
+    // Association/dissociation of NFkB and IkBe in cytoplasm
+    J_assoc_c_e: NFkB_c + IkBe_c -> NFkB_IkBe_c; a1e*NFkB_c*IkBe_c - d1e*NFkB_IkBe_c;
+    // IKK-induced degradation of the NFkB:IkBe complex, releasing NFkB
+    J_degr_complex_e: NFkB_IkBe_c => NFkB_c; (e2e*IKK_activity)*NFkB_IkBe_c;
+    // Nuclear import/export of free IkBe
+    J_trans_prot_e: IkBe_c -> IkBe_n; i1e*IkBe_c - o1e*IkBe_n;
+    // Association/dissociation of NFkB and IkBe in nucleus
+    J_assoc_n_e: NFkB_n + IkBe_n -> NFkB_IkBe_n; a2e*NFkB_n*IkBe_n - d2e*NFkB_IkBe_n;
+    // Nuclear export of the NFkB:IkBe complex
+    J_export_complex_e: NFkB_IkBe_n => NFkB_IkBe_c; o2e*NFkB_IkBe_n;
+
+    // --- Free NF-kB Transport ---
+    // Nuclear import of free NFkB
+    J_import_NFkB: NFkB_c => NFkB_n; i2*NFkB_c;
+
+
+    //// Species initializations:
+    // Initial conditions represent a pre-stimulated state where most NFkB is bound in the cytoplasm.
+    NFkB_c = 0.01;        // Almost no free cytoplasmic NFkB
+    NFkB_n = 0;           // No nuclear NFkB initially
+    mRNA_IkBa = 0.01;     // Basal mRNA levels
+    IkBa_c = 0.1;         // Basal free IkBa
+    IkBa_n = 0;
+    NFkB_IkBa_c = 33.3;   // Majority of NFkB bound
+    NFkB_IkBa_n = 0;
+    mRNA_IkBb = 0.01;     // Basal mRNA levels
+    IkBb_c = 0.1;         // Basal free IkBb
+    IkBb_n = 0;
+    NFkB_IkBb_c = 33.3;   // Majority of NFkB bound
+    NFkB_IkBb_n = 0;
+    mRNA_IkBe = 0.01;     // Basal mRNA levels
+    IkBe_c = 0.1;         // Basal free IkBe
+    IkBe_n = 0;
+    NFkB_IkBe_c = 33.3;   // Majority of NFkB bound
+    NFkB_IkBe_n = 0;
+
+
+    //// Compartment initializations:
+    cytoplasm = 1; # Assumed volume of 1 (arbitrary units)
+    nucleus = 1;   # Assumed volume of 1 (arbitrary units)
+
+
+    //// Variable initializations:
+    // Placeholder parameter values. Different values for alpha vs beta/epsilon
+    // reflect their distinct roles (fast feedback vs slow stabilization).
+
+    // Stimulus parameters
+    stim_start = 0;     // Time stimulus is applied
+    stim_end = 10000;   // Time stimulus is removed (set high for persistent)
+
+    // IkBa parameters (fast, strong feedback)
+    c1a = 0.01;   // Basal transcription
+    c2a = 1.0;    // NFkB-induced transcription (strong)
+    c3a = 0.1;    // Translation
+    c4a = 0.1;    // mRNA degradation
+    e1a = 0.5;    // IKK-induced protein degradation (fast)
+    a1a = 0.1;    // Association rate cyto
+    d1a = 0.1;    // Dissociation rate cyto
+    e2a = 0.5;    // IKK-induced complex degradation (fast)
+    i1a = 0.1;    // Nuclear import
+    o1a = 0.1;    // Nuclear export
+    a2a = 0.1;    // Association rate nuc
+    d2a = 0.1;    // Dissociation rate nuc
+    o2a = 0.1;    // Complex export
+
+    // IkBb parameters (slow, stabilizing)
+    c1b = 0.005;  // Basal transcription
+    c2b = 0.001;  // NFkB-induced transcription (weak)
+    c3b = 0.1;    // Translation
+    c4b = 0.1;    // mRNA degradation
+    e1b = 0.1;    // IKK-induced protein degradation (slow)
+    a1b = 0.1;    // Association rate cyto
+    d1b = 0.1;    // Dissociation rate cyto
+    e2b = 0.1;    // IKK-induced complex degradation (slow)
+    i1b = 0.1;    // Nuclear import
+    o1b = 0.1;    // Nuclear export
+    a2b = 0.1;    // Association rate nuc
+    d2b = 0.1;    // Dissociation rate nuc
+    o2b = 0.1;    // Complex export
+
+    // IkBe parameters (slow, stabilizing)
+    c1e = 0.005;  // Basal transcription
+    c2e = 0.001;  // NFkB-induced transcription (weak)
+    c3e = 0.1;    // Translation
+    c4e = 0.1;    // mRNA degradation
+    e1e = 0.1;    // IKK-induced protein degradation (slow)
+    a1e = 0.1;    // Association rate cyto
+    d1e = 0.1;    // Dissociation rate cyto
+    e2e = 0.1;    // IKK-induced complex degradation (slow)
+    i1e = 0.1;    // Nuclear import
+    o1e = 0.1;    // Nuclear export
+    a2e = 0.1;    // Association rate nuc
+    d2e = 0.1;    // Dissociation rate nuc
+    o2e = 0.1;    // Complex export
+
+    // Free NFkB parameters
+    i2  = 0.1;    // Nuclear import rate
+
+
+    //// Other declarations:
+    var IKK_activity;
+    const cytoplasm, nucleus;
+    const stim_start, stim_end;
+    const c1a, c2a, c3a, c4a, e1a, a1a, d1a, e2a, i1a, o1a, a2a, d2a, o2a;
+    const c1b, c2b, c3b, c4b, e1b, a1b, d1b, e2b, i1b, o1b, a2b, d2b, o2b;
+    const c1e, c2e, c3e, c4e, e1e, a1e, d1e, e2e, i1e, o1e, a2e, d2e, o2e;
+    const i2;
+
+
+    //// Display Names:
+    IKK_activity is "IKK Kinase Activity";
+    NFkB_c is "Cytoplasmic NF-kB";
+    NFkB_n is "Nuclear NF-kB";
+    mRNA_IkBa is "IkB-alpha mRNA";
+    IkBa_c is "Cytoplasmic IkB-alpha";
+    IkBa_n is "Nuclear IkB-alpha";
+    NFkB_IkBa_c is "Cytoplasmic NF-kB:IkB-alpha Complex";
+    NFkB_IkBa_n is "Nuclear NF-kB:IkB-alpha Complex";
+    mRNA_IkBb is "IkB-beta mRNA";
+    IkBb_c is "Cytoplasmic IkB-beta";
+    IkBb_n is "Nuclear IkB-beta";
+    NFkB_IkBb_c is "Cytoplasmic NF-kB:IkB-beta Complex";
+    NFkB_IkBb_n is "Nuclear NF-kB:IkB-beta Complex";
+    mRNA_IkBe is "IkB-epsilon mRNA";
+    IkBe_c is "Cytoplasmic IkB-epsilon";
+    IkBe_n is "Nuclear IkB-epsilon";
+    NFkB_IkBe_c is "Cytoplasmic NF-kB:IkB-epsilon Complex";
+    NFkB_IkBe_n is "Nuclear NF-kB:IkB-epsilon Complex";
+end

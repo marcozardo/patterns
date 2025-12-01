@@ -1,0 +1,91 @@
+```antimony
+model Dudziuk2019_HeatShockResponse()
+
+  //// Compartments and Species:
+  compartment cell;
+  species HSP in cell, HSF in cell, S in cell, HSP_HSF in cell, HSP_S in cell;
+  species HSF_3_ in cell, HSE in cell, HSE_HSF3 in cell, mRNA_ in cell, P in cell;
+
+  //// Assignment Rules:
+  l7t := piecewise(l7_41, T > 37 and T <= 41, l7_42, T > 41 and T <= 42, l7_43, T > 42 and T <= 43, l7_44, T > 43 and T <= 44, l7_45, T > 44, l7_37);
+  k8t := k8_max*(1 - 1/(1 + exp(-R_k8*(T - T_k8))));
+  VdenT := 1 - (1 + ((T - T0)/(T0_5 - T0))^nv)^-1;
+  k11_t := k10*VdenT/(1 - VdenT);
+
+  //// Reactions:
+  // HSF activation (trimerisation)
+  J0: 3 HSF => HSF_3_; cell*k3*HSF^3;
+  // HSF_3-to-DNA interactions
+  J1: HSF_3_ + HSE -> HSE_HSF3; cell*(k7*HSF_3_*HSE - l7t*HSE_HSF3);
+  // transcription
+  J2: HSE_HSF3 => HSE_HSF3 + mRNA_; cell*(k8t*HSE_HSF3);
+  // HSF inactivation
+  J3: HSP + HSF_3_ => HSP_HSF + 2 HSF; cell*l3*HSP*HSF_3_;
+  // HSP-to-substrate interactions
+  J4: HSP + S -> HSP_S; cell*(k1*HSP*S - l1*HSP_S);
+  // HSP-to-HSF interactions
+  J5: HSP + HSF -> HSP_HSF; cell*(k2*HSP*HSF - l2*HSP_HSF);
+  // HSP degradation
+  J6: HSP => ; cell*k9*HSP;
+  // protein refolding
+  J7: HSP_S => HSP + P; cell*k10*HSP_S;
+  // protein denaturation
+  J8: P -> S; cell*(k11_t*P - k11*S);
+  // translation
+  J9: mRNA_ => mRNA_ + HSP; cell*k4*mRNA_;
+  // Hsp70 mRNA degradation
+  J10: mRNA_ => ; cell*k5*mRNA_;
+  // constitutive HSP production
+  J11: -> HSP; cell*k6;
+
+  //// Species initializations:
+  HSP = 5.206e+01;
+  HSF = 1.363e-03;
+  S = 8.122e-08;
+  HSP_HSF = 1.429e-02;
+  HSP_S = 5.268e-04;
+  HSF_3_ = 9.082e-06;
+  HSE = 3.996e-06;
+  HSE_HSF3 = 4.484e-09;
+  mRNA_ = 4.946e-04;
+  P = 1.297e+03;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k1 = 12.6;
+  l1 = 0.003028;
+  k2 = 0.218;
+  l2 = 1.162;
+  k3 = 446500.0;
+  l3 = 2.392;
+  k4 = 18.85;
+  k5 = 0.0008709;
+  k6 = 0.08899;
+  k7 = 5892.0;
+  k9 = 0.001888;
+  k10 = 0.09813;
+  R_k8 = 15.93;
+  T_k8 = 42.89;
+  k8_max = 96.07;
+  T0 = 35.81;
+  T0_5 = 47.13;
+  nv = 6.522;
+  l7_37 = 47.68;
+  l7_41 = 1.233;
+  l7_42 = 0.6628;
+  l7_43 = 0.01639;
+  l7_44 = 50.01;
+  l7_45 = 84.27;
+  k11 = 0;
+  T = 37;
+
+  //// Other declarations:
+  var l7t, k8t, VdenT, k11_t;
+  const cell, k1, l1, k2, l2, k3, l3, k4, k5, k6, k7, k9, k10;
+  const R_k8, T_k8, k8_max, T0, T0_5, nv, l7_37, l7_41, l7_42, l7_43, l7_44;
+  const l7_45, k11, T;
+
+end
+```

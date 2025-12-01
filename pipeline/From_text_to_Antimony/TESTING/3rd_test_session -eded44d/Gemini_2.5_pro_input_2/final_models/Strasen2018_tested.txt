@@ -1,0 +1,128 @@
+model *Strasen2018_TGFb_signaling()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species L in cytoplasm, R1 in cytoplasm, R2 in cytoplasm, Rec_i in cytoplasm, Rec_a in cytoplasm, Rec_e in cytoplasm;
+  species S2c in cytoplasm, pS2c in cytoplasm, S4c in cytoplasm, Complex_c in cytoplasm;
+  species Complex_n in nucleus, pS2n in nucleus, S4n in nucleus, S2n in nucleus;
+  species FB_mRNA in cytoplasm, FB in cytoplasm;
+
+  //// Assignment Rules:
+  Nuc_S2_total := 2*Complex_n + pS2n + S2n;
+  Cyto_S2_total := 2*Complex_c + pS2c + S2c;
+  Ratio := Nuc_S2_total / (Cyto_S2_total + 1e-9); # Add small constant to avoid division by zero
+
+  //// Reactions:
+  // Receptor dynamics
+  R1_prod:      => R1; k_prod_R1 * cytoplasm;
+  R1_deg:       R1 => ; k_deg_R1 * R1;
+  R2_prod:      => R2; k_prod_R2 * cytoplasm;
+  R2_deg:       R2 => ; k_deg_R2 * R2;
+  
+  // Ligand binding and receptor activation
+  ligand_binding:    L + R2 -> Rec_i; k_on * L * R2 / cytoplasm;
+  ligand_unbinding:  Rec_i -> L + R2; k_off * Rec_i;
+  receptor_activation: Rec_i + R1 => Rec_a; k_act * Rec_i * R1 / cytoplasm;
+  
+  // Receptor internalization, recycling, and degradation
+  internalization: Rec_a => Rec_e; k_int * Rec_a;
+  recycling:       Rec_e => R1 + R2; k_rec * Rec_e;
+  degradation_internalized_receptor: Rec_e => ; k_deg_Rec * Rec_e;
+  
+  // Ligand degradation
+  ligand_degradation: L => ; k_deg_ligand * L;
+
+  // SMAD dynamics
+  smad2_phosphorylation: S2c => pS2c; k_phos * Rec_a * S2c / cytoplasm;
+  complex_formation:  2 pS2c + S4c -> Complex_c; k_ass * pS2c^2 * S4c / cytoplasm^2;
+  complex_dissociation: Complex_c -> 2 pS2c + S4c; k_diss * Complex_c;
+  
+  // Nucleo-cytoplasmic shuttling
+  complex_import:    Complex_c => Complex_n; k_imp * Complex_c;
+  complex_export_n:  Complex_n => Complex_c; k_exp_c * Complex_n;
+  dephosphorylation_n: Complex_n => S2n + S2n + S4n; k_dephos_n * Complex_n;
+  smad2_export_n:    S2n => S2c; k_exp_S2 * S2n;
+  smad4_export_n:    S4n => S4c; k_exp_S4 * S4n;
+
+  // Feedback loop
+  fb_mrna_induction:   => FB_mRNA; (k_prod_fb_mrna_basal + k_prod_fb_mrna_ind * Complex_n / nucleus) * cytoplasm;
+  fb_mrna_degradation: FB_mRNA => ; k_deg_fb_mrna * FB_mRNA;
+  fb_protein_translation: FB_mRNA => FB_mRNA + FB; k_prod_fb_prot * FB_mRNA;
+  fb_protein_degradation: FB => ; k_deg_fb_prot * FB;
+  feedback_inhibition:  Rec_a => ; k_inh * FB * Rec_a / cytoplasm;
+
+  //// Species initializations:
+  L = 100;     // Corresponds to 100 pM stimulus, value may need scaling
+  R1 = 2000;
+  R2 = 4000;
+  Rec_i = 0;
+  Rec_a = 0;
+  Rec_e = 0;
+  S2c = 100000;
+  pS2c = 0;
+  S4c = 100000;
+  Complex_c = 0;
+  Complex_n = 0;
+  pS2n = 0;
+  S4n = 0;
+  S2n = 0;
+  FB_mRNA = 20; // Basal level derived from basal production/degradation rates
+  FB = 200;     // Basal level
+  
+  //// Compartment initializations:
+  cytoplasm = 1;      // Arbitrary volume units (e.g., pL)
+  nucleus = 0.45;     // Volume relative to cytoplasm
+
+  //// Variable initializations:
+  // Receptor kinetics
+  k_prod_R1 = 40;       // Corresponds to init_R1*k_deg_R1 at steady state
+  k_deg_R1 = 0.02;
+  k_prod_R2 = 80;       // Corresponds to init_R2*k_deg_R2 at steady state
+  k_deg_R2 = 0.02;
+  k_on = 0.00015;
+  k_off = 0.075;
+  k_act = 0.4;
+  k_int = 0.05;
+  k_rec = 0.02;
+  k_deg_Rec = 0.02;
+  k_deg_ligand = 0.002;
+
+  // SMAD kinetics
+  k_phos = 1e-5;
+  k_ass = 2.5e-7;
+  k_diss = 0.0125;
+  k_imp = 0.25;
+  k_exp_c = 0.025;
+  k_dephos_n = 5;
+  k_exp_S2 = 0.05;
+  k_exp_S4 = 0.05;
+
+  // Feedback kinetics
+  k_prod_fb_mrna_basal = 2; // Corresponds to init_FB_mRNA*k_deg_fb_mrna
+  k_prod_fb_mrna_ind = 0.25;
+  k_deg_fb_mrna = 0.1;
+  k_prod_fb_prot = 1;
+  k_deg_fb_prot = 0.05;
+  k_inh = 0.005;
+
+  //// Other declarations:
+  var Ratio, Nuc_S2_total, Cyto_S2_total;
+  const cytoplasm, nucleus;
+  const k_prod_R1, k_deg_R1, k_prod_R2, k_deg_R2, k_on, k_off, k_act, k_int, k_rec, k_deg_Rec, k_deg_ligand;
+  const k_phos, k_ass, k_diss, k_imp, k_exp_c, k_dephos_n, k_exp_S2, k_exp_S4;
+  const k_prod_fb_mrna_basal, k_prod_fb_mrna_ind, k_deg_fb_mrna, k_prod_fb_prot, k_deg_fb_prot, k_inh;
+
+  //// Display Names:
+  L is "Ligand (TGF-beta)";
+  R1 is "TGF-beta Receptor I";
+  R2 is "TGF-beta Receptor II";
+  Rec_a is "Active Receptor Complex";
+  Rec_e is "Endosomal Receptor Complex";
+  S2c is "Cytoplasmic SMAD2";
+  pS2c is "Phosphorylated Cytoplasmic SMAD2";
+  S4c is "Cytoplasmic SMAD4";
+  Complex_c is "Cytoplasmic SMAD Complex";
+  Complex_n is "Nuclear SMAD Complex";
+  FB is "Feedback Regulator";
+  Ratio is "Nuclear-to-Cytoplasmic SMAD2 Ratio";
+end

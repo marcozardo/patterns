@@ -1,0 +1,158 @@
+/*
+This Antimony model represents the multiscale model of Interleukin-6 (IL-6) mediated immune regulation in Crohn's disease, as described by Dwivedi et al. (2014). The model integrates intracellular signaling with organ-level dynamics and the pharmacokinetics of therapeutic antibodies.
+
+Model structure and assumptions:
+- The model consists of three conceptual compartments: Circulation (Serum), Liver, and the Gastrointestinal (GI) Tract. Soluble species and their interactions are modeled explicitly in the Circulation compartment.
+- Organ-specific processes, such as STAT3 phosphorylation, are modeled as state variables (pSTAT3_L for Liver, pSTAT3_G for GI Tract) whose dynamics are governed by rate rules dependent on circulating signaling molecules.
+- Organ-specific production of molecules (IL-6 in GI tract, CRP in Liver) is linked to these internal state variables, creating feedback loops.
+- The model is parameterized to represent the Crohn's disease state, with initial concentrations of key biomarkers derived from Table 1 of the paper.
+- Explicit kinetic parameters were not provided in the source text; thus, they are represented by placeholder values and would require estimation to reproduce the paper's simulations.
+- The model includes the therapeutic anti-IL-6R monoclonal antibody, tocilizumab, its binding to soluble IL-6R (sIL-6R), and its clearance, demonstrating how pharmacological interventions are integrated.
+- Dosing is implemented via events, based on the schedules described in the paper.
+*/
+model *Dwivedi2014_IL6_CrohnsDisease()
+
+  //// Compartments and Species:
+  compartment Circulation;
+  
+  # Soluble species in Circulation (Serum)
+  species IL6_S in Circulation;       // Interleukin-6
+  species sIL6R_S in Circulation;     // Soluble IL-6 Receptor alpha
+  species CRP_S in Circulation;       // C-reactive protein
+  species sgp130_S in Circulation;    // Soluble gp130
+  species C1_S in Circulation;        // IL-6:sIL-6R complex
+  species C2_S in Circulation;        // IL-6:sIL-6R:sgp130 complex
+  
+  # Therapeutic agent (Tocilizumab, anti-IL-6R antibody) and its complex
+  species Toci_S in Circulation;
+  species sIL6R_Toci_S in Circulation;
+
+  //// Assignment Rules:
+  # Unphosphorylated STAT3 calculated from total, assuming total is constant
+  STAT3_L := STAT3_total_L - pSTAT3_L;
+  STAT3_G := STAT3_total_G - pSTAT3_G;
+
+  //// Rate Rules:
+  # Dynamics of phosphorylated STAT3 in Liver, driven by the circulating C1 complex
+  pSTAT3_L' = (C1_S * Vmax_phos_L * STAT3_L / (Km_phos_L + STAT3_L)) - (Vmax_dephos_L * pSTAT3_L / (Km_dephos_L + pSTAT3_L));
+  
+  # Dynamics of phosphorylated STAT3 in GI Tract, driven by the circulating C1 complex
+  pSTAT3_G' = (C1_S * Vmax_phos_G * STAT3_G / (Km_phos_G + STAT3_G)) - (Vmax_dephos_G * pSTAT3_G / (Km_dephos_G + pSTAT3_G));
+
+  //// Reactions:
+  # Basal production, shedding, and degradation of signaling molecules
+  J_IL6_prod:      => IL6_S; ksyn_IL6_G;                                    # IL-6 synthesis in GI tract
+  J_IL6_deg:    IL6_S => ; kdeg_IL6 * IL6_S;
+  
+  J_sIL6R_shed:    => sIL6R_S; k_shed_basal + k_shed_CRP * CRP_S;        # sIL-6R shedding, accelerated by CRP
+  J_sIL6R_deg:  sIL6R_S => ; kdeg_sIL6R * sIL6R_S;
+  
+  J_sgp130_prod:   => sgp130_S; ksyn_sgp130;                                 # sgp130 synthesis (e.g., in Liver)
+  J_sgp130_deg: sgp130_S => ; kdeg_sgp130 * sgp130_S;
+  
+  # CRP production in Liver, induced by pSTAT3_L
+  J_CRP_prod:      => CRP_S; Vmax_CRP_prod * pSTAT3_L / (Km_CRP_prod + pSTAT3_L);
+  J_CRP_deg:    CRP_S => ; kdeg_CRP * CRP_S;
+  
+  # Formation and dissociation of signaling complexes in circulation
+  J_C1_formation: IL6_S + sIL6R_S -> C1_S; kon_C1 * IL6_S * sIL6R_S;
+  J_C1_dissoc:    C1_S -> IL6_S + sIL6R_S; koff_C1 * C1_S;
+  J_C1_deg:       C1_S => ; kdeg_C1 * C1_S;
+  
+  J_C2_formation: C1_S + sgp130_S -> C2_S; kon_C2 * C1_S * sgp130_S;
+  J_C2_dissoc:    C2_S -> C1_S + sgp130_S; koff_C2 * C2_S;
+  J_C2_deg:       C2_S => ; kdeg_C2 * C2_S;
+  
+  # Therapeutic antibody (Tocilizumab) interactions
+  J_Toci_bind:  sIL6R_S + Toci_S -> sIL6R_Toci_S; kon_Toci * sIL6R_S * Toci_S;
+  J_Toci_diss:  sIL6R_Toci_S -> sIL6R_S + Toci_S; koff_Toci * sIL6R_Toci_S;
+  J_Toci_clear: Toci_S => ; kclear_Toci * Toci_S; # Linear clearance
+  J_Toci_complex_clear: sIL6R_Toci_S => ; kclear_Toci_complex * sIL6R_Toci_S; # Target-mediated clearance
+
+  //// Events:
+  # Simulates intravenous (i.v.) dosing of Tocilizumab every 4 weeks (Q4W) for a 12-week period
+  # Time unit is hours (4 weeks = 672 hours)
+  E1: at (time >= 0): Toci_S = Toci_S + Dose_Toci;
+  E2: at (time >= 672): Toci_S = Toci_S + Dose_Toci;
+  E3: at (time >= 1344): Toci_S = Toci_S + Dose_Toci;
+
+  //// Species initializations:
+  # Initial concentrations for Crohn's disease patient steady-state, from Table 1.
+  # units converted from mass to nmol/L.
+  IL6_S    = 0.000422;  # 10 pg/ml
+  sIL6R_S  = 2.8;       # 140 ng/ml
+  CRP_S    = 280;       # 7 mg/l
+  sgp130_S = 2.8;       # 280 ng/ml
+  
+  # Initial pSTAT3 level in GI tract reflects 3-fold increase in Crohn's. Assume similar for liver.
+  pSTAT3_L = 3.0; # arbitrary units
+  pSTAT3_G = 3.0; # arbitrary units
+  
+  # Complexes and drug start at zero before simulation reaches steady-state
+  C1_S = 0;
+  C2_S = 0;
+  Toci_S = 0;
+  sIL6R_Toci_S = 0;
+
+  //// Compartment initializations:
+  Circulation = 1; # Assumed volume of 1 L
+
+  //// Variable initializations:
+  # NOTE: All kinetic parameter values are placeholders and require estimation.
+  # Production and degradation rates
+  ksyn_IL6_G = 0.0001;
+  kdeg_IL6 = 0.1;
+  k_shed_basal = 0.1;
+  k_shed_CRP = 0.001;
+  kdeg_sIL6R = 0.1;
+  ksyn_sgp130 = 0.28;
+  kdeg_sgp130 = 0.1;
+  Vmax_CRP_prod = 30;
+  Km_CRP_prod = 3;
+  kdeg_CRP = 0.1;
+  kdeg_C1 = 0.1;
+  kdeg_C2 = 0.1;
+
+  # Complex formation kinetics
+  kon_C1 = 0.1; koff_C1 = 0.1;
+  kon_C2 = 0.1; koff_C2 = 0.1;
+
+  # STAT3 signaling parameters (assumed identical for Liver and GI for simplicity)
+  STAT3_total_L = 10; Vmax_phos_L = 1; Km_phos_L = 1; Vmax_dephos_L = 1; Km_dephos_L = 1;
+  STAT3_total_G = 10; Vmax_phos_G = 1; Km_phos_G = 1; Vmax_dephos_G = 1; Km_dephos_G = 1;
+  
+  # Tocilizumab parameters
+  Kd_Toci = 1; # nmol/L, from paper
+  kon_Toci = 0.1; # l/(nmol*hr), assumed
+  koff_Toci = kon_Toci * Kd_Toci; # Calculated from Kd
+  kclear_Toci = 0.01;
+  kclear_Toci_complex = 0.05;
+  Dose_Toci = 1000; # nmol/L, placeholder for a dose like 200-500mg
+
+  //// Other declarations:
+  var pSTAT3_L, pSTAT3_G, STAT3_L, STAT3_G;
+  const Circulation, ksyn_IL6_G, kdeg_IL6, k_shed_basal, k_shed_CRP, kdeg_sIL6R, ksyn_sgp130, kdeg_sgp130;
+  const Vmax_CRP_prod, Km_CRP_prod, kdeg_CRP, kon_C1, koff_C1, kon_C2, koff_C2, kdeg_C1, kdeg_C2;
+  const STAT3_total_L, Vmax_phos_L, Km_phos_L, Vmax_dephos_L, Km_dephos_L;
+  const STAT3_total_G, Vmax_phos_G, Km_phos_G, Vmax_dephos_G, Km_dephos_G;
+  const kon_Toci, koff_Toci, kclear_Toci, kclear_Toci_complex, Dose_Toci;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1 liter;
+  unit time_unit = 3600 second; # hour
+  unit concentration = substance / volume; # nmol/L
+  
+  //// Display Names:
+  Circulation is "Circulation (Serum)";
+  IL6_S is "Serum Interleukin-6";
+  sIL6R_S is "Serum Soluble IL-6 Receptor";
+  CRP_S is "Serum C-Reactive Protein";
+  sgp130_S is "Serum Soluble gp130";
+  C1_S is "Serum IL-6/sIL-6R Complex";
+  C2_S is "Serum IL-6/sIL-6R/sgp130 Complex";
+  Toci_S is "Serum Tocilizumab";
+  sIL6R_Toci_S is "Serum sIL-6R/Tocilizumab Complex";
+  pSTAT3_L is "Phosphorylated STAT3 in Liver";
+  pSTAT3_G is "Phosphorylated STAT3 in GI Tract";
+end

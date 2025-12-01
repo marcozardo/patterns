@@ -1,0 +1,62 @@
+model *Kimmel2021_CARTcell_Therapy()
+  
+  //// Compartments and Species:
+  compartment patient;
+  species N in patient, C in patient, B in patient;
+  
+  //// Assignment Rules:
+  T := N + C;
+  r_C := rho_C + (b*(T - K_N)^2)/(a*T^2 + (T - K_N)^2);
+  
+  //// Rate Rules:
+  N' = -r_N*N*log((N + C)/K_N);
+  C' = -r_C*C*log((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*C/(k_B + C);
+  
+  //// Species initializations:
+  N = 3.00e9;   // initial median normal T cell number
+  C = 1.80e8;   // initial CAR T cell number
+  B = 9.486e10; // initial median tumour cell number
+  
+  //// Compartment initializations:
+  patient = 1; // Assuming a single compartment of unit volume
+  
+  //// Variable initializations:
+  K_N = 2.50e11;      // normal T cell carrying capacity
+  K_C = 6.96e10;      // CAR T cell carrying capacity
+  r_N = 1.70e-1;      // normal T cell net growth rate
+  rho_C = 2.51e-2;    // baseline CAR T net growth rate
+  a = 4.23e-1;        // signalling inefficiency factor in r_C
+  b = 5.25e-1;        // immune reconstitution impact in r_C
+  r_B = 0.19;         // tumour net growth rate (medium value from Fig 3b)
+  gamma_B = 1.15;     // tumour-killing rate (by effector CAR)
+  k_B = 2.024e9;      // killing rate saturation parameter
+  
+  //// Other declarations:
+  var T, r_C;
+  const patient, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+  
+  //// Unit definitions:
+  unit time_unit = 86400 second; // day
+  unit substance = 1 item;      // cells
+  
+  //// Display Names:
+  time_unit is "day";
+  substance is "cells";
+  patient is "Patient";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "Tumour cells";
+  T is "Total lymphocyte count";
+  r_C is "CAR T cell growth rate function";
+  K_N is "normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "normal T cell net growth rate";
+  rho_C is "baseline CAR T net growth rate";
+  a is "signalling inefficiency factor in r_C";
+  b is "immune reconstitution impact in r_C";
+  r_B is "tumour net growth rate";
+  gamma_B is "tumour-killing rate by effector CAR";
+  k_B is "killing rate saturation parameter";
+  
+end

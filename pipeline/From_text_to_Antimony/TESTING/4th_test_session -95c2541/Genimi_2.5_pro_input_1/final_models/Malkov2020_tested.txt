@@ -1,0 +1,83 @@
+model *Malkov2020_COVID19_SEIRS_reinfection()
+
+  /*
+  This model represents the Susceptible-Exposed-Infectious-Resistant-Susceptible (SEIRS)
+  framework for modeling COVID-19 with the possibility of reinfection, as described
+  in "Simulation of coronavirus disease 2019 (COVID-19) scenarios with possibility
+  of reinfection" by Egor Malkov (2020). The model features a time-varying
+  transmission rate to simulate mitigation policies.
+  */
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  // The transmission rate beta is a function of the time-varying reproduction number R_tilde.
+  beta := gamma * R_tilde;
+  
+  // The time-varying reproduction number R_tilde is the average of two components.
+  R_tilde := (R_tilde_1 + R_tilde_2) / 2;
+  
+  //// Rate Rules:
+  // The two components of R_tilde evolve according to these differential equations,
+  // allowing for flexible modeling of mitigation scenarios.
+  R_tilde_1' = -eta1 * (R_tilde_1 - R1_star);
+  R_tilde_2' = -eta2 * (R_tilde_2 - R2_star);
+  
+  //// Reactions:
+  infection:     S -> E; beta * S * I;
+  incubation:    E -> I; sigma * E;
+  recovery:      I -> R; gamma * I;
+  immunity_loss: R -> S; omega * R;
+
+  //// Species initializations:
+  // Initial values are taken from the paper for the United States around March 16-17, 2020.
+  I = 0.001;      // 0.1% of the population is infected.
+  E = 43.75 * I;  // Exposed population is 43.75 times the infected population.
+  R = 0;          // Initially, no one has recovered.
+  S = 1 - I - E - R; // The remainder of the population is susceptible.
+
+  //// Compartment initializations:
+  // The population is normalized to 1, so species represent fractions of the total population.
+  population = 1;
+
+  //// Variable initializations:
+  N = 1;
+  sigma = 1/5.2;  // Mean latent period of 5.2 days.
+  gamma = 1/18;   // Mean infectious period of 18 days.
+  
+  // Scenarios for omega (immunity waning rate) are explored in the paper.
+  // Values considered: {0, 1/365, 1/183, 1/120, 1/60} days^-1.
+  // We use 1/183 as a representative value from the figures.
+  omega = 1/183;
+  
+  // Parameters for the time-varying reproduction number R_tilde are set based on
+  // "Experiment 2" with "moderate" speed of mitigation implementation from the paper.
+  R_tilde_1 = 3;    // Initial value R_tilde_1(0).
+  R_tilde_2 = 3;    // Initial value R_tilde_2(0).
+  R1_star = 1.6;    // Long-run value for R_tilde_1.
+  R2_star = 1.6;    // Long-run value for R_tilde_2.
+  eta1 = 1/20;      // Convergence rate for R_tilde_1 (moderate).
+  eta2 = 1/20;      // Convergence rate for R_tilde_2 (moderate).
+
+  //// Other declarations:
+  var beta, R_tilde, R_tilde_1, R_tilde_2;
+  const population, N, sigma, gamma, omega, R1_star, R2_star, eta1, eta2;
+
+  //// Display Names:
+  S is "Susceptible population fraction";
+  E is "Exposed population fraction";
+  I is "Infected population fraction";
+  R is "Resistant population fraction";
+  beta is "Transmission rate";
+  R_tilde is "Time-varying reproduction number";
+  sigma is "Incubation rate (1/days)";
+  gamma is "Recovery rate (1/days)";
+  omega is "Immunity waning rate (1/days)";
+  infection is "New infections";
+  incubation is "Progression to infectious state";
+  recovery is "Recovery from infection";
+  immunity_loss is "Loss of immunity and return to susceptible";
+
+end

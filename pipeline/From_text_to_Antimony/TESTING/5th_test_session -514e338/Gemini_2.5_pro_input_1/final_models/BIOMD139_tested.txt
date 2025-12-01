@@ -1,0 +1,150 @@
+model *Hoffmann2002_NFkB_Temporal_Control()
+
+  /*
+  This model represents the I-kappa-B (IkB) - NF-kappa-B (NFkB) signaling module,
+  based on the qualitative descriptions and model structure outlined in Hoffmann et al. (2002).
+  The paper describes a computational model based on ordinary differential equations but does
+  not provide the specific equations, parameter values, or initial conditions.
+
+  This Antimony implementation reconstructs the reaction network from the pathway diagrams
+  and textual descriptions of the system's dynamics. It includes the three IkB isoforms
+  (alpha, beta, epsilon), NFkB translocation, and the negative feedback loop mediated by
+  NFkB-induced transcription of IkB-alpha.
+
+  NOTE: The kinetic rate laws are assumed to be mass-action, and all parameter values and
+  initial conditions are placeholders. They are not derived from the paper and do not
+  reproduce the published simulation results. This model is a structural representation
+  and would require parameter fitting against experimental data to be quantitatively predictive.
+  */
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFKBc in cytoplasm, NFKBn in nucleus;
+  species IKBAc in cytoplasm, IKBAn in nucleus;
+  species IKBBc in cytoplasm, IKBEc in cytoplasm;
+  species IKBA_NFKBc in cytoplasm, IKBB_NFKBc in cytoplasm, IKBE_NFKBc in cytoplasm;
+  species IKBA_NFKBn in nucleus;
+  species IKBA_mRNA in cytoplasm;
+
+  //// Reactions:
+  // Signal Transduction: IKK activation is represented by the variable parameter 'IKK'
+  // IKK-mediated degradation of I-kappa-B proteins
+  J_deg_IKBA_complex: IKBA_NFKBc -> NFKBc;       k_d_a_c * IKBA_NFKBc * IKK;  // Degradation of complexed IkBa, releasing NFkB
+  J_deg_IKBB_complex: IKBB_NFKBc -> NFKBc;       k_d_b_c * IKBB_NFKBc * IKK;  // Degradation of complexed IkBb
+  J_deg_IKBE_complex: IKBE_NFKBc -> NFKBc;       k_d_e_c * IKBE_NFKBc * IKK;  // Degradation of complexed IkBe
+  J_deg_IKBA_free:    IKBAc -> ;                k_d_a_f * IKBAc * IKK;       // Degradation of free IkBa
+
+  // Association and dissociation of NFkB and IkB in cytoplasm
+  J_assoc_IKBA_c: NFKBc + IKBAc -> IKBA_NFKBc; k_a_a_c * NFKBc * IKBAc - k_diss_a_c * IKBA_NFKBc;
+  J_assoc_IKBB_c: NFKBc + IKBBc -> IKBB_NFKBc; k_a_b_c * NFKBc * IKBBc - k_diss_b_c * IKBB_NFKBc;
+  J_assoc_IKBE_c: NFKBc + IKBEc -> IKBE_NFKBc; k_a_e_c * NFKBc * IKBEc - k_diss_e_c * IKBE_NFKBc;
+
+  // Transport between cytoplasm and nucleus
+  J_NFKB_shuttling: NFKBc -> NFKBn;            k_imp_n * NFKBc - k_exp_n * NFKBn;
+  J_IKBA_shuttling: IKBAc -> IKBAn;            k_imp_a * IKBAc - k_exp_a * IKBAn;
+
+  // Nuclear events: complex formation and export
+  J_assoc_IKBA_n: NFKBn + IKBAn -> IKBA_NFKBn; k_a_a_n * NFKBn * IKBAn - k_diss_a_n * IKBA_NFKBn;
+  J_export_complex: IKBA_NFKBn -> IKBA_NFKBc;  k_exp_c * IKBA_NFKBn;
+
+  // Negative Feedback via IkBa gene expression
+  J_transcription:  => IKBA_mRNA;               k_tr_ind * NFKBn + k_tr_bas;
+  J_mRNA_deg:     IKBA_mRNA => ;                k_mRNA_d * IKBA_mRNA;
+  J_translation:  IKBA_mRNA => IKBAc;           k_tl * IKBA_mRNA;
+
+  // Basal synthesis and degradation of IkBb and IkBe
+  J_synth_IKBB:   => IKBBc;                     k_s_b;
+  J_deg_IKBB:     IKBBc => ;                    k_d_b * IKBBc;
+  J_synth_IKBE:   => IKBEc;                     k_s_e;
+  J_deg_IKBE:     IKBEc => ;                    k_d_e * IKBEc;
+
+  //// Events:
+  // TNF-alpha stimulus is modeled as an event that activates IKK at time=0
+  StimulusOn: at(time >= 0): IKK = 1.0;
+
+  //// Species initializations:
+  // Concentrations in nM. Based on a resting cell state (low nuclear NFkB).
+  NFKBn = 0;
+  IKBAn = 0;
+  IKBA_NFKBn = 0;
+  NFKBc = 1;       // Small pool of free cytoplasmic NFkB
+  IKBA_mRNA = 0.1;   // Basal mRNA level
+  IKBAc = 10;
+  IKBBc = 50;      // Assume beta and epsilon are abundant dampers
+  IKBEc = 50;
+  // Most NFkB is sequestered in the cytoplasm, total NFkB is assumed ~100nM.
+  IKBA_NFKBc = 49;
+  IKBB_NFKBc = 25;
+  IKBE_NFKBc = 25;
+
+  //// Compartment initializations:
+  cytoplasm = 1; // Arbitrary volume of 1 unit
+  nucleus = 1;   // Arbitrary volume of 1 unit
+
+  //// Variable initializations:
+  IKK = 0;         // IKK is inactive before stimulus
+
+  // Placeholder rate constants (units are per minute and nM)
+  k_d_a_c = 0.1;
+  k_d_b_c = 0.1;
+  k_d_e_c = 0.1;
+  k_d_a_f = 0.1;
+  k_a_a_c = 0.05;
+  k_diss_a_c = 0.01;
+  k_a_b_c = 0.05;
+  k_diss_b_c = 0.01;
+  k_a_e_c = 0.05;
+  k_diss_e_c = 0.01;
+  k_imp_n = 0.1;
+  k_exp_n = 0.01;
+  k_imp_a = 0.1;
+  k_exp_a = 0.05;
+  k_a_a_n = 0.05;
+  k_diss_a_n = 0.01;
+  k_exp_c = 0.2;
+  k_tr_ind = 0.05;
+  k_tr_bas = 0.001;
+  k_mRNA_d = 0.02;
+  k_tl = 0.2;
+  k_s_b = 1;
+  k_d_b = 0.02;
+  k_s_e = 1;
+  k_d_e = 0.02;
+
+  //// Other declarations:
+  var IKK;
+  const cytoplasm, nucleus;
+  const k_d_a_c, k_d_b_c, k_d_e_c, k_d_a_f, k_a_a_c, k_diss_a_c, k_a_b_c;
+  const k_diss_b_c, k_a_e_c, k_diss_e_c, k_imp_n, k_exp_n, k_imp_a;
+  const k_exp_a, k_a_a_n, k_diss_a_n, k_exp_c, k_tr_ind, k_tr_bas;
+  const k_mRNA_d, k_tl, k_s_b, k_d_b, k_s_e, k_d_e;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole; // nanomole
+  unit time_unit = 60 second; // minute
+  unit volume = 1 litre;
+
+  //// Display Names:
+  NFKBc is "Cytoplasmic NF-kappa-B";
+  NFKBn is "Nuclear NF-kappa-B";
+  IKBAc is "Cytoplasmic I-kappa-B-alpha";
+  IKBAn is "Nuclear I-kappa-B-alpha";
+  IKBBc is "Cytoplasmic I-kappa-B-beta";
+  IKBEc is "Cytoplasmic I-kappa-B-epsilon";
+  IKBA_mRNA is "I-kappa-B-alpha mRNA";
+  IKK is "IKK Activity Signal";
+
+end
+
+/*
+UNMAPPED DATA:
+
+The provided scientific text describes a computational model of the NF-kB signaling module but does not contain the specific mathematical formulations (ODEs) or the numerical values for the model's ~30 parameters and initial species concentrations. The model presented here is a qualitative reconstruction of the network topology and interactions described.
+
+Specific unmapped information includes:
+1.  **Kinetic Rate Laws**: The exact functional forms for reactions (e.g., transcription, enzymatic degradation) are not specified. Mass-action kinetics were assumed for this reconstruction.
+2.  **Parameter Values**: None of the ~30 model parameters were provided in the text. Placeholder values have been used to allow for syntactic correctness.
+3.  **Initial Conditions**: No initial concentrations for the molecular species were provided. The initial values used in this model are illustrative placeholders for a resting cell state.
+4.  **Compartment Volumes**: Ratios or absolute values for cytoplasmic and nuclear volumes were not specified.
+5.  **Simplified Models**: The paper also refers to models of genetically reduced systems (single IkB isoform knockouts). While the structure is a subset of this wild-type model, their specific parameterization was also not provided.
+*/

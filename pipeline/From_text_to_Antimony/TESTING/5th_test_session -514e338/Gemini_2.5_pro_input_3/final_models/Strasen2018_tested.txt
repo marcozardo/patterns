@@ -1,0 +1,157 @@
+/* 
+ This model describes the TGF-beta signaling pathway, focusing on SMAD
+ translocation and the role of transcriptional feedback in generating
+ cellular heterogeneity. The model structure is based on the pathway diagram
+ presented in Figure 4B of Strasen et al. (2018), "Cell-specific TGF-beta signaling".
+
+ NOTE: The provided text does not contain the explicit mathematical equations
+ (rate laws) or parameter values for the model. The reactions below are
+ constructed based on the topology of the diagram, and the kinetic laws
+ are plausible assumptions (mostly mass-action) intended to make the model
+ syntactically complete and executable. The parameter values and initial
+ conditions are placeholders and do not reflect the calibrated model from the paper.
+*/
+model *Strasen2018_TGFb_signaling()
+
+  //// Compartments and Species:
+  compartment cyt, nuc;
+  species L in cyt, R1 in cyt, R2 in cyt, R1R2L in cyt;
+  species S2 in cyt, S4 in cyt, S2p in cyt;
+  species R1e in cyt, R2e in cyt, R1R2Le in cyt;
+  species FB in cyt, FBM_cyt in cyt;
+  species S2n in nuc, S4n in nuc, S2n_S4n in nuc, FBM_nuc in nuc;
+
+  //// Assignment Rules:
+  SMAD2_nuc_cyt_ratio := S2n / (S2 + S2p);
+
+  //// Reactions:
+  # Receptor module - reactions occur in the cytoplasm (cyt)
+  J_L_binding: L + R1 + R2 => R1R2L; k_bind * L * R1 * R2 * cyt;
+  J_R1_synthesis: => R1; k_R1_prod * cyt;
+  J_R2_synthesis: => R2; k_R2_prod * cyt;
+  J_R1_degradation: R1 => ; k_R1_deg * R1 * cyt;
+  J_R2_degradation: R2 => ; k_R2_deg * R2 * cyt;
+  J_R1_internalization: R1 => R1e; k_R1_int * R1 * cyt;
+  J_R2_internalization: R2 => R2e; k_R2_int * R2 * cyt;
+  J_R1_recycling: R1e => R1; k_R1_rec * R1e * cyt;
+  J_R2_recycling: R2e => R2; k_R2_rec * R2e * cyt;
+  J_complex_internalization: R1R2L => R1R2Le; k_comp_int * R1R2L * cyt;
+  J_complex_degradation: R1R2Le => ; k_comp_deg * R1R2Le * cyt;
+  J_inhibition_by_FB: R1R2L => ; k_FB_inhibit * FB * R1R2L * cyt;
+
+  # SMAD module - reactions occur in the cytoplasm (cyt)
+  J_S2_phosphorylation: S2 => S2p; k_S2_phos * S2 * R1R2L * cyt;
+  J_S2_synthesis: => S2; k_S2_prod * cyt;
+  J_S4_synthesis: => S4; k_S4_prod * cyt;
+  J_S2_degradation: S2 => ; k_S2_deg * S2 * cyt;
+  J_S4_degradation: S4 => ; k_S4_deg * S4 * cyt;
+
+  # Feedback module - reactions occur in the cytoplasm (cyt)
+  J_FBM_cyt_degradation: FBM_cyt => ; k_FBM_cyt_deg * FBM_cyt * cyt;
+  J_FB_synthesis: => FB; k_FB_prod * FBM_cyt * cyt;
+  J_FB_degradation: FB => ; k_FB_deg * FB * cyt;
+
+  # Nuclear module - reactions occur in the nucleus (nuc)
+  J_nuc_complex: 2 S2n + S4n -> S2n_S4n; (k_nuc_fwd * S2n^2 * S4n - k_nuc_rev * S2n_S4n) * nuc;
+  J_FBM_synthesis: => FBM_nuc; (k_FBM_basal + k_FBM_ind * S2n_S4n) * nuc;
+  J_FBM_nuc_degradation: FBM_nuc => ; k_FBM_nuc_deg * FBM_nuc * nuc;
+
+  # Transport reactions between cytoplasm and nucleus
+  J_S2p_import: S2p => S2n; k_S2_imp * S2p * cyt;
+  J_S4_import: S4 => S4n; k_S4_imp * S4 * cyt;
+  J_S2n_export: S2n => S2; k_S2_exp * S2n * nuc;
+  J_S4n_export: S4n => S4; k_S4_exp * S4n * nuc;
+  J_FBM_export: FBM_nuc => FBM_cyt; k_FBM_exp * FBM_nuc * nuc;
+
+  //// Species initializations:
+  # Based on 100 pM TGFb1 stimulation experiment (placeholder units)
+  L = 100;
+  # Placeholder initial values for proteins
+  R1 = 100;
+  R2 = 100;
+  S2 = 200;
+  S4 = 200;
+  # Initial products are zero
+  R1R2L = 0;
+  S2p = 0;
+  R1e = 0;
+  R2e = 0;
+  R1R2Le = 0;
+  FB = 10;
+  FBM_cyt = 0;
+  S2n = 0;
+  S4n = 0;
+  S2n_S4n = 0;
+  FBM_nuc = 10;
+
+  //// Compartment initializations:
+  cyt = 1;
+  nuc = 0.5;
+
+  //// Variable initializations:
+  # All kinetic parameters are placeholders
+  k_bind = 0.1;
+  k_R1_prod = 10;
+  k_R2_prod = 10;
+  k_R1_deg = 0.1;
+  k_R2_deg = 0.1;
+  k_R1_int = 0.1;
+  k_R2_int = 0.1;
+  k_R1_rec = 0.1;
+  k_R2_rec = 0.1;
+  k_comp_int = 0.1;
+  k_comp_deg = 0.1;
+  k_FB_inhibit = 0.1;
+  k_S2_phos = 0.01;
+  k_S2_prod = 20;
+  k_S4_prod = 20;
+  k_S2_deg = 0.1;
+  k_S4_deg = 0.1;
+  k_S2_imp = 0.2;
+  k_S4_imp = 0.2;
+  k_nuc_fwd = 0.01;
+  k_nuc_rev = 0.1;
+  k_S2_exp = 0.1;
+  k_S4_exp = 0.1;
+  k_FBM_basal = 0.1;
+  k_FBM_ind = 1;
+  k_FBM_nuc_deg = 0.1;
+  k_FBM_exp = 0.1;
+  k_FBM_cyt_deg = 0.1;
+  k_FB_prod = 0.5;
+  k_FB_deg = 0.1;
+
+  //// Other declarations:
+  var SMAD2_nuc_cyt_ratio;
+  const cyt, nuc;
+  const k_bind, k_R1_prod, k_R2_prod, k_R1_deg, k_R2_deg;
+  const k_R1_int, k_R2_int, k_R1_rec, k_R2_rec;
+  const k_comp_int, k_comp_deg, k_FB_inhibit;
+  const k_S2_phos, k_S2_prod, k_S4_prod, k_S2_deg, k_S4_deg;
+  const k_S2_imp, k_S4_imp, k_nuc_fwd, k_nuc_rev;
+  const k_S2_exp, k_S4_exp;
+  const k_FBM_basal, k_FBM_ind, k_FBM_nuc_deg, k_FBM_exp;
+  const k_FBM_cyt_deg, k_FB_prod, k_FB_deg;
+
+  //// Display Names:
+  cyt is "Cytoplasm";
+  nuc is "Nucleus";
+  L is "TGF-beta ligand";
+  R1 is "TGF-beta receptor type I";
+  R2 is "TGF-beta receptor type II";
+  R1R2L is "Ligand-receptor complex";
+  R1e is "Endosomal Receptor I";
+  R2e is "Endosomal Receptor II";
+  R1R2Le is "Endosomal ligand-receptor complex";
+  S2 is "SMAD2";
+  S4 is "SMAD4";
+  S2p is "phosphorylated SMAD2";
+  S2n is "nuclear phosphorylated SMAD2";
+  S4n is "nuclear SMAD4";
+  S2n_S4n is "nuclear SMAD complex";
+  FB is "Feedback protein (SMAD7)";
+  FBM_nuc is "nuclear Feedback mRNA";
+  FBM_cyt is "cytoplasmic Feedback mRNA";
+  SMAD2_nuc_cyt_ratio is "Nuclear to cytoplasmic SMAD2 ratio";
+end
+

@@ -1,0 +1,152 @@
+/*
+This Antimony model represents the multiscale model of IL-6 mediated immune regulation in Crohn's Disease, as described by Dwivedi et al. (2014).
+The model integrates intracellular signaling with organ-level dynamics across three compartments: the GI tract, the Liver, and the central Circulation.
+It focuses on the trans-signaling pathway, where soluble IL-6 receptor (sIL-6R) and IL-6 form a complex that activates STAT3 phosphorylation in both the GI tract and Liver.
+This leads to the production of downstream gene products, notably C-reactive protein (CRP) in the liver.
+The model also includes the natural inhibitor sgp130, which sequesters the IL-6/sIL-6R complex.
+
+NOTE: The kinetic parameters for this model were not fully provided in the main text of the publication. They were derived from literature or estimated, with full details likely residing in the supplementary materials which were not provided. The parameter values included here are placeholders to ensure the model is syntactically correct and runnable. They are based on parameter names mentioned in the text (e.g., Figure 6a) or are representative placeholders. Initial concentrations are derived from Table 1 for a "Crohn's patient" clinical state.
+*/
+model *Dwivedi2014_IL6_Crohns()
+
+  //// Compartments and Species:
+  compartment Circulation, GI_tract, Liver;
+
+  // Species in Circulation
+  species IL6_c in Circulation;             // Interleukin-6
+  species sIL6R_c in Circulation;           // Soluble IL-6 Receptor
+  species sgp130_c in Circulation;          // Soluble gp130
+  species CRP_c in Circulation;             // C-reactive protein
+  species IL6_sIL6R_c in Circulation;       // IL-6 / sIL-6R complex
+  species IL6_sIL6R_sgp130_c in Circulation; // IL-6 / sIL-6R / sgp130 complex
+
+  // Species in GI Tract
+  species IL6_g in GI_tract;                // Interleukin-6
+  species STAT3_g in GI_tract;              // STAT3
+  species pSTAT3_g in GI_tract;             // Phosphorylated STAT3
+
+  // Species in Liver
+  species CRP_l in Liver;                   // C-reactive protein in liver before secretion
+  species STAT3_l in Liver;                 // STAT3
+  species pSTAT3_l in Liver;                // Phosphorylated STAT3
+
+  //// Reactions:
+  // IL-6 dynamics
+  R1:       => IL6_g; ksynfIL6Gut;                                          # IL-6 synthesis in GI tract
+  R2: IL6_g => IL6_c; k_trans_IL6 * IL6_g;                                   # IL-6 transport from GI tract to circulation
+  R3: IL6_g => ;      kdegIL6 * IL6_g;                                       # IL-6 degradation in GI tract
+  R4: IL6_c => ;      kdegIL6 * IL6_c;                                       # IL-6 degradation in circulation
+
+  // sIL-6R dynamics (shedding stimulated by CRP)
+  R5:       => sIL6R_c; ksyn_sIL6R_basal + ksyn_sIL6R_CRP * CRP_c;         # Basal and CRP-mediated shedding of sIL-6R
+  R6: sIL6R_c => ;       kdegSR * sIL6R_c;                                    # sIL-6R degradation
+
+  // sgp130 dynamics
+  R7:        => sgp130_c; ksynfsgp130;                                       # sgp130 synthesis
+  R8: sgp130_c => ;        kdeg_sgp130 * sgp130_c;                            # sgp130 degradation
+
+  // CRP dynamics
+  R9:        => CRP_l; VmnProSynth * pSTAT3_l / (Km_pSTAT3 + pSTAT3_l);     # pSTAT3-mediated CRP synthesis in liver (Michaelis-Menten)
+  R10: CRP_l   => CRP_c; kCRPSecretion * CRP_l;                               # CRP secretion from liver to circulation
+  R11: CRP_c   => ;       kdegCRP * CRP_c;                                     # CRP degradation in circulation
+
+  // STAT3 signaling in GI Tract (trans-signaling)
+  R12: STAT3_g => pSTAT3_g; kRAct * IL6_sIL6R_c * STAT3_g;                      # STAT3 phosphorylation by IL-6/sIL-6R complex
+  R13: pSTAT3_g => STAT3_g; VmnDephos * pSTAT3_g / (KrmDephos + pSTAT3_g);     # pSTAT3 dephosphorylation (Michaelis-Menten)
+
+  // STAT3 signaling in Liver (trans-signaling)
+  R14: STAT3_l => pSTAT3_l; kRAct * IL6_sIL6R_c * STAT3_l;                      # STAT3 phosphorylation by IL-6/sIL-6R complex
+  R15: pSTAT3_l => STAT3_l; VmnDephos * pSTAT3_l / (KrmDephos + pSTAT3_l);     # pSTAT3 dephosphorylation (Michaelis-Menten)
+
+  // Complex formation in Circulation
+  R16: IL6_c + sIL6R_c => IL6_sIL6R_c; kon_c1 * IL6_c * sIL6R_c;                # IL-6 and sIL-6R binding
+  R17: IL6_sIL6R_c => IL6_c + sIL6R_c; koff_c1 * IL6_sIL6R_c;                  # Dissociation of IL-6/sIL-6R complex
+  R18: IL6_sIL6R_c => ;                 kdeg_c1 * IL6_sIL6R_c;                   # Degradation of IL-6/sIL-6R complex
+
+  R19: IL6_sIL6R_c + sgp130_c => IL6_sIL6R_sgp130_c; kon_c2 * IL6_sIL6R_c * sgp130_c; # Sequestration by sgp130
+  R20: IL6_sIL6R_sgp130_c => IL6_sIL6R_c + sgp130_c; koff_c2 * IL6_sIL6R_sgp130_c; # Dissociation of sequestered complex
+  R21: IL6_sIL6R_sgp130_c => ;                      kdeg_c2 * IL6_sIL6R_sgp130_c;    # Degradation of sequestered complex
+
+  //// Species initializations:
+  # Initial concentrations are for Crohn's Disease patient state from Table 1, converted to nmol/L
+  # MWs: IL-6=23.7, sIL-6R=50, CRP=25.0, sgp130=100 kDa
+  IL6_c = 0.000422;   # 10 pg/ml
+  sIL6R_c = 2.8;      # 140 ng/ml
+  CRP_c = 280;        # 7 mg/l
+  sgp130_c = 2.8;     # 280 ng/ml
+  IL6_g = 0.0105;     # 250 pg/ml
+
+  IL6_sIL6R_c = 0;
+  IL6_sIL6R_sgp130_c = 0;
+  CRP_l = 0;
+
+  # Assuming total STAT3 is 100 nmol/L and pSTAT3 is 3-fold higher in Crohn's patients
+  pSTAT3_g = 3.0;
+  STAT3_g = 97;
+  pSTAT3_l = 3.0;
+  STAT3_l = 97;
+
+  //// Compartment initializations:
+  Circulation = 1; # Assumed volume of 1 L
+  GI_tract = 1;    # Assumed volume of 1 L
+  Liver = 1;       # Assumed volume of 1 L
+
+  //// Variable initializations:
+  # NOTE: AThese parameter values are placeholders as they were not available in the provided text.
+  # Names are based on Figure 6a where possible. Units: 1/hr for first order, L/(nmol*hr) for second order.
+  ksynfIL6Gut = 0.001;
+  k_trans_IL6 = 0.1;
+  kdegIL6 = 0.5;
+  ksyn_sIL6R_basal = 0.1;
+  ksyn_sIL6R_CRP = 0.01;
+  kdegSR = 0.2;
+  ksynfsgp130 = 0.1;
+  kdeg_sgp130 = 0.1;
+  VmnProSynth = 10.0;
+  Km_pSTAT3 = 10.0;
+  kCRPSecretion = 0.5;
+  kdegCRP = 0.1;
+  kRAct = 0.1;
+  VmnDephos = 1.0;
+  KrmDephos = 5.0;
+  kon_c1 = 1.0;
+  koff_c1 = 0.1;
+  kdeg_c1 = 0.1;
+  kon_c2 = 1.0;
+  koff_c2 = 0.1;
+  kdeg_c2 = 0.1;
+  STAT3_tot = 100;
+
+  //// Other declarations:
+  const Circulation, GI_tract, Liver;
+  const ksynfIL6Gut, k_trans_IL6, kdegIL6, ksyn_sIL6R_basal, ksyn_sIL6R_CRP, kdegSR;
+  const ksynfsgp130, kdeg_sgp130, VmnProSynth, Km_pSTAT3, kCRPSecretion, kdegCRP;
+  const kRAct, VmnDephos, KrmDephos, kon_c1, koff_c1, kdeg_c1, kon_c2, koff_c2, kdeg_c2;
+  const STAT3_tot;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1 litre;
+  unit time_unit = 3600 second;
+  unit concentration = substance / volume;
+  unit first_order_rate = 1 / time_unit;
+  unit second_order_rate = volume / (substance * time_unit);
+
+  //// Display Names:
+  Circulation is "Circulation (Blood Serum)";
+  GI_tract is "Gastrointestinal Tract";
+  Liver is "Liver";
+  IL6_c is "IL-6 in Circulation";
+  sIL6R_c is "Soluble IL-6 Receptor in Circulation";
+  sgp130_c is "Soluble gp130 in Circulation";
+  CRP_c is "C-reactive protein in Circulation";
+  IL6_sIL6R_c is "IL-6/sIL-6R complex in Circulation";
+  IL6_sIL6R_sgp130_c is "IL-6/sIL-6R/sgp130 complex in Circulation";
+  IL6_g is "IL-6 in GI Tract";
+  STAT3_g is "STAT3 in GI Tract";
+  pSTAT3_g is "Phosphorylated STAT3 in GI Tract";
+  CRP_l is "CRP in Liver";
+  STAT3_l is "STAT3 in Liver";
+  pSTAT3_l is "Phosphorylated STAT3 in Liver";
+
+end

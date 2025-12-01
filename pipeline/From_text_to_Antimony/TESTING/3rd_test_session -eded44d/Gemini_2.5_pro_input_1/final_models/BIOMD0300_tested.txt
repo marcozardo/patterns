@@ -1,0 +1,76 @@
+model *Schmierer2010_FullModel()
+
+  //// Compartments and Species:
+  compartment cell;
+  species H_tot_hat in cell, H_hat in cell, A_hat in cell;
+
+  //// Assignment Rules:
+  H_OH_hat := H_tot_hat - H_hat;
+  A_OH_hat := A_tot_hat - A_hat;
+  nu_p_prime := k_cat_prime_p * P_tot_hat * (1 / (K_D_hat_p + H_tot_hat + P_tot_hat)) * (O2_tilde / (1 + O2_tilde));
+  K_i_hat_FH := K_D_hat_FH * (1 + A_hat/K_D_hat_FA + gamma_*A_OH_hat/K_D_hat_FA);
+  nu_FH_prime := k_cat_prime_FH * F_tot_hat * (1 / (K_i_hat_FH + H_hat + F_tot_hat)) * (O2_tilde / (alpha + O2_tilde));
+  nu_FA_prime := (k_cat_prime_FA * F_tot_hat) / (K_D_hat_FA * (1 + H_hat/K_D_hat_FH) + A_hat + gamma_*A_OH_hat) * (O2_tilde / (alpha + O2_tilde));
+  HRE_CAD := H_hat / (K_D_hat_HRE + H_tot_hat);
+  HRE_CADOH := H_OH_hat / (K_D_hat_HRE + H_tot_hat);
+
+  //// Rate Rules:
+  H_tot_hat' = 1 - H_tot_hat*(1 + nu_p_prime);
+  H_hat' = 1 - H_hat*(1 + nu_p_prime + nu_FH_prime);
+  A_hat' = (A_tot_hat - A_hat*(1 + epsilon * nu_FA_prime)) / epsilon;
+
+  //// Species initializations:
+  H_tot_hat = 0;
+  H_hat = 0;
+  A_hat = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  P_tot_hat = 0.2;
+  K_D_hat_p = 1;
+  k_cat_prime_p = 500;
+  F_tot_hat = 1;
+  K_D_hat_FH = 1;
+  k_cat_prime_FH = 500; # beta is 1, so k_cat_prime_FH = k_cat_prime_p
+  k_cat_prime_FA = 500; # beta is 1, so k_cat_prime_FA = k_cat_prime_FH
+  alpha = 0.33;
+  A_tot_hat = 100;      # Example value from Figure 5, varied in paper
+  K_D_hat_FA = 1;
+  gamma_ = 0.02;         # Example value from Figure 5, varied in paper
+  epsilon = 5;          # Example value from Figure 5, varied in paper
+  K_D_hat_HRE = 0.3;
+  O2_tilde = 0.1;       # Example value, varied in paper
+
+  //// Other declarations:
+  var H_OH_hat, A_OH_hat, nu_p_prime, K_i_hat_FH, nu_FH_prime, nu_FA_prime, HRE_CAD, HRE_CADOH;
+  const cell, P_tot_hat, K_D_hat_p, k_cat_prime_p, F_tot_hat, K_D_hat_FH, k_cat_prime_FH, k_cat_prime_FA, alpha, A_tot_hat, K_D_hat_FA, gamma_, epsilon, K_D_hat_HRE, O2_tilde;
+
+  //// Display Names:
+  H_tot_hat is "Total HIF-alpha";
+  H_hat is "Non-CAD-hydroxylated HIF-alpha";
+  H_OH_hat is "CAD-hydroxylated HIF-alpha";
+  A_hat is "Unhydroxylated FIH target ARs";
+  A_OH_hat is "Hydroxylated FIH target ARs";
+  P_tot_hat is "Total PHD concentration";
+  F_tot_hat is "Total FIH concentration";
+  A_tot_hat is "Total FIH target ARs";
+  O2_tilde is "Oxygen concentration";
+  k_cat_prime_p is "Normalized kcat for ODD-hydroxylation";
+  K_D_hat_p is "Normalized Dissociation constant of PHD/HIF-alpha binding";
+  k_cat_prime_FH is "Normalized kcat for HIF-alpha CAD-hydroxylation";
+  K_D_hat_FH is "Normalized Dissociation constant of FIH/HIF-alpha binding";
+  k_cat_prime_FA is "Normalized kcat for AR-hydroxylation";
+  K_D_hat_FA is "Normalized Dissociation constant of FIH/ARD protein binding";
+  alpha is "Ratio of FIH-O2 KM to PHD-O2 KM";
+  gamma_ is "Ratio of FIH affinity for hydroxylated vs unhydroxylated ARs";
+  epsilon is "Ratio of basal HIF-alpha degradation rate to AR degradation rate";
+  K_D_hat_HRE is "Normalized Dissociation constant of HIF/HRE binding";
+  nu_p_prime is "Dimensionless rate of PHD-dependent HIF-alpha ODD-hydroxylation";
+  nu_FH_prime is "Dimensionless rate of FIH-dependent HIF-alpha CAD-hydroxylation";
+  nu_FA_prime is "Dimensionless rate of FIH-dependent AR-hydroxylation";
+  K_i_hat_FH is "Apparent dissociation constant for FIH/HIF-alpha binding";
+  HRE_CAD is "Fraction of HREs occupied by non-CAD-hydroxylated HIF";
+  HRE_CADOH is "Fraction of HREs occupied by CAD-hydroxylated HIF";
+end

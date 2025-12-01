@@ -1,0 +1,96 @@
+model *Kimmel2021_CARTcellTherapy()
+  /*
+    Model extracted from:
+    Kimmel GJ, Locke FL, Altrock PM. 2021 The roles of T cell competition and
+    stochastic extinction events in chimeric antigen receptor T cell therapy.
+    Proc. R. Soc. B 288: 20210229. https://doi.org/10.1098/rspb.2021.0229
+
+    This model describes the population dynamics of normal T cells (N),
+    CAR T cells (C), and tumor cells (B) during CAR T cell therapy.
+    The model is based on the deterministic mean-field equations (2.1-2.3)
+    presented in the paper. The functional form for the CAR T cell
+    growth rate (r_C) is taken from the equation in Figure 2b, as the
+    version in the main text appears to have a typographical error.
+  */
+
+  //// Compartments and Species:
+  compartment patient;
+  species N in patient, C in patient, B in patient;
+
+  //// Assignment Rules:
+  # Total T lymphocyte count
+  T := N + C;
+
+  # CAR T cell growth rate, dependent on total T cell count
+  # Formula from Figure 2b of the paper
+  r_C := rho_C + (b*(T - K_N)^2)/(a*T^2 + (T - K_N)^2);
+
+  //// Reactions:
+  # Gompertz growth of normal T cells towards carrying capacity K_N
+  J_N_growth: -> N; r_N * N * log(K_N / T);
+
+  # Gompertz growth of CAR T cells towards carrying capacity K_C
+  J_C_growth: -> C; r_C * C * log(K_C / T);
+
+  # Autonomous growth of tumor cells
+  J_B_growth: -> B; r_B * B;
+
+  # Killing of tumor cells by CAR T cells, with saturation
+  J_B_killing: B -> ; gamma_B * B * C / (k_B + C);
+
+  //// Species initializations:
+  # Initial values from Table 1
+  N = 3.00e9;   // Initial median normal T cell number
+  C = 1.80e8;   // Initial CAR T cell number
+  B = 9.486e10; // Initial median tumour cell number
+
+  //// Compartment initializations:
+  patient = 1; # Volume is arbitrary, model works with cell counts.
+
+  //// Variable initializations:
+  # Parameter values from Table 1
+  K_N = 2.50e11;
+  K_C = 6.96e10;
+  r_N = 1.70e-1;
+  rho_C = 2.51e-2;
+  a = 4.23e-1;
+  b = 5.25e-1;
+  r_B = 0.19; # Medium tumour growth rate from text (slow=0.105, fast=0.265)
+  gamma_B = 1.15;
+  k_B = 2.024e9;
+
+  //// Other declarations:
+  var T, r_C;
+  const patient;
+  const K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Unit definitions:
+  unit substance = dimensionless; // Represents number of cells
+  unit time_unit = 86400 second; // Represents day
+  unit per_day = 1 / time_unit;
+
+  //// Display Names:
+  patient is "Patient";
+
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "Tumour cells";
+
+  T is "Total lymphocyte count";
+  r_C is "CAR T cell net growth rate function";
+
+  K_N is "Normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "Normal T cell net growth rate";
+  rho_C is "Baseline CAR T net growth rate";
+  a is "Signalling inefficiency factor in r_C";
+  b is "Immune reconstitution impact in r_C";
+  r_B is "Tumour net growth rate";
+  gamma_B is "Tumour-killing rate by effector CAR";
+  k_B is "Killing rate saturation parameter";
+
+  J_N_growth is "Normal T cell growth";
+  J_C_growth is "CAR T cell growth";
+  J_B_growth is "Tumour growth";
+  J_B_killing is "Tumour killing by CAR T cells";
+end

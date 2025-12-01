@@ -1,0 +1,146 @@
+model *Dwivedi2014_Crohns_IL6_Model()
+
+  //// Compartments and Species:
+  compartment Gut, Liver, Serum;
+  // Species in Gut compartment
+  species IL6_g in Gut, pSTAT3_g in Gut;
+  // Species in Liver compartment
+  species CRP_l in Liver;
+  // Species in Serum compartment (disease biomarkers and complexes)
+  species IL6_s in Serum, sIL6R_s in Serum, sgp130_s in Serum, CRP_s in Serum;
+  species IL6_sIL6R_s in Serum, IL6_sIL6R_sgp130_s in Serum;
+  // Species for Anti-IL-6 antibody therapy
+  species Ab_IL6_s in Serum, Ab_IL6_IL6_s in Serum, Ab_IL6_IL6_sIL6R_s in Serum;
+  // Species for Anti-IL-6R antibody therapy
+  species Ab_IL6R_s in Serum, Ab_IL6R_sIL6R_s in Serum;
+  // Species for sgp130Fc therapy
+  species sgp130Fc_s in Serum, sgp130Fc_IL6_sIL6R_s in Serum;
+
+  //// Reactions:
+  // Core Disease Dynamics
+  // 1. Gut Processes
+  J_IL6_g_prod:      => IL6_g; ksynfIL6Gut;                                          // IL-6 synthesis in Gut
+  J_IL6_transport:   IL6_g => IL6_s; k_transport_IL6 * IL6_g;                          // IL-6 transport from Gut to Serum
+  J_pSTAT3_prod:     => pSTAT3_g; (Vmax_pSTAT3 * IL6_sIL6R_s) / (Km_pSTAT3 + IL6_sIL6R_s); // IL-6 complex-induced pSTAT3 activation
+  J_pSTAT3_degrad:   pSTAT3_g => ; k_degrad_pSTAT3 * pSTAT3_g;                       // pSTAT3 degradation
+
+  // 2. Liver Processes
+  J_CRP_l_prod:      => CRP_l; k_prod_CRP_basal + (Vmax_CRP * IL6_sIL6R_s) / (Km_CRP + IL6_sIL6R_s); // IL-6 complex-induced CRP synthesis
+  J_CRP_transport:   CRP_l => CRP_s; k_transport_CRP * CRP_l;                        // CRP transport from Liver to Serum
+
+  // 3. Serum Processes
+  J_sIL6R_prod:         => sIL6R_s; k_prod_sIL6R_basal + k_shed_sIL6R * CRP_s;       // Basal and CRP-mediated sIL-6R production
+  J_sgp130_prod:        => sgp130_s; k_prod_sgp130;                                  // Basal sgp130 synthesis
+  J_IL6_bind_sIL6R:     IL6_s + sIL6R_s -> IL6_sIL6R_s; kf_IL6_sIL6R * IL6_s * sIL6R_s - kr_IL6_sIL6R * IL6_sIL6R_s; // IL-6 and sIL-6R binding
+  J_complex_sequest:    IL6_sIL6R_s + sgp130_s -> IL6_sIL6R_sgp130_s; kf_sgp130 * IL6_sIL6R_s * sgp130_s - kr_sgp130 * IL6_sIL6R_sgp130_s; // Sequestration by sgp130
+  
+  // 4. Degradation of serum components
+  J_degrad_IL6_s:           IL6_s => ; k_degrad_IL6_s * IL6_s;
+  J_degrad_sIL6R_s:         sIL6R_s => ; k_degrad_sIL6R_s * sIL6R_s;
+  J_degrad_sgp130_s:        sgp130_s => ; k_degrad_sgp130_s * sgp130_s;
+  J_degrad_CRP_s:           CRP_s => ; k_degrad_CRP_s * CRP_s;
+  J_degrad_IL6_sIL6R_s:     IL6_sIL6R_s => ; k_degrad_c1 * IL6_sIL6R_s;
+  J_degrad_IL6_sIL6R_sgp130_s: IL6_sIL6R_sgp130_s => ; k_degrad_c2 * IL6_sIL6R_sgp130_s;
+
+  // Therapeutic Interventions
+  // 1. Anti-IL-6 Antibody (Ab_IL6)
+  Rx_AbIL6_bind_IL6:        Ab_IL6_s + IL6_s -> Ab_IL6_IL6_s; kf_AbIL6 * Ab_IL6_s * IL6_s - kr_AbIL6 * Ab_IL6_IL6_s;
+  Rx_AbIL6_bind_complex:    Ab_IL6_s + IL6_sIL6R_s -> Ab_IL6_IL6_sIL6R_s; kf_AbIL6_cplx * Ab_IL6_s * IL6_sIL6R_s - kr_AbIL6_cplx * Ab_IL6_IL6_sIL6R_s;
+  Rx_AbIL6_clear:           Ab_IL6_s => ; k_clear_AbIL6 * Ab_IL6_s;
+  Rx_AbIL6_IL6_clear:       Ab_IL6_IL6_s => ; k_clear_AbIL6_bound * Ab_IL6_IL6_s;
+  Rx_AbIL6_IL6_sIL6R_clear: Ab_IL6_IL6_sIL6R_s => ; k_clear_AbIL6_cplx_bound * Ab_IL6_IL6_sIL6R_s;
+
+  // 2. Anti-IL-6R Antibody (Ab_IL6R)
+  Rx_AbIL6R_bind_sIL6R: Ab_IL6R_s + sIL6R_s -> Ab_IL6R_sIL6R_s; kf_AbIL6R * Ab_IL6R_s * sIL6R_s - kr_AbIL6R * Ab_IL6R_sIL6R_s;
+  Rx_AbIL6R_clear:      Ab_IL6R_s => ; k_clear_AbIL6R * Ab_IL6R_s;
+  Rx_AbIL6R_sIL6R_clear: Ab_IL6R_sIL6R_s => ; k_clear_AbIL6R_bound * Ab_IL6R_sIL6R_s;
+
+  // 3. sgp130Fc Therapeutic
+  Rx_sgp130Fc_bind:           sgp130Fc_s + IL6_sIL6R_s -> sgp130Fc_IL6_sIL6R_s; kf_sgp130Fc * sgp130Fc_s * IL6_sIL6R_s - kr_sgp130Fc * sgp130Fc_IL6_sIL6R_s;
+  Rx_sgp130Fc_clear:          sgp130Fc_s => ; k_clear_sgp130Fc * sgp130Fc_s;
+  Rx_sgp130Fc_complex_clear:  sgp130Fc_IL6_sIL6R_s => ; k_clear_sgp130Fc_bound * sgp130Fc_IL6_sIL6R_s;
+
+  //// Events:
+  // Example Q4W (every 4 weeks) dosing schedule for anti-IL-6 antibody over 12 weeks
+  E1: at (time == 0): Ab_IL6_s = Ab_IL6_s + dose_anti_IL6 / Serum;
+  E2: at (time == 672): Ab_IL6_s = Ab_IL6_s + dose_anti_IL6 / Serum; // 4 weeks = 672 hours
+  E3: at (time == 1344): Ab_IL6_s = Ab_IL6_s + dose_anti_IL6 / Serum; // 8 weeks = 1344 hours
+
+  //// Species initializations:
+  // Based on Crohn's patient data from Table 1, converted to nmol/L
+  IL6_g = 0.0105;     // 250 pg/ml
+  pSTAT3_g = 3.0;       // 3 au (fold change)
+  CRP_l = 0;          // Assumed 0, will reach steady state
+  IL6_s = 0.000422;   // 10 pg/ml
+  sIL6R_s = 2.8;        // 140 ng/ml
+  CRP_s = 280;        // 7 mg/l
+  sgp130_s = 2.8;     // 280 ng/ml
+  
+  // Complexes and therapeutic species start at 0
+  IL6_sIL6R_s = 0;
+  IL6_sIL6R_sgp130_s = 0;
+  Ab_IL6_s = 0;
+  Ab_IL6_IL6_s = 0;
+  Ab_IL6_IL6_sIL6R_s = 0;
+  Ab_IL6R_s = 0;
+  Ab_IL6R_sIL6R_s = 0;
+  sgp130Fc_s = 0;
+  sgp130Fc_IL6_sIL6R_s = 0;
+
+  //// Compartment initializations:
+  Gut = 1;   // L, assumed volume
+  Liver = 1; // L, assumed volume
+  Serum = 1; // L, assumed volume
+
+  //// Variable initializations:
+  // NOTE: Parameter values are not provided in the text; these are placeholders to make the model executable.
+  ksynfIL6Gut = 0.005; k_transport_IL6 = 0.5;
+  Vmax_pSTAT3 = 1.0; Km_pSTAT3 = 1.0; k_degrad_pSTAT3 = 0.2;
+  k_prod_CRP_basal = 10; Vmax_CRP = 1000; Km_CRP = 1.0; k_transport_CRP = 0.1;
+  k_prod_sIL6R_basal = 0.1; k_shed_sIL6R = 0.001; k_prod_sgp130 = 0.1;
+  kf_IL6_sIL6R = 1.0; kr_IL6_sIL6R = 0.1; kf_sgp130 = 1.0; kr_sgp130 = 0.1;
+  k_degrad_IL6_s = 0.5; k_degrad_sIL6R_s = 0.1; k_degrad_sgp130_s = 0.1;
+  k_degrad_CRP_s = 0.05; k_degrad_c1 = 0.2; k_degrad_c2 = 0.2;
+  kf_AbIL6 = 10; kr_AbIL6 = 0.1; kf_AbIL6_cplx = 10; kr_AbIL6_cplx = 0.1;
+  k_clear_AbIL6 = 0.01; k_clear_AbIL6_bound = 0.02; k_clear_AbIL6_cplx_bound = 0.02;
+  kf_AbIL6R = 10; kr_AbIL6R = 0.1; k_clear_AbIL6R = 0.01; k_clear_AbIL6R_bound = 0.02;
+  kf_sgp130Fc = 1.0; kr_sgp130Fc = 0.1; k_clear_sgp130Fc = 0.01; k_clear_sgp130Fc_bound = 0.02;
+  // Dosing parameter (in nmol). Example: 300mg dose of 150kDa Ab -> 2e6 nmol.
+  dose_anti_IL6 = 0; // Set to a non-zero value to simulate dosing, e.g., 2e6.
+
+  //// Other declarations:
+  const Gut, Liver, Serum;
+  const ksynfIL6Gut, k_transport_IL6, Vmax_pSTAT3, Km_pSTAT3, k_degrad_pSTAT3;
+  const k_prod_CRP_basal, Vmax_CRP, Km_CRP, k_transport_CRP;
+  const k_prod_sIL6R_basal, k_shed_sIL6R, k_prod_sgp130;
+  const kf_IL6_sIL6R, kr_IL6_sIL6R, kf_sgp130, kr_sgp130;
+  const k_degrad_IL6_s, k_degrad_sIL6R_s, k_degrad_sgp130_s, k_degrad_CRP_s, k_degrad_c1, k_degrad_c2;
+  const kf_AbIL6, kr_AbIL6, kf_AbIL6_cplx, kr_AbIL6_cplx;
+  const k_clear_AbIL6, k_clear_AbIL6_bound, k_clear_AbIL6_cplx_bound;
+  const kf_AbIL6R, kr_AbIL6R, k_clear_AbIL6R, k_clear_AbIL6R_bound;
+  const kf_sgp130Fc, kr_sgp130Fc, k_clear_sgp130Fc, k_clear_sgp130Fc_bound;
+  const dose_anti_IL6;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1 liter;
+  unit time_unit = 3600 second;
+
+  //// Display Names:
+  time_unit is "hour";
+  Gut is "Gastrointestinal Tract Compartment";
+  Liver is "Liver Compartment";
+  Serum is "Serum/Circulation Compartment";
+  IL6_g is "Gut IL-6";
+  pSTAT3_g is "Gut pSTAT3";
+  CRP_l is "Liver C-Reactive Protein";
+  IL6_s is "Serum IL-6";
+  sIL6R_s is "Serum soluble IL-6 Receptor";
+  CRP_s is "Serum C-Reactive Protein";
+  sgp130_s is "Serum soluble gp130";
+  IL6_sIL6R_s is "Serum IL-6/sIL-6R complex";
+  IL6_sIL6R_sgp130_s is "Serum IL-6/sIL-6R/sgp130 complex";
+  Ab_IL6_s is "Free anti-IL-6 Antibody";
+  Ab_IL6R_s is "Free anti-IL-6R Antibody";
+  sgp130Fc_s is "Free sgp130Fc Therapeutic";
+end

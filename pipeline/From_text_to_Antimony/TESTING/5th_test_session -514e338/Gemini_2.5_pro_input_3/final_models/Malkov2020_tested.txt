@@ -1,0 +1,118 @@
+model *Malkov2020_SEIRS_TimeVaryingR()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  R_tilde := (R_tilde_1 + R_tilde_2) / 2;
+  beta := gamma_ * R_tilde;
+
+  //// Rate Rules:
+  S' = -beta * S/N * I + omega * R;
+  E' = beta * S/N * I - sigma * E;
+  I' = sigma * E - gamma_ * I;
+  R' = gamma_ * I - omega * R;
+  R_tilde_1' = -eta_1 * (R_tilde_1 - R_1_star);
+  R_tilde_2' = -eta_2 * (R_tilde_2 - R_2_star);
+
+  //// Species initializations:
+  I = 1/1000;
+  E = 43.75 * I;
+  R = 0;
+  S = N - E - I - R;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  N = 1;
+  sigma = 1/5.2;    // Mean latent period of 5.2 days
+  gamma_ = 1/18;     // Mean infectious period of 18 days
+  omega = 1/365;    // Immunity waning rate (1 year)
+  
+  // Parameters for time-varying reproduction number, based on the "moderate" mitigation scenario
+  R_tilde_1 = 3.0;  // Initial value for R_tilde_1
+  R_tilde_2 = 3.0;  // Initial value for R_tilde_2
+  R_1_star = 1.6;   // Long-run value for R_tilde_1
+  R_2_star = 1.6;   // Long-run value for R_tilde_2
+  eta_1 = 1/20;     // Convergence rate for R_tilde_1
+  eta_2 = 1/20;     // Convergence rate for R_tilde_2
+
+  //// Other declarations:
+  var R_tilde_1, R_tilde_2, R_tilde, beta;
+  const population, N, sigma, gamma_, omega, R_1_star, R_2_star, eta_1, eta_2;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second; // days
+  unit substance = 1 dimensionless;
+
+  //// Display Names:
+  time_unit is "day";
+  S is "Susceptible population";
+  E is "Exposed population";
+  I is "Infectious population";
+  R is "Resistant population";
+  beta is "Transmission rate";
+  sigma is "Infection rate";
+  gamma_ is "Recovery rate";
+  omega is "Immunity waning rate";
+  R_tilde is "Time-varying reproduction number";
+  R_tilde_1 is "Component 1 of reproduction number";
+  R_tilde_2 is "Component 2 of reproduction number";
+
+end
+
+/*
+The source literature describes two additional alternative models that are not included in the main executable model above. They are summarized here for completeness.
+
+### Alternative Model 1: Milder Disease After Reinfection (Section 4.1)
+
+This model extends the SEIRS framework to 7 compartments to distinguish between primary and secondary infections, assuming the secondary infection is milder.
+
+**Compartments:**
+- S_p: primary-susceptible
+- S_s: secondary-susceptible
+- E_p: primary-exposed
+- E_s: secondary-exposed
+- I_p: primary-infected
+- I_s: secondary-infected
+- R: resistant
+
+**Equations:**
+dS_p/dt = -(beta_p * I_p + beta_s * I_s) * S_p / N
+dS_s/dt = -(beta_p * I_p + beta_s * I_s) * S_s / N + omega * R
+dE_p/dt = (beta_p * I_p + beta_s * I_s) * S_p / N - sigma_p * E_p
+dE_s/dt = (beta_p * I_p + beta_s * I_s) * S_s / N - sigma_s * E_s
+dI_p/dt = sigma_p * E_p - gamma_p * I_p
+dI_s/dt = sigma_s * E_s - gamma_s * I_s
+dR/dt = gamma_p * I_p + gamma_s * I_s - omega * R
+
+**Parameter assumptions:**
+- beta_s = beta_p / 2
+- gamma_s = 2 * gamma_p
+- sigma_s = sigma_p
+- sigma_p = 1/5.2
+- gamma_p = 1/18
+- beta_p is varied (e.g., 1/6 or 1/12)
+- omega is varied (e.g., 1/365 or 1/60)
+
+### Alternative Model 2: One-Time Reinfection (Section 4.2)
+
+This model uses a standard SEIR framework (the main model with omega=0) and introduces a discrete event where the entire resistant population becomes susceptible again at a specific time (t*).
+
+**Base Equations (SEIR):**
+dS/dt = -beta * S/N * I
+dE/dt = beta * S/N * I - sigma * E
+dI/dt = sigma * E - gamma * I
+dR/dt = gamma * I
+
+**Event:**
+At time = t_star:
+  S = S + R
+  R = 0
+
+**Parameters:**
+- t_star is varied (e.g., 120 days or 30 days)
+- beta is constant, derived from a fixed R0 (e.g., R0 in {1.6, 1.8, 2.2, 3.0})
+*/

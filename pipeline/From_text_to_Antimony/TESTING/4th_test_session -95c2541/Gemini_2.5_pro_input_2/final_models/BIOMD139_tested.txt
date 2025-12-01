@@ -1,0 +1,153 @@
+model *Hoffmann2002_IkB_NFkB_module()
+
+  /*
+  This model represents the I-kappa-B / NF-kappa-B signaling module as described
+  in the paper by Hoffmann et al. (2002). The model structure is based on the
+  pathway interactions described in the text and Figure 1A.
+
+  The provided text describes a computational model but does not supply the specific
+  mathematical equations or parameter values. Therefore, the reactions below
+  are representative formulations of the described biological processes (synthesis,
+  degradation, complex formation, nuclear transport).
+
+  Parameter values and initial conditions are placeholders to allow the model
+  to be executable, and are not derived from the source text. The model aims to
+  capture the qualitative dynamics described, such as the negative feedback loop
+  mediated by I-kappa-B-alpha leading to oscillations, and the damping function
+  of I-kappa-B-beta and I-kappa-B-epsilon.
+  */
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  
+  // Species in cytoplasm
+  species m_IkBa in cytoplasm, m_IkBb in cytoplasm, m_IkBe in cytoplasm; // mRNAs
+  species IkBa in cytoplasm, IkBb in cytoplasm, IkBe in cytoplasm;       // Free I-kappa-B proteins
+  species NFkB in cytoplasm;                                          // Free NF-kappa-B
+  species NFkB_IkBa in cytoplasm, NFkB_IkBb in cytoplasm, NFkB_IkBe in cytoplasm; // Complexes
+
+  // Species in nucleus
+  species NFkBn in nucleus;      // Nuclear NF-kappa-B
+  species IkBan in nucleus;      // Nuclear I-kappa-B-alpha
+  species NFkBn_IkBan in nucleus; // Nuclear complex
+
+  //// Reactions:
+  # Stimulus (e.g., TNF) is represented by the parameter IKK_I, activated by an event.
+
+  # --- I-kappa-B-alpha (strong feedback, shuttling) ---
+  J01_tscr_a:   => m_IkBa; c1a + c2a*NFkBn^na;       // Transcription (basal + induced)
+  J02_mdeg_a:   m_IkBa => ; d_ma * m_IkBa;             // mRNA degradation
+  J03_tsl_a:    m_IkBa => m_IkBa + IkBa; c3a * m_IkBa; // Translation
+  J04_pdeg_a:   IkBa => ; d_ia * IkBa;                 // Free protein degradation
+  J05_asc_c_a:  NFkB + IkBa -> NFkB_IkBa; a1a * NFkB * IkBa;     // Association in cytoplasm
+  J06_diss_c_a: NFkB_IkBa -> NFkB + IkBa; d1a * NFkB_IkBa;     // Dissociation in cytoplasm
+  J07_ideg_a:   NFkB_IkBa => NFkB; e2a * IKK_I * NFkB_IkBa; // IKK-induced degradation
+  J08_imp_a:    IkBa -> IkBan; i4a * IkBa;              // Nuclear import of IkBa
+  J09_exp_a:    IkBan -> IkBa; e3a * IkBan;               // Nuclear export of IkBa
+  J10_asc_n_a:  NFkBn + IkBan -> NFkBn_IkBan; a2a * NFkBn * IkBan; // Association in nucleus
+  J11_diss_n_a: NFkBn_IkBan -> NFkBn + IkBan; d2a * NFkBn_IkBan; // Dissociation in nucleus
+  J12_exp_c_a:  NFkBn_IkBan -> NFkB_IkBa; e1a * NFkBn_IkBan;     // Complex export
+
+  # --- I-kappa-B-beta (damping, cytoplasmic anchor) ---
+  J13_tscr_b:   => m_IkBb; c1b + c2b*NFkBn^nb;       // Transcription (basal + induced)
+  J14_mdeg_b:   m_IkBb => ; d_mb * m_IkBb;             // mRNA degradation
+  J15_tsl_b:    m_IkBb => m_IkBb + IkBb; c3b * m_IkBb; // Translation
+  J16_pdeg_b:   IkBb => ; d_ib * IkBb;                 // Free protein degradation
+  J17_asc_c_b:  NFkB + IkBb -> NFkB_IkBb; a1b * NFkB * IkBb;     // Association in cytoplasm
+  J18_diss_c_b: NFkB_IkBb -> NFkB + IkBb; d1b * NFkB_IkBb;     // Dissociation in cytoplasm
+  J19_ideg_b:   NFkB_IkBb => NFkB; e2b * IKK_I * NFkB_IkBb; // IKK-induced degradation
+
+  # --- I-kappa-B-epsilon (damping, cytoplasmic anchor) ---
+  J20_tscr_e:   => m_IkBe; c1e + c2e*NFkBn^ne;       // Transcription (basal + induced)
+  J21_mdeg_e:   m_IkBe => ; d_me * m_IkBe;             // mRNA degradation
+  J22_tsl_e:    m_IkBe => m_IkBe + IkBe; c3e * m_IkBe; // Translation
+  J23_pdeg_e:   IkBe => ; d_ie * IkBe;                 // Free protein degradation
+  J24_asc_c_e:  NFkB + IkBe -> NFkB_IkBe; a1e * NFkB * IkBe;     // Association in cytoplasm
+  J25_diss_c_e: NFkB_IkBe -> NFkB + IkBe; d1e * NFkB_IkBe;     // Dissociation in cytoplasm
+  J26_ideg_e:   NFkB_IkBe => NFkB; e2e * IKK_I * NFkB_IkBe; // IKK-induced degradation
+
+  # --- NF-kappa-B Transport ---
+  # Note: Nuclear import of NFkB is modeled as part of the rate rule for NFkBn
+  J27_imp_nfkb: NFkB -> NFkBn; i1 * NFkB;
+
+
+  //// Events:
+  E1: at(time > 0): IKK_I = 0.1;
+
+  //// Species initializations:
+  # Initial conditions represent a quiescent cell with NFkB sequestered in the cytoplasm.
+  # Values are illustrative placeholders. Total NFkB is 100 nM.
+  m_IkBa = 0;
+  m_IkBb = 0.02;
+  m_IkBe = 0;
+
+  IkBa = 0;
+  IkBb = 0;
+  IkBe = 0;
+  
+  NFkB = 0;
+  NFkB_IkBa = 0;
+  NFkB_IkBb = 100;
+  NFkB_IkBe = 0;
+  
+  NFkBn = 0;
+  IkBan = 0;
+  NFkBn_IkBan = 0;
+  
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 0.5;
+
+  //// Variable initializations:
+  IKK_I = 0; # Stimulus parameter, initially off.
+  
+  # Placeholder parameter values.
+  # Alpha isoform (fast feedback)
+  c1a = 0.0001; c2a = 0.05; na = 2;
+  d_ma = 0.01; c3a = 0.1; d_ia = 0.02;
+  a1a = 1; d1a = 0.01; e2a = 0.1;
+  i4a = 0.1; e3a = 0.05; a2a = 1;
+  d2a = 0.01; e1a = 0.1;
+
+  # Beta isoform (slow damping)
+  c1b = 0.0001; c2b = 0.005; nb = 2;
+  d_mb = 0.005; c3b = 0.05; d_ib = 0.001;
+  a1b = 1; d1b = 0.001; e2b = 0.05;
+
+  # Epsilon isoform (slow damping)
+  c1e = 0.0001; c2e = 0.005; ne = 2;
+  d_me = 0.005; c3e = 0.05; d_ie = 0.001;
+  a1e = 1; d1e = 0.001; e2e = 0.05;
+
+  # NFkB import rate
+  i1 = 0.1;
+
+  //// Other declarations:
+  var IKK_I;
+  const cytoplasm, nucleus;
+  const c1a, c2a, na, d_ma, c3a, d_ia, a1a, d1a, e2a, i4a, e3a, a2a, d2a, e1a;
+  const c1b, c2b, nb, d_mb, c3b, d_ib, a1b, d1b, e2b;
+  const c1e, c2e, ne, d_me, c3e, d_ie, a1e, d1e, e2e;
+  const i1;
+  
+  //// Display Names:
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  m_IkBa is "I-kappa-B-alpha mRNA";
+  m_IkBb is "I-kappa-B-beta mRNA";
+  m_IkBe is "I-kappa-B-epsilon mRNA";
+  IkBa is "cytoplasmic I-kappa-B-alpha";
+  IkBb is "cytoplasmic I-kappa-B-beta";
+  IkBe is "cytoplasmic I-kappa-B-epsilon";
+  NFkB is "cytoplasmic NF-kappa-B";
+  NFkB_IkBa is "cytoplasmic NF-kappa-B:I-kappa-B-alpha complex";
+  NFkB_IkBb is "cytoplasmic NF-kappa-B:I-kappa-B-beta complex";
+  NFkB_IkBe is "cytoplasmic NF-kappa-B:I-kappa-B-epsilon complex";
+  NFkBn is "nuclear NF-kappa-B";
+  IkBan is "nuclear I-kappa-B-alpha";
+  NFkBn_IkBan is "nuclear NF-kappa-B:I-kappa-B-alpha complex";
+  IKK_I is "IKK activity stimulus";
+  J01_tscr_a is "Transcription of IkBa";  
+  J07_ideg_a is "IKK-induced degradation of IkBa";
+
+end

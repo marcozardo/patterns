@@ -1,0 +1,68 @@
+model *Goldbeter1991_MitoticOscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C / (Kc + C)) * VM1;
+  V3 := M * VM3;
+
+  //// Rate Rules:
+  C' = vi - vd * X * (C / (Kd + C)) - kd * C;
+  M' = V1 * ((1 - M) / (K1 + (1 - M))) - V2 * (M / (K2 + M));
+  X' = V3 * ((1 - X) / (K3 + (1 - X))) - V4 * (X / (K4 + X));
+
+  //// Species initializations:
+  C = 0.01;  # Initial concentration of cyclin (uM)
+  M = 0.01;  # Initial fraction of active cdc2 kinase
+  X = 0.01;  # Initial fraction of active cyclin protease
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  vi = 0.023;  # Rate of cyclin synthesis (uM/min)
+  vd = 0.1;    # Max rate of cyclin degradation (uM/min), from vd in Fig 4 legend
+  kd = 3.33e-5;# First-order rate constant for nonspecific cyclin degradation (1/min), from Ka in Fig 4 legend
+  Kd = 0.02;   # Michaelis constant for cyclin degradation (uM)
+  Kc = 0.3;    # Michaelis constant for cyclin in cdc2 activation (uM)
+  VM1 = 0.5;   # Max rate of cdc2 kinase activation (1/min)
+  VM3 = 0.2;   # Max rate of cyclin protease activation (1/min)
+  V2 = 0.167;  # Max rate of cdc2 kinase inactivation (1/min), from Ve in Fig 4 legend
+  V4 = 0.1;    # Max rate of cyclin protease inactivation (1/min), from Ve in Fig 4 legend
+  K1 = 0.1;    # Michaelis constant for cdc2 kinase activation
+  K2 = 0.1;    # Michaelis constant for cdc2 kinase inactivation
+  K3 = 0.1;    # Michaelis constant for cyclin protease activation
+  K4 = 0.1;    # Michaelis constant for cyclin protease inactivation
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, vi, vd, kd, Kd, Kc, VM1, VM3, V2, V4, K1, K2, K3, K4;
+  
+  //// Unit definitions:
+  unit time_unit = 60 second; # minute
+  unit concentration = 1e-6 mole / liter; # micromolar
+
+  //// Display Names:
+  time_unit is "minute";
+  C is "Cyclin concentration";
+  M is "Fraction of active cdc2 kinase";
+  X is "Fraction of active cyclin protease";
+  vi is "Rate of cyclin synthesis";
+  vd is "Maximum rate of cyclin degradation by protease X";
+  kd is "Rate constant for non-specific cyclin degradation";
+  Kd is "Michaelis constant for cyclin degradation";
+  Kc is "Michaelis constant for cyclin in cdc2 activation";
+  V1 is "Effective maximum rate for cdc2 kinase activation";
+  V2 is "Maximum rate for cdc2 kinase inactivation";
+  V3 is "Effective maximum rate for cyclin protease activation";
+  V4 is "Maximum rate for cyclin protease inactivation";
+  VM1 is "Maximum rate of phosphatase E1";
+  VM3 is "Maximum rate of kinase E3";
+  K1 is "Michaelis constant for cdc2 kinase activation";
+  K2 is "Michaelis constant for cdc2 kinase inactivation";
+  K3 is "Michaelis constant for cyclin protease activation";
+  K4 is "Michaelis constant for cyclin protease inactivation";
+
+end

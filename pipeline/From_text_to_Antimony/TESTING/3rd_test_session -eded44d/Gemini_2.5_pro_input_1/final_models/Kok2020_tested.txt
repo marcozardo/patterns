@@ -1,0 +1,271 @@
+model *Kok2020_IFNa_Signaling()
+
+  /*
+  * This model describes the Interferon alpha (IFNa) signal transduction pathway,
+  * disentangling the molecular mechanisms that regulate pathway sensitization
+  * in response to prestimulation with different IFNa doses. The model is based
+  * on the work by Kok et al., Mol Syst Biol (2020) 16: e8955. It includes the
+  * core signaling cascade through JAK/STAT, formation of transcription factor
+  * complexes, and transcriptional regulation by seven feedback regulators:
+  * STAT1, STAT2, IRF9 (positive), and USP18, SOCS1, SOCS3, IRF2 (negative).
+  */
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+
+  # External ligand, concentration controlled by experimental protocol
+  species $IFNa in cytoplasm;
+
+  # Receptor species
+  species Rec in cytoplasm, aRecIFN in cytoplasm;
+
+  # Cytoplasmic proteins and complexes
+  species STAT1c in cytoplasm, STAT2c in cytoplasm, IRF9c in cytoplasm;
+  species pSTAT1dimc in cytoplasm, pSTAT1pSTAT2c in cytoplasm, ISGF3c in cytoplasm;
+
+  # Nuclear proteins and complexes
+  species STAT1n in nucleus, STAT2n in nucleus, IRF9n in nucleus;
+  species pSTAT1dimn in nucleus, pSTAT1pSTAT2n in nucleus, ISGF3n in nucleus;
+
+  # Feedback regulator proteins
+  species SOCS1 in cytoplasm, SOCS3 in cytoplasm, USP18 in cytoplasm, IRF2 in cytoplasm;
+
+  # Feedback regulator mRNAs
+  species STAT1mRNA in cytoplasm, STAT2mRNA in cytoplasm, IRF9mRNA in cytoplasm;
+  species USP18mRNA in cytoplasm, SOCS1mRNA in cytoplasm, SOCS3mRNA in cytoplasm, IRF2mRNA in cytoplasm;
+
+
+  //// Assignment Rules:
+  # Controls the IFN stimulation protocol via a piecewise function.
+  # Prestimulation starts at time = 0, and a second stimulation at time = 24.
+  IFNa := piecewise(stim_dose, time >= 24, prestim_dose, time >= 0, 0);
+
+
+  //// Reactions:
+  # --- 1. Receptor Dynamics ---
+  # IFN binding and receptor activation, inhibited by SOCS1 and SOCS3.
+  J01_RecActivation: IFNa + Rec => aRecIFN; k_RecActivation * IFNa * Rec / ((1 + SOCS1/KI_SOCS1) * (1 + SOCS3/KI_SOCS3));
+  J02_RecDeactivation: aRecIFN => Rec; k_RecDeactivation * aRecIFN;
+  # Basal synthesis and degradation of the receptor.
+  J03_RecSynthesis: => Rec; k_RecSynthesis;
+  J04_RecDegradation: Rec => ; k_RecDegradation * Rec;
+  # Degradation of the active receptor complex.
+  J05_aRecDeg_basal: aRecIFN => ; k_aRecDeg_basal * aRecIFN;
+  # SOCS1 and SOCS1:USP18 co-complex mediate degradation of the active receptor. This mechanism was identified as best explaining the data.
+  J06_aRecDeg_SOCS1: aRecIFN + SOCS1 => SOCS1; k_aRecDeg_SOCS1 * aRecIFN * SOCS1;
+  J07_aRecDeg_SOCS1_USP18: aRecIFN + SOCS1 + USP18 => SOCS1 + USP18; k_aRecDeg_SOCS1_USP18 * aRecIFN * SOCS1 * USP18;
+
+  # --- 2. Cytoplasmic Signaling ---
+  # STAT phosphorylation and dimerization by the active receptor, inhibited by USP18.
+  J08_pSTAT1dim_formation: 2 STAT1c => pSTAT1dimc; k_pSTAT1dim_formation * aRecIFN * STAT1c^2 / (1 + USP18/KI_USP18_phos);
+  J09_pSTAT1pSTAT2_formation: STAT1c + STAT2c => pSTAT1pSTAT2c; k_pSTAT1pSTAT2_formation * aRecIFN * STAT1c * STAT2c / (1 + USP18/KI_USP18_phos);
+  # Dephosphorylation of STAT complexes in the cytoplasm.
+  J10_pSTAT1dim_dephos: pSTAT1dimc => 2 STAT1c; k_pSTAT1dim_dephos * pSTAT1dimc;
+  J11_pSTAT1pSTAT2_dephos: pSTAT1pSTAT2c => STAT1c + STAT2c; k_pSTAT1pSTAT2_dephos * pSTAT1pSTAT2c;
+  # Formation and dissociation of the ISGF3 complex.
+  J12_ISGF3_formation: pSTAT1pSTAT2c + IRF9c -> ISGF3c; k_ISGF3_formation * pSTAT1pSTAT2c * IRF9c - k_ISGF3_dissociation * ISGF3c;
+
+  # --- 3. Nucleo-cytoplasmic Transport ---
+  # Shuttling of individual protein components between cytoplasm and nucleus.
+  J13_STAT1_shuttle: STAT1c -> STAT1n; k_STAT1_import * STAT1c - k_STAT1_export * STAT1n;
+  J14_STAT2_shuttle: STAT2c -> STAT2n; k_STAT2_import * STAT2c - k_STAT2_export * STAT1n;
+  J15_IRF9_shuttle: IRF9c -> IRF9n; k_IRF9_import * IRF9c - k_IRF9_export * IRF9n;
+  # Import of activated STAT complexes into the nucleus.
+  J16_pSTAT1dim_import: pSTAT1dimc => pSTAT1dimn; k_pSTAT1dim_import * pSTAT1dimc;
+  J17_pSTAT1pSTAT2_import: pSTAT1pSTAT2c => pSTAT1pSTAT2n; k_pSTAT1pSTAT2_import * pSTAT1pSTAT2c;
+  J18_ISGF3_import: ISGF3c => ISGF3n; k_ISGF3_import * ISGF3c;
+
+  # --- 4. Nuclear Dynamics ---
+  # Dissociation of transcription factor complexes in the nucleus.
+  J19_pSTAT1dimn_diss: pSTAT1dimn -> 2 STAT1n; k_pSTAT1dimn_diss * pSTAT1dimn;
+  J20_pSTAT1pSTAT2n_diss: pSTAT1pSTAT2n -> STAT1n + STAT2n; k_pSTAT1pSTAT2n_diss * pSTAT1pSTAT2n;
+  J21_ISGF3n_diss: ISGF3n -> pSTAT1pSTAT2n + IRF9n; k_ISGF3n_diss * ISGF3n;
+
+  # --- 5. Gene Expression: Transcription ---
+  # Induction of SOCS3 mRNA by pSTAT1 homodimers binding to GAS sites.
+  J22_SOCS3mRNA_synth: => SOCS3mRNA; k_synth_mSOCS3_basal + k_synth_mSOCS3_induced * pSTAT1dimn^h_SOCS3 / (Km_SOCS3^h_SOCS3 + pSTAT1dimn^h_SOCS3);
+  # Induction of combined GAS/ISRE genes by pSTAT1:pSTAT2 heterodimers and ISGF3. ISGF3 is a stronger activator.
+  J23_STAT1mRNA_synth: => STAT1mRNA; k_synth_mSTAT1_basal + k_synth_mSTAT1_pS12*pSTAT1pSTAT2n + k_synth_mSTAT1_ISGF3*ISGF3n;
+  J24_STAT2mRNA_synth: => STAT2mRNA; k_synth_mSTAT2_basal + k_synth_mSTAT2_pS12*pSTAT1pSTAT2n + k_synth_mSTAT2_ISGF3*ISGF3n;
+  J25_IRF9mRNA_synth: => IRF9mRNA; k_synth_mIRF9_basal + k_synth_mIRF9_pS12*pSTAT1pSTAT2n + k_synth_mIRF9_ISGF3*ISGF3n;
+  J26_USP18mRNA_synth: => USP18mRNA; k_synth_mUSP18_basal + k_synth_mUSP18_pS12*pSTAT1pSTAT2n + k_synth_mUSP18_ISGF3*ISGF3n;
+  J27_IRF2mRNA_synth: => IRF2mRNA; k_synth_mIRF2_basal + k_synth_mIRF2_pS12*pSTAT1pSTAT2n + k_synth_mIRF2_ISGF3*ISGF3n;
+  J28_SOCS1mRNA_synth: => SOCS1mRNA; (k_synth_mSOCS1_basal + k_synth_mSOCS1_pS12*pSTAT1pSTAT2n + k_synth_mSOCS1_ISGF3*ISGF3n) / (1 + IRF2/KI_IRF2_trans);
+  # Degradation of mRNAs.
+  J29_SOCS1mRNA_degradation: SOCS1mRNA => ; k_deg_mSOCS1 * SOCS1mRNA;
+  J30_SOCS3mRNA_degradation: SOCS3mRNA => ; k_deg_mSOCS3 * SOCS3mRNA;
+  J31_STAT1mRNA_degradation: STAT1mRNA => ; k_deg_mSTAT1 * STAT1mRNA;
+  J32_STAT2mRNA_degradation: STAT2mRNA => ; k_deg_mSTAT2 * STAT2mRNA;
+  J33_IRF9mRNA_degradation: IRF9mRNA => ; k_deg_mIRF9 * IRF9mRNA;
+  J34_USP18mRNA_degradation: USP18mRNA => ; k_deg_mUSP18 * USP18mRNA;
+  J35_IRF2mRNA_degradation: IRF2mRNA => ; k_deg_mIRF2 * IRF2mRNA;
+
+  # --- 6. Gene Expression: Translation ---
+  # Note: The paper mentions using linear chains to model translation delays. This is simplified here to a single step.
+  J36_STAT1_synth: STAT1mRNA => STAT1mRNA + STAT1c; k_trans_STAT1 * STAT1mRNA;
+  J37_STAT2_synth: STAT2mRNA => STAT2mRNA + STAT2c; k_trans_STAT2 * STAT2mRNA;
+  J38_IRF9_synth: IRF9mRNA => IRF9mRNA + IRF9c; k_trans_IRF9 * IRF9mRNA;
+  J39_SOCS1_synth: SOCS1mRNA => SOCS1mRNA + SOCS1; k_trans_SOCS1 * SOCS1mRNA;
+  J40_SOCS3_synth: SOCS3mRNA => SOCS3mRNA + SOCS3; k_trans_SOCS3 * SOCS3mRNA;
+  J41_USP18_synth: USP18mRNA => USP18mRNA + USP18; k_trans_USP18 * USP18mRNA;
+  J42_IRF2_synth: IRF2mRNA => IRF2mRNA + IRF2; k_trans_IRF2 * IRF2mRNA;
+
+  # --- 7. Protein Turnover and Basal Synthesis ---
+  # Basal synthesis to set initial protein levels.
+  J43_STAT1_basal_synth: => STAT1c; init_STAT1c * k_deg_STAT1;
+  J44_STAT2_basal_synth: => STAT2c; init_STAT2c * k_deg_STAT2;
+  J45_IRF9_basal_synth: => IRF9c; init_IRF9c * k_deg_IRF9;
+  J46_USP18_basal_synth: => USP18; init_USP18 * k_deg_USP18;
+  # Protein degradation.
+  J47_STAT1c_degradation: STAT1c => ; k_deg_STAT1 * STAT1c;
+  J48_STAT2c_degradation: STAT2c => ; k_deg_STAT2 * STAT2c;
+  J49_IRF9c_degradation: IRF9c => ; k_deg_IRF9 * IRF9c;
+  J50_SOCS1_degradation: SOCS1 => ; k_deg_SOCS1 * SOCS1;
+  J51_SOCS3_degradation: SOCS3 => ; k_deg_SOCS3 * SOCS3;
+  J52_USP18_degradation: USP18 => ; k_deg_USP18 * USP18;
+  J53_IRF2_degradation: IRF2 => ; k_deg_IRF2 * IRF2;
+
+
+  //// Species initializations:
+  # Initial amounts from Fig 3C, in molecules per cell.
+  STAT1c = 500000;      # init_STAT1c = 500000
+  STAT2c = 50000;       # init_STAT2c = 50000
+  IRF9c = 1000;         # init_IRF9c = 1000
+  USP18 = 1000;         # init_USP18 = 1000
+
+  # Receptor and other species start at some basal level or zero.
+  Rec = 1000;
+  aRecIFN = 0;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  SOCS1 = 0;
+  SOCS3 = 0;
+  IRF2 = 0;
+  # All mRNAs start at zero; basal synthesis will raise them.
+  STAT1mRNA = 0;
+  STAT2mRNA = 0;
+  IRF9mRNA = 0;
+  USP18mRNA = 0;
+  SOCS1mRNA = 0;
+  SOCS3mRNA = 0;
+  IRF2mRNA = 0;
+
+
+  //// Compartment initializations:
+  cytoplasm = 1; # volume in L (assumed)
+  nucleus = 1;   # volume in L (assumed)
+
+
+  //// Variable initializations:
+  # Parameters for simulation protocol (doses in pM)
+  prestim_dose = 2.8;   # Low dose prestimulation
+  stim_dose = 1400;     # High dose stimulation
+
+  # Model parameters (rate constants and others). Values are placeholders.
+  k_RecActivation = 0.001;
+  KI_SOCS1 = 100;
+  KI_SOCS3 = 100;
+  k_RecDeactivation = 0.1;
+  k_RecSynthesis = 10;
+  k_RecDegradation = 0.01;
+  k_aRecDeg_basal = 0.1;
+  k_aRecDeg_SOCS1 = 0.001;
+  k_aRecDeg_SOCS1_USP18 = 0.01;
+  k_pSTAT1dim_formation = 1e-8;
+  KI_USP18_phos = 1000;
+  k_pSTAT1pSTAT2_formation = 1e-8;
+  k_pSTAT1dim_dephos = 0.1;
+  k_pSTAT1pSTAT2_dephos = 0.1;
+  k_ISGF3_formation = 1e-6;
+  k_ISGF3_dissociation = 0.1;
+  k_STAT1_import = 0.1;
+  k_STAT1_export = 0.1;
+  k_STAT2_import = 0.1;
+  k_STAT2_export = 0.1;
+  k_IRF9_import = 0.1;
+  k_IRF9_export = 0.1;
+  k_pSTAT1dim_import = 0.1;
+  k_pSTAT1pSTAT2_import = 0.1;
+  k_ISGF3_import = 0.1;
+  k_pSTAT1dimn_diss = 0.1;
+  k_pSTAT1pSTAT2n_diss = 0.1;
+  k_ISGF3n_diss = 0.1;
+  k_synth_mSOCS3_basal = 0.01;
+  k_synth_mSOCS3_induced = 1;
+  h_SOCS3 = 2;
+  Km_SOCS3 = 100;
+  k_synth_mSTAT1_basal = 0.1;
+  k_synth_mSTAT1_pS12 = 0.01;
+  k_synth_mSTAT1_ISGF3 = 0.1;
+  k_synth_mSTAT2_basal = 0.1;
+  k_synth_mSTAT2_pS12 = 0.01;
+  k_synth_mSTAT2_ISGF3 = 0.1;
+  k_synth_mIRF9_basal = 0.1;
+  k_synth_mIRF9_pS12 = 0.01;
+  k_synth_mIRF9_ISGF3 = 0.1;
+  k_synth_mUSP18_basal = 0.1;
+  k_synth_mUSP18_pS12 = 0.01;
+  k_synth_mUSP18_ISGF3 = 0.1;
+  k_synth_mIRF2_basal = 0.1;
+  k_synth_mIRF2_pS12 = 0.01;
+  k_synth_mIRF2_ISGF3 = 0.1;
+  k_synth_mSOCS1_basal = 0.1;
+  k_synth_mSOCS1_pS12 = 0.01;
+  k_synth_mSOCS1_ISGF3 = 0.1;
+  KI_IRF2_trans = 100;
+  k_deg_mSOCS1 = 0.1;
+  k_deg_mSOCS3 = 0.1;
+  k_deg_mSTAT1 = 0.1;
+  k_deg_mSTAT2 = 0.1;
+  k_deg_mIRF9 = 0.1;
+  k_deg_mUSP18 = 0.1;
+  k_deg_mIRF2 = 0.1;
+  k_trans_STAT1 = 0.1;
+  k_trans_STAT2 = 0.1;
+  k_trans_IRF9 = 0.1;
+  k_trans_SOCS1 = 0.1;
+  k_trans_SOCS3 = 0.1;
+  k_trans_USP18 = 0.1;
+  k_trans_IRF2 = 0.1;
+  init_STAT1c = 500000;
+  init_STAT2c = 50000;
+  init_IRF9c = 1000;
+  init_USP18 = 1000;
+  k_deg_STAT1 = 0.01;
+  k_deg_STAT2 = 0.01;
+  k_deg_IRF9 = 0.01;
+  k_deg_SOCS1 = 0.1;
+  k_deg_SOCS3 = 0.1;
+  k_deg_USP18 = 0.1;
+  k_deg_IRF2 = 0.1;
+
+
+  //// Display Names:
+  time is "Time (hours)";
+  IFNa is "Interferon alpha";
+  Rec is "IFN alpha Receptor";
+  aRecIFN is "Activated IFN alpha Receptor Complex";
+  STAT1c is "Cytoplasmic STAT1";
+  STAT2c is "Cytoplasmic STAT2";
+  IRF9c is "Cytoplasmic IRF9";
+  pSTAT1dimc is "Cytoplasmic pSTAT1 Homodimer";
+  pSTAT1pSTAT2c is "Cytoplasmic pSTAT1:pSTAT2 Heterodimer";
+  ISGF3c is "Cytoplasmic ISGF3 Complex";
+  STAT1n is "Nuclear STAT1";
+  STAT2n is "Nuclear STAT2";
+  IRF9n is "Nuclear IRF9";
+  pSTAT1dimn is "Nuclear pSTAT1 Homodimer";
+  pSTAT1pSTAT2n is "Nuclear pSTAT1:pSTAT2 Heterodimer";
+  ISGF3n is "Nuclear ISGF3 Complex";
+  USP18 is "Ubiquitin Specific Peptidase 18";
+  SOCS1 is "Suppressor Of Cytokine Signaling 1";
+  SOCS3 is "Suppressor Of Cytokine Signaling 3";
+  IRF2 is "Interferon Regulatory Factor 2";
+end

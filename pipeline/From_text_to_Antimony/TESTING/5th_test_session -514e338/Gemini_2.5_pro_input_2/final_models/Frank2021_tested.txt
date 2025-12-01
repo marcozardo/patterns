@@ -1,0 +1,93 @@
+/*
+ * MODEL: Frank2021_MacrophagePolarization
+ *
+ * This model describes the polarization of a single macrophage into different phenotypes,
+ * primarily M1 and M2, based on the activation levels of STAT1 and STAT6 transcription factors.
+ * The model is a system of two coupled ordinary differential equations adapted from a T-cell
+ * differentiation model by Yates et al. (2004), but with an asymmetric structure to reflect
+ * specific inhibitory mechanisms in macrophages.
+ *
+ * The model exhibits multistability (bistability, tristability, and quadstability) depending
+ * on the parameter set used, representing different macrophage phenotypes such as M1 (high STAT1,
+ * low STAT6), M2 (low STAT1, high STAT6), a non-activated M0 state (low STAT1, low STAT6), and
+ * an intermittent phenotype (high STAT1, high STAT6).
+ *
+ * This antimony implementation uses the initial parameter set Theta_0 from Table 2 of the paper,
+ * which leads to bistable behavior. The other parameter sets (Theta_1 and Theta_2) can be
+ * used to explore tristable and quadstable dynamics, respectively.
+ *
+ * Reference:
+ * Frank, A. S., Larripa, K., Ryu, H., Snodgrass, R. G., & R??????blitz, S. (2021).
+ * Bifurcation and sensitivity analysis reveal key drivers of multistability in a model
+ * of macrophage polarization. Journal of Theoretical Biology, 509, 110511.
+ * DOI: 10.1016/j.jtbi.2020.110511
+ */
+
+model *Frank2021_MacrophagePolarization()
+
+    //// Compartments and Species:
+    compartment cell;
+    species x1 in cell, x2 in cell; // x1: Activated STAT1, x2: Activated STAT6
+
+    //// Rate Rules:
+    // Rate of change for activated STAT1 (x1), representing M1 polarization proxy.
+    x1' = (a1 * (x1^n1 / (k1^n1 + x1^n1)) + S1) * (p2^l2 / (p2^l2 + x2^l2)) + b1 - q1*x1;
+
+    // Rate of change for activated STAT6 (x2), representing M2 polarization proxy.
+    x2' = a2 * (x2^n2 / (k2^n2 + x2^n2)) + S2 * (p1^l1 / (p1^l1 + x1^l1)) + b2 - q2*x2;
+
+    //// Species initializations:
+    // Initial conditions are not specified in the paper. Set to zero assuming a naive/unactivated state.
+    x1 = 0;
+    x2 = 0;
+
+    //// Compartment initializations:
+    // A single compartment representing the macrophage. Volume is set to 1 (unitless).
+    cell = 1;
+
+    //// Variable initializations:
+    // Parameters from the initial set Theta_0 (Table 2), which results in bistability.
+    a1 = 5;
+    a2 = 5;
+    b1 = 0.05;
+    b2 = 0.05;
+    n1 = 6;
+    n2 = 6;
+    k1 = 1;
+    k2 = 1;
+    l1 = 1;
+    l2 = 1;
+    p1 = 0.5;
+    p2 = 1;
+    q1 = 5;
+    q2 = 5;
+    S1 = 3.75;
+    S2 = 3.75;
+
+    //// Other declarations:
+    const cell;
+    const a1, a2, b1, b2, n1, n2, k1, k2;
+    const l1, l2, p1, p2, q1, q2, S1, S2;
+
+    //// Display Names:
+    cell is "Macrophage";
+    x1 is "Activated STAT1";
+    x2 is "Activated STAT6";
+    a1 is "Strength of self-stimulation for STAT1";
+    a2 is "Strength of self-stimulation for STAT6";
+    b1 is "Basal activation rate for STAT1";
+    b2 is "Basal activation rate for STAT6";
+    n1 is "Hill exponent for STAT1 self-stimulation";
+    n2 is "Hill exponent for STAT6 self-stimulation";
+    k1 is "Threshold for STAT1 self-stimulation";
+    k2 is "Threshold for STAT6 self-stimulation";
+    l1 is "Exponent for mutual inhibition of STAT6 by STAT1";
+    l2 is "Exponent for mutual inhibition of STAT1 by STAT6";
+    p1 is "Threshold for mutual inhibition of STAT6 by STAT1";
+    p2 is "Threshold for mutual inhibition of STAT1 by STAT6";
+    q1 is "Deactivation rate for STAT1";
+    q2 is "Deactivation rate for STAT6";
+    S1 is "Input signal strength (IFN-gamma)";
+    S2 is "Input signal strength (IL-4)";
+
+end

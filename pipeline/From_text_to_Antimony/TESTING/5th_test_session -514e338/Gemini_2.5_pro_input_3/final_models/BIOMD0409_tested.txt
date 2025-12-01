@@ -1,0 +1,127 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  // All reactions occur within a single compartment representing the yeast cell.
+  compartment cell;
+  // Species whose total amounts change via synthesis/degradation.
+  species Cdc20 in cell, Securin in cell, Clb2 in cell;
+
+  //// Assignment Rules:
+  // The amount of active, free Separase is determined by the amount of its inhibitor, Securin.
+  Separase := Separase_tot - Securin;
+
+  //// Rate Rules:
+  // PP2A represents the active fraction of the PP2A-Cdc55 phosphatase.
+  // It is inactivated by Separase and reactivated by a background process.
+  PP2A' = k_act_pp2a * (1 - PP2A) - k_inact_pp2a * Separase * PP2A;
+
+  // Net1P represents the fraction of phosphorylated Net1.
+  // Net1 is phosphorylated by Cdk (Clb2) and MEN, and dephosphorylated by PP2A and active Cdc14.
+  Net1P' = (V_p_cdk*Clb2 + V_p_men*MEN)*(1 - Net1P) - (V_dp_pp2a*PP2A + V_dp_cdc14*Cdc14)*Net1P;
+
+  // Cdc14 represents the active, free fraction of the Cdc14 phosphatase.
+  // It is released from its inhibitor Net1 upon Net1 phosphorylation and re-sequestered upon dephosphorylation.
+  Cdc14' = k_rel_cdc14*Net1P*(Cdc14_tot - Cdc14) - k_seq_cdc14*(1 - Net1P)*Cdc14;
+
+  // MEN represents the active fraction of the Mitotic Exit Network.
+  // It is activated by Cdc14 and inhibited by Cdk (Clb2). Basal activation/inactivation rates are included.
+  MEN' = (Ka_men + V_act_men*Cdc14)*(1 - MEN) - (Ki_men + V_inact_men*Clb2)*MEN;
+
+  // Cdh1 represents the active fraction of the APC/C activator Cdh1.
+  // It is activated by Cdc14 and inhibited by Cdk (Clb2). Basal activation/inactivation rates are included.
+  Cdh1' = (Ka_cdh1 + V_act_cdh1*Cdc14)*(1 - Cdh1) - (Ki_cdh1 + V_inact_cdh1*Clb2)*Cdh1;
+
+  //// Reactions:
+  // Synthesis of Cdc20 is induced at the start of the simulation.
+  J_syn_Cdc20: => Cdc20; vs_Cdc20;
+  // Cdc20 is degraded basally and by active APC/C-Cdh1.
+  J_deg_Cdc20: Cdc20 => ; (vd_Cdc20_basal + vd_Cdc20_cdh1*Cdh1) * Cdc20;
+
+  // Securin is degraded by APC/C-Cdc20.
+  J_deg_Sec: Securin => ; (kd_sec_basal + kd_sec_c20*Cdc20)*Securin;
+
+  // Synthesis of the mitotic cyclin Clb2.
+  J_syn_Clb2: => Clb2; vs_Clb2;
+  // Clb2 is degraded by APC/C-Cdc20 and APC/C-Cdh1.
+  J_deg_Clb2: Clb2 => ; (kd_clb2_basal + kd_clb2_c20*Cdc20 + kd_clb2_cdh1*Cdh1)*Clb2;
+
+  //// Species initializations:
+  // Simulation starts from a metaphase arrest state (high Clb2/Securin, Cdc20-depleted).
+  Cdc20 = 0;
+  Securin = 1;
+  Clb2 = 1;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Initial fractions of active forms for variables controlled by rate rules.
+  PP2A = 1;
+  Net1P = 0.01;
+  Cdc14 = 0.01;
+  MEN = 0.01;
+  Cdh1 = 0.01;
+
+  // Total amounts for components in conservation relationships.
+  Separase_tot = 1;
+  Cdc14_tot = 1;
+
+  // Kinetic parameters are estimated to qualitatively reproduce Figure 7B from the paper.
+  // Explicit values are not provided in the publication.
+  vs_Cdc20 = 0.03;
+  vd_Cdc20_basal = 0.01;
+  vd_Cdc20_cdh1 = 1;
+
+  kd_sec_basal = 0;
+  kd_sec_c20 = 1;
+
+  vs_Clb2 = 0.03;
+  kd_clb2_basal = 0;
+  kd_clb2_c20 = 0.2;
+  kd_clb2_cdh1 = 1.5;
+
+  k_act_pp2a = 0.05;
+  k_inact_pp2a = 2.5;
+
+  V_p_cdk = 1;
+  V_p_men = 2;
+  V_dp_pp2a = 2;
+  V_dp_cdc14 = 0.5;
+
+  k_rel_cdc14 = 2;
+  k_seq_cdc14 = 0.5;
+
+  Ka_men = 0.01;
+  V_act_men = 1.5;
+  Ki_men = 0.01;
+  V_inact_men = 1.5;
+
+  Ka_cdh1 = 0.01;
+  V_act_cdh1 = 1;
+  Ki_cdh1 = 0.01;
+  V_inact_cdh1 = 2.5;
+
+  //// Other declarations:
+  const cell, Separase_tot, Cdc14_tot;
+  var Separase, PP2A, Net1P, Cdc14, MEN, Cdh1;
+
+  const vs_Cdc20, vd_Cdc20_basal, vd_Cdc20_cdh1, kd_sec_basal, kd_sec_c20;
+  const vs_Clb2, kd_clb2_basal, kd_clb2_c20, kd_clb2_cdh1;
+  const k_act_pp2a, k_inact_pp2a;
+  const V_p_cdk, V_p_men, V_dp_pp2a, V_dp_cdc14;
+  const k_rel_cdc14, k_seq_cdc14;
+  const Ka_men, V_act_men, Ki_men, V_inact_men;
+  const Ka_cdh1, V_act_cdh1, Ki_cdh1, V_inact_cdh1;
+
+  //// Display Names:
+  cell is "Yeast cell";
+  Clb2 is "Cyclin B (Clb2-Cdk activity)";
+  Cdc20 is "APC/C activator Cdc20";
+  Securin is "Securin (Separase inhibitor)";
+  Separase is "Separase (active)";
+  PP2A is "PP2A-Cdc55 phosphatase (active fraction)";
+  Net1P is "Phosphorylated Net1 (fraction)";
+  Cdc14 is "Cdc14 phosphatase (active, free fraction)";
+  MEN is "Mitotic Exit Network (active fraction)";
+  Cdh1 is "APC/C activator Cdh1 (active fraction)";
+end

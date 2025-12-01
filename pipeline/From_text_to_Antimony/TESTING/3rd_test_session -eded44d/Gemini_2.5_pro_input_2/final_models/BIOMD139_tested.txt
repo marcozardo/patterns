@@ -1,0 +1,174 @@
+model *Hoffmann2002_IkB_NFkB_module()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+
+  // Cytoplasmic Species
+  species IkBa_c in cytoplasm, IkBb_c in cytoplasm, IkBe_c in cytoplasm;
+  species NFkB_c in cytoplasm;
+  species NFkB_IkBa_c in cytoplasm, NFkB_IkBb_c in cytoplasm, NFkB_IkBe_c in cytoplasm;
+  species mRNA_IkBa in cytoplasm, mRNA_IkBb in cytoplasm, mRNA_IkBe in cytoplasm;
+
+  // Nuclear Species
+  species NFkB_n in nucleus;
+  species IkBa_n in nucleus;
+  species NFkB_IkBa_n in nucleus;
+
+  // Stimulus/Catalyst
+  species $IKK in cytoplasm;
+
+  //// Reactions:
+  // IKK-mediated degradation of IkappaB proteins (free and bound forms)
+  J1: IkBa_c + $IKK => $IKK; c1a * IKK * IkBa_c;
+  J2: NFkB_IkBa_c + $IKK => NFkB_c + $IKK; c1a_b * IKK * NFkB_IkBa_c;
+  J3: IkBb_c + $IKK => $IKK; c1b * IKK * IkBb_c;
+  J4: NFkB_IkBb_c + $IKK => NFkB_c + $IKK; c1b_b * IKK * NFkB_IkBb_c;
+  J5: IkBe_c + $IKK => $IKK; c1e * IKK * IkBe_c;
+  J6: NFkB_IkBe_c + $IKK => NFkB_c + $IKK; c1e_b * IKK * NFkB_IkBe_c;
+
+  // Association and dissociation of NF-kB and IkappaB isoforms in the cytoplasm
+  J7: NFkB_c + IkBa_c -> NFkB_IkBa_c; a1 * NFkB_c * IkBa_c - d1 * NFkB_IkBa_c;
+  J8: NFkB_c + IkBb_c -> NFkB_IkBb_c; a2 * NFkB_c * IkBb_c - d2 * NFkB_IkBb_c;
+  J9: NFkB_c + IkBe_c -> NFkB_IkBe_c; a3 * NFkB_c * IkBe_c - d3 * NFkB_IkBe_c;
+  
+  // Nuclear import of free NF-kB
+  J10: NFkB_c => NFkB_n; i1 * NFkB_c;
+
+  // Nuclear import and export of free IkappaB-alpha
+  J11: IkBa_c => IkBa_n; i2 * IkBa_c;
+  J12: IkBa_n => IkBa_c; e2 * IkBa_n;
+
+  // Association and dissociation of NF-kB and IkappaB-alpha in the nucleus
+  J13: NFkB_n + IkBa_n -> NFkB_IkBa_n; a4 * NFkB_n * IkBa_n - d4 * NFkB_IkBa_n;
+
+  // Nuclear export of the NF-kB:IkappaB-alpha complex
+  J14: NFkB_IkBa_n => NFkB_IkBa_c; e3 * NFkB_IkBa_n;
+
+  // Transcription of IkappaB genes
+  // IkappaB-alpha transcription is induced by nuclear NF-kB (negative feedback)
+  J15: => mRNA_IkBa; (c2a + c3a * NFkB_n) * cytoplasm;
+  // IkappaB-beta and epsilon have basal transcription
+  J16: => mRNA_IkBb; c2b * cytoplasm;
+  J17: => mRNA_IkBe; c2e * cytoplasm;
+  
+  // Degradation of IkappaB mRNAs
+  J18: mRNA_IkBa => ; c4a * mRNA_IkBa;
+  J19: mRNA_IkBb => ; c4b * mRNA_IkBb;
+  J20: mRNA_IkBe => ; c4e * mRNA_IkBe;
+
+  // Translation of IkappaB proteins
+  J21: mRNA_IkBa => mRNA_IkBa + IkBa_c; c5a * mRNA_IkBa;
+  J22: mRNA_IkBb => mRNA_IkBb + IkBb_c; c5b * mRNA_IkBb;
+  J23: mRNA_IkBe => mRNA_IkBe + IkBe_c; c5e * mRNA_IkBe;
+  
+  // Basal degradation of IkappaB proteins
+  J24: IkBa_c => ; c6a * IkBa_c;
+  J25: IkBb_c => ; c6b * IkBb_c;
+  J26: IkBe_c => ; c6e * IkBe_c;
+
+  //// Events:
+  // Persistent stimulation with TNF begins at time t=0, modeled as a step increase in active IKK
+  E1: at (time >= 0): IKK = 1;
+
+  //// Species initializations:
+  // System is at steady-state before stimulation (t=0)
+  // IKK is inactive
+  IKK = 0;
+  // Most NF-kB is in the cytoplasm, bound to IkappaB
+  NFkB_c = 0.0038;
+  NFkB_n = 0;
+  IkBa_c = 0.048;
+  IkBa_n = 0.0032;
+  NFkB_IkBa_c = 0.052;
+  NFkB_IkBa_n = 0;
+  mRNA_IkBa = 0.004;
+  IkBb_c = 0.25;
+  NFkB_IkBb_c = 0.04;
+  mRNA_IkBb = 0.5;
+  IkBe_c = 0;
+  NFkB_IkBe_c = 0;
+  mRNA_IkBe = 0;
+ 
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  // Rates for IKK-mediated degradation
+  c1a = 0.02;
+  c1a_b = 0.1;
+  c1b = 0.0004;
+  c1b_b = 0.0008;
+  c1e = 0.02;
+  c1e_b = 0.1;
+  
+  // Rates for transcription
+  c2a = 0.00005;
+  c3a = 0.005;
+  c2b = 0.0001;
+  c2e = 0.0001;
+  
+  // Rates for mRNA degradation
+  c4a = 0.005;
+  c4b = 0.001;
+  c4e = 0.001;
+  
+  // Rates for translation
+  c5a = 0.05;
+  c5b = 0.05;
+  c5e = 0.05;
+  
+  // Rates for basal protein degradation
+  c6a = 0.001;
+  c6b = 0.0001;
+  c6e = 0.0001;
+  
+  // Association rates
+  a1 = 1;
+  a2 = 1;
+  a3 = 1;
+  a4 = 1;
+  
+  // Dissociation rates
+  d1 = 0.01;
+  d2 = 0.01;
+  d3 = 0.01;
+  d4 = 0.1;
+  
+  // Nuclear transport rates
+  i1 = 0.02;
+  i2 = 0.01;
+  e2 = 0.002;
+  e3 = 0.02;
+
+  //// Other declarations:
+  const cytoplasm, nucleus;
+  const c1a, c1a_b, c1b, c1b_b, c1e, c1e_b;
+  const c2a, c3a, c2b, c2e;
+  const c4a, c4b, c4e;
+  const c5a, c5b, c5e;
+  const c6a, c6b, c6e;
+  const a1, a2, a3, a4;
+  const d1, d2, d3, d4;
+  const i1, i2, e2, e3;
+  
+  //// Display Names:
+  IkBa_c is "Cytoplasmic I-kappa-B-alpha";
+  IkBb_c is "Cytoplasmic I-kappa-B-beta";
+  IkBe_c is "Cytoplasmic I-kappa-B-epsilon";
+  NFkB_c is "Cytoplasmic NF-kappa-B";
+  NFkB_IkBa_c is "Cytoplasmic NF-kappa-B:I-kappa-B-alpha complex";
+  NFkB_IkBb_c is "Cytoplasmic NF-kappa-B:I-kappa-B-beta complex";
+  NFkB_IkBe_c is "Cytoplasmic NF-kappa-B:I-kappa-B-epsilon complex";
+  mRNA_IkBa is "I-kappa-B-alpha mRNA";
+  mRNA_IkBb is "I-kappa-B-beta mRNA";
+  mRNA_IkBe is "I-kappa-B-epsilon mRNA";
+  NFkB_n is "Nuclear NF-kappa-B";
+  IkBa_n is "Nuclear I-kappa-B-alpha";
+  NFkB_IkBa_n is "Nuclear NF-kappa-B:I-kappa-B-alpha complex";
+  IKK is "I-kappa-B Kinase (active form)";
+  J1 is "IKK-mediated degradation of free IkBa";
+  J2 is "IKK-mediated degradation of bound IkBa";
+  J15 is "NF-kB induced transcription of IkBa mRNA";
+
+end

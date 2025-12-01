@@ -1,0 +1,2 @@
+,N° paper,Attempt,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),N° Boundary sp.(query/original),N° Floating sp.(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original)
+gemini-2.5-pro,10,1,0.4,0.8,0.8,inf,0.6,0.36,0.95,1.06

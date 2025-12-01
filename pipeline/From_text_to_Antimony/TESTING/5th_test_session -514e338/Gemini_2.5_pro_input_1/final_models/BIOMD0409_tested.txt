@@ -1,0 +1,119 @@
+model *Queralt2006_MitoticExit()
+
+  /* Model of mitotic exit in budding yeast based on Queralt et al., Cell (2006).
+     NOTE: This model is a reconstruction based on the wiring diagram (Fig 7A)
+     and the descriptive text in the paper. The original differential equations
+     and parameter values were published in the supplementary materials (Fig S6),
+     which were not available for this reconstruction. The rate laws and parameter
+     values used here are therefore plausible assumptions based on mass-action and
+     Michaelis-Menten-like kinetics, and may not match the original publication.
+     The model captures the key feedback loops and topology of the network.
+  */
+
+  //// Compartments and Species:
+  // All dynamic components are modeled as variables governed by rate or assignment rules.
+  // A single compartment representing the cell is assumed.
+  compartment cell;
+
+  //// Assignment Rules:
+  // Free Separase is what is not bound by its inhibitor Securin.
+  // Assumes 1:1 stoichiometry and that total Separase is constant.
+  Separase := Separase_tot - Securin;
+
+  // Free Cdc14 is released when its inhibitor Net1 is phosphorylated.
+  // Modelled as a Michaelis-Menten-like release function.
+  Cdc14 := Cdc14_tot * Net1P / (J_cdc14_release + Net1P);
+
+  //// Rate Rules:
+  // Cdc20 concentration. Synthesis is induced, and it is degraded.
+  // Degradation is assumed to be enhanced by Cdh1 to match simulation profiles.
+  Cdc20' = ks_cdc20 - (kd_cdc20_basal + kd_cdc20_cdh1*Cdh1) * Cdc20;
+
+  // Securin concentration. Synthesized and degraded by APC/Cdc20.
+  Securin' = ks_securin - kd_securin * Cdc20 * Securin;
+
+  // Clb2 (mitotic cyclin) concentration. Synthesized at a low rate and degraded
+  // by both APC/Cdc20 and APC/Cdh1.
+  Clb2' = ks_clb2 - (kd_clb2_cdc20 * Cdc20 + kd_clb2_cdh1 * Cdh1) * Clb2;
+
+  // Cdh1 (active form). A bistable switch controlled by activating Cdc14
+  // and inhibiting Clb2.
+  Cdh1' = ka_cdh1 * Cdc14 * (Cdh1_tot - Cdh1) - ki_cdh1 * Clb2 * Cdh1;
+
+  // PP2A (active form). Is subject to basal activation and inactivation by Separase.
+  PP2A' = ka_pp2a * (PP2A_tot - PP2A) - ki_pp2a * Separase * PP2A;
+
+  // Net1P (phosphorylated Net1). Phosphorylated by Clb2 and MEN,
+  // and dephosphorylated by PP2A and Cdc14.
+  Net1P' = (kp_net1_clb2 * Clb2 + kp_net1_men * MEN) * (Net1_tot - Net1P) - (kdp_net1_pp2a * PP2A + kdp_net1_cdc14 * Cdc14) * Net1P;
+
+  // MEN (active form). Activated by Cdc14, inhibited by Clb2, and undergoes basal inactivation.
+  MEN' = (ka_men * Cdc14 * (MEN_tot - MEN))/(1 + J_men_clb2*Clb2) - ki_men * MEN;
+
+  //// Species initializations:
+  // This section is empty as all model components are declared as variables
+  // and initialized in the 'Variable initializations' section.
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Initial conditions representing a metaphase-arrested state
+  Cdc20 = 0;
+  Securin = 1.0;
+  Clb2 = 1.0;
+  Cdh1 = 0;
+  PP2A = 1.0;
+  Net1P = 0.01;
+  MEN = 0;
+
+  // Total protein amounts (assumed constant)
+  Separase_tot = 1.0;
+  Cdc14_tot = 1.0;
+  Cdh1_tot = 1.0;
+  PP2A_tot = 1.0;
+  Net1_tot = 1.0;
+  MEN_tot = 1.0;
+
+  // Kinetic parameters (plausible values, not from paper)
+  ks_cdc20 = 0.04;
+  kd_cdc20_basal = 0.1;
+  kd_cdc20_cdh1 = 0.5;
+  ks_securin = 0.1;
+  kd_securin = 2.0;
+  ks_clb2 = 0.01;
+  kd_clb2_cdc20 = 0.25;
+  kd_clb2_cdh1 = 1.0;
+  ka_cdh1 = 1.0;
+  ki_cdh1 = 2.0;
+  ka_pp2a = 0.1;
+  ki_pp2a = 2.0;
+  kp_net1_clb2 = 1.0;
+  kp_net1_men = 1.0;
+  kdp_net1_pp2a = 1.0;
+  kdp_net1_cdc14 = 2.0;
+  ka_men = 1.0;
+  ki_men = 0.2;
+  J_men_clb2 = 10;
+  J_cdc14_release = 0.1;
+
+  //// Other declarations:
+  // Declare all parameters as constant, and rule-defined entities as variables.
+  const cell, Separase_tot, Cdc14_tot, Cdh1_tot, PP2A_tot, Net1_tot, MEN_tot;
+  const ks_cdc20, kd_cdc20_basal, kd_cdc20_cdh1, ks_securin, kd_securin, ks_clb2, kd_clb2_cdc20;
+  const kd_clb2_cdh1, ka_cdh1, ki_cdh1, ka_pp2a, ki_pp2a, kp_net1_clb2, kp_net1_men;
+  const kdp_net1_pp2a, kdp_net1_cdc14, ka_men, ki_men, J_men_clb2, J_cdc14_release;
+  var Separase, Cdc14, Cdc20, Securin, Clb2, Cdh1, PP2A, Net1P, MEN;
+
+  //// Display Names:
+  cell is "Cell";
+  Cdc20 is "Cdc20";
+  Securin is "Securin";
+  Separase is "Separase (active)";
+  Clb2 is "Clb2-Cdk1 complex";
+  Cdh1 is "Cdh1 (active)";
+  PP2A is "PP2A-Cdc55 (active)";
+  Net1P is "Phosphorylated Net1";
+  Cdc14 is "Cdc14 (active)";
+  MEN is "Mitotic Exit Network (active)";
+end

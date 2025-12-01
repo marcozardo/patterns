@@ -1,0 +1,159 @@
+model *Malkov2020_SEIRS_reinfection()
+
+  // This model is based on the SEIRS model with a time-varying transmission rate
+  // presented in "Simulation of coronavirus disease 2019 (COVID-19) scenarios
+  // with possibility of reinfection" by Egor Malkov (2020).
+  // The model explores the epidemiological dynamics of COVID-19 with the potential for reinfection.
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  beta := gamma_ * R_tilde;
+  R_tilde := (R_tilde1 + R_tilde2) / 2;
+
+  //// Rate Rules:
+  R_tilde1' = -eta1 * (R_tilde1 - R1_star);
+  R_tilde2' = -eta2 * (R_tilde2 - R2_star);
+
+  //// Reactions:
+  Infection:         S -> E; beta * S * I / N;
+  Progression:       E -> I; sigma * E;
+  Recovery:          I -> R; gamma_ * I;
+  Waning_Immunity:   R -> S; omega * R;
+
+  //// Species initializations:
+  I = 1/1000;          // Initial fraction of infected population
+  E = 43.75 * I;       // Initial fraction of exposed population
+  R = 0;               // Initial fraction of resistant population
+  S = N - E - I - R;   // Initial fraction of susceptible population
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  N = 1;               // Total population, normalized to 1
+  sigma = 1/5.2;       // Incubation rate (1 / 5.2 days)
+  gamma_ = 1/18;        // Recovery rate (1 / 18 days)
+  omega = 1/183;       // Immunity waning rate (representative value for 183 days of immunity)
+
+  // Parameters below are set for the "moderate" mitigation scenario (Experiment 2 in the paper).
+  // Other scenarios can be simulated by changing these values.
+  R_tilde1 = 3;        // Initial value for R_tilde1
+  R_tilde2 = 3;        // Initial value for R_tilde2
+  R1_star = 1.6;       // Long-run value for R_tilde1
+  R2_star = 1.6;       // Long-run value for R_tilde2
+  eta1 = 1/20;         // Rate of convergence for R_tilde1 (moderate speed)
+  eta2 = 1/20;         // Rate of convergence for R_tilde2 (moderate speed)
+  
+  // Alternative parameterizations from the paper:
+  // Experiment 1 (Fixed R0): Comment out Rate Rules section and set:
+  // R_tilde = R0; where R0 is in {1.6, 1.8, 2.0, 2.2, 2.5, 2.8, 3.0}
+  
+  // Experiment 2 (Varying convergance speed eta = eta1 = eta2):
+  // eta in {1/5 (very fast), 1/10 (fast), 1/20 (moderate), 1/50 (slow), 1/100 (very slow)}
+  
+  // Experiment 3 (U-shaped R_tilde):
+  // R_tilde1 = 10; R_tilde2 = -4; R1_star = -10; R2_star = 4; eta1 = 1/35; eta2 = 1/100;
+
+  //// Other declarations:
+  var R_tilde1, R_tilde2, R_tilde, beta;
+  const population, N, sigma, gamma_, omega, R1_star, R2_star, eta1, eta2;
+
+  //// Display Names:
+  population is "Total Population";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant";
+  R_tilde is "Time-varying reproduction number";
+  beta is "Time-varying transmission rate";
+  sigma is "Incubation rate";
+  gamma_ is "Recovery rate";
+  omega is "Immunity waning rate";
+  Infection is "Infection of susceptible individuals";
+  Progression is "Progression from exposed to infectious";
+  Recovery is "Recovery of infected individuals";
+  Waning_Immunity is "Loss of immunity in resistant individuals";
+end
+
+/*
+The paper also describes two alternative models for reinfection dynamics.
+They are provided here for reference.
+
+// MODEL 2: MILDER DISEASE AFTER REINFECTION (Section 4.1)
+
+model *Malkov2020_SEIRS_milder_reinfection()
+  //// Compartments and Species:
+  compartment population;
+  species Sp in population, Ss in population, Ep in population, Es in population, Ip in population, Is in population, R in population;
+
+  //// Reactions:
+  Primary_Infection:   Sp -> Ep; (beta_p*Ip + beta_s*Is)*Sp/N;
+  Secondary_Infection: Ss -> Es; (beta_p*Ip + beta_s*Is)*Ss/N;
+  Primary_Progression:   Ep -> Ip; sigma_p*Ep;
+  Secondary_Progression: Es -> Is; sigma_s*Es;
+  Primary_Recovery:      Ip -> R;  gamma_p*Ip;
+  Secondary_Recovery:    Is -> R;  gamma_s*Is;
+  Waning_Immunity:       R -> Ss; omega*R;
+
+  //// Species initializations:
+  Ip = 1/1000;
+  Ep = 43.75 * Ip;
+  Ss = 0; Es = 0; Is = 0; R = 0;
+  Sp = N - Ip - Ep;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  N = 1;
+  sigma_p = 1/5.2;
+  gamma_p = 1/18;
+  beta_p = 1/6;        // Corresponds to R0 = 3.0 in the main model
+  omega = 1/60;        // Upper bound value from simulations
+  
+  // Parameter relationships
+  beta_s = beta_p / 2;
+  gamma_s = 2 * gamma_p;
+  sigma_s = sigma_p;
+end
+
+
+// MODEL 3: ONE-TIME REINFECTION (Section 4.2)
+// This is a standard SEIR model with an event that transfers all
+// resistant individuals back to the susceptible pool at a specific time t_star.
+
+model *Malkov2020_SEIR_onetime_reinfection()
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Reactions:
+  Infection:   S -> E; beta * S * I / N;
+  Progression: E -> I; sigma * E;
+  Recovery:    I -> R; gamma * I;
+
+  //// Events:
+  ReinfectionEvent: at (time >= t_star): S = S + R, R = 0;
+
+  //// Species initializations:
+  I = 1/1000;
+  E = 43.75 * I;
+  R = 0;
+  S = N - E - I - R;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  N = 1;
+  sigma = 1/5.2;
+  gamma = 1/18;
+  R0 = 3.0;
+  beta = R0 * gamma;
+  t_star = 120; // Reinfection time in days (alternatively 30)
+end
+
+*/
