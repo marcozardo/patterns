@@ -105,15 +105,16 @@ Guidelines for writing syntactically valid and semantically accurate Antimony mo
   - **species**: these are entities or classes inside compartments that take part modelled reactions. They appear as **reactants** or **products**. 
 
     **Entity example**: KinaseA, SubstrateS, ReceptorCount, TumorCell, Bcell.
+
     **Class example:**: ExposedPopulation, ResistantBacteria, mRNA_Transcripts, MemoryBcells     
   
   They are categorized into two types:
 
-    1.  **Floating Species:** These are subject to **reactions** and reaction kinetics. 
-    They are consumed, produced, or transformed directly by reactions (defined later in the model).
+  1.  **Floating Species:** These are subject to **reactions** and reaction kinetics. 
+  They are consumed, produced, or transformed directly by reactions (defined later in the model).
 
-    2.  **Boundary Species:** They are not updated by reactions dynamics. 
-    Boundary species are normally **fixed**, but they can also vary over time if defined **by explicit formulas or mathematical expressions** in precise rules (defined in later sections).
+  2.  **Boundary Species:** They are not updated by reactions dynamics. 
+  Boundary species are normally **fixed**, but they can also vary over time if defined **by explicit formulas or mathematical expressions** in precise rules (defined in the next rules).
 
   
   ### Rules
@@ -123,7 +124,7 @@ Guidelines for writing syntactically valid and semantically accurate Antimony mo
      - Use `compartment` to define spaces (e.g., `Cell`, `Nucleus`, `Cytosol`)
      - If compartments are **variable**, use `var compartment`; if **fixed**, use `const compartment`.
      - Write **variable** and **constant** compartments on **separate lines**
-     - List up to **two compartments** per line; end each line with a semicolon.
+     - At most **two compartments** per line, comma-separated; always end the line with a semicolon.
   
     **Example:**
 
@@ -140,8 +141,8 @@ Guidelines for writing syntactically valid and semantically accurate Antimony mo
         * **Boundary Species:** Use the `$` symbol immediately before the species name (e.g., `$A`). This is the **recommended** method. Alternatively, use the `const` keyword after `species` (e.g., `species const W`).
 
         * **Floating Species:** Do not add any specific indication; this is the default behavior (e.g., `species X`). If strictly necessary for clarity, use `var` (e.g., `species var A`), but the standard format without keywords is preferred.
-    - Separate multiple species with commas.
-    - List up to **five species** per line; end each line with a semicolon.
+
+    - At most **five species** per line, comma-separated; always end the line with a semicolon.
     - Boundary and Floating species can be written in the same line.
     
 
@@ -153,17 +154,20 @@ Guidelines for writing syntactically valid and semantically accurate Antimony mo
         species X in Cytosol;
 
   ### Guidelines
-  
+  **Syntax**
   1. `//// Compartments and Species:`
   2. Declare compartments (if needed, `var` first, then `const`).
   3. Declare species (each with its compartment using `in`).
-  4. **Verify Species Roles:** Carefully evaluate the biological function of each entity to correctly classify it. explicit distinction is crucial: 
+
+  **Semantics**
+
+  1. **Verify Species Roles:** Carefully evaluate the biological function of each entity to correctly classify it. explicit distinction is crucial: 
       - **Floating:** Dynamic entities consumed/produced by reactions.
       - **Boundary:** Fixed entities or entities driven solely by rules.
    
   ### Examples
 
-  As before, the Amtimony model example **still includes other structural blocks** besides the `//// Compartments and Species:` section. These additional blocks are shown **for context** and will be defined later.
+  As before, the Antimony model example **still includes other structural blocks** besides the `//// Compartments and Species:` section. These additional blocks are shown **for context** and will be defined later.
 
   Input:
 
@@ -241,58 +245,92 @@ Within this compartment, the model simulates the conversion of glucose into acet
     - **Boundary species** may be listed in reactions but reaction stoichiometry does **not** directly change their dynamic; they remain fixed or are updated by rules or defined mathematical expressions (defined in next sections).
 
   ### Guidelines
+  **Syntax**
 
   1. Ensure `//// Compartments and Species:` exists first.
   2. Add the exact header once: `//// Reactions:`
   3. Under the header emit **one reaction and its associated kinetic law** per line.
   4. Operator: `+` separates species; integer stoichiometry before species; `->` = reversible; `=>` = irreversible; two semicolons per line (end equation, end rate).
-  5. Enzymes/cofactors: **prefer** to include catalytic species **only in the kinetic laws**; model complexes explicitly only if scientific literature specifies binding.
-  6. Pay attention to the context: energy cofactors may be treated as **constant boundary species** in simplified models where their levels are assumed stable.
-  7. Every floating species must be governed by at least one reaction whose kinetic laws determines its dynamic.
-  8. Boundary species may appear in reactions, but they must not be altered by reaction stoichiometry.
-  9. Every parameter/symbol used in kinetic laws must be declared and initialized (unless explicitly defined by a rule).
-  10. Keep all reaction lines together under the header; do not intermix species/parameter declarations in this block.
+  5. Keep all reaction lines together under the header; do not intermix species/parameter declarations in this block.
 
-  ### Examples
-  **first** 
+  **Semantics**
+
+  1. Prefer to include catalytic species **only in the kinetic laws**; model complexes explicitly only if scientific literature specifies binding.
+  2. Pay attention to the context: energy cofactors may be treated as **constant boundary species** in simplified models where their levels are assumed stable.
+  3. Parameters used in kinetic laws must be declared and initialized (unless explicitly defined by a rule).
+  4. Floating species must be declared by reactions, kinetic laws determine their dynamic.
+  5. Boundary species may participate in reactions, yet remain dynamically unchanged.
   
+  ### Examples
+  Given examples show how reactions are defined in Antimony models, in particular in relationship with other structural blocks (like Species and Compartments or initializations). These additional blocks are shown **for context**.
+  
+  **first** 
+
   Input:
 
-  > The reaction describes the reversible binding of substrate S1 with enzyme E to form the enzyme–substrate complex ES. The reactio rate is r = k1\*k2\*S1\*E - k2\*ES
+> *Model formulation* 
+>
+> Consider one compartment in which a tumor grows autonomously and in which tumor cells are killed upon contact with cytotoxic immune cells (immunocytes, including lymphocytes and activated macrophages). Let T denote the number of tumor cells and let L denote the number of immune cells. The time rate of change in tumor cell numbers (dT/dt) is increased by cell division and diminished by first-order spontaneous cell death, supplemented to a varying degree by immune mediated cell killing. The rate of change in anti-tumor immune cells (dL/dt) is driven by signals arising from the interaction, represented by the product, TL, of existing tumor cells, T, and immune cells, L. Immune cells also experience half life decay from death and emigration. The corresponding model equations as a function of time, t, are
+>
+> $$\frac{dT}{dt} = gT - kL \quad (1a)$$
+>
+> $$\frac{dL}{dt} = \phi TL - \mu L \quad (1b)$$
+>
+> *Equation (1a) has the general structure dT/dt = net replication rate in absence of tumor immunity – rate of killing by immunocytes. Equation (1b) has the general structure dL/dt = recruitment from cell-cell signaling – half life removal.*
+>
+> Constants, g, k, φ, and μ are lumped parameters representing the overall effectiveness of component processes. Constant, g, represents net tumor cell growth minus decay. That is, g = g1 - g2, where g1 is the first order rate constant for cell division, and g2 is the first order rate constant for spontaneous tumor cell death caused by processes other than immune mediated killing. Constant, k, represents the average killing effectiveness of all immune effector cells, L, that is, an average soldier in the army, including those in non-combat roles. Constant, φ, represents positive feedback on lymphocyte recruiting. The positive feedback may result from release of tumor antigens or from release of cytokines by active lymphocytes. The half life decay of immune cells, L, is denoted μ, representing spontaneous death and emigration. Modeling tumor cell killing by immune cells in expression (1a) as kL, rather than a more traditional formulation [1], such as kLT or kLT/(K+L), enhances simplicity and may be more reflective of non-random targeting of tumor cells by lymphocytes. Such purposeful targeting would tend to make killing rates proportional to the number of lymphocytes until all targets are destroyed, at which time killing abruptly ends.
 
   Output:
 
-    //// Reactions:
-    S1 + E -> ES; k1\*k2\*S1\*E - k2\*ES;  # multiple reactants & explicit reaction rate 
+    model *Babbs2012___immunotherapy()
+
+      //// Compartments and Species:
+      compartment tumor_microenvironment;
+      species T in tumor_microenvironment, I in tumor_microenvironment;
+
+      //// Reactions:
+      tumor_growth:  => T; tumor_microenvironment*(g*T);
+      tumor_killing: T => ; tumor_microenvironment*(k*I);
+      immune_stimulation:  => I; tumor_microenvironment*(l*T*I);
+      immune_death: I => ; tumor_microenvironment*u*I;
+
+    end
 
   **second**
 
   Input:
 
-> The degradation of N-(1-deoxy-D-fructos-1-yl)glycine (DFG) was modeled through three parallel first-order reactions. In the first pathway, DFG undergoes 1,2-enolization to form intermediate E₁, while in the second, 2,3-enolization yields intermediate E₂; both intermediates retain the glycine moiety. A third pathway involves the direct cleavage of DFG into free glycine and a carbonyl fragment (Cₙ). The reaction rates are expressed as v₁ = k₁·
->[DFG], v₂ = k₂·[DFG], and v₃ = k₃·[DFG], respectively.
+> Compartmental Models. The SIR model describes a classic "compartmental" model with SIR population groups. A related model, susceptible-exposed-infected-resistant (SEIR), includes an "exposed" compartment that models a delay between exposure and infectiousness. The SEIR model was shown to fit historical death record data from the 1918 influenza epidemic , during which governments implemented extensive social distancing measures, including bans on public events, school closures, and quarantine and isolation measures. The SIR model can be fit to the predictions made in ref. 3 for agent-based simulations of the United States. The SIR model assumes a population of size N where S is the total number of susceptible individuals, I is the number of infected individuals, and R is the number of resistant individuals. For simplicity of modeling, we view deaths as a subset of resistant individuals, and deaths can be estimated from the dynamics of R; this is reasonable for a disease with a relatively small death rate. We also assume a timescale short enough such that humans' natural resistance to the disease does not introduce new susceptible people after recovery.
+The SIR model equations are
+>
+> $$\frac{dS}{dt} = -\beta\frac{IS}{N}, \quad \frac{dI}{dt} = \beta\frac{IS}{N} - \gamma I, \quad \frac{dR}{dt} = \gamma I. \quad [6]$$
+>
+> Here, β is the transmission rate constant, γ is the recovery rate constant, and R₀ = β/γ is the reproduction number. One integrates Eq. 6 forward in time from initial values of S, I, and R at time 0. The SEIR model includes an exposed category E:
+>
+> $\frac{dS}{dt} = -\beta\frac{IS}{N}, \qquad \frac{dE}{dt} = \beta\frac{IS}{N} - aE,$
+>
+> $\frac{dI}{dt} = aE - \gamma I, \qquad \frac{dR}{dt} = \gamma I.$
+>
+> Here, _a_ is the inverse of the average incubation time. Both models are fit, using maximum likelihood estimation with a Poisson likelihood, to data for three US states (California, New York, and Indiana).
 
   Output:
 
-    //// Reactions:
-    DFG => E1; v1_k1\*DFG;
-    DFG => E2; v2_k2\*DFG;
-    DFG => Gly + Cn; v3_k3\*DFG;
+    model *Bertozzi2020___SIR_model_of_scenarios_of_COVID_19_spread_in_CA()
+
+      //// Compartments and Species:
+      compartment USA___CA__NY;
+      species Infected in USA___CA__NY; 
+      species Recovered in USA___CA__NY; 
+      species Susceptible in USA___CA__NY;
+
+      //// Reactions:
+      Susceptible_to_Infected: Susceptible => Infected; USA___CA__NY*(gamma_*Ro*Infected*Susceptible);
+      Infected_to_Recovered: Infected => Recovered; USA___CA__NY*gamma_*Infected;
+
+    end
 
   **third**
-
-  Input:
-
-> The reaction V1 represents the phosphorylation of glucose to glucose-6-phosphate, a key regulatory step in glycolysis catalyzed by hexokinase. The rate depends linearly on glucose concentration and exhibits a saturable dependence on ATP, modeled by the rate law v=k2⋅
->[Glucose]⋅([ATP]/KATP+[ATP]). This reflects the requirement of ATP as a co-substrate and >captures its modulatory role under varying energetic conditions.
-
-  Output:
-
-    //// Reactions:
-    V1: Glucose -> Glucose6P; k2\*Glucose\*(ATP / (K_ATP + ATP)); 
- 
-  **fourth**
-
+  
   Input:
 
 > The model describes the phosphodiesterase‐mediated hydrolysis of cyclic AMP (cAMP) to AMP as a single first‐order step, here termed “cAMP Hydrolysis” (M1). Under assay conditions with an initial cAMP concentration of 10 µM and no preformed AMP, the reaction proceeds at a rate v=k1[cAMP], with k1​=0.1 s⁻¹; resulting in an exponential decay of cAMP and a concomitant accumulation of AMP over time. This mirrors classical studies of intracellular signal termination, in which phosphodiesterase activity (PDE) governs the temporal dynamics of the second messenger pool.
@@ -310,6 +348,7 @@ Within this compartment, the model simulates the conversion of glucose into acet
 
       //// Variable initializations:
       k1 = 0.1 s⁻¹;
+    
     end 
   
   ## 4. Species, Compartment & Variable initializations
@@ -342,17 +381,21 @@ Within this compartment, the model simulates the conversion of glucose into acet
   If there are no information about compartment, assume a *default compartment* in "Compartments and Species" section, with a constant value of `1`, defined in the "Compartment initializations" section.
 
   ### Guidelines
- 
-  Follow this hierarchy strictly:
+  **Syntax**
+  
   1. Confirm `//// Compartments and Species:` and `//// Reactions:` exist and list the same names you will initialize.  
   2. Include the three initialization headers exactly and in the correct order:  
     - `//// Species initializations:`  
     - `//// Compartment initializations:`  
     - `//// Variable initializations:`  
-  3. Use `name = expr;` for every line and terminate with `;`.  
-  4. Ensure every initialized name matches a previously declared species, compartment, or parameter.  
-  5. If no compartments were declared earlier, include `default = 1;` in the compartment block.  
-  6. Keep expressions Antimony-compatible and avoid undefined symbols (or explicitly note them).
+  3. Use `name = expr;` for every line and terminate with `;`. 
+
+  **Semantics**
+
+  1. Ensure every initialized name matches a previously declared species, compartment, or parameter.  
+  2. If no compartments were declared earlier, include `default = 1;` in the compartment block.  
+  3. Keep expressions Antimony-compatible and avoid undefined symbols (or explicitly note them).
+  4. **crucial point**: If a parameter or element has multiple values, use only one value per parameter. When values are grouped or associated for a specific condition, choose the values that belong together and do not mix values from different groups; this preserves **reproducibility**.
 
   ### Examples
   **first** 
@@ -485,12 +528,14 @@ The rate of product formation is directly proportional to the concentration of A
             
   ### Guidelines
 
+  **Semantics**
+
   1. **Valid targets**: Rules may target exactly one of the following: a species, a parameter, a compartment, or (when supported) a species-reference/stoichiometry. 
   2. **One-per-element**: If an element is defined by a rule, declare it using **only one mechanism**: an assignment rule, a rate rule, or an event — never more than one.
   3. **Initial value for assignment rules**: An assignment rule does not require a numeric initial value; because their value is fully determined by the rule at all times, including at time zero (initial value).
   5. **Initial value for rate rules**: A rate rule requires a numeric initial value for the target because the simulator must integrate the ODE.
   6. **Boundary species behavior**: Any species targeted by an assignment or rate rule is treated as a boundary species (they change only by rules or events, never by reactions).
-  7. **Kinetic laws**: they are defined in the *reactions-section*, while their numerical values are initialized in the *variable-initialization* section; if a kinetic parameter varies over time, its initial value is declared there but its time-dependent behavior is defined by rate rule, and the reaction simply references this rule-controlled parameter so its rate updates dynamically from t = 0 onward.
+  7. **Kinetic laws**: they are defined in the *`////reactions:` section*, while their numerical values are initialized in the *`////Variable initializations:`* section; if a kinetic parameter varies over time, its initial value is declared there but its time-dependent behavior is defined by rate rule, and the reaction simply references this rule-controlled parameter so its rate updates dynamically from t = 0 onward.
   8. **Events**: Event assignments may change values at discrete times but must not conflict with assignment rules. Usually it change an element already defined in the model.
   9. **No algebraic loops**: Rule dependencies must be acyclic to avoid circular algebraic definitions.
   10. **Units consistency**: Rule expressions must have coherent units (rate-rule RHS must be in quantity/time).
@@ -763,7 +808,7 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
       U3 is "ATP from glycolysis";
     end
 
-  ## 7. Complete Structure of antimony model & final considerations
+  ## 7. Definitive Model Architecture & Critical Considerations
   ### Structure
 
   The final structure for the Antimony model must follow the struture below:
@@ -794,33 +839,40 @@ The third reaction, U3 (“Glycolytic ATP Production”), regenerates ATP from t
 
     end
 
-  ### Considerations
+  ### Critical Considerations
 
-  - Order of Sections: The final model must strictly follow the provided order of sections (e.g., `//// Compartments and Species:` before `//// Reactions:`).
+  1. **Order of Sections**: The final model must strictly follow the provided order of sections (e.g., `//// Compartments and Species:` before `//// Reactions:`).
 
-  - `//// Unit Definitions:` and `//// Display Names:`: These sections are cosmetic and **do not affect simulation results**. If their definitions are unclear, incomplete, or potentially incorrect based on the source input, **they should be discarded/omitted**.
+  2. **//// Reactions:** they are typical display in scientific literature as Ordinary differential equations (ODEs); convert them in reactions. The ones can not defined by reactions, must be defined as `Rate rules`
 
-  - **Species Definition (Floating vs. Boundary)**:
-    * **Floating Species**: These species concentrations are variable and change due to Reactions. Their initial concentrations must be set in the `//// Species initializations:` section.
+  3. **Species Definition (Floating vs. Boundary)**:
+    * **Floating Species**: These species concentrations are variable and change due to Reactions. Always define them in `//// Compartments and Species:`. Their initial concentrations must be set in the `//// Species initializations:` section, while their transformations have to be defined in `//// Reactions:`, and they have to be defined in `//// Compartments and Species:`.
 
-    * **Boundary Species**: These species concentrations are not changed by Reactions. 
+    * **Boundary Species**: These species concentrations are not changed by Reactions. Always define them in `//// Compartments and Species:` with prefix `$`.
     They can be:
       - **Fixed**: Declared with a single, initial value in `//// Species initializations:`.
-      - **Variable (by Rules/Events)**: Their concentration change is governed by `Assignment Rules`, `Rate Rules`, or less commonly, `Events`. If governed by a `Rate Rule`, the initial concentration must still be provided in `//// Species initializations:`.
-  
-  - **Rule/Event Usage and Variable Declaration**:
-    * **Assignment Rules**: These rules define the value of an element continuously. They typically describe **auxiliary parameter**s** (e.g., Ptot) derived from other species (floating or boundary) or other parameters.
+      - **Variable (by Rules/Events)**: Their quantity change is governed by `Assignment Rules`, `Rate Rules`, or less commonly, `Events`. If governed by a `Rate Rule`, or `Events`, the initial concentration must still be provided in `//// Species initializations:`.
 
-    * **Rate Rules & Events**: Rate rules describe the rate of change (d/td​) of an element (species, parameter, or compartment). Events define discrete changes of an element (species, parameter, or compartment).
-  
-    * **Declaration of Variable Elements**: Any element (species, parameter, or compartment) whose value or change is defined by an `Assignment Rule`, a `Rate Rule`, or an `Event`, must be declared as variable using the keyword `var` in the `//// Other declarations:` section.
-
-  - **Initial Values for Ruled parameters**: If a parameter is defined by a Rate Rule, its initial value must be set in `//// Variable initializations:`. Elements defined by **Assignment Rules** or **Events** do not require an initial value, they are the sole determinant of the element's value.
-
-  - **Parameter/Kinetic Definition (Constant vs. Variable)**:
+  4. **Parameter/Kinetic Definition (Constant vs. Variable)**:
     * **Constant Parameters/Kinetics**: These have a fixed value. Their value must be set in `//// Variable initializations:` and they must be declared as constant (`const`) in the `//// Other declarations:` section. Reaction kinetics are usually constants defined following the reaction declaration.
 
-    * **Variable Parameters/Kinetics**: If a parameter or kinetic is not constant, its change must be defined by an **Assignment Rule**, a **Rate Rule**, or an **Event**. An initial value must be specified in `//// Variable initializations:` for Rate Rule and Event, no for Assignment. Last it must be declared as variable (`var`) in the `//// Other declarations:` section.
+    * **Variable Parameters/Kinetics**: If a parameter or kinetic is not constant, its change must be defined by an `Assignment Rule`, a `Rate Rule`, or an `Event`. An initial value must be specified in `//// Variable initializations:` for Rate Rule and Event, no for Assignment. Last it must be declared as variable (`var`) in the `//// Other declarations:` section.
+
+  5. **Rule/Event Usage and Variable Declaration**:
+      * **Assignment Rules**:
+        - **No initial values**: Do not provide any initial value for elements defined by an Assignment Rule.
+        - **Uses**:
+          - **Boundary Species**: value computed from other species quantities (typically floating species), but referred to a species.
+          - **Parameters**: value computed from species concetrations or other parameters. In this case referred to a variable derived from species/parameters dynamics.
+        - **Declaration**:
+          - **Boundary Species**: declare in `//// Compartments and Species:` with the `$` prefix (e.g. `$B`).
+          - **Parameters**: declare in `//// Other declarations:` with `var` prefix (e.g. `var Ptot`).
+      
+
+      * **Rate Rules & Events**: Rate rules describe the rate of change (d/td​) of an element (species, parameter, or compartment). Events define discrete changes of an element (species, parameter, or compartment).
+  
+
+  6. `//// Unit Definitions:` and `//// Display Names:`: These sections are cosmetic and **do not affect simulation results**. If their definitions are unclear, incomplete, or potentially incorrect based on the source input, **they should be discarded/omitted**.
 
 # MOST COMMON ERRORS
 
