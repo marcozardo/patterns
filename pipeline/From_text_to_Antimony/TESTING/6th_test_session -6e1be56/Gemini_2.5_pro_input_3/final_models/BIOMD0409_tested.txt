@@ -1,0 +1,112 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment yeast_cell;
+  species Clb2 in yeast_cell, Cdc20 in yeast_cell, securin in yeast_cell;
+  species Cdh1a in yeast_cell, PP2Aa in yeast_cell, Net1P in yeast_cell, MENa in yeast_cell;
+
+  //// Assignment Rules:
+  // Derived species and regulatory molecules based on the state of the core species.
+  // Totals (_T) are assumed to be constant.
+  separase := Esp1T - securin;                    // Active separase amount is what is not bound to securin.
+  Cdh1i := Cdh1T - Cdh1a;                         // Inactive Cdh1.
+  PP2Ai := PP2AT - PP2Aa;                         // Inactive PP2A.
+  Net1 := Net1T - Net1P;                          // Unphosphorylated Net1.
+  Cdc14 := Cdc14T * (Net1P / Net1T);              // Free Cdc14 is proportional to the fraction of phosphorylated Net1.
+  MENi := MENT - MENa;                            // Inactive MEN.
+  
+  // The simulation is initiated by a pulse of Cdc20 synthesis.
+  vs_Cdc20 := piecewise(val_vs_Cdc20, time < 40, 0);
+
+  //// Reactions:
+  // The model describes the core regulatory network for mitotic exit in budding yeast.
+  // Reaction rates are formulated based on the wiring diagram in Figure 7A and textual descriptions.
+  // Parameter values are placeholders as they were not provided in the main text.
+
+  // 1. Cdc20 synthesis and degradation pulse to kickstart anaphase.
+  J0: => Cdc20; yeast_cell * vs_Cdc20;
+  J1: Cdc20 => ; yeast_cell * kd_Cdc20 * Cdc20;
+
+  // 2. APCCdc20-mediated degradation of securin, which releases separase.
+  J2: securin => ; yeast_cell * kd_sec * Cdc20 * securin;
+
+  // 3. Regulation of PP2ACdc55 phosphatase activity. Separase inactivates it.
+  J3: PP2Aa => ; yeast_cell * ki_PP2A * separase * PP2Aa;       // Inactivation by separase.
+  J4:  => PP2Aa; yeast_cell * ka_PP2A * PP2Ai;                   // Basal activation.
+
+  // 4. Reversible phosphorylation of Net1, the key step for Cdc14 release.
+  J5:  => Net1P; yeast_cell * (kp_Net1_Cdk * Clb2 + kp_Net1_MEN * MENa) * Net1;     // Phosphorylation by Cdk and MEN.
+  J6: Net1P => ; yeast_cell * (kdp_Net1_PP2A * PP2Aa + kdp_Net1_Cdc14 * Cdc14) * Net1P; // Dephosphorylation by PP2A and Cdc14.
+
+  // 5. Activation of the Mitotic Exit Network (MEN), which forms a positive feedback loop.
+  J7:  => MENa; yeast_cell * ka_MEN * Cdc14 * MENi;              // Activation by Cdc14.
+  J8: MENa => ; yeast_cell * (ki_MEN_Cdk * Clb2 + ki_MEN_basal) * MENa;      // Inactivation by Cdk and basal turnover.
+
+  // 6. Activation of the APC activator Cdh1.
+  J9:  => Cdh1a; yeast_cell * ka_Cdh1 * Cdc14 * Cdh1i;           // Activation by Cdc14.
+  J10: Cdh1a => ; yeast_cell * ki_Cdh1 * Clb2 * Cdh1a;            // Inactivation by Cdk.
+
+  // 7. Synthesis and degradation of mitotic cyclin Clb2.
+  J11: => Clb2; yeast_cell * ks_Clb2;
+  J12: Clb2 => ; yeast_cell * (kd_Clb2_C20 * Cdc20 + kd_Clb2_C1 * Cdh1a) * Clb2;
+
+  //// Species initializations:
+  // Initial conditions correspond to a metaphase-arrested state (high Cdk, etc.) based on Figure 7B.
+  Cdc20 = 0;        // No Cdc20 at the start of the simulation.
+  securin = 1;      // Securin is high, inhibiting separase.
+  Clb2 = 1;         // Mitotic cyclin is at its peak.
+  Cdh1a = 0;        // Cdh1 is inactive.
+  PP2Aa = 1;        // PP2A is active, preventing premature Cdc14 release.
+  Net1P = 0;        // Net1 is unphosphorylated, sequestering Cdc14.
+  MENa = 0;         // MEN is inactive.
+
+  //// Compartment initializations:
+  yeast_cell = 1;
+
+  //// Variable initializations:
+  // Total amounts of components, assumed to be constant.
+  Esp1T = 1;
+  Cdh1T = 1;
+  PP2AT = 1;
+  Net1T = 1;
+  Cdc14T = 1;
+  MENT = 1;
+
+  // Kinetic parameters (placeholders, require fitting to experimental data).
+  val_vs_Cdc20 = 0.1;
+  kd_Cdc20 = 0.1;
+  kd_sec = 1;
+  ki_PP2A = 1;
+  ka_PP2A = 0.1;
+  kp_Net1_Cdk = 1;
+  kp_Net1_MEN = 1;
+  kdp_Net1_PP2A = 1;
+  kdp_Net1_Cdc14 = 0.5;
+  ka_MEN = 1;
+  ki_MEN_Cdk = 1;
+  ki_MEN_basal = 0.1;
+  ka_Cdh1 = 1;
+  ki_Cdh1 = 2;
+  ks_Clb2 = 0.05;
+  kd_Clb2_C20 = 1;
+  kd_Clb2_C1 = 1;
+
+  //// Other declarations:
+  var separase, Cdh1i, PP2Ai, Net1, Cdc14, MENi, vs_Cdc20;
+  const yeast_cell, Esp1T, Cdh1T, PP2AT, Net1T, Cdc14T, MENT;
+  const val_vs_Cdc20, kd_Cdc20, kd_sec, ki_PP2A, ka_PP2A;
+  const kp_Net1_Cdk, kp_Net1_MEN, kdp_Net1_PP2A, kdp_Net1_Cdc14;
+  const ka_MEN, ki_MEN_Cdk, ki_MEN_basal, ka_Cdh1, ki_Cdh1;
+  const ks_Clb2, kd_Clb2_C20, kd_Clb2_C1;
+
+  //// Display Names:
+  Clb2 is "Mitotic cyclin B2";
+  Cdc20 is "APC/C activator Cdc20";
+  securin is "Securin (Pds1)";
+  separase is "Separase (Esp1)";
+  Cdh1a is "Active Cdh1";
+  PP2Aa is "Active PP2A-Cdc55";
+  Net1P is "Phosphorylated Net1";
+  Cdc14 is "Free Cdc14 phosphatase";
+  MENa is "Active Mitotic Exit Network";
+end

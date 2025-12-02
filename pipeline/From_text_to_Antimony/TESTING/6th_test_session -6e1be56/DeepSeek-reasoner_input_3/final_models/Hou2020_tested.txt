@@ -1,0 +1,44 @@
+model *Hou2020_Wuhan_SEIR_COVID19()
+
+//// Compartments and Species:
+compartment Population;
+species Susceptible in Population, Exposed in Population, Infected in Population, Recovered in Population;
+
+//// Assignment Rules:
+
+//// Rate Rules:
+
+//// Reactions:
+Infection_by_I: Susceptible => Exposed; Population * r1 * beta1 * Infected * Susceptible / N;
+Infection_by_E: Susceptible => Exposed; Population * r2 * beta2 * Exposed * Susceptible / N;
+Incubation: Exposed => Infected; Population * alpha * Exposed;
+Recovery: Infected => Recovered; Population * gamma_ * Infected;
+
+//// Events:
+
+//// Species initializations:
+Susceptible = 11080778;
+Exposed = 193;
+Infected = 27;
+Recovered = 2;
+
+//// Compartment initializations:
+Population = 1;
+
+//// Variable initializations:
+N = 11081000;
+r1 = 6;
+r2 = 18;
+beta1 = 0.4;
+beta2 = 0.2;
+alpha = 0.14;
+gamma_ = 0.048;
+
+//// Other declarations:
+const Population, N, r1, r2, beta1, beta2, alpha, gamma_;
+
+//// Unit definitions:
+
+//// Display Names:
+
+end

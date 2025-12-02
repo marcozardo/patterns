@@ -1,0 +1,60 @@
+model *Kimmel2021_CART_Gompertz()
+
+  //// Compartments and Species:
+  compartment host;
+  species N in host, C in host, B in host;
+
+  //// Assignment Rules:
+  T := N + C;  # total lymphocytes
+  r_C := rho_C + b*(T - K_N)^2/(a*T^2 + (T - K_N)^2);  # effective CAR T net turnover rate
+
+  //// Rate Rules:
+  N' = - r_N*N*ln((N + C)/K_N);
+  C' = - r_C*C*ln((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*(C/(k_B + C));
+
+  //// Species initializations:
+  N = 3.00e9;       # initial normal T cells (cells)
+  C = 1.80e8;       # initial CAR T cells (cells)
+  B = 9.486e10;     # initial tumor cells (cells)
+
+  //// Compartment initializations:
+  host = 1;
+
+  //// Variable initializations:
+  K_N = 2.50e11;    # carrying capacity normal T (cells)
+  K_C = 6.96e10;    # carrying capacity CAR T (cells)
+  r_N = 1.70e-1;    # day^-1
+  rho_C = 2.51e-2;  # day^-1
+  a = 4.23e-1;      # dimensionless
+  b = 5.25e-1;      # day^-1
+  r_B = 1.90e-1;    # day^-1 (chosen within reported range)
+  gamma_B = 1.15;   # day^-1
+  k_B = 2.024e9;    # cells
+
+  //// Other declarations:
+  var r_C, T;
+  const host, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Display Names:
+  host is "Host/body compartment";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "CD19+ tumor cells";
+  T is "Total lymphocytes";
+  r_N is "Normal T Gompertz rate";
+  K_N is "Normal T carrying capacity";
+  K_C is "CAR T carrying capacity";
+  rho_C is "Baseline CAR T net turnover rate";
+  r_C is "Effective CAR T net turnover rate";
+  r_B is "Tumor net growth rate";
+  gamma_B is "Max tumor-killing rate constant";
+  k_B is "Killing saturation constant";
+
+end
+
+/* Unmapped/assumption notes:
+- Tumor net growth rate r_B was reported as a range (0.01?0.50 day^-1). Here we select r_B = 0.19 day^-1 (consistent with the ?medium? growth used in Fig. 3b), within the reported range.
+- Alternative tumor-kill functional forms mentioned in the text (e.g., gamma_B*B*C/(k_B + phi*B + C)) are not included; we implemented the form used in Eq. (2.3): gamma_B*B*C/(k_B + C).
+- Units: Model uses absolute cell counts (cells) and time in days; the compartment volume is set to 1 to treat species values as amounts.
+*/

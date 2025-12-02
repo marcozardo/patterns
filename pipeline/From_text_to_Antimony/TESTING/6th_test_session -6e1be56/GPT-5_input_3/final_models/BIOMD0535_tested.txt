@@ -1,0 +1,213 @@
+model *Dwivedi2014_IL6_Crohns_Reduced()
+
+  //// Compartments and Species:
+  compartment Serum, Liver, GI;
+
+  species IL6_s in Serum, sIL6R_s in Serum, IL6sR_s in Serum, sgp130_s in Serum, IL6sR_sgp130_s in Serum, CRP in Serum;
+
+  species STAT3_GI in GI, pSTAT3_GI in GI;
+  species IL6_GI in GI, sIL6R_GI in GI, IL6sR_GI in GI, sgp130_GI in GI, IL6sR_sgp130_GI in GI;
+
+  species STAT3_Liver in Liver, pSTAT3_Liver in Liver;
+  species IL6_Liver in Liver, sIL6R_Liver in Liver, IL6sR_Liver in Liver, sgp130_Liver in Liver, IL6sR_sgp130_Liver in Liver;
+
+  //// Reactions:
+  # Basal synthesis and degradation of IL-6 (GI production dominates)
+  syn_IL6_GI:  => IL6_GI; GI*ksyn_IL6_GI;
+  syn_IL6_Serum:  => IL6_s; Serum*ksyn_IL6_s;
+  deg_IL6_GI: IL6_GI => ; GI*kdeg_IL6*IL6_GI;
+  deg_IL6_Serum: IL6_s => ; Serum*kdeg_IL6*IL6_s;
+  deg_IL6_Liver: IL6_Liver => ; Liver*kdeg_IL6*IL6_Liver;
+
+  # Exchange of IL-6 between compartments (through circulation)
+  ex_IL6_GI_to_S: IL6_GI => IL6_s; k_ex_IL6_GI_to_S*IL6_GI;
+  ex_IL6_S_to_GI: IL6_s => IL6_GI; k_ex_IL6_S_to_GI*IL6_s;
+  ex_IL6_Liver_to_S: IL6_Liver => IL6_s; k_ex_IL6_Liver_to_S*IL6_Liver;
+  ex_IL6_S_to_Liver: IL6_s => IL6_Liver; k_ex_IL6_S_to_Liver*IL6_s;
+
+  # Basal synthesis, CRP-mediated shedding, and degradation of sIL-6R in Serum
+  syn_sIL6R_baseline:  => sIL6R_s; Serum*ksyn_sIL6R;
+  shed_sIL6R_by_CRP:  => sIL6R_s; Serum*kshed_sIL6R*CRP;
+  deg_sIL6R_Serum: sIL6R_s => ; Serum*kdeg_sIL6R*sIL6R_s;
+
+  # Exchange of sIL-6R between Serum and organs
+  ex_sIL6R_S_to_GI: sIL6R_s => sIL6R_GI; k_ex_sIL6R_S_to_GI*sIL6R_s;
+  ex_sIL6R_GI_to_S: sIL6R_GI => sIL6R_s; k_ex_sIL6R_GI_to_S*sIL6R_GI;
+  ex_sIL6R_S_to_Liver: sIL6R_s => sIL6R_Liver; k_ex_sIL6R_S_to_Liver*sIL6R_s;
+  ex_sIL6R_Liver_to_S: sIL6R_Liver => sIL6R_s; k_ex_sIL6R_Liver_to_S*sIL6R_Liver;
+
+  # sgp130 production, degradation, and exchange
+  syn_sgp130_Serum:  => sgp130_s; Serum*ksyn_sgp130;
+  deg_sgp130_Serum: sgp130_s => ; Serum*kdeg_sgp130*sgp130_s;
+  ex_sgp130_S_to_GI: sgp130_s => sgp130_GI; k_ex_sgp130_S_to_GI*sgp130_s;
+  ex_sgp130_GI_to_S: sgp130_GI => sgp130_s; k_ex_sgp130_GI_to_S*sgp130_GI;
+  ex_sgp130_S_to_Liver: sgp130_s => sgp130_Liver; k_ex_sgp130_S_to_Liver*sgp130_s;
+  ex_sgp130_Liver_to_S: sgp130_Liver => sgp130_s; k_ex_sgp130_Liver_to_S*sgp130_Liver;
+
+  # IL-6 + sIL-6R reversible binding to form signaling complex (in Serum, GI, Liver)
+  bind_IL6sR_S_f: IL6_s + sIL6R_s => IL6sR_s; Serum*kon_IL6sR*IL6_s*sIL6R_s;
+  bind_IL6sR_S_r: IL6sR_s => IL6_s + sIL6R_s; Serum*koff_IL6sR*IL6sR_s;
+
+  bind_IL6sR_GI_f: IL6_GI + sIL6R_GI => IL6sR_GI; GI*kon_IL6sR*IL6_GI*sIL6R_GI;
+  bind_IL6sR_GI_r: IL6sR_GI => IL6_GI + sIL6R_GI; GI*koff_IL6sR*IL6sR_GI;
+
+  bind_IL6sR_Liver_f: IL6_Liver + sIL6R_Liver => IL6sR_Liver; Liver*kon_IL6sR*IL6_Liver*sIL6R_Liver;
+  bind_IL6sR_Liver_r: IL6sR_Liver => IL6_Liver + sIL6R_Liver; Liver*koff_IL6sR*IL6sR_Liver;
+
+  # Sequestration of IL-6:sIL-6R complex by sgp130 (reversible) (in Serum, GI, Liver)
+  bind_tern_S_f: IL6sR_s + sgp130_s => IL6sR_sgp130_s; Serum*kon_tern*IL6sR_s*sgp130_s;
+  bind_tern_S_r: IL6sR_sgp130_s => IL6sR_s + sgp130_s; Serum*koff_tern*IL6sR_sgp130_s;
+
+  bind_tern_GI_f: IL6sR_GI + sgp130_GI => IL6sR_sgp130_GI; GI*kon_tern*IL6sR_GI*sgp130_GI;
+  bind_tern_GI_r: IL6sR_sgp130_GI => IL6sR_GI + sgp130_GI; GI*koff_tern*IL6sR_sgp130_GI;
+
+  bind_tern_Liver_f: IL6sR_Liver + sgp130_Liver => IL6sR_sgp130_Liver; Liver*kon_tern*IL6sR_Liver*sgp130_Liver;
+  bind_tern_Liver_r: IL6sR_sgp130_Liver => IL6sR_Liver + sgp130_Liver; Liver*koff_tern*IL6sR_sgp130_Liver;
+
+  # Degradation of complexes
+  deg_IL6sR_S: IL6sR_s => ; Serum*kdeg_complex*IL6sR_s;
+  deg_IL6sR_GI: IL6sR_GI => ; GI*kdeg_complex*IL6sR_GI;
+  deg_IL6sR_Liver: IL6sR_Liver => ; Liver*kdeg_complex*IL6sR_Liver;
+  deg_tern_S: IL6sR_sgp130_s => ; Serum*kdeg_tern*IL6sR_sgp130_s;
+  deg_tern_GI: IL6sR_sgp130_GI => ; GI*kdeg_tern*IL6sR_sgp130_GI;
+  deg_tern_Liver: IL6sR_sgp130_Liver => ; Liver*kdeg_tern*IL6sR_sgp130_Liver;
+
+  # STAT3 phosphorylation driven by IL-6:sIL-6R (Michaelis?Menten-like signal dependence)
+  phos_STAT3_GI: STAT3_GI => pSTAT3_GI; GI*Vmax_pSTAT3_GI*IL6sR_GI/(Km_pSTAT3 + IL6sR_GI);
+  dephos_pSTAT3_GI: pSTAT3_GI => STAT3_GI; GI*k_dephos*pSTAT3_GI;
+
+  phos_STAT3_Liver: STAT3_Liver => pSTAT3_Liver; Liver*Vmax_pSTAT3_Liver*IL6sR_Liver/(Km_pSTAT3 + IL6sR_Liver);
+  dephos_pSTAT3_Liver: pSTAT3_Liver => STAT3_Liver; Liver*k_dephos*pSTAT3_Liver;
+
+  # CRP production in Liver driven by pSTAT3 (secreted to Serum) and degradation in Serum
+  prod_CRP:  => CRP; Serum*Vmax_CRP*pSTAT3_Liver/(Km_CRP + pSTAT3_Liver);
+  deg_CRP: CRP => ; Serum*kdeg_CRP*CRP;
+
+  //// Species initializations:
+  IL6_s = 0.0001;           # Serum IL-6 ~10 pg/ml ? 1e-4 nmol/L
+  sIL6R_s = 1.4;            # Serum sIL-6R ~140 ng/ml ? 1.4 nmol/L (Crohn's)
+  IL6sR_s = 0;
+  sgp130_s = 3;             # Serum sgp130 ~390 ng/ml ? 3?4 nmol/L
+  IL6sR_sgp130_s = 0;
+  CRP = 280;                # Serum CRP ~7 mg/L ? 280 nmol/L
+
+  STAT3_GI = 100;
+  pSTAT3_GI = 3;
+
+  IL6_GI = 0.01;            # Gut IL-6 ~250 pg/ml ? 0.01 nmol/L
+  sIL6R_GI = 0.1;
+  IL6sR_GI = 0;
+  sgp130_GI = 0.1;
+  IL6sR_sgp130_GI = 0;
+
+  STAT3_Liver = 100;
+  pSTAT3_Liver = 1;
+
+  IL6_Liver = 0.0001;
+  sIL6R_Liver = 0.5;
+  IL6sR_Liver = 0;
+  sgp130_Liver = 0.5;
+  IL6sR_sgp130_Liver = 0;
+
+  //// Compartment initializations:
+  Serum = 1;
+  Liver = 1;
+  GI = 1;
+
+  //// Variable initializations:
+  ksyn_IL6_GI = 0.001;
+  ksyn_IL6_s = 1e-05;
+  kdeg_IL6 = 0.1;
+
+  k_ex_IL6_GI_to_S = 0.05;
+  k_ex_IL6_S_to_GI = 0.05;
+  k_ex_IL6_Liver_to_S = 0.05;
+  k_ex_IL6_S_to_Liver = 0.05;
+
+  ksyn_sIL6R = 0.042;
+  kshed_sIL6R = 0.0001;
+  kdeg_sIL6R = 0.03;
+
+  ksyn_sgp130 = 0.09;
+  kdeg_sgp130 = 0.03;
+
+  k_ex_sIL6R_S_to_GI = 0.05;
+  k_ex_sIL6R_GI_to_S = 0.05;
+  k_ex_sIL6R_S_to_Liver = 0.05;
+  k_ex_sIL6R_Liver_to_S = 0.05;
+
+  k_ex_sgp130_S_to_GI = 0.02;
+  k_ex_sgp130_GI_to_S = 0.02;
+  k_ex_sgp130_S_to_Liver = 0.02;
+  k_ex_sgp130_Liver_to_S = 0.02;
+
+  kon_IL6sR = 1;
+  koff_IL6sR = 0.1;
+  kon_tern = 1;
+  koff_tern = 0.1;
+
+  kdeg_complex = 0.01;
+  kdeg_tern = 0.005;
+
+  Vmax_pSTAT3_GI = 5;
+  Vmax_pSTAT3_Liver = 3;
+  Km_pSTAT3 = 0.01;
+  k_dephos = 1;
+
+  Vmax_CRP = 100;
+  Km_CRP = 10;
+  kdeg_CRP = 0.05;
+
+  //// Other declarations:
+  const Serum, Liver, GI;
+  const ksyn_IL6_GI, ksyn_IL6_s, kdeg_IL6;
+  const k_ex_IL6_GI_to_S, k_ex_IL6_S_to_GI, k_ex_IL6_Liver_to_S, k_ex_IL6_S_to_Liver;
+  const ksyn_sIL6R, kshed_sIL6R, kdeg_sIL6R;
+  const ksyn_sgp130, kdeg_sgp130;
+  const k_ex_sIL6R_S_to_GI, k_ex_sIL6R_GI_to_S, k_ex_sIL6R_S_to_Liver, k_ex_sIL6R_Liver_to_S;
+  const k_ex_sgp130_S_to_GI, k_ex_sgp130_GI_to_S, k_ex_sgp130_S_to_Liver, k_ex_sgp130_Liver_to_S;
+  const kon_IL6sR, koff_IL6sR, kon_tern, koff_tern, kdeg_complex, kdeg_tern;
+  const Vmax_pSTAT3_GI, Vmax_pSTAT3_Liver, Km_pSTAT3, k_dephos;
+  const Vmax_CRP, Km_CRP, kdeg_CRP;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole / liter;   # nmol/L
+  unit time_unit = 3600 second;         # hour
+
+  //// Display Names:
+  Serum is "Circulation (serum)";
+  GI is "Gastrointestinal tract";
+  Liver is "Liver";
+
+  IL6_s is "Interleukin-6 (serum)";
+  sIL6R_s is "Soluble IL-6 receptor (serum)";
+  IL6sR_s is "IL-6:sIL-6R complex (serum)";
+  sgp130_s is "Soluble gp130 (serum)";
+  IL6sR_sgp130_s is "IL-6:sIL-6R:sgp130 ternary (serum)";
+  CRP is "C-reactive protein (serum)";
+
+  IL6_GI is "Interleukin-6 (GI)";
+  sIL6R_GI is "Soluble IL-6 receptor (GI)";
+  IL6sR_GI is "IL-6:sIL-6R complex (GI)";
+  sgp130_GI is "Soluble gp130 (GI)";
+  IL6sR_sgp130_GI is "IL-6:sIL-6R:sgp130 (GI)";
+  STAT3_GI is "STAT3 (GI)";
+  pSTAT3_GI is "phospho-STAT3 (GI)";
+
+  IL6_Liver is "Interleukin-6 (Liver)";
+  sIL6R_Liver is "Soluble IL-6 receptor (Liver)";
+  IL6sR_Liver is "IL-6:sIL-6R complex (Liver)";
+  sgp130_Liver is "Soluble gp130 (Liver)";
+  IL6sR_sgp130_Liver is "IL-6:sIL-6R:sgp130 (Liver)";
+  STAT3_Liver is "STAT3 (Liver)";
+  pSTAT3_Liver is "phospho-STAT3 (Liver)";
+
+end
+
+/* Unmapped data and notes:
+- Full intracellular classical signaling (membrane IL-6R, gp130, Jak) and detailed STAT3 dimerization/transcriptional steps were reduced to pSTAT3 production driven by IL-6:sIL-6R.
+- Exchange of IL-6:sIL-6R complexes between compartments and explicit secretion processes were simplified; CRP is produced directly into Serum based on pSTAT3 in Liver.
+- PK modules for therapeutic antibodies (anti?IL-6, anti?IL-6R, sgp130Fc), dosing schedules (Q4W/Q2W), binding to targets, and target-mediated disposition were not implemented due to missing explicit equations/parameters.
+- Parameter values chosen are placeholders consistent with stated kinetics (first-order 1/hr, second-order L/(nmol?hr)); they should be refined using the study?s supplementary parameter sets (Supplementary Files 3?6) if available.
+- Baseline concentrations were initialized using values reported in Table 1 and text (converted to nmol/L): Serum IL-6 ~1e-4 nmol/L, Serum sIL-6R ~1.4 nmol/L, Serum sgp130 ~3 nmol/L, CRP ~280 nmol/L; Gut IL-6 ~0.01 nmol/L.
+*/

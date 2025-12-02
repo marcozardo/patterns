@@ -1,0 +1,78 @@
+model Goldbeter1991_MitoticOscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell;
+  species M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C / (K_c + C)) * V_M1;
+  V3 := M * V_M3;
+
+  //// Rate Rules:
+  M' = V1 * (1 - M)/(K1 + (1 - M)) - V2 * M/(K2 + M);
+  X' = V3 * (1 - X)/(K3 + (1 - X)) - V4 * X/(K4 + X);
+
+  //// Reactions:
+  J0: => C; v_i;
+  J1: C => ; v_d * X * C/(K_d + C);
+  J2: C => ; k_d * C;
+
+  //// Species initializations:
+  C = 0.01;  // Initial concentration of Cyclin
+  M = 0.01;  // Initial fraction of active cdc2 kinase
+  X = 0.01;  // Initial fraction of active cyclin protease
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  v_i = 0.023;
+  v_d = 0.1;
+  k_d = 0.00333;
+  K_d = 0.02;
+  K_c = 0.3;
+  V_M1 = 0.5;
+  V2 = 0.167;
+  V_M3 = 0.2;
+  V4 = 0.1;
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, v_i, v_d, k_d, K_d, K_c, V_M1, V2, V_M3, V4, K1, K2, K3, K4;
+
+  //// Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+  unit concentration = substance / 1 litre;
+
+  //// Display Names:
+  time_unit is "minute";
+  C is "Cyclin concentration";
+  M is "Fraction of active cdc2 kinase";
+  X is "Fraction of active cyclin protease";
+  J0 is "Synthesis of cyclin";
+  J1 is "Degradation of cyclin by protease X";
+  J2 is "Non-specific degradation of cyclin";
+  v_i is "Rate of cyclin synthesis";
+  v_d is "Maximum rate of cyclin degradation by protease X";
+  k_d is "Rate constant for non-specific cyclin degradation";
+  V1 is "Effective maximum rate of cdc2 kinase activation";
+  V2 is "Maximum rate of cdc2 kinase inactivation";
+  V3 is "Effective maximum rate of cyclin protease activation";
+  V4 is "Maximum rate of cyclin protease inactivation";
+  V_M1 is "Maximum rate of phosphatase E1 at saturating cyclin";
+  V_M3 is "Maximum velocity of kinase E3 for M=1";
+  K_d is "Michaelis constant for cyclin degradation";
+  K_c is "Michaelis constant for cyclin activation of phosphatase";
+  K1 is "Michaelis constant for cdc2 kinase activation";
+  K2 is "Michaelis constant for cdc2 kinase inactivation";
+  K3 is "Michaelis constant for cyclin protease activation";
+  K4 is "Michaelis constant for cyclin protease inactivation";
+  cell is "Amphibian embryo cell";
+
+end

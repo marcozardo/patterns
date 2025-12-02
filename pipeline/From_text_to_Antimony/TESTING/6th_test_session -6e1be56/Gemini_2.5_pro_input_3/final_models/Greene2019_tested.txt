@@ -1,0 +1,66 @@
+model *Greene2019_DrugResistance()
+
+  //// Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, R in compartment_;
+
+  //// Assignment Rules:
+  V := S + R;
+  # Treatment protocol: u(t) is zero until detection time (td),
+  # then pulses with magnitude Uon for Dton duration, followed by a Dtoff holiday.
+  u := piecewise(0, time < td, piecewise(Uon, (time - td) % (Dton + Dtoff) < Dton, 0));
+
+  //// Reactions:
+  # Logistic growth of sensitive cells, including competition from both S and R cells.
+  growth_S:          => S; compartment_ * S * (1 - (S + R));
+  # Logistic growth of resistant cells, with a relative growth rate p_r.
+  growth_R:          => R; compartment_ * p_r * R * (1 - (S + R));
+  # Conversion of sensitive to resistant cells, due to spontaneous (epsilon) and drug-induced (alpha) mechanisms.
+  conversion_S_to_R: S => R; compartment_ * (epsilon + alpha*u) * S;
+  # Drug-induced death of sensitive cells.
+  death_S:           S => ; compartment_ * d*u*S;
+
+  //// Species initializations:
+  S = 0.01; # Initial sensitive population (dimensionless)
+  R = 0;    # Initial resistant population (dimensionless)
+
+  //// Compartment initializations:
+  compartment_ = 1;
+
+  //// Variable initializations:
+  p_r = 0.2;      // Resistant growth fraction
+  epsilon = 1e-6; // Background mutation rate
+  alpha = 0.01;   // Drug-induced resistance rate (set to 0 for phenotype-preserving case)
+  d = 1;          // Cytotoxicity of sensitive cells
+  td = 4.5;       // Time of detection / start of treatment, estimated from Figure 2
+  Uon = 1.5;      // Treatment magnitude
+  Dton = 1;       // Pulsed treatment window duration
+  Dtoff = 3;      // Pulsed holiday length
+  Vc = 0.9;       // Tumor volume defining treatment failure (for simulation endpoint)
+  Vd = 0.1;       // Detectable tumor volume (for context, determines td)
+
+  //// Other declarations:
+  var V, u;
+  const compartment_, p_r, epsilon, alpha, d, td, Uon, Dton, Dtoff, Vc, Vd;
+
+  //// Display Names:
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  V is "Total tumor volume";
+  u is "Effective drug dose";
+  compartment_ is "Tumor";
+  growth_S is "Growth of sensitive cells";
+  growth_R is "Growth of resistant cells";
+  conversion_S_to_R is "Conversion of sensitive to resistant cells";
+  death_S is "Drug-induced death of sensitive cells";
+  p_r is "Resistant growth fraction";
+  epsilon is "Background mutation rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Drug cytotoxicity";
+  td is "Time of detection/treatment start";
+  Uon is "Treatment magnitude";
+  Dton is "Pulsed treatment window";
+  Dtoff is "Pulsed holiday length";
+  Vc is "Critical tumor volume (failure)";
+  Vd is "Detectable tumor volume";
+end

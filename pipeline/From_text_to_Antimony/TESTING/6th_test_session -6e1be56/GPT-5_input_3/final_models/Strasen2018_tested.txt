@@ -1,0 +1,180 @@
+/* Molecular domain: intracellular signaling (TGF-beta/SMAD pathway).
+Topology extracted from Figure 4B and surrounding text: ligand (TGF?) binds/activates TGF?RI/TGF?RII at the plasma membrane; active receptor complex phosphorylates SMAD2, which forms a complex with SMAD4, translocates to the nucleus, and induces target gene expression including a negative feedback regulator (e.g., SMAD7). Receptor?ligand complexes internalize to endosomes and ligand is degraded, contributing to signal adaptation. Nuclear phosphatases dephosphorylate SMAD2 and facilitate export.
+Kinetic forms and parameter values are not provided in the input; placeholders are declared below to enable simulation-ready syntax. */
+
+model *Strasen2018_TGFb_SMAD_model()
+
+  //// Compartments and Species:
+  compartment Ext, Membrane;
+  compartment Cyt, Nuc;
+  compartment Endo;
+
+  species L_ext in Ext;
+  species R1_mem in Membrane, R2_mem in Membrane, RC_mem in Membrane, RC_endo in Endo;
+
+  species S2_cyt in Cyt, S2p_cyt in Cyt, S4_cyt in Cyt, S2pS4_cyt in Cyt;
+  species S2pS4_nuc in Nuc, S2_nuc in Nuc, S4_nuc in Nuc;
+
+  species FBm_nuc in Nuc, FB_cyt in Cyt;
+
+  //// Reactions:
+  # Ligand binding and receptor complex formation at the plasma membrane (net reversible binding)
+  R_bind: R1_mem + R2_mem + L_ext -> RC_mem; Membrane*(kon_bind*R1_mem*R2_mem*L_ext - koff_bind*RC_mem);
+
+  # Receptor complex trafficking and ligand removal
+  RC_internalize: RC_mem => RC_endo; Membrane*k_int*RC_mem;
+  RC_recycle: RC_endo => R1_mem + R2_mem; Endo*k_rec*RC_endo;
+  RC_degrade: RC_endo => ; Endo*k_degRC*RC_endo;
+  L_decay: L_ext => ; Ext*kL_deg*L_ext;
+
+  # SMAD2 phosphorylation by active receptor complex (feedback inhibits receptor activity)
+  S2_phos: S2_cyt => S2p_cyt; Cyt*(kphos*RC_mem*S2_cyt/(1 + FB_cyt/Ki_FB));
+  S2_dephos: S2p_cyt => S2_cyt; Cyt*k_dephos*S2p_cyt;
+
+  # SMAD2p?SMAD4 complex formation in cytoplasm
+  C_cyt_bind: S2p_cyt + S4_cyt -> S2pS4_cyt; Cyt*(kon_c*S2p_cyt*S4_cyt - koff_c*S2pS4_cyt);
+
+  # Nucleo-cytoplasmic shuttling and nuclear processing
+  Import_complex: S2pS4_cyt => S2pS4_nuc; Cyt*k_imp*S2pS4_cyt;
+  Export_complex: S2pS4_nuc => S2pS4_cyt; Nuc*k_exp*S2pS4_nuc;
+  Nuc_dephos_dissoc: S2pS4_nuc => S2_nuc + S4_nuc; Nuc*k_deph_nuc*S2pS4_nuc;
+
+  Export_S2: S2_nuc => S2_cyt; Nuc*k_exp_S2*S2_nuc;
+  Import_S4: S4_cyt => S4_nuc; Cyt*k_imp_S4*S4_cyt;
+  Export_S4: S4_nuc => S4_cyt; Nuc*k_exp_S4*S4_nuc;
+
+  # Feedback gene expression (mRNA) and protein (e.g., SMAD7) production/degradation
+  FBm_prod:  => FBm_nuc; Nuc*(k_tx_basal + k_tx_ind*S2pS4_nuc/(K_act + S2pS4_nuc));
+  FBm_deg: FBm_nuc => ; Nuc*k_deg_m*FBm_nuc;
+  FB_translate: FBm_nuc => FB_cyt; Nuc*k_tl*FBm_nuc;
+  FB_deg: FB_cyt => ; Cyt*k_deg_FB*FB_cyt;
+
+  # Basal receptor synthesis and turnover
+  R1_synth:  => R1_mem; Membrane*k_syn_R1;
+  R1_deg: R1_mem => ; Membrane*k_deg_R1*R1_mem;
+  R2_synth:  => R2_mem; Membrane*k_syn_R2;
+  R2_deg: R2_mem => ; Membrane*k_deg_R2*R2_mem;
+
+  //// Species initializations:
+  L_ext = 0;
+  R1_mem = 1;
+  R2_mem = 1;
+  RC_mem = 0;
+  RC_endo = 0;
+
+  S2_cyt = 1;
+  S2p_cyt = 0;
+  S4_cyt = 1;
+  S2pS4_cyt = 0;
+
+  S2pS4_nuc = 0;
+  S2_nuc = 0;
+  S4_nuc = 0;
+
+  FBm_nuc = 0;
+  FB_cyt = 0;
+
+  //// Compartment initializations:
+  Ext = 1;
+  Membrane = 1;
+  Cyt = 1;
+  Nuc = 1;
+  Endo = 1;
+
+  //// Variable initializations:
+  kon_bind = 0;
+  koff_bind = 0;
+  k_int = 0;
+  k_degRC = 0;
+  k_rec = 0;
+  kL_deg = 0;
+
+  kphos = 0;
+  Ki_FB = 1;
+  k_dephos = 0;
+
+  kon_c = 0;
+  koff_c = 0;
+
+  k_imp = 0;
+  k_exp = 0;
+  k_deph_nuc = 0;
+  k_exp_S2 = 0;
+  k_imp_S4 = 0;
+  k_exp_S4 = 0;
+
+  k_tx_basal = 0;
+  k_tx_ind = 0;
+  K_act = 1;
+  k_deg_m = 0;
+  k_tl = 0;
+  k_deg_FB = 0;
+
+  k_syn_R1 = 0;
+  k_deg_R1 = 0;
+  k_syn_R2 = 0;
+  k_deg_R2 = 0;
+
+  //// Other declarations:
+  const Ext, Membrane, Cyt, Nuc, Endo;
+  const kon_bind, koff_bind, k_int, k_degRC, k_rec, kL_deg;
+  const kphos, Ki_FB, k_dephos;
+  const kon_c, koff_c;
+  const k_imp, k_exp, k_deph_nuc, k_exp_S2, k_imp_S4, k_exp_S4;
+  const k_tx_basal, k_tx_ind, K_act, k_deg_m, k_tl, k_deg_FB;
+  const k_syn_R1, k_deg_R1, k_syn_R2, k_deg_R2;
+
+  //// Display Names:
+  Ext is "Extracellular space";
+  Membrane is "Plasma membrane";
+  Cyt is "Cytoplasm";
+  Nuc is "Nucleus";
+  Endo is "Endosomal compartment";
+
+  L_ext is "TGF-beta (extracellular ligand)";
+  R1_mem is "TGFBR1 (membrane)";
+  R2_mem is "TGFBR2 (membrane)";
+  RC_mem is "Ligand-bound receptor complex (active) at membrane";
+  RC_endo is "Internalized receptor?ligand complex (endosome)";
+
+  S2_cyt is "SMAD2 (cytoplasm)";
+  S2p_cyt is "phospho-SMAD2 (cytoplasm)";
+  S4_cyt is "SMAD4 (cytoplasm)";
+  S2pS4_cyt is "SMAD2p:SMAD4 complex (cytoplasm)";
+  S2pS4_nuc is "SMAD2p:SMAD4 complex (nucleus)";
+  S2_nuc is "SMAD2 (nucleus, dephosphorylated)";
+  S4_nuc is "SMAD4 (nucleus)";
+
+  FBm_nuc is "Feedback mRNA (e.g., SMAD7 mRNA, nucleus)";
+  FB_cyt is "Feedback protein (e.g., SMAD7, cytoplasm)";
+
+  R_bind is "Ligand+R1+R2 binding to active complex";
+  RC_internalize is "Internalization of active receptor complex";
+  RC_recycle is "Recycling of receptors from endosome";
+  RC_degrade is "Degradation of receptor?ligand complex";
+  L_decay is "Extracellular ligand degradation/removal";
+  S2_phos is "Receptor-mediated phosphorylation of SMAD2 (inhibited by feedback)";
+  S2_dephos is "Cytoplasmic dephosphorylation of SMAD2";
+  C_cyt_bind is "Cytoplasmic complexation of SMAD2p with SMAD4";
+  Import_complex is "Nuclear import of SMAD2p:SMAD4";
+  Export_complex is "Nuclear export of SMAD2p:SMAD4";
+  Nuc_dephos_dissoc is "Nuclear dephosphorylation and complex dissociation";
+  Export_S2 is "Nuclear export of SMAD2";
+  Import_S4 is "Nuclear import of SMAD4";
+  Export_S4 is "Nuclear export of SMAD4";
+  FBm_prod is "Basal and induced transcription of feedback mRNA";
+  FBm_deg is "Feedback mRNA degradation";
+  FB_translate is "Translation of feedback protein";
+  FB_deg is "Feedback protein degradation";
+  R1_synth is "Basal synthesis of TGFBR1";
+  R1_deg is "Degradation of TGFBR1";
+  R2_synth is "Basal synthesis of TGFBR2";
+  R2_deg is "Degradation of TGFBR2";
+
+end
+
+/* Unmapped Data and Notes:
+- No explicit numerical parameter values or initial ligand doses are provided in the input text. All kinetic parameters are declared and initialized to 0 (except Ki_FB and K_act set to 1 to avoid division by zero). To reproduce specific experiments (e.g., 1?100 pM ligand doses, restimulation times), set L_ext at t=0 (and via events) and assign nonzero rate constants based on the referenced BioModels (MODEL1712050001?MODEL17120500012).
+- The feedback node (FB) corresponds to SMAD7 in the paper; additional negative feedbacks (e.g., PPM1A upregulation) are not explicitly parameterized here beyond generic dephosphorylation.
+- Endosomal sorting, detailed receptor clustering, and alternative ligand?receptor binding sequences (e.g., L:R2 then R1 recruitment) are aggregated into a single effective binding step as depicted in the article?s pathway schematic.
+*/

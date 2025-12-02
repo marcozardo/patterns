@@ -1,0 +1,79 @@
+model *Goldbeter1991_MitoticOscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell;
+
+  //// Assignment Rules:
+  V1 := VM1 * C / (Kc + C);
+  V3 := M * VM3;
+
+  //// Rate Rules:
+  M' = V1 * (1 - M) / (K1 + (1 - M)) - V2 * M / (K2 + M);
+  X' = V3 * (1 - X) / (K3 + (1 - X)) - V4 * X / (K4 + X);
+
+  //// Reactions:
+  J0:  => C; cell * vi; # Cyclin synthesis
+  J1: C =>  ; cell * vd * X * C / (Kd + C); # Protease-mediated cyclin degradation
+  J2: C =>  ; cell * kd * C; # Nonspecific cyclin degradation
+
+  //// Species initializations:
+  C = 0.01; # Initial concentration of Cyclin (uM)
+
+  //// Compartment initializations:
+  cell = 1; # Volume of the cell compartment (L)
+
+  //// Variable initializations:
+  M = 0.01; # Initial fraction of active cdc2 kinase
+  X = 0.01; # Initial fraction of active cyclin protease
+  vi = 0.023; # Rate of cyclin synthesis (uM/min)
+  vd = 0.1; # Maximum rate of cyclin degradation by protease X (uM/min)
+  kd = 3.33e-5; # Rate constant for nonspecific cyclin degradation (1/min)
+  Kd = 0.02; # Michaelis constant for cyclin degradation (uM)
+  VM1 = 0.5; # Maximum rate of cdc2 kinase phosphatase (E1) (1/min)
+  Kc = 0.3; # Activation constant for cdc2 kinase activation by Cyclin (uM)
+  V2 = 0.167; # Maximum rate of cdc2 kinase inactivation (kinase E2) (1/min)
+  K1 = 0.1; # Michaelis constant for cdc2 kinase dephosphorylation (dimensionless)
+  K2 = 0.1; # Michaelis constant for cdc2 kinase phosphorylation (dimensionless)
+  VM3 = 0.2; # Maximum rate of cyclin protease kinase (E3, active cdc2 kinase) (1/min)
+  V4 = 0.1; # Maximum rate of cyclin protease inactivation (phosphatase E4) (1/min)
+  K3 = 0.1; # Michaelis constant for cyclin protease phosphorylation (dimensionless)
+  K4 = 0.1; # Michaelis constant for cyclin protease dephosphorylation (dimensionless)
+
+  //// Other declarations:
+  var M, X, V1, V3;
+  const cell, vi, vd, kd, Kd, V2, K1, K2, K3, K4, VM1, VM3, V4, Kc;
+
+  //// Unit definitions:
+  unit substance = 1e-6 mole;
+  unit volume = 1 liter;
+  unit time_unit = 60 second;
+  unit concentration = 1e-6 mole / liter;
+
+  //// Display Names:
+  time_unit is "minute";
+  concentration is "micromolar";
+  C is "Cyclin concentration";
+  M is "Fraction of active cdc2 kinase";
+  X is "Fraction of active cyclin protease";
+  vi is "Rate of cyclin synthesis";
+  vd is "Maximum rate of cyclin degradation by protease X";
+  kd is "Rate constant for nonspecific cyclin degradation";
+  Kd is "Michaelis constant for cyclin degradation";
+  V1 is "Effective maximum rate of cdc2 kinase activation";
+  V2 is "Maximum rate of cdc2 kinase inactivation";
+  K1 is "Michaelis constant for cdc2 kinase dephosphorylation";
+  K2 is "Michaelis constant for cdc2 kinase phosphorylation";
+  Kc is "Activation constant for cdc2 kinase activation by Cyclin";
+  V3 is "Effective maximum rate of cyclin protease activation";
+  V4 is "Maximum rate of cyclin protease inactivation";
+  K3 is "Michaelis constant for cyclin protease phosphorylation";
+  K4 is "Michaelis constant for cyclin protease dephosphorylation";
+  VM1 is "Maximum rate of cdc2 kinase phosphatase (E1)";
+  VM3 is "Maximum rate of cyclin protease kinase (E3)";
+  J0 is "Cyclin synthesis";
+  J1 is "Protease-mediated cyclin degradation";
+  J2 is "Nonspecific cyclin degradation";
+  cell is "Amphibian embryo cell";
+
+end

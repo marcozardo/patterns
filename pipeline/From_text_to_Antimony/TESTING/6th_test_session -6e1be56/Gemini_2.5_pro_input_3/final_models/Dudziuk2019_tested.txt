@@ -1,0 +1,92 @@
+/* Created automatically by BioModelsStore command only. */
+
+model *Dudziuk2019_HSF1_activation_model()
+
+// Species
+//// Compartments and Species:
+compartment Cell;
+species HSP in Cell;
+species HSF in Cell;
+species S in Cell;
+species HSP_HSF in Cell;
+species HSP_S in Cell;
+species HSF_trimer in Cell;
+species HSE in Cell;
+species HSE_HSF_trimer in Cell;
+species mRNA in Cell;
+species P in Cell;
+
+//// Assignment Rules:
+V_den := 1 - (1 + ((T - T0)/(T05 - T0))^n_V)^-1;
+k11_T := k10*V_den/(1 - V_den);
+k8_T := k8_max*(1 - (1/(1 + exp(-R_k8_*(T - Tk8)))));
+l7_T := piecewise(4.768e1, T < 41 and T >= 37, 1.233, T < 42 and T >= 41, 0.6628, T < 43 and T >= 42, 0.01639, T < 44 and T >= 43, 50.01, T < 45 and T >= 44, 84.27);
+// l7_T is interpolated based on temperature values:
+// l7_T(37) = 4.768e1
+// l7_T(41) = 1.233
+// l7_T(42) = 0.6628
+// l7_T(43) = 0.01639
+// l7_T(44) = 5.001e+01
+// l7_T(45) = 8.427e+01
+
+// Reactions
+//// Reactions:
+HSF_activation: 3 HSF => HSF_trimer; Cell*k3*HSF^3;
+HSF3_to_DNA: HSF_trimer + HSE -> HSE_HSF_trimer; Cell*(k7*HSF_trimer*HSE - l7_T*HSE_HSF_trimer);
+transcription: HSE_HSF_trimer => HSE_HSF_trimer + mRNA; Cell*k8_T*HSE_HSF_trimer;
+HSF_inactivation: HSP + HSF_trimer => HSP_HSF + 2 HSF; Cell*l3*HSP*HSF_trimer;
+HSP_to_substrate: HSP + S -> HSP_S; Cell*(k1*HSP*S - l1*HSP_S);
+HSP_to_HSF: HSP + HSF -> HSP_HSF; Cell*(k2*HSP*HSF - l2*HSP_HSF);
+HSP_degradation: HSP => ; Cell*k9*HSP;
+protein_refolding: HSP_S => HSP + P; Cell*k10*HSP_S;
+protein_denaturation: P => S; Cell*k11_T*P;
+translation: mRNA => mRNA + HSP; Cell*k4*mRNA;
+mRNA_degradation: mRNA => ; Cell*k5*mRNA;
+HSP_production:  => HSP; Cell*k6;
+
+// Initial conditions
+//// Species initializations:
+HSP = 5.206E1;
+HSF = 1.363E-3;
+S = 8.122E-8;
+HSP_HSF = 0.01429;
+HSP_S = 5.268E-4;
+HSF_trimer = 9.082E-6;
+HSE = 3.996E-6;
+HSE_HSF_trimer = 4.484E-9;
+mRNA = 4.946E-4;
+P = 1.297E3;
+
+//// Compartment initializations:
+Cell = 1;
+
+//// Variable initializations:
+k1 = 12.6;
+l1 = 0.003028;
+k2 = 0.218;
+l2 = 1.162;
+k3 = 446500;
+l3 = 2.392;
+k4 = 18.85;
+k5 = 0.0008709;
+k6 = 0.08899;
+k7 = 5892;
+k9 = 0.001888;
+k10 = 0.09813;
+k8_max = 96.07;
+R_k8_ = 15.93;
+Tk8 = 42.89;
+T0 = 35.81;
+T05 = 47.13;
+n_V = 6.522;
+HSF_tot_c = 0.01568;
+HSE_tot_c = 4e-06;
+P_tot_c = 1297;
+T = 37;
+
+//// Unit definitions:
+unit time_unit = 60 second;
+unit substance = 1e-6 mole;
+unit extent = 1e-6 mole;
+
+end

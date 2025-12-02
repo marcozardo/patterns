@@ -1,0 +1,152 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Net1_U in cell, Net1_P in cell, Cdc14_bound in cell, Cdc14_active in cell, Clb2 in cell;
+  species Cdc20 in cell, SecSep in cell, Separase in cell, PP2Aact in cell, PP2Ainact in cell;
+  species MEN_inact in cell, MEN_act in cell, Bfa1_U in cell, Bfa1_P in cell, Cdh1_U in cell;
+  species Cdh1_A in cell;
+
+  //// Reactions:
+  # Net1 phosphorylation/dephosphorylation
+  R_net1_cdk:      Net1_U  => Net1_P; k_cdk_net1*Clb2*Net1_U;
+  R_net1_men:      Net1_U  => Net1_P; k_men_net1*MEN_act*Net1_U;
+  R_net1_deph_pp2a: Net1_P => Net1_U; k_pp2a_net1*PP2Aact*Net1_P;
+  R_net1_deph_c14:  Net1_P => Net1_U; k_cdc14_net1*Cdc14_active*Net1_P;
+
+  # Cdc14 release and resequestration
+  R_cdc14_release:  Cdc14_bound => Cdc14_active; k_release*Net1_P*Cdc14_bound;
+  R_cdc14_reseq:    Cdc14_active => Cdc14_bound; k_reseq*PP2Aact*Cdc14_active;
+
+  # PP2A^Cdc55 downregulation by separase and slow recovery
+  R_pp2a_down:   PP2Aact => PP2Ainact; k_sep_pp2a*Separase*PP2Aact;
+  R_pp2a_recover: PP2Ainact => PP2Aact; k_recover*PP2Ainact;
+
+  # Securin degradation by APC^Cdc20 releases separase (SecSep contains securin+separase)
+  R_sec_release: SecSep => Separase; k_apc*Cdc20*SecSep;
+
+  # Cdc20 synthesis and degradation
+  R_cdc20_prod:  => Cdc20; k_synCdc20;
+  R_cdc20_deg_cdh1: Cdc20 => ; k_degCdc20*Cdh1_A*Cdc20;
+  R_cdc20_deg_basal: Cdc20 => ; k_degCdc20_basal*Cdc20;
+
+  # MEN activation by Cdc14 and by anaphase-specific Bfa1 phosphorylation; deactivation by PP2A
+  R_men_act_c14:  MEN_inact => MEN_act; k_men_cdc14*Cdc14_active*MEN_inact;
+  R_men_act_bfa1: MEN_inact => MEN_act; k_men_bfa1*Bfa1_P*MEN_inact;
+  R_men_deact:    MEN_act   => MEN_inact; k_men_off*PP2Aact*MEN_act;
+
+  # Bfa1 phosphorylation promoted when PP2A^Cdc55 is downregulated; dephosphorylation by PP2A and Cdc14
+  R_bfa1_phos:    Bfa1_U => Bfa1_P; k_bfa1_phos*PP2Ainact*Bfa1_U;
+  R_bfa1_deph_pp2a: Bfa1_P => Bfa1_U; k_bfa1_deph_pp2a*PP2Aact*Bfa1_P;
+  R_bfa1_deph_c14:  Bfa1_P => Bfa1_U; k_bfa1_deph_cdc14*Cdc14_active*Bfa1_P;
+
+  # Cdh1 activation by Cdc14 and inactivation by Cdk (Clb2-Cdk)
+  R_cdh1_act:   Cdh1_U => Cdh1_A; k_cdh1_on*Cdc14_active*Cdh1_U;
+  R_cdh1_inact: Cdh1_A => Cdh1_U; k_cdh1_off*Clb2*Cdh1_A;
+
+  # Clb2 degradation by APC^Cdc20 and APC^Cdh1
+  R_clb2_deg_c20: Clb2 => ; k_clb2_cdc20*Cdc20*Clb2;
+  R_clb2_deg_cdh1: Clb2 => ; k_clb2_cdh1*Cdh1_A*Clb2;
+
+  //// Species initializations:
+  Net1_U = 1;
+  Net1_P = 0;
+  Cdc14_bound = 1;
+  Cdc14_active = 0;
+  Clb2 = 1;
+  Cdc20 = 0;
+  SecSep = 1;
+  Separase = 0;
+  PP2Aact = 1;
+  PP2Ainact = 0;
+  MEN_inact = 1;
+  MEN_act = 0;
+  Bfa1_U = 1;
+  Bfa1_P = 0;
+  Cdh1_U = 1;
+  Cdh1_A = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_cdk_net1 = 1;
+  k_men_net1 = 1;
+  k_pp2a_net1 = 1;
+  k_cdc14_net1 = 0.5;
+  k_release = 2;
+  k_reseq = 1;
+  k_sep_pp2a = 1;
+  k_recover = 0.05;
+  k_apc = 1;
+  k_synCdc20 = 0.05;
+  k_degCdc20 = 0.2;
+  k_degCdc20_basal = 0.05;
+  k_men_cdc14 = 1;
+  k_men_bfa1 = 0.5;
+  k_men_off = 0.5;
+  k_bfa1_phos = 1;
+  k_bfa1_deph_pp2a = 0.5;
+  k_bfa1_deph_cdc14 = 0.5;
+  k_cdh1_on = 1;
+  k_cdh1_off = 1;
+  k_clb2_cdc20 = 0.5;
+  k_clb2_cdh1 = 1;
+
+  //// Other declarations:
+  const cell, k_cdk_net1, k_men_net1, k_pp2a_net1, k_cdc14_net1, k_release, k_reseq, k_sep_pp2a, k_recover;
+  const k_apc, k_synCdc20, k_degCdc20, k_degCdc20_basal, k_men_cdc14, k_men_bfa1, k_men_off;
+  const k_bfa1_phos, k_bfa1_deph_pp2a, k_bfa1_deph_cdc14, k_cdh1_on, k_cdh1_off, k_clb2_cdc20, k_clb2_cdh1;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  cell is "Budding yeast cell";
+  Net1_U is "Net1 (unphosphorylated)";
+  Net1_P is "Net1 (phosphorylated)";
+  Cdc14_bound is "Cdc14 sequestered in nucleolus (Net1-bound)";
+  Cdc14_active is "Released/active Cdc14 phosphatase";
+  Clb2 is "Mitotic cyclin Clb2-Cdk activity proxy";
+  Cdc20 is "APC activator Cdc20";
+  SecSep is "Securin?separase inhibitory complex";
+  Separase is "Free separase";
+  PP2Aact is "PP2A^Cdc55 active";
+  PP2Ainact is "PP2A^Cdc55 downregulated";
+  MEN_inact is "Mitotic Exit Network (inactive)";
+  MEN_act is "Mitotic Exit Network (active)";
+  Bfa1_U is "Bfa1 (unphosphorylated)";
+  Bfa1_P is "Bfa1 (phosphorylated)";
+  Cdh1_U is "Cdh1 (inactive)";
+  Cdh1_A is "Cdh1 (active)";
+  R_net1_cdk is "Cdk-dependent Net1 phosphorylation";
+  R_net1_men is "MEN-dependent Net1 phosphorylation";
+  R_net1_deph_pp2a is "PP2A^Cdc55 Net1 dephosphorylation";
+  R_net1_deph_c14 is "Cdc14 Net1 dephosphorylation";
+  R_cdc14_release is "Cdc14 release from Net1";
+  R_cdc14_reseq is "Cdc14 resequestration by Net1";
+  R_pp2a_down is "Separase-dependent PP2A^Cdc55 downregulation";
+  R_pp2a_recover is "PP2A^Cdc55 slow recovery";
+  R_sec_release is "APC^Cdc20-mediated securin degradation releases separase";
+  R_cdc20_prod is "Cdc20 synthesis (induced at t=0)";
+  R_cdc20_deg_cdh1 is "Cdc20 degradation via APC^Cdh1";
+  R_cdc20_deg_basal is "Basal Cdc20 degradation";
+  R_men_act_c14 is "MEN activation by Cdc14 (via Cdc15)";
+  R_men_act_bfa1 is "MEN activation aided by Bfa1 phosphorylation";
+  R_men_deact is "MEN inactivation by PP2A^Cdc55";
+  R_bfa1_phos is "Anaphase Bfa1 phosphorylation (enhanced when PP2A^Cdc55 down)";
+  R_bfa1_deph_pp2a is "Bfa1 dephosphorylation by PP2A^Cdc55";
+  R_bfa1_deph_c14 is "Bfa1 dephosphorylation by Cdc14";
+  R_cdh1_act is "Cdh1 activation by Cdc14";
+  R_cdh1_inact is "Cdh1 inactivation by Clb2-Cdk";
+  R_clb2_deg_c20 is "Clb2 degradation via APC^Cdc20";
+  R_clb2_deg_cdh1 is "Clb2 degradation via APC^Cdh1";
+
+end
+
+/* 
+Domain: Molecular/cell cycle control in budding yeast (systems biology regulatory network).
+
+Notes:
+- This executable minimal model captures the key interactions described: separase-dependent downregulation of PP2A^Cdc55, Net1 phosphorylation by Cdk and MEN, Cdc14 release/resequestration, MEN activation with contribution from Bfa1 phosphorylation, APC^Cdc20-mediated securin degradation releasing separase, and the Cdc14/Cdk-controlled activation of Cdh1 leading to Clb2 degradation.
+- Parameter values are generic and dimensionless, intended for qualitative simulation consistent with Figure 7 trends. The original paper?s exact ODEs and fitted parameters were provided in supplemental materials (Figure S6), which are not included in the input; thus they are not encoded here.
+*/

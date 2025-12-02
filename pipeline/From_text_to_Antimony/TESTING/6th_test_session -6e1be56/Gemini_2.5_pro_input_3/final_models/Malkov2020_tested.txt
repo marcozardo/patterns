@@ -1,0 +1,69 @@
+model *Malkov2020_SEIRS_COVID19()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  R_tilde := 0.5 * (R_tilde_1 + R_tilde_2);
+  beta_t := gamma_ * R_tilde;
+
+  //// Rate Rules:
+  R_tilde_1' = -eta1 * (R_tilde_1 - R1_star);
+  R_tilde_2' = -eta2 * (R_tilde_2 - R2_star);
+  
+  //// Reactions:
+  infection: S -> E; beta_t * S * I / N;
+  progression: E -> I; sigma * E;
+  recovery: I -> R; gamma_ * I;
+  waning_immunity: R -> S; omega * R;
+
+  //// Species initializations:
+  I = 1/1000;
+  E = 43.75 * I;
+  R = 0;
+  S = N - E - I - R;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  N = 1; # Total population, normalized to one
+  
+  # Epidemiological parameters
+  sigma = 1/5.2; # Mean latent period of 5.2 days
+  gamma_ = 1/18; # Mean infectious period of 18 days
+  omega = 1/183; # Immunity waning rate (representative value from Fig 1)
+  
+  # Parameters for time-varying reproduction number (Scenario 2, moderate speed)
+  R_tilde_1 = 3; # Initial value for R_tilde_1
+  R_tilde_2 = 3; # Initial value for R_tilde_2
+  eta1 = 1/20; # Convergence rate for R_tilde_1
+  eta2 = 1/20; # Convergence rate for R_tilde_2
+  R1_star = 1.6; # Long-run value for R_tilde_1
+  R2_star = 1.6; # Long-run value for R_tilde_2
+
+  //// Other declarations:
+  var R_tilde_1, R_tilde_2, R_tilde, beta_t;
+  const population, N, sigma, gamma_, omega, eta1, eta2, R1_star, R2_star;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second; # day
+  unit substance = 1 dimensionless;
+
+  //// Display Names:
+  time_unit is "day";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant";
+  infection is "Infection process";
+  progression is "Progression to infectious state";
+  recovery is "Recovery from infection";
+  waning_immunity is "Loss of immunity";
+  beta_t is "Time-varying transmission rate";
+  R_tilde is "Time-varying reproduction number";
+  sigma is "Infection rate (latent to infectious)";
+  gamma_ is "Recovery rate";
+  omega is "Immunity waning rate";
+end

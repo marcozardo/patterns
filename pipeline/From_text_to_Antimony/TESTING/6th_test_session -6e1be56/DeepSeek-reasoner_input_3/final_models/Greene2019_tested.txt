@@ -1,0 +1,81 @@
+model *Greene2019_DrugResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+
+  //// Rate Rules:
+
+  //// Reactions:
+  growth_S: -> S; tumor * (r * (1 - (S + R)/K) * S);
+  growth_R: -> R; tumor * (p_r * r * (1 - (S + R)/K) * R);
+  death_S: S -> ; tumor * (d * u * S);
+  death_R: R -> ; tumor * (d_R * u * R);
+  conv_spont: S -> R; tumor * (epsilon_ * S);
+  conv_induced: S -> R; tumor * (alpha_ * u * S);
+  back_conv: R -> S; tumor * (gamma_ * R);
+
+  //// Events:
+  E_start: at ((S + R) >= V_d && treated == 0): u = U_on, treated = 1;
+  E_failure: at ((S + R) >= V_c && tc_measured == 0): tc = time, tc_measured = 1;
+
+  //// Species initializations:
+  S = 0.01;
+  R = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  r = 1;
+  K = 1;
+  p_r = 0.2;
+  epsilon_ = 1e-6;
+  alpha_ = 0;
+  d = 1;
+  d_R = 0;
+  gamma_ = 0;
+  V_d = 0.1;
+  V_c = 0.9;
+  U_on = 1.5;
+  u = 0;
+  treated = 0;
+  tc = 0;
+  tc_measured = 0;
+
+  //// Other declarations:
+  const r, K, p_r, epsilon_, alpha_, d, d_R, gamma_, V_d, V_c, U_on;
+  var u, treated, tc, tc_measured;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  growth_S is "Logistic growth of sensitive cells";
+  growth_R is "Logistic growth of resistant cells";
+  death_S is "Drug-induced death of sensitive cells";
+  death_R is "Drug-induced death of resistant cells";
+  conv_spont is "Spontaneous conversion to resistance";
+  conv_induced is "Drug-induced conversion to resistance";
+  back_conv is "Back conversion to sensitive";
+  E_start is "Start treatment at detection";
+  E_failure is "Record time of treatment failure";
+  r is "Sensitive cell growth rate";
+  K is "Carrying capacity";
+  p_r is "Relative growth rate of resistant cells";
+  epsilon_ is "Spontaneous mutation rate";
+  alpha_ is "Drug-induced resistance rate";
+  d is "Drug cytotoxicity (sensitive)";
+  d_R is "Drug cytotoxicity (resistant)";
+  gamma_ is "Resensitization rate";
+  V_d is "Detection volume";
+  V_c is "Critical volume (failure)";
+  U_on is "Constant therapy dose";
+  u is "Drug concentration";
+  treated is "Treatment flag";
+  tc is "Time to treatment failure";
+end

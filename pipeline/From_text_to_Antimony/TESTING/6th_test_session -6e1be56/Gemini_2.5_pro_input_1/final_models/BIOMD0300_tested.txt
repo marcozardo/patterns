@@ -1,0 +1,68 @@
+model *Schmierer2010_HypoxiaDependentSequestration()
+
+  //// Compartments and Species:
+  compartment default_compartment;
+  species $Htot in default_compartment, $H in default_compartment, $A in default_compartment;
+
+  //// Assignment Rules:
+  A_OH := Atot - A;
+  H_OH := Htot - H;
+  kcat_FH := delta * kcat_P;
+  kcat_FA := delta * kcat_P; # Assuming kcat_FA = kcat_FH based on ambiguous table note
+  Ki_FH := KD_FH * (1 + A / KD_FA + gamma_ * A_OH / KD_FA);
+  v_p := kcat_P * Ptot * (1 / (KD_P + Htot + Ptot)) * (O2 / (1 + O2));
+  v_FH := kcat_FH * Ftot * (1 / (Ki_FH + H + Ftot)) * (O2 / (alpha + O2));
+  v_FA := (kcat_FA * Ftot / (KD_FA * (1 + H / KD_FH) + A + gamma_ * A_OH)) * (O2 / (alpha + O2)); # Oxygen term corrected from 1/(O2/(alpha+O2)) in paper (Eq.9), assuming typo.
+  HRE_CAD := H / (KD_HRE + Htot);
+  HRE_CADOH := H_OH / (KD_HRE + Htot);
+
+  //// Rate Rules:
+  Htot' = 1 - Htot * (1 + v_p);
+  H' = 1 - H * (1 + v_p + v_FH);
+  A' = (Atot - A)/epsilon - A*v_FA;
+
+  //// Species initializations:
+  Htot = 0; # Dimensionless concentration
+  H = 0;    # Dimensionless concentration
+  A = 0;    # Dimensionless concentration
+
+  //// Compartment initializations:
+  default_compartment = 1; # Dimensionless volume
+
+  //// Variable initializations:
+  # Parameters based on Table 2 from the paper
+  Ptot = 0.2;        # Dimensionless PHD concentration
+  KD_P = 1;          # Dimensionless Dissociation constant of PHD/HIFa binding
+  kcat_P = 500;      # Dimensionless (kcat for ODD-hydroxylation)/(basal HIFa degradation rate constant)
+  Ftot = 1;          # Dimensionless FIH concentration
+  KD_FH = 1;         # Dimensionless Dissociation constant of FIH/HIFa binding
+  delta = 1;         # Dimensionless (kcat for HIFa CAD-hydroxylation)/(kcat for HIFa ODD-hydroxylation)
+  alpha = 0.33;      # Dimensionless (KM of FIH for oxygen)/(KM of PHD for oxygen)
+  Atot = 100;        # Dimensionless total concentration of FIH target ARs. Value chosen from Figure 5 for illustration; varied in the paper.
+  KD_FA = 1;         # Dimensionless Dissociation constant of FIH/ARD protein binding (unhydroxylated ARs)
+  gamma_ = 0.02;      # Dimensionless (FIH affinity for hydroxylated)/(FIH affinity for unhydroxylated ARs). Value chosen from Figure 5 for illustration; varied in the paper.
+  epsilon = 5;       # Dimensionless (basal HIFa degradation rate constant)/(AR degradation rate constant). Value chosen from Figure 5 for illustration; varied in the paper.
+  KD_HRE = 0.3;      # Dimensionless Dissociation constant of HIF/HRE binding
+  O2 = 0.1;          # Dimensionless Oxygen concentration. This is the main input variable, set to a default value.
+
+  //// Other declarations:
+  var A_OH, H_OH, kcat_FH, kcat_FA, Ki_FH, v_p, v_FH, v_FA, HRE_CAD, HRE_CADOH;
+  const default_compartment;
+  const Ptot, KD_P, kcat_P, Ftot, KD_FH, delta, alpha, Atot;
+  const KD_FA, gamma_, epsilon, KD_HRE, O2;
+
+  //// Display Names:
+  Htot is "Total HIF-alpha";
+  H is "Non-CAD-hydroxylated HIF-alpha";
+  A is "Unhydroxylated FIH target ankyrin repeats";
+  A_OH is "Hydroxylated FIH target ankyrin repeats";
+  H_OH is "CAD-hydroxylated HIF-alpha";
+  Ptot is "Total PHD";
+  Ftot is "Total FIH";
+  Atot is "Total FIH target ankyrin repeats";
+  O2 is "Intracellular oxygen";
+  v_p is "Rate of PHD-dependent HIFa ODD-hydroxylation";
+  v_FH is "Rate of FIH-dependent HIFa CAD-hydroxylation";
+  v_FA is "Rate of FIH-dependent ankyrin hydroxylation";
+
+end

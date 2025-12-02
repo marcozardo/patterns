@@ -1,0 +1,78 @@
+model *Malkov2020_SEIRS_Reinfection()
+
+  //// Compartments and Species:
+  compartment pop;
+  species S in pop, E in pop, I in pop, R in pop;
+
+  //// Assignment Rules:
+  R_tilde := 0.5*(R1_tilde + R2_tilde);     # time-varying reproduction number \tilde{R}(t)
+  beta := gamma_*R_tilde;                    # beta(t) = gamma * \tilde{R}(t)
+
+  //// Rate Rules:
+  R1_tilde' = -eta1*(R1_tilde - R1_star);
+  R2_tilde' = -eta2*(R2_tilde - R2_star);
+
+  //// Reactions:
+  Infection: S => E; pop*(beta*S*I/N);
+  Progression: E => I; pop*(sigma*E);
+  Recovery: I => R; pop*(gamma_*I);
+  Waning: R => S; pop*(omega*R);
+
+  //// Events:
+  OneTimeReinfection: at ((time >= t_star) && (enable_one_time_reinfection > 0.5)): S = S + R, R = 0;
+
+  //// Species initializations:
+  I = 1/1000;                      # I(0) per Section 2
+  E = 43.75*I;                     # E(0) = 43.75 * I(0)
+  R = 0;                           # default: no recovered at t=0
+  S = N - E - I - R;               # from mass balance S+E+I+R = N, with N=1
+
+  //// Compartment initializations:
+  pop = 1;
+
+  //// Variable initializations:
+  N = 1;                           # population normalized to one
+  sigma = 1/5.2;                   # day^-1, mean latent/incubation period 5.2 days
+  gamma_ = 1/18;                   # day^-1, mean infectious period 18 days
+  omega = 1/183;                   # day^-1, immunity waning rate (example scenario)
+  # Time-varying reproduction number parameters (example: moderate decay from 3.0 to 1.6)
+  R1_tilde = 3.0;                  # \tilde{R}_1(0)
+  R2_tilde = 3.0;                  # \tilde{R}_2(0)
+  R1_star = 1.6;                   # long-run value for \tilde{R}_1
+  R2_star = 1.6;                   # long-run value for \tilde{R}_2
+  eta1 = 1/20;                     # day^-1, convergence rate for \tilde{R}_1
+  eta2 = 1/20;                     # day^-1, convergence rate for \tilde{R}_2
+  # Optional one-time reinfection event (disabled by default)
+  enable_one_time_reinfection = 0; # set to 1 to enable
+  t_star = 120;                    # days; time at which R is instantaneously moved to S if enabled
+
+  //// Other declarations:
+  var R1_tilde, R2_tilde, R_tilde, beta;
+  const pop, N, sigma, gamma_, omega, eta1, eta2, R1_star, R2_star, enable_one_time_reinfection, t_star;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+  unit substance = 1 item;
+  unit volume = 1 liter;
+
+  //// Display Names:
+  pop is "Population (well-mixed)";
+  S is "Susceptible (fraction of population)";
+  E is "Exposed (latent) (fraction of population)";
+  I is "Infectious (fraction of population)";
+  R is "Resistant/Recovered (fraction of population)";
+  Infection is "Force of infection: S -> E at beta*S*I/N";
+  Progression is "Latent progression: E -> I at sigma*E";
+  Recovery is "Recovery: I -> R at gamma*I";
+  Waning is "Immunity waning: R -> S at omega*R";
+  R_tilde is "Time-varying reproduction number";
+  R1_tilde is "Component 1 of R_tilde";
+  R2_tilde is "Component 2 of R_tilde";
+  R1_star is "Long-run target for R1_tilde";
+  R2_star is "Long-run target for R2_tilde";
+  eta1 is "Convergence rate of R1_tilde";
+  eta2 is "Convergence rate of R2_tilde";
+  beta is "Transmission rate beta(t) = gamma*R_tilde";
+  enable_one_time_reinfection is "Enable one-time reinfection event (0/1)";
+  t_star is "Time of one-time reinfection event (days)";
+end

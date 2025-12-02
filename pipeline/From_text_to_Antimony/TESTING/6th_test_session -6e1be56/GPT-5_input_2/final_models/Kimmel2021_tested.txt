@@ -1,0 +1,60 @@
+model *Kimmel2021_CART_Gompertz()
+
+  //// Compartments and Species:
+  compartment body;
+  species N in body, C in body, B in body;
+
+  //// Assignment Rules:
+  T := N + C;
+  rC := rho_C + b*((T - K_N)^2)/(a*T^2 + (T - K_N)^2);
+
+  //// Rate Rules:
+  N' = -r_N*N*log((N + C)/K_N);
+  C' = -rC*C*log((N + C)/K_C);
+  B' = r_B*B - gamma_B*B*(C/(k_B + C));
+
+  //// Reactions:
+  // not present
+
+  //// Events:
+  // not present
+
+  //// Species initializations:
+  N = 3.0e9;
+  C = 1.8e8;
+  B = 9.486e10;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  K_N = 2.5e11;
+  K_C = 6.96e10;
+  r_N = 1.70e-1;
+  rho_C = 2.51e-2;
+  a = 4.23e-1;
+  b = 5.25e-1;
+  r_B = 1.90e-1;   // representative "medium" tumour growth (day^-1)
+  gamma_B = 1.15;
+  k_B = 2.024e9;
+
+  //// Other declarations:
+  var T, rC;
+  const body, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Display Names:
+  body is "Systemic compartment";
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "CD19+ tumour cells";
+  T is "Total T cells (N + C)";
+  rC is "CAR T net turnover rate r_C(T)";
+end
+
+/* Unmapped/clarifying notes:
+- Scientific domain: physiological/immuno-oncology population dynamics.
+- r_C(T) functional form: The main text provides r_C(T) in two forms; here we used the bounded form shown in Fig. 2b:
+  r_C(T) = rho_C + b*(T - K_N)^2 / (a*T^2 + (T - K_N)^2).
+- Tumour net growth rate r_B: Table 1 cites a literature range (0.01?0.50 day^-1). We initialized r_B = 0.19 day^-1
+  as a representative "medium" scenario used in simulations (Fig. 3b). Adjust as needed for specific cohorts.
+- Units: populations are in cells; time in days; carrying capacities in cells; rates in day^-1. */

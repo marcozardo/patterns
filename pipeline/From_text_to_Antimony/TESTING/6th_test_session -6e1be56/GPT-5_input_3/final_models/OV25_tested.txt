@@ -1,0 +1,137 @@
+model *Minimal_OV_DC_Immunotherapy()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species U in tumor, I in tumor, V in tumor, T in tumor, D in tumor;
+
+  //// Assignment Rules:
+  N := U + I + T;   # Total cell volume participating in density-dependent interactions (tumor cells and T cells)
+
+  //// Rate Rules:
+  // none
+
+  //// Reactions:
+  tumor_growth:           => U; tumor*(r*U);
+  infection_of_U:   U + V => I + V; tumor*(beta*U*V/N);
+  T_kills_U:         U    =>   ; tumor*((kappa_0 + c_kill*I)*U*T/N);
+  T_kills_I:         I    =>   ; tumor*((kappa_0 + c_kill*I)*I*T/N);
+  I_lysis_loss:      I    =>   ; tumor*(delta_I*I);
+  virion_release:          => V; tumor*(alpha*delta_I*I);
+  virion_decay:      V    =>   ; tumor*(delta_V*V);
+  T_production:            => T; tumor*(c_T*I + chi_D*D);
+  T_death:           T    =>   ; tumor*(delta_T*T);
+  D_decay:           D    =>   ; tumor*(delta_D*D);
+
+  //// Events:
+  E_V1: at (time >= day_V1): V = V + doseV;
+  E_V2: at (time >= day_V2): V = V + doseV;
+  E_V3: at (time >= day_V3): V = V + doseV;
+
+  E_D1: at (time >= day_D1): D = D + doseD;
+  E_D2: at (time >= day_D2): D = D + doseD;
+  E_D3: at (time >= day_D3): D = D + doseD;
+
+  //// Species initializations:
+  U = U0;
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Core tumor-virus-immune parameters (minimal model, Equations (15)-(19))
+  r = 0.3198;          # tumor net exponential growth rate
+  beta = 0.00100854;   # infection (adsorption) rate
+  kappa_0 = 0.01;      # baseline T-cell?mediated killing coefficient (density-dependent baseline)
+  c_kill = 6.234e7;    # T-cell killing amplification by infected cells
+  delta_I = 0.5;       # infected-cell lysis rate
+  alpha = 100;         # virions released per lysed infected cell
+  delta_V = 5;         # free virion decay/clearance rate
+  c_T = 1.428064;      # T-cell recruitment/activation per infected cell (and/or per IL-12 + 4-1BBL)
+  chi_D = 0.5;         # T-cell production driven by injected dendritic cells
+  delta_T = 0.1;       # T-cell natural death rate
+  delta_D = 4.901894;  # dendritic cell decay rate
+
+  # Initial tumor burden and dosing
+  U0 = 100;            # initial uninfected tumor volume
+  doseV = 0;           # OV bolus added to V at event times (set >0 to enable OV dosing)
+  doseD = 0;           # DC bolus added to D at event times (set >0 to enable DC dosing)
+
+  # Default experimental schedule used in the cited dataset (days)
+  day_V1 = 0;
+  day_V2 = 2;
+  day_V3 = 4;
+  day_D1 = 1;
+  day_D2 = 3;
+  day_D3 = 5;
+
+  //// Other declarations:
+  var N;
+  const tumor, r, beta, kappa_0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, U0, doseV, doseD, day_V1, day_V2, day_V3, day_D1, day_D2, day_D3;
+
+  //// Unit definitions:
+  // omitted
+
+  //// Display Names:
+  tumor is "Tumor compartment (volume-scaled)";
+  U is "Uninfected tumor cell volume";
+  I is "Infected tumor cell volume";
+  V is "Free virions (oncolytic adenovirus)";
+  T is "Tumor-targeting T cells";
+  D is "Injected dendritic cells";
+  N is "Total interacting cell volume (U + I + T)";
+  tumor_growth is "Exponential tumor growth";
+  infection_of_U is "Virus infects tumor cells";
+  T_kills_U is "T cells kill uninfected tumor cells";
+  T_kills_I is "T cells kill infected tumor cells";
+  I_lysis_loss is "Infected cell lysis (loss of I)";
+  virion_release is "Virion release from lysed infected cells";
+  virion_decay is "Virion decay";
+  T_production is "T-cell generation (from I and DCs)";
+  T_death is "T-cell death";
+  D_decay is "DC decay";
+  E_V1 is "OV dose at day_V1";
+  E_V2 is "OV dose at day_V2";
+  E_V3 is "OV dose at day_V3";
+  E_D1 is "DC dose at day_D1";
+  E_D2 is "DC dose at day_D2";
+  E_D3 is "DC dose at day_D3";
+
+end
+
+/* Notes and mapping to source text (domain: tumor-immune-virus therapy, preclinical/physiological scale)
+
+- Model encodes the minimal 5-variable ODE system (Equations (15)-(19)) in the paper:
+  dU/dt = r U - beta U V / N - (kappa0 + c_kill I) (U T)/N
+  dI/dt = beta U V / N - delta_I I - (kappa0 + c_kill I) (I T)/N
+  dV/dt = u_V(t) + alpha delta_I I - delta_V V
+  dT/dt = c_T I + chi_D D - delta_T T
+  dD/dt = u_D(t) - delta_D D
+  with N = U + I + T.
+
+- Density dependence uses N := U + I + T, per text ("N is the total volume of cells (tumor cells and tumor-targeting T cells, T)").
+
+- u_V(t) and u_D(t) are implemented as discrete bolus Events adding doseV to V and doseD to D at days 0,2,4 and 1,3,5 respectively (as stated in Figure 4 caption). Set doseV/doseD to zero to disable.
+
+- Parameters set directly from text when available:
+  r = 0.3198 (Table 2, minimal model)
+  beta = 0.00100854 (mapped from provided value; see Methods/Table 1 formatting)
+  c_T = 1.428064 (Table 2, minimal model)
+  c_kill ? 6.234e7 (Table 2: "+4.7% from original 5.954e7")
+  delta_D = 4.901894 (Table 2, minimal model)
+
+- Parameters without explicit numeric values in the provided excerpt (kappa_0, delta_I, alpha, delta_V, delta_T, chi_D, U0, doses) are given nominal placeholders to ensure the model is executable; these should be replaced with fitted or experimentally informed values for quantitative work.
+
+Unmapped or partially specified data from the excerpt:
+- Exact numeric values for kappa_0, delta_I, alpha, delta_V, delta_T, chi_D, and U0 are not explicitly provided in the text snippet.
+- Event doses (doseV, doseD) and their units are protocol-dependent; example dose magnitudes appear in figures (e.g., 5?10^9), but exact units/compartment scaling are not fully specified here.
+
+Usage:
+- To simulate "no treatment" (Model 1), keep doseV = doseD = 0 (default).
+- To simulate OV-only or DC-only regimens, set the corresponding dose series > 0 and the other to 0, or adjust event times.
+- For combination therapy (Model 5), set both doseV and doseD > 0.
+
+*/

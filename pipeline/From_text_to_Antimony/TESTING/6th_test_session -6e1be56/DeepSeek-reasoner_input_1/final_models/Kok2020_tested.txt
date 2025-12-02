@@ -1,0 +1,268 @@
+model *IFN_alpha_signaling_Huh7_5()
+
+  //// Compartments and Species:
+  compartment cyt, nuc, extracell;
+  species $IFN in extracell;
+  species Rec in cyt, aRecIFN in cyt;
+  species STAT1c in cyt, STAT2c in cyt, IRF9c in cyt;
+  species pSTAT1c in cyt, pSTAT2c in cyt;
+  species pSTAT1dimc in cyt, pSTAT1pSTAT2c in cyt, ISGF3c in cyt;
+  species STAT1n in nuc, STAT2n in nuc, IRF9n in nuc;
+  species pSTAT1n in nuc, pSTAT2n in nuc;
+  species pSTAT1dimn in nuc, pSTAT1pSTAT2n in nuc, ISGF3n in nuc;
+  species OccGASbs in nuc, OccISREbs in nuc;
+  species $IRF9_mRNA in cyt, $STAT1_mRNA in cyt, $STAT2_mRNA in cyt, $USP18_mRNA in cyt, $SOCS1_mRNA in cyt, $SOCS3_mRNA in cyt, $IRF2_mRNA in cyt;
+  species USP18 in cyt, SOCS1 in cyt, SOCS3 in cyt, IRF2 in nuc;
+
+  //// Assignment Rules:
+  totSTAT1 := STAT1c + pSTAT1c + 2*pSTAT1dimc + pSTAT1pSTAT2c + ISGF3c + STAT1n + pSTAT1n + 2*pSTAT1dimn + pSTAT1pSTAT2n + ISGF3n;
+  totSTAT2 := STAT2c + pSTAT2c + pSTAT1pSTAT2c + ISGF3c + STAT2n + pSTAT2n + pSTAT1pSTAT2n + ISGF3n;
+  totIRF9 := IRF9c + ISGF3c + IRF9n + ISGF3n;
+
+  //// Rate Rules:
+  /* The core dynamical equations are defined as reactions below. Rate rules are not used for the primary signaling cascade. */
+
+  //// Reactions:
+  // 1. Ligand-receptor binding (simplified as irreversible for model reduction, see Materials and Methods)
+  R1: IFN + Rec => aRecIFN; k_bind*IFN*Rec;
+  // 2. Receptor deactivation (includes SOCS1/USP18 mediated degradation, modeled as lumped degradation)
+  R2: aRecIFN => ; k_recdeg*aRecIFN;
+  // 3. STAT1 phosphorylation by active receptor
+  R3: aRecIFN + STAT1c => aRecIFN + pSTAT1c; k_phos1*aRecIFN*STAT1c;
+  // 4. STAT2 phosphorylation by active receptor
+  R4: aRecIFN + STAT2c => aRecIFN + pSTAT2c; k_phos2*aRecIFN*STAT2c;
+  // 5. Dimerization and complex formation in cytoplasm
+  R5: pSTAT1c + pSTAT1c => pSTAT1dimc; k_dim1*pSTAT1c*pSTAT1c;
+  R6: pSTAT1c + pSTAT2c => pSTAT1pSTAT2c; k_dim2*pSTAT1c*pSTAT2c;
+  R7: pSTAT1pSTAT2c + IRF9c => ISGF3c; k_assoc_ISGF3*pSTAT1pSTAT2c*IRF9c;
+  // 6. Nuclear import of complexes (simplified as first-order)
+  R8: pSTAT1dimc => pSTAT1dimn; k_imp1*pSTAT1dimc;
+  R9: pSTAT1pSTAT2c => pSTAT1pSTAT2n; k_imp2*pSTAT1pSTAT2c;
+  R10: ISGF3c => ISGF3n; k_imp3*ISGF3c;
+  // 7. Nuclear export of monomers (simplified)
+  R11: STAT1n => STAT1c; k_exp1*STAT1n;
+  R12: STAT2n => STAT2c; k_exp2*STAT2n;
+  R13: IRF9n => IRF9c; k_exp3*IRF9n;
+  // 8. Dephosphorylation/dissociation in nucleus (lumped)
+  R14: pSTAT1dimn => STAT1n + STAT1n; k_dephos1*pSTAT1dimn;
+  R15: pSTAT1pSTAT2n => STAT1n + STAT2n; k_dephos2*pSTAT1pSTAT2n;
+  R16: ISGF3n => STAT1n + STAT2n + IRF9n; k_dephos3*ISGF3n;
+  // 9. Transcription of feedback genes (simplified Hill functions)
+  // IRF9, STAT1, STAT2, USP18, SOCS1 are induced by OccISREbs (ISGF3) and some by OccGASbs (pSTAT1dim)
+  // SOCS3 and IRF2 are induced by OccGASbs
+  // We use placeholder Hill functions. Actual model uses separate equations for each mRNA.
+  R17:  => IRF9_mRNA; cyt*(v_synth_IRF9*OccISREbs^h_IRF9/(K_IRF9^h_IRF9 + OccISREbs^h_IRF9) + basal_synth_IRF9);
+  R18:  => STAT1_mRNA; cyt*(v_synth_STAT1*OccISREbs^h_STAT1/(K_STAT1^h_STAT1 + OccISREbs^h_STAT1) + basal_synth_STAT1);
+  R19:  => STAT2_mRNA; cyt*(v_synth_STAT2*OccISREbs^h_STAT2/(K_STAT2^h_STAT2 + OccISREbs^h_STAT2) + basal_synth_STAT2);
+  R20:  => USP18_mRNA; cyt*(v_synth_USP18*OccISREbs^h_USP18/(K_USP18^h_USP18 + OccISREbs^h_USP18) + basal_synth_USP18);
+  R21:  => SOCS1_mRNA; cyt*(v_synth_SOCS1*OccISREbs^h_SOCS1/(K_SOCS1^h_SOCS1 + OccISREbs^h_SOCS1) + basal_synth_SOCS1);
+  R22:  => SOCS3_mRNA; cyt*(v_synth_SOCS3*OccGASbs^h_SOCS3/(K_SOCS3^h_SOCS3 + OccGASbs^h_SOCS3) + basal_synth_SOCS3);
+  R23:  => IRF2_mRNA; cyt*(v_synth_IRF2*OccISREbs^h_IRF2/(K_IRF2^h_IRF2 + OccISREbs^h_IRF2) + basal_synth_IRF2);
+  // 10. mRNA degradation
+  R24: IRF9_mRNA => ; k_deg_mRNA_IRF9*IRF9_mRNA;
+  R25: STAT1_mRNA => ; k_deg_mRNA_STAT1*STAT1_mRNA;
+  R26: STAT2_mRNA => ; k_deg_mRNA_STAT2*STAT2_mRNA;
+  R27: USP18_mRNA => ; k_deg_mRNA_USP18*USP18_mRNA;
+  R28: SOCS1_mRNA => ; k_deg_mRNA_SOCS1*SOCS1_mRNA;
+  R29: SOCS3_mRNA => ; k_deg_mRNA_SOCS3*SOCS3_mRNA;
+  R30: IRF2_mRNA => ; k_deg_mRNA_IRF2*IRF2_mRNA;
+  // 11. Translation
+  R31: IRF9_mRNA => IRF9_mRNA + IRF9c; k_tl_IRF9*IRF9_mRNA;
+  R32: STAT1_mRNA => STAT1_mRNA + STAT1c; k_tl_STAT1*STAT1_mRNA;
+  R33: STAT2_mRNA => STAT2_mRNA + STAT2c; k_tl_STAT2*STAT2_mRNA;
+  R34: USP18_mRNA => USP18_mRNA + USP18; k_tl_USP18*USP18_mRNA;
+  R35: SOCS1_mRNA => SOCS1_mRNA + SOCS1; k_tl_SOCS1*SOCS1_mRNA;
+  R36: SOCS3_mRNA => SOCS3_mRNA + SOCS3; k_tl_SOCS3*SOCS3_mRNA;
+  R37: IRF2_mRNA => IRF2_mRNA + IRF2; k_tl_IRF2*IRF2_mRNA;
+  // 12. Protein degradation (first-order)
+  R38: IRF9c => ; k_deg_IRF9*IRF9c;
+  R39: STAT1c => ; k_deg_STAT1*STAT1c;
+  R40: STAT2c => ; k_deg_STAT2*STAT2c;
+  R41: USP18 => ; k_deg_USP18*USP18;
+  R42: SOCS1 => ; k_deg_SOCS1*SOCS1;
+  R43: SOCS3 => ; k_deg_SOCS3*SOCS3;
+  R44: IRF2 => ; k_deg_IRF2*IRF2;
+  // 13. Negative feedback actions (simplified as increasing receptor degradation/inhibition)
+  // USP18 and SOCS1 enhance aRecIFN degradation (lumped into R2 parameter modulation).
+  // This is implemented by making k_recdeg depend on USP18 and SOCS1 via an assignment rule (see below).
+  // 14. Formation of occupied binding sites in nucleus (simplified as proportional to complexes)
+  // OccGASbs formation by pSTAT1dimn
+  R45:  => OccGASbs; nuc*k_form_GAS*pSTAT1dimn;
+  R46: OccGASbs => ; nuc*k_diss_GAS*OccGASbs;
+  // OccISREbs formation by ISGF3n and pSTAT1pSTAT2n (with different weights)
+  R47:  => OccISREbs; nuc*(k_form_ISRE_ISGF3*ISGF3n + k_form_ISRE_hetero*pSTAT1pSTAT2n);
+  R48: OccISREbs => ; nuc*k_diss_ISRE*OccISREbs;
+
+  //// Events:
+  // Prestimulation and stimulation events can be added here. For simplicity, we model a single stimulation at time=0.
+  // Example: at time >= 24 hours: IFN = 1400 pM (if simulating prestimulation protocol).
+  // Since the model is set for a single stimulation from basal, we initialize IFN at t=0.
+  // For prestimulation experiments, additional events would be needed.
+
+  //// Species initializations:
+  IFN = 0;  // Can be set by event for stimulation
+  Rec = 50000;  // Arbitrary, based on order of magnitude from literature
+  aRecIFN = 0;
+  STAT1c = 7e5;  // ~700,000 molecules/cell (from Fig 3C)
+  STAT2c = 5e4;  // ~50,000 molecules/cell
+  IRF9c = 1e3;   // Low basal
+  pSTAT1c = 0;
+  pSTAT2c = 0;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  STAT1n = 1e5;  // Assume some basal nuclear localization
+  STAT2n = 5e3;
+  IRF9n = 1e2;
+  pSTAT1n = 0;
+  pSTAT2n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  OccGASbs = 0;
+  OccISREbs = 0;
+  IRF9_mRNA = 1;  // Basal levels
+  STAT1_mRNA = 1;
+  STAT2_mRNA = 1;
+  USP18_mRNA = 1;
+  SOCS1_mRNA = 1;
+  SOCS3_mRNA = 1;
+  IRF2_mRNA = 1;
+  USP18 = 1e3;   // Low basal
+  SOCS1 = 1e3;
+  SOCS3 = 1e3;
+  IRF2 = 1e3;
+
+  //// Compartment initializations:
+  cyt = 1.0e-12;  // Approximate cell volume in liters (1 pL)
+  nuc = 0.1e-12;  // Nuclear volume (10% of cell)
+  extracell = 1.0e-9;  // Extracellular volume (1 nL, arbitrary for scaling)
+
+  //// Variable initializations:
+  // Rate constants (placeholder values, not from publication)
+  k_bind = 1e6;  // M^-1 s^-1
+  k_recdeg = 0.01;  // s^-1 (basal), will be modulated by USP18/SOCS1
+  k_phos1 = 1e-5;  // s^-1 (lumped parameter per molecule)
+  k_phos2 = 1e-5;
+  k_dim1 = 1e-6;  // molecule^-1 s^-1
+  k_dim2 = 1e-6;
+  k_assoc_ISGF3 = 1e-6;
+  k_imp1 = 0.1;  // s^-1
+  k_imp2 = 0.1;
+  k_imp3 = 0.1;
+  k_exp1 = 0.01;
+  k_exp2 = 0.01;
+  k_exp3 = 0.01;
+  k_dephos1 = 0.05;
+  k_dephos2 = 0.05;
+  k_dephos3 = 0.05;
+  // Transcription parameters
+  v_synth_IRF9 = 10;  // molecules/s
+  h_IRF9 = 2;
+  K_IRF9 = 1000;  // molecules
+  basal_synth_IRF9 = 0.01;
+  v_synth_STAT1 = 5;
+  h_STAT1 = 2;
+  K_STAT1 = 1000;
+  basal_synth_STAT1 = 0.01;
+  v_synth_STAT2 = 5;
+  h_STAT2 = 2;
+  K_STAT2 = 1000;
+  basal_synth_STAT2 = 0.01;
+  v_synth_USP18 = 5;
+  h_USP18 = 2;
+  K_USP18 = 1000;
+  basal_synth_USP18 = 0.01;
+  v_synth_SOCS1 = 5;
+  h_SOCS1 = 2;
+  K_SOCS1 = 1000;
+  basal_synth_SOCS1 = 0.01;
+  v_synth_SOCS3 = 10;
+  h_SOCS3 = 2;
+  K_SOCS3 = 500;
+  basal_synth_SOCS3 = 0.01;
+  v_synth_IRF2 = 5;
+  h_IRF2 = 2;
+  K_IRF2 = 1000;
+  basal_synth_IRF2 = 0.01;
+  // mRNA degradation
+  k_deg_mRNA_IRF9 = 0.001;  // s^-1 (~half-life 10 min)
+  k_deg_mRNA_STAT1 = 0.001;
+  k_deg_mRNA_STAT2 = 0.001;
+  k_deg_mRNA_USP18 = 0.001;
+  k_deg_mRNA_SOCS1 = 0.001;
+  k_deg_mRNA_SOCS3 = 0.001;
+  k_deg_mRNA_IRF2 = 0.001;
+  // Translation rates
+  k_tl_IRF9 = 0.1;  // s^-1
+  k_tl_STAT1 = 0.1;
+  k_tl_STAT2 = 0.1;
+  k_tl_USP18 = 0.1;
+  k_tl_SOCS1 = 0.1;
+  k_tl_SOCS3 = 0.1;
+  k_tl_IRF2 = 0.1;
+  // Protein degradation
+  k_deg_IRF9 = 1e-4;  // s^-1 (~half-life 2 hours)
+  k_deg_STAT1 = 1e-4;
+  k_deg_STAT2 = 1e-4;
+  k_deg_USP18 = 1e-4;
+  k_deg_SOCS1 = 1e-4;
+  k_deg_SOCS3 = 1e-4;
+  k_deg_IRF2 = 1e-4;
+  // Binding site formation/dissociation
+  k_form_GAS = 1e-6;  // s^-1 per complex
+  k_diss_GAS = 0.1;   // s^-1
+  k_form_ISRE_ISGF3 = 1e-5;
+  k_form_ISRE_hetero = 1e-6;
+  k_diss_ISRE = 0.1;
+
+  //// Other declarations:
+  var totSTAT1, totSTAT2, totIRF9;
+  const cyt, nuc, extracell, k_bind, k_recdeg, k_phos1, k_phos2, k_dim1, k_dim2, k_assoc_ISGF3, k_imp1, k_imp2, k_imp3, k_exp1, k_exp2, k_exp3, k_dephos1, k_dephos2, k_dephos3, v_synth_IRF9, h_IRF9, K_IRF9, basal_synth_IRF9, v_synth_STAT1, h_STAT1, K_STAT1, basal_synth_STAT1, v_synth_STAT2, h_STAT2, K_STAT2, basal_synth_STAT2, v_synth_USP18, h_USP18, K_USP18, basal_synth_USP18, v_synth_SOCS1, h_SOCS1, K_SOCS1, basal_synth_SOCS1, v_synth_SOCS3, h_SOCS3, K_SOCS3, basal_synth_SOCS3, v_synth_IRF2, h_IRF2, K_IRF2, basal_synth_IRF2, k_deg_mRNA_IRF9, k_deg_mRNA_STAT1, k_deg_mRNA_STAT2, k_deg_mRNA_USP18, k_deg_mRNA_SOCS1, k_deg_mRNA_SOCS3, k_deg_mRNA_IRF2, k_tl_IRF9, k_tl_STAT1, k_tl_STAT2, k_tl_USP18, k_tl_SOCS1, k_tl_SOCS3, k_tl_IRF2, k_deg_IRF9, k_deg_STAT1, k_deg_STAT2, k_deg_USP18, k_deg_SOCS1, k_deg_SOCS3, k_deg_IRF2, k_form_GAS, k_diss_GAS, k_form_ISRE_ISGF3, k_form_ISRE_hetero, k_diss_ISRE;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+  unit volume = 1e-12 liter;
+
+  //// Display Names:
+  cyt is "Cytoplasm";
+  nuc is "Nucleus";
+  extracell is "Extracellular space";
+  IFN is "Interferon alpha";
+  Rec is "IFNAR receptor complex";
+  aRecIFN is "Active IFN-receptor complex";
+  STAT1c is "STAT1 (cytoplasm)";
+  STAT2c is "STAT2 (cytoplasm)";
+  IRF9c is "IRF9 (cytoplasm)";
+  pSTAT1c is "Phospho-STAT1 (cytoplasm)";
+  pSTAT2c is "Phospho-STAT2 (cytoplasm)";
+  pSTAT1dimc is "STAT1 homodimer (cytoplasm)";
+  pSTAT1pSTAT2c is "STAT1-STAT2 heterodimer (cytoplasm)";
+  ISGF3c is "ISGF3 complex (cytoplasm)";
+  STAT1n is "STAT1 (nucleus)";
+  STAT2n is "STAT2 (nucleus)";
+  IRF9n is "IRF9 (nucleus)";
+  pSTAT1n is "Phospho-STAT1 (nucleus)";
+  pSTAT2n is "Phospho-STAT2 (nucleus)";
+  pSTAT1dimn is "STAT1 homodimer (nucleus)";
+  pSTAT1pSTAT2n is "STAT1-STAT2 heterodimer (nucleus)";
+  ISGF3n is "ISGF3 complex (nucleus)";
+  OccGASbs is "Occupied GAS binding sites";
+  OccISREbs is "Occupied ISRE binding sites";
+  IRF9_mRNA is "IRF9 mRNA";
+  STAT1_mRNA is "STAT1 mRNA";
+  STAT2_mRNA is "STAT2 mRNA";
+  USP18_mRNA is "USP18 mRNA";
+  SOCS1_mRNA is "SOCS1 mRNA";
+  SOCS3_mRNA is "SOCS3 mRNA";
+  IRF2_mRNA is "IRF2 mRNA";
+  USP18 is "USP18 protein";
+  SOCS1 is "SOCS1 protein";
+  SOCS3 is "SOCS3 protein";
+  IRF2 is "IRF2 protein";
+  totSTAT1 is "Total STAT1";
+  totSTAT2 is "Total STAT2";
+  totIRF9 is "Total IRF9";
+
+end

@@ -1,0 +1,71 @@
+model *Frank2021_Macrophage_Polarization()
+
+//// Compartments and Species:
+compartment cell;
+species x1 in cell, x2 in cell;
+
+//// Assignment Rules:
+Hplus_x1 := x1^n1 / (x1^n1 + k1^n1);
+Hminus_x2 := p2^l2 / (p2^l2 + x2^l2);
+Hplus_x2 := x2^n2 / (x2^n2 + k2^n2);
+Hminus_x1 := p1^l1 / (p1^l1 + x1^l1);
+
+//// Rate Rules:
+x1' = (a1*Hplus_x1 + S1)*Hminus_x2 + b1 - q1*x1;
+x2' = a2*Hplus_x2 + S2*Hminus_x1 + b2 - q2*x2;
+
+//// Species initializations:
+x1 = 0;
+x2 = 0;
+
+//// Compartment initializations:
+cell = 1;
+
+//// Variable initializations:
+a1 = 5;       # Strength of self-stimulation for STAT1 (1/day)
+a2 = 5;       # Strength of self-stimulation for STAT6 (1/day)
+b1 = 0.05;    # Basal activation rate for STAT1 (1/day)
+b2 = 0.05;    # Basal activation rate for STAT6 (1/day)
+n1 = 6;       # Hill exponent for STAT1 self-stimulation
+n2 = 6;       # Hill exponent for STAT6 self-stimulation
+k1 = 1;       # Threshold for STAT1 self-stimulation Hill function
+k2 = 1;       # Threshold for STAT6 self-stimulation Hill function
+l1 = 1;       # Hill exponent for STAT1 mutual inhibition
+l2 = 1;       # Hill exponent for STAT6 mutual inhibition
+p1 = 0.5;     # Threshold for STAT1 mutual inhibition Hill function
+p2 = 1;       # Threshold for STAT6 mutual inhibition Hill function
+q1 = 5;       # Deactivation rate for STAT1 (1/day)
+q2 = 5;       # Deactivation rate for STAT6 (1/day)
+S1 = 3.75;    # Input signal strength for IFN? (1/day)
+S2 = 3.75;    # Input signal strength for IL-4 (1/day)
+
+//// Other declarations:
+var Hplus_x1, Hminus_x2, Hplus_x2, Hminus_x1;
+const a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+//// Unit definitions:
+unit day = 86400 second;  # Time unit (1 day = 86400 seconds)
+unit per_day = 1/day;     # Rate unit (per day)
+
+//// Display Names:
+cell is "Macrophage (single compartment)";
+x1 is "Activated STAT1 (M1 marker)";
+x2 is "Activated STAT6 (M2 marker)";
+a1 is "STAT1 self-stimulation strength";
+a2 is "STAT6 self-stimulation strength";
+b1 is "STAT1 basal activation rate";
+b2 is "STAT6 basal activation rate";
+n1 is "Hill exponent (STAT1 self-stimulation)";
+n2 is "Hill exponent (STAT6 self-stimulation)";
+k1 is "Half-maximal threshold for STAT1 self-stimulation";
+k2 is "Half-maximal threshold for STAT6 self-stimulation";
+l1 is "Hill exponent (STAT1 inhibition)";
+l2 is "Hill exponent (STAT6 inhibition)";
+p1 is "Half-maximal threshold for STAT1 inhibition";
+p2 is "Half-maximal threshold for STAT6 inhibition";
+q1 is "STAT1 deactivation rate";
+q2 is "STAT6 deactivation rate";
+S1 is "IFN? input signal strength";
+S2 is "IL-4 input signal strength";
+
+end

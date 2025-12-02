@@ -1,0 +1,140 @@
+model *Hoffmann2002_IkB_NFkB()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species NFkB_cyto in cytoplasm, NFkB_nuc in nucleus;
+  species IkBa_cyto in cytoplasm, IkBb_cyto in cytoplasm, IkBe_cyto in cytoplasm;
+  species NFkB_IkBa_cyto in cytoplasm, NFkB_IkBb_cyto in cytoplasm, NFkB_IkBe_cyto in cytoplasm;
+  species IkBa_mRNA in cytoplasm, IkBb_mRNA in cytoplasm, IkBe_mRNA in cytoplasm;
+  species $IKK in cytoplasm;
+
+  //// Assignment Rules:
+  IKK := piecewise(1, time < 3600, 0);  # Persistent TNF stimulation for 1 hour; adjust as needed
+
+  //// Rate Rules:
+  # No rate rules; dynamics are captured by reactions
+
+  //// Reactions:
+  # Transcription of I?B mRNAs
+  trans_IkBa:  => IkBa_mRNA; cytoplasm*(basal_transcription_alpha + inducible_transcription_alpha*NFkB_nuc);
+  trans_IkBb:  => IkBb_mRNA; cytoplasm*basal_transcription_beta;
+  trans_IkBe:  => IkBe_mRNA; cytoplasm*basal_transcription_epsilon;
+
+  # Translation of I?B proteins
+  transl_IkBa:  => IkBa_cyto; cytoplasm*k_translation_alpha*IkBa_mRNA;
+  transl_IkBb:  => IkBb_cyto; cytoplasm*k_translation_beta*IkBb_mRNA;
+  transl_IkBe:  => IkBe_cyto; cytoplasm*k_translation_epsilon*IkBe_mRNA;
+
+  # Binding of I?B to NF-?B in cytoplasm
+  bind_IkBa: IkBa_cyto + NFkB_cyto -> NFkB_IkBa_cyto; k_assoc_alpha*IkBa_cyto*NFkB_cyto;
+  bind_IkBb: IkBb_cyto + NFkB_cyto -> NFkB_IkBb_cyto; k_assoc_beta*IkBb_cyto*NFkB_cyto;
+  bind_IkBe: IkBe_cyto + NFkB_cyto -> NFkB_IkBe_cyto; k_assoc_epsilon*IkBe_cyto*NFkB_cyto;
+
+  # Dissociation of I?B:NF-?B complexes
+  diss_IkBa: NFkB_IkBa_cyto -> IkBa_cyto + NFkB_cyto; k_dissoc_alpha*NFkB_IkBa_cyto;
+  diss_IkBb: NFkB_IkBb_cyto -> IkBb_cyto + NFkB_cyto; k_dissoc_beta*NFkB_IkBb_cyto;
+  diss_IkBe: NFkB_IkBe_cyto -> IkBe_cyto + NFkB_cyto; k_dissoc_epsilon*NFkB_IkBe_cyto;
+
+  # IKK-dependent degradation of I?B in complex (releases NF-?B)
+  deg_complex_IkBa: NFkB_IkBa_cyto -> NFkB_cyto; k_deg_complex_alpha*IKK*NFkB_IkBa_cyto;
+  deg_complex_IkBb: NFkB_IkBb_cyto -> NFkB_cyto; k_deg_complex_beta*IKK*NFkB_IkBb_cyto;
+  deg_complex_IkBe: NFkB_IkBe_cyto -> NFkB_cyto; k_deg_complex_epsilon*IKK*NFkB_IkBe_cyto;
+
+  # Basal degradation of free I?B
+  deg_free_IkBa: IkBa_cyto -> ; k_deg_free_alpha*IkBa_cyto;
+  deg_free_IkBb: IkBb_cyto -> ; k_deg_free_beta*IkBb_cyto;
+  deg_free_IkBe: IkBe_cyto -> ; k_deg_free_epsilon*IkBe_cyto;
+
+  # Basal degradation of I?B mRNA
+  deg_mRNA_IkBa: IkBa_mRNA -> ; k_deg_mRNA_alpha*IkBa_mRNA;
+  deg_mRNA_IkBb: IkBb_mRNA -> ; k_deg_mRNA_beta*IkBb_mRNA;
+  deg_mRNA_IkBe: IkBe_mRNA -> ; k_deg_mRNA_epsilon*IkBe_mRNA;
+
+  # Translocation of NF-?B between cytoplasm and nucleus
+  transport_in: NFkB_cyto -> NFkB_nuc; k_transport_in*NFkB_cyto;
+  transport_out: NFkB_nuc -> NFkB_cyto; k_transport_out*NFkB_nuc;
+
+  //// Events:
+  # Example: transient TNF stimulation (15 min pulse) - uncomment and adjust as needed
+  # at time >= 900: IKK = 0;  # after 15 minutes, turn off IKK
+
+  //// Species initializations:
+  NFkB_cyto = 0.1;
+  NFkB_nuc = 0;
+  IkBa_cyto = 0.5;
+  IkBb_cyto = 0.5;
+  IkBe_cyto = 0.5;
+  NFkB_IkBa_cyto = 0.4;
+  NFkB_IkBb_cyto = 0.4;
+  NFkB_IkBe_cyto = 0.4;
+  IkBa_mRNA = 0.1;
+  IkBb_mRNA = 0.1;
+  IkBe_mRNA = 0.1;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  # I?B? parameters
+  basal_transcription_alpha = 0.001;
+  inducible_transcription_alpha = 0.01;
+  k_translation_alpha = 0.1;
+  k_assoc_alpha = 10;
+  k_dissoc_alpha = 0.1;
+  k_deg_complex_alpha = 2;
+  k_deg_free_alpha = 0.01;
+  k_deg_mRNA_alpha = 0.005;
+
+  # I?B? parameters (synthesis rates set 7-fold lower than in single-isoform model)
+  basal_transcription_beta = 0.000143;  # 0.001/7
+  k_translation_beta = 0.0143;         # 0.1/7
+  k_assoc_beta = 10;
+  k_dissoc_beta = 0.1;
+  k_deg_complex_beta = 0.5;
+  k_deg_free_beta = 0.01;
+  k_deg_mRNA_beta = 0.005;
+
+  # I?B? parameters (synthesis rates set 7-fold lower than in single-isoform model)
+  basal_transcription_epsilon = 0.000143;  # 0.001/7
+  k_translation_epsilon = 0.0143;         # 0.1/7
+  k_assoc_epsilon = 10;
+  k_dissoc_epsilon = 0.1;
+  k_deg_complex_epsilon = 0.5;
+  k_deg_free_epsilon = 0.01;
+  k_deg_mRNA_epsilon = 0.005;
+
+  # NF-?B transport parameters
+  k_transport_in = 0.1;
+  k_transport_out = 0.1;
+
+  //// Other declarations:
+  var IKK, basal_transcription_alpha, inducible_transcription_alpha, k_translation_alpha, k_assoc_alpha, k_dissoc_alpha, k_deg_complex_alpha, k_deg_free_alpha, k_deg_mRNA_alpha;
+  var basal_transcription_beta, k_translation_beta, k_assoc_beta, k_dissoc_beta, k_deg_complex_beta, k_deg_free_beta, k_deg_mRNA_beta;
+  var basal_transcription_epsilon, k_translation_epsilon, k_assoc_epsilon, k_dissoc_epsilon, k_deg_complex_epsilon, k_deg_free_epsilon, k_deg_mRNA_epsilon;
+  var k_transport_in, k_transport_out;
+  const cytoplasm, nucleus;
+
+  //// Unit definitions:
+  unit time_unit = second;
+  unit substance = 1e-9 mole;
+
+  //// Display Names:
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  NFkB_cyto is "NF-?B (cytoplasm)";
+  NFkB_nuc is "NF-?B (nucleus)";
+  IkBa_cyto is "I?B? (cytoplasm)";
+  IkBb_cyto is "I?B? (cytoplasm)";
+  IkBe_cyto is "I?B? (cytoplasm)";
+  NFkB_IkBa_cyto is "NF-?B:I?B? complex";
+  NFkB_IkBb_cyto is "NF-?B:I?B? complex";
+  NFkB_IkBe_cyto is "NF-?B:I?B? complex";
+  IkBa_mRNA is "I?B? mRNA";
+  IkBb_mRNA is "I?B? mRNA";
+  IkBe_mRNA is "I?B? mRNA";
+  IKK is "IKK activity";
+  time_unit is "Time (seconds)";
+  substance is "Nanomole";
+
+end

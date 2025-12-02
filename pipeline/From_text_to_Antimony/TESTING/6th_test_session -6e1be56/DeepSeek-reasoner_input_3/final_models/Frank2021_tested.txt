@@ -1,0 +1,73 @@
+model *Frank2021_Macrophage_Polarization()
+
+  //// Compartments and Species:
+  compartment macrophage;
+  species x1 in macrophage, x2 in macrophage;
+
+  //// Assignment Rules:
+  Hplus1 := x1^n1 / (x1^n1 + k1^n1);
+  Hminus2 := p2^l2 / (p2^l2 + x2^l2);
+  Hplus2 := x2^n2 / (x2^n2 + k2^n2);
+  Hminus1 := p1^l1 / (p1^l1 + x1^l1);
+
+  //// Rate Rules:
+  x1' = (a1 * Hplus1 + S1) * Hminus2 + b1 - q1 * x1;
+  x2' = a2 * Hplus2 + S2 * Hminus1 + b2 - q2 * x2;
+
+  //// Species initializations:
+  x1 = 0;
+  x2 = 0;
+
+  //// Compartment initializations:
+  macrophage = 1;
+
+  //// Variable initializations:
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;
+  S2 = 3.75;
+
+  //// Other declarations:
+  const macrophage, a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+  var x1, x2, Hplus1, Hminus2, Hplus2, Hminus1;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  macrophage is "Macrophage (compartment)";
+  x1 is "Activated STAT1";
+  x2 is "Activated STAT6";
+  a1 is "Strength of STAT1 self-stimulation";
+  a2 is "Strength of STAT6 self-stimulation";
+  b1 is "Basal activation rate of STAT1";
+  b2 is "Basal activation rate of STAT6";
+  n1 is "Hill exponent for STAT1 self-stimulation";
+  n2 is "Hill exponent for STAT6 self-stimulation";
+  k1 is "Threshold for STAT1 self-stimulation";
+  k2 is "Threshold for STAT6 self-stimulation";
+  l1 is "Hill exponent for STAT1 inhibition";
+  l2 is "Hill exponent for STAT6 inhibition";
+  p1 is "Threshold for STAT1 inhibition";
+  p2 is "Threshold for STAT6 inhibition";
+  q1 is "Deactivation rate of STAT1";
+  q2 is "Deactivation rate of STAT6";
+  S1 is "Input signal strength (IFN-?)";
+  S2 is "Input signal strength (IL-4)";
+  Hplus1 is "Self-stimulation Hill function for STAT1";
+  Hminus2 is "Inhibition Hill function by STAT6";
+  Hplus2 is "Self-stimulation Hill function for STAT6";
+  Hminus1 is "Inhibition Hill function by STAT1";
+end

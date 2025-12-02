@@ -1,0 +1,57 @@
+model *Hou2020_COVID19_SEIR()
+
+  //// Compartments and Species:
+  compartment Wuhan_city;
+  species S in Wuhan_city, E in Wuhan_city, I in Wuhan_city, R in Wuhan_city;
+
+  //// Reactions:
+  # dS/dt = -r1*beta1*I*S/N - r2*beta2*E*S/N
+  # dE/dt = r1*beta1*I*S/N + r2*beta2*E*S/N - alpha*E
+  # dI/dt = alpha*E - gamma*I
+  # dR/dt = gamma_*I
+  
+  Infection_from_Infectious: S => E; (r1 * beta1 * S * I) / N;
+  Infection_from_Exposed:   S => E; (r2 * beta2 * S * E) / N;
+  Progression_to_Infectious: E => I; alpha * E;
+  Recovery:                 I => R; gamma_ * I;
+  
+  //// Species initializations:
+  S = 11080778; # Initial susceptible population
+  E = 193;      # Initial exposed population
+  I = 27;       # Initial infectious population
+  R = 2;        # Initial recovered population
+
+  //// Compartment initializations:
+  Wuhan_city = 1; # Model uses population counts, so volume is unitless.
+
+  //// Variable initializations:
+  N = 11081000; # Total population of Wuhan city
+  r1 = 6;       # Contact rate of infected individuals
+  r2 = 18;      # Contact rate of latent individuals (baseline value from a tested range of 6-18)
+  beta1 = 0.4;  # Probability of infection from symptomatic individuals (value from Table 1)
+  beta2 = 0.2;  # Probability of infection from latent individuals (consistent with beta2 = 0.5 * beta1)
+  alpha = 0.14; # Incubation rate (1/7 days^-1)
+  gamma_ = 0.048;# Recovery rate (1/21 days^-1)
+
+  //// Other declarations:
+  const Wuhan_city, N, r1, r2, beta1, beta2, alpha, gamma_;
+
+  //// Display Names:
+  Wuhan_city is "Wuhan City Population";
+  S is "Susceptible individuals";
+  E is "Exposed individuals";
+  I is "Infectious individuals";
+  R is "Recovered individuals";
+  N is "Total population";
+  r1 is "Contact rate of infected individuals";
+  r2 is "Contact rate of latent individuals";
+  beta1 is "Transmission probability from infected";
+  beta2 is "Transmission probability from exposed";
+  alpha is "Incubation rate";
+  gamma_ is "Recovery rate";
+  Infection_from_Infectious is "Infection from symptomatic individuals";
+  Infection_from_Exposed is "Infection from exposed individuals";
+  Progression_to_Infectious is "Progression to infectious state";
+  Recovery is "Recovery of infectious individuals";
+
+end

@@ -1,0 +1,99 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Clb2 in cell, Cdc20 in cell, securin in cell, PP2A in cell, Cdc14 in cell, MEN in cell, Cdh1 in cell;
+
+  //// Assignment Rules:
+  separase := Separase_tot - securin;
+  Net1P := Cdc14;
+
+  //// Reactions:
+  # Clb2 (Cyclin B) synthesis and degradation
+  J_Clb2_syn:   => Clb2; cell * ksyn_Clb2;
+  J_Clb2_deg: Clb2 => ; cell * (kdeg_Clb2_Cdc20*Cdc20 + kdeg_Clb2_Cdh1*Cdh1) * Clb2;
+
+  # Cdc20 synthesis and degradation
+  J_Cdc20_syn:   => Cdc20; cell * ksyn_Cdc20;
+  J_Cdc20_deg: Cdc20 => ; cell * (kdeg_Cdc20 + kdeg_Cdc20_Cdh1*Cdh1) * Cdc20;
+
+  # Securin degradation by APC/Cdc20, which liberates separase (see assignment rule)
+  J_securin_deg: securin => ; cell * kdeg_securin_Cdc20 * Cdc20 * securin;
+
+  # PP2A inactivation by separase and its reactivation
+  J_PP2A_inact: PP2A => ; cell * kinact_PP2A_separase * separase * PP2A;
+  J_PP2A_act:   => PP2A; cell * kact_PP2A * (PP2A_tot - PP2A);
+
+  # Cdc14 release from Net1 (by phosphorylation of Net1) and re-sequestration (by dephosphorylation of Net1)
+  J_Cdc14_release:  => Cdc14; cell * (kphos_Net1_Clb2*Clb2 + kphos_Net1_MEN*MEN) * (Cdc14_tot - Cdc14);
+  J_Cdc14_sequest: Cdc14 => ; cell * (kdephos_Net1_PP2A*PP2A + kdephos_Net1_Cdc14*Cdc14) * Cdc14;
+
+  # MEN (Mitotic Exit Network) activation by Cdc14 and inactivation
+  J_MEN_act:   => MEN; cell * kact_MEN_Cdc14 * Cdc14 * (MEN_tot - MEN);
+  J_MEN_inact: MEN => ; cell * (kinact_MEN + kinact_MEN_Clb2*Clb2) * MEN;
+
+  # Cdh1 activation by Cdc14 and inactivation by Cdk (Clb2)
+  J_Cdh1_act:   => Cdh1; cell * kact_Cdh1_Cdc14 * Cdc14 * (Cdh1_tot - Cdh1);
+  J_Cdh1_inact: Cdh1 => ; cell * kinact_Cdh1_Clb2 * Clb2 * Cdh1;
+
+  //// Species initializations:
+  # Initial conditions represent a metaphase arrest state, as described in Figure 7B.
+  Clb2 = 1.0;      # High mitotic Cdk activity
+  Cdc20 = 0.01;    # Low, induction starts at t=0
+  securin = 1.0;   # High, separase is inhibited
+  PP2A = 1.0;      # Fully active
+  Cdc14 = 0.01;    # Sequestered, low free concentration
+  MEN = 0.01;      # Inactive
+  Cdh1 = 0.01;     # Inactive
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Total protein concentrations (placeholders)
+  Separase_tot = 1.0;
+  PP2A_tot = 1.0;
+  Cdc14_tot = 1.0;
+  MEN_tot = 1.0;
+  Cdh1_tot = 1.0;
+
+  # Kinetic parameters (placeholders, values need to be fitted based on experimental data)
+  ksyn_Clb2 = 0.1;
+  kdeg_Clb2_Cdc20 = 1.0;
+  kdeg_Clb2_Cdh1 = 1.0;
+  ksyn_Cdc20 = 0.1;
+  kdeg_Cdc20 = 0.2;
+  kdeg_Cdc20_Cdh1 = 1.0;
+  kdeg_securin_Cdc20 = 1.0;
+  kinact_PP2A_separase = 1.0;
+  kact_PP2A = 0.5;
+  kphos_Net1_Clb2 = 1.0;
+  kphos_Net1_MEN = 2.0;
+  kdephos_Net1_PP2A = 1.0;
+  kdephos_Net1_Cdc14 = 0.5;
+  kact_MEN_Cdc14 = 2.0;
+  kinact_MEN = 0.5;
+  kinact_MEN_Clb2 = 1.0;
+  kact_Cdh1_Cdc14 = 1.0;
+  kinact_Cdh1_Clb2 = 2.0;
+
+  //// Other declarations:
+  var separase, Net1P;
+  const cell, Separase_tot, PP2A_tot, Cdc14_tot, MEN_tot, Cdh1_tot;
+  const ksyn_Clb2, kdeg_Clb2_Cdc20, kdeg_Clb2_Cdh1, ksyn_Cdc20, kdeg_Cdc20;
+  const kdeg_Cdc20_Cdh1, kdeg_securin_Cdc20, kinact_PP2A_separase, kact_PP2A;
+  const kphos_Net1_Clb2, kphos_Net1_MEN, kdephos_Net1_PP2A, kdephos_Net1_Cdc14;
+  const kact_MEN_Cdc14, kinact_MEN, kinact_MEN_Clb2, kact_Cdh1_Cdc14, kinact_Cdh1_Clb2;
+
+  //// Display Names:
+  cell is "Yeast Cell";
+  Clb2 is "Mitotic Cyclin (Clb2)";
+  Cdc20 is "APC/C Activator Cdc20";
+  securin is "Securin";
+  separase is "Active Separase";
+  PP2A is "Active PP2A_Cdc55";
+  Cdc14 is "Active Cdc14 Phosphatase";
+  Net1P is "Phosphorylated Net1";
+  MEN is "Active Mitotic Exit Network";
+  Cdh1 is "Active Cdh1";
+end

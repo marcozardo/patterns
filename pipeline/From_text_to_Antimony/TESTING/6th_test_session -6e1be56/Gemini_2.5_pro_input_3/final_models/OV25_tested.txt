@@ -1,0 +1,105 @@
+model *Gevertz2020_OncolyticVirotherapy()
+
+  //// Compartments and Species:
+  compartment tumor_microenvironment;
+  species U in tumor_microenvironment, I in tumor_microenvironment, V in tumor_microenvironment;
+  species T in tumor_microenvironment, A in tumor_microenvironment, D in tumor_microenvironment;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Reactions:
+  // Equation 1: Uninfected tumor cells (U)
+  tumor_growth:               => U; r*U;
+  infection:                  U => I; beta*U*V/N;
+  t_cell_killing_of_U:        U =>  ; (kappa_0 + c_kill*I)*U*T/N;
+
+  // Equation 2: Infected tumor cells (I)
+  lysis_and_virion_release:   I => alpha V; delta_I*I;
+  t_cell_killing_of_I:        I =>  ; (kappa_0 + c_kill*I)*I*T/N;
+
+  // Equation 3: Oncolytic adenovirus (V)
+  virus_treatment_influx:     => V; u_V;
+  virus_decay:                V =>  ; delta_V*V;
+
+  // Equation 4: Tumor-targeting T cells (T)
+  t_cell_activation_by_41BBL: => T; c_T*I;
+  t_cell_production_from_naive: A => A + T; chi_A*A;
+  t_cell_production_from_DC:  => T; chi_D*D;
+  t_cell_death:               T =>  ; delta_T*T;
+
+  // Equation 5: Naive T cells (A)
+  naive_t_cell_stimulation_by_IL12: => A; c_A*I;
+  naive_t_cell_death:               A =>  ; delta_A*A;
+
+  // Equation 6: Dendritic cells (D)
+  dc_treatment_influx:        => D; u_D;
+  dc_decay:                   D =>  ; delta_D*D;
+
+  //// Species initializations:
+  U = U_0;   // Initial uninfected tumor cell volume
+  I = 0;     // Initial infected cancer cell volume
+  V = 0;     // Initial oncolytic adenovirus
+  T = 0;     // Initial tumor-targeting T cells
+  A = 0;     // Initial naive T cells
+  D = 0;     // Initial injected dendritic cells
+
+  //// Compartment initializations:
+  tumor_microenvironment = 1;
+
+  //// Variable initializations:
+  U_0 = 100;      // Assumed initial tumor volume, not specified in text
+
+  // Best-fit parameters from Table 1
+  r = 0.3198;
+  beta = 0.00100854;
+  c_A = 0.000517;
+  c_T = 1.6984;
+  c_kill = 5.954e7;
+  chi_D = 4.6754;
+
+  // Parameters without specified values in the text, placeholder value provided
+  kappa_0 = 1;    // Value not specified
+  delta_I = 1;    // Value not specified
+  alpha = 1;      // Value not specified
+  delta_V = 1;    // Value not specified
+  chi_A = 1;      // Value not specified
+  delta_T = 1;    // Value not specified
+  delta_A = 1;    // Value not specified
+  delta_D = 1;    // Value not specified
+
+  // Treatment inputs, set to 0 for baseline (no treatment)
+  u_V = 0;
+  u_D = 0;
+
+  //// Other declarations:
+  var N, u_V, u_D;
+  const tumor_microenvironment, U_0, r, beta, kappa_0, c_kill, delta_I, alpha;
+  const delta_V, c_T, chi_A, chi_D, delta_T, c_A, delta_A, delta_D;
+
+  //// Display Names:
+  tumor_microenvironment is "Tumor Microenvironment";
+  U is "Uninfected tumor cell volume";
+  I is "Infected cancer cell volume";
+  V is "Oncolytic adenovirus";
+  T is "Tumor-targeting T cells";
+  A is "Naive T cells";
+  D is "Injected dendritic cells";
+  N is "Total cell volume";
+  r is "Tumor growth rate";
+  beta is "Infection rate";
+  kappa_0 is "Baseline T-cell killing rate";
+  c_kill is "Stimulated T-cell killing rate";
+  delta_I is "Lysis rate of infected cells";
+  alpha is "Virions released per lysed cell";
+  delta_V is "Virus decay rate";
+  c_T is "T-cell activation rate by 4-1BBL";
+  chi_A is "T-cell production rate from naive T-cells";
+  chi_D is "T-cell production rate from DCs";
+  delta_T is "T-cell death rate";
+  c_A is "Naive T-cell activation rate by IL-12";
+  delta_A is "Naive T-cell death rate";
+  delta_D is "DC decay rate";
+  u_V is "OV treatment influx rate";
+  u_D is "DC treatment influx rate";
+end

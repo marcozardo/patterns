@@ -1,0 +1,154 @@
+model *Malkov2020_SEIRS_Reinfection_Scenarios()
+
+  //// Compartments and Species:
+  compartment scenario1, scenario2, scenario3;
+  species S1 in scenario1, E1 in scenario1, I1 in scenario1, R1s in scenario1;
+  species Sp in scenario2, Ss in scenario2, Ep in scenario2, Es in scenario2, Ip in scenario2, Is in scenario2, R2s in scenario2;
+  species S3 in scenario3, E3 in scenario3, I3 in scenario3, R3 in scenario3;
+
+  //// Assignment Rules:
+  # Scenario 1 (SEIRS with time-varying reproduction number)
+  Rtilde1 := 0.5*(R1 + R2);            # \tilde{R}(t) = (R1(t)+R2(t))/2
+  beta1   := gamma1 * Rtilde1;         # beta(t) = gamma * \tilde{R}(t)
+
+  # Scenario 2 (Milder disease upon reinfection; primary/secondary classes)
+  beta_s  := beta_p/2;                  # ?_s = ?_p/2
+  gamma_s := 2*gamma_p;                 # ?_s = 2?_p
+  sigma_s := sigma_p;                   # ?_s = ?_p
+
+  # Scenario 3 (One-time reinfection event SEIR)
+  beta3   := gamma3 * R0_3;             # constant ? = ?*R0
+
+  //// Rate Rules:
+  # Time-varying reproduction number dynamics (Atkeson form)
+  R1' = -eta1*(R1 - R1_star);
+  R2' = -eta2*(R2 - R2_star);
+
+  //// Reactions:
+  # Scenario 1: SEIRS with waning immunity ? and time-varying ?(t)
+  J1_inf:  S1 => E1; scenario1*beta1*S1*I1/N1;
+  J1_prog: E1 => I1; scenario1*sigma1*E1;
+  J1_rec:  I1 => R1s; scenario1*gamma1*I1;
+  J1_wane: R1s => S1; scenario1*omega1*R1s;
+
+  # Scenario 2: Primary/Secondary infection dynamics with milder reinfection
+  J2_inf_p: Sp => Ep; scenario2*(beta_p*Ip + beta_s*Is)*Sp/N2;
+  J2_inf_s: Ss => Es; scenario2*(beta_p*Ip + beta_s*Is)*Ss/N2;
+  J2_prog_p: Ep => Ip; scenario2*sigma_p*Ep;
+  J2_prog_s: Es => Is; scenario2*sigma_s*Es;
+  J2_rec_p:  Ip => R2s; scenario2*gamma_p*Ip;
+  J2_rec_s:  Is => R2s; scenario2*gamma_s*Is;
+  J2_wane:   R2s => Ss; scenario2*omega2*R2s;
+
+  # Scenario 3: SEIR with one-time reinfection (? = 0; event moves R->S)
+  J3_inf:  S3 => E3; scenario3*beta3*S3*I3/N3;
+  J3_prog: E3 => I3; scenario3*sigma3*E3;
+  J3_rec:  I3 => R3; scenario3*gamma3*I3;
+
+  //// Events:
+  # Scenario 3: at time t_star, recovered rejoin susceptible pool (one-time reinfection)
+  at(time >= t_star): S3 = S3 + R3, R3 = 0;
+
+  //// Species initializations:
+  # Scenario 1
+  I1 = 1/1000;
+  E1 = 43.75*I1;
+  R1s = 0;
+  S1 = N1 - (E1 + I1 + R1s);
+
+  # Scenario 2
+  Ip = 1/1000;
+  Ep = 43.75*Ip;
+  Is = 0;
+  Es = 0;
+  R2s = 0;
+  Ss = 0;
+  Sp = N2 - (Ip + Ep + Is + Es + R2s + Ss);
+
+  # Scenario 3
+  I3 = 1/1000;
+  E3 = 43.75*I3;
+  R3 = 0;
+  S3 = N3 - (E3 + I3 + R3);
+
+  //// Compartment initializations:
+  scenario1 = 1;
+  scenario2 = 1;
+  scenario3 = 1;
+
+  //// Variable initializations:
+  # Scenario 1 parameters (days as time unit)
+  sigma1 = 1/5.2;     # incubation-rate (per day)
+  gamma1 = 1/18;      # recovery-rate (per day)
+  omega1 = 0;         # waning immunity rate (per day); set to 0 for no reinfection
+  N1 = 1;
+
+  # Time-varying reproduction number parameters
+  R1 = 3;             # \tilde{R}_1(0)
+  R2 = 3;             # \tilde{R}_2(0)
+  R1_star = 1.6;      # long-run R1*
+  R2_star = 1.6;      # long-run R2*
+  eta1 = 1/20;        # convergence rate of \tilde{R}_1
+  eta2 = 1/20;        # convergence rate of \tilde{R}_2
+
+  # Scenario 2 parameters
+  sigma_p = 1/5.2;
+  gamma_p = 1/18;
+  beta_p  = 1/6;      # choose 1/6 (~R0?3 in baseline) or 1/12 (~R0?1.5)
+  omega2  = 1/365;    # waning immunity rate (per day)
+  N2 = 1;
+
+  # Scenario 3 parameters
+  sigma3 = 1/5.2;
+  gamma3 = 1/18;
+  R0_3   = 2.2;       # constant basic reproduction number
+  N3 = 1;
+  t_star = 120;       # day of one-time reinfection event
+
+  //// Other declarations:
+  const scenario1, scenario2, scenario3;
+  var R1, R2, Rtilde1, beta1;
+  const sigma1, gamma1, omega1, N1, R1_star, R2_star, eta1, eta2;
+  var beta_s, gamma_s, sigma_s;
+  const sigma_p, gamma_p, beta_p, omega2, N2;
+  var beta3;
+  const sigma3, gamma3, R0_3, N3, t_star;
+
+  //// Unit definitions:
+  # time is measured in days (implicit); no explicit unit scaling defined.
+
+  //// Display Names:
+  scenario1 is "Scenario 1: SEIRS with time-varying R(t)";
+  scenario2 is "Scenario 2: Primary/Secondary (milder reinfection)";
+  scenario3 is "Scenario 3: SEIR with one-time reinfection event";
+  S1 is "Susceptible (scenario 1)";
+  E1 is "Exposed (scenario 1)";
+  I1 is "Infected (scenario 1)";
+  R1s is "Resistant/Recovered (scenario 1)";
+  Sp is "Primary-susceptible";
+  Ss is "Secondary-susceptible (post-recovery)";
+  Ep is "Primary-exposed";
+  Es is "Secondary-exposed";
+  Ip is "Primary-infected";
+  Is is "Secondary-infected";
+  R2s is "Resistant/Recovered (scenario 2)";
+  S3 is "Susceptible (scenario 3)";
+  E3 is "Exposed (scenario 3)";
+  I3 is "Infected (scenario 3)";
+  R3 is "Resistant/Recovered (scenario 3)";
+  Rtilde1 is "Effective reproduction number (scenario 1)";
+  beta1 is "Transmission rate beta(t) (scenario 1)";
+  beta_s is "Secondary transmission rate";
+  beta_p is "Primary transmission rate";
+  t_star is "One-time reinfection time";
+end
+
+/* Unmapped/auxiliary information from the source:
+- Reported ranges considered for parameters:
+  * omega (waning): {0, 1/365, 1/183, 1/120, 1/60} per day.
+  * R0 in constant-R scenarios: {1.6, 1.8, 2.0, 2.2, 2.5, 2.8, 3.0}.
+  * Time-varying R(t) scenarios: R1(0)=R2(0)=3, R1*=R2*=1.6 with eta in {1/5,1/10,1/20,1/50,1/100};
+    or U-shaped paths with parameters (example in text): R1(0)=10, R2(0)=-4, R1*=-10, R2*=4, eta1=1/35, eta2=1/100.
+- Initial date referenced: March 16?17, 2020; units here are abstract days from t=0.
+- Reporting rates, data-fitting, and empirical CI ranges are descriptive and not encoded here.
+*/

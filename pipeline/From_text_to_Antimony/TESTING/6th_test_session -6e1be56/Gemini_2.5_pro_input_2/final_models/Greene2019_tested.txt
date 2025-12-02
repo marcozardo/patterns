@@ -1,0 +1,80 @@
+model *Greene2019_Spontaneous_and_Induced_Drug_Resistance()
+
+  // This model describes the evolution of drug resistance in a tumor population,
+  // incorporating both spontaneous and drug-induced mechanisms. It is based on the
+  // non-dimensionalized ordinary differential equations (4) and (5) from the publication.
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor; // S: sensitive cells, R: resistant cells
+
+  //// Assignment Rules:
+  V := S + R; // Total tumor volume
+
+  //// Rate Rules:
+  // This model is described entirely by reactions.
+
+  //// Reactions:
+  growth_S: => S; tumor * S * (1 - (S + R));
+  growth_R: => R; tumor * p_r * R * (1 - (S + R));
+  conversion_to_R: S => R; tumor * (epsilon + alpha*u) * S;
+  drug_kill_S: S => ; tumor * d*u*S;
+
+  //// Events:
+  // The paper describes complex simulation protocols where treatment is initiated
+  // when the tumor volume V reaches a detection threshold Vd. For simplicity and
+  // to represent a core scenario, the drug dose 'u' is initialized to a constant
+  // value, corresponding to a continuous infusion therapy started at t=0.
+
+  //// Species initializations:
+  S = 0.01; // S0: Initial sensitive population
+  R = 0;    // R0: Initial resistant population
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  // Model parameters from non-dimensionalized equations (4) and (5), values from Table 1 and main text.
+  p_r = 0.2;
+  epsilon = 1e-6;
+  alpha = 1e-2; // Corresponds to the resistance-inducing drug case (alpha > 0). The paper also analyzes the phenotype-preserving case where alpha = 0.
+  d = 1;
+
+  // The parameter u(t) represents the drug dose. It is set here to a constant value
+  // for a continuous therapy protocol (Uon from Table 1).
+  u = 1.5;
+
+  // Simulation control parameters from Table 1, not part of the core kinetic laws but included for completeness.
+  Vd = 0.1;
+  Vc = 0.9;
+  delta_t_on = 1;
+  delta_t_off = 3;
+
+  //// Other declarations:
+  var V;
+  const tumor, p_r, epsilon, alpha, d, u;
+  const Vd, Vc, delta_t_on, delta_t_off;
+
+  //// Unit definitions:
+  // The model is non-dimensionalized, so no units are specified.
+
+  //// Display Names:
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  V is "Total tumor volume";
+  tumor is "Tumor compartment";
+  p_r is "Resistant growth fraction";
+  epsilon is "Background mutation rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Cytotoxicity for sensitive cells";
+  u is "Effective drug dose";
+  growth_S is "Logistic growth of sensitive cells";
+  growth_R is "Logistic growth of resistant cells";
+  conversion_to_R is "Conversion from sensitive to resistant cells";
+  drug_kill_S is "Drug-induced death of sensitive cells";
+  Vd is "Detectable tumor volume";
+  Vc is "Tumor volume defining treatment failure";
+  delta_t_on is "Pulsed treatment window";
+  delta_t_off is "Pulsed holiday length";
+
+end

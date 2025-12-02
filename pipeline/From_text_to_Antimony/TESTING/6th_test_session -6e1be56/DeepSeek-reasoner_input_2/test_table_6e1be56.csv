@@ -1,0 +1,2 @@
+,N° paper,Attempt,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),N° Boundary sp.(query/original),N° Floating sp.(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original)
+deepseek-reasoner,10,7,0.3,1.0,1.0,inf,0.86,0.64,1.1,0.96

@@ -1,0 +1,147 @@
+/*
+This model represents the TGF-beta signaling pathway as described in Strasen et al. (2018), 
+"Cell-specific TGF-beta signaling prevents uncontrolled tissue growth". The model topology is 
+primarily based on Figure 4B of the publication.
+
+The model describes the core processes of TGF-beta signaling:
+1.  Ligand binding to type I and II receptors (R1, R2).
+2.  Phosphorylation of SMAD2 (S2c) by the active receptor complex (Rec_L).
+3.  Formation of a complex between phosphorylated SMAD2 (pS2c) and SMAD4 (S4c).
+4.  Nuclear translocation of the pSMAD2-SMAD4 complex.
+5.  Induction of a negative feedback regulator (FB_p, representing SMAD7) by the nuclear SMAD complex.
+6.  Dephosphorylation and nuclear export of SMADs, returning them to the cytoplasm.
+7.  Inhibition of the receptor complex by the feedback protein.
+8.  Ligand and receptor turnover dynamics.
+
+The observable of interest is the nuclear-to-cytoplasmic ratio of total SMAD2, which is 
+calculated via an assignment rule.
+
+NOTE: The publication does not provide a complete list of kinetic parameter values or initial
+concentrations. The values provided in this model are placeholders intended to make the model
+syntactically complete and executable. They are not derived from the experimental data in the
+paper and will require fitting to reproduce the published results.
+*/
+model *Strasen2018_TGFb_signaling()
+
+  //// Compartments and Species:
+  compartment cyto, nuc;
+  species L in cyto, R1 in cyto, R2 in cyto;
+  species Rec_L in cyto, Rec_Le in cyto;
+  species S2c in cyto, S4c in cyto, pS2c in cyto, pS2_S4_c in cyto;
+  species FB_m in cyto, FB_p in cyto;
+  species S2n in nuc, S4n in nuc, pS2n in nuc, pS2_S4_n in nuc;
+
+  //// Assignment Rules:
+  Smad2_cyto := S2c + pS2c + pS2_S4_c;
+  Smad2_nuc := S2n + pS2n + pS2_S4_n;
+  nuc_cyt_ratio := Smad2_nuc / Smad2_cyto;
+
+  //// Reactions:
+  // Receptor turnover
+  R1_turnover:    => R1; k_prod_R1 - k_deg_R1*R1;
+  R2_turnover:    => R2; k_prod_R2 - k_deg_R2*R2;
+  
+  // Ligand binding and receptor activation
+  ligand_binding: L + R1 + R2 -> Rec_L; k_bind*L*R1*R2 - k_unbind*Rec_L;
+  
+  // Receptor trafficking and degradation
+  receptor_internalization: Rec_L => Rec_Le; k_intern*Rec_L;
+  internalized_degradation: Rec_Le => ; k_degrad_Rec_Le*Rec_Le;
+  
+  // Feedback inhibition
+  feedback_inhibition: Rec_L => ; k_fb_deact*FB_p*Rec_L;
+  
+  // SMAD signaling cascade
+  smad2_phosphorylation:    S2c => pS2c; k_phos*Rec_L*S2c;
+  complex_formation:        pS2c + S4c -> pS2_S4_c; k_form_het*pS2c*S4c - k_diss_het_c*pS2_S4_c;
+  complex_import:           pS2_S4_c => pS2_S4_n; k_import*pS2_S4_c;
+  complex_dissociation_nuc: pS2_S4_n => pS2n + S4n; k_diss_het_n*pS2_S4_n;
+  smad2_dephosphorylation_nuc: pS2n => S2n; k_dephos*pS2n;
+  smad2_export:             S2n => S2c; k_export_S2*S2n;
+  smad4_export:             S4n => S4c; k_export_S4*S4n;
+  
+  // Negative feedback loop
+  feedback_transcription:       => FB_m; k_basal_FB_m + k_induced_FB_m*pS2_S4_n;
+  feedback_mrna_degradation:    FB_m => ; k_deg_FB_m*FB_m;
+  feedback_translation:         => FB_p; k_prod_FB_p*FB_m;
+  feedback_protein_degradation: FB_p => ; k_deg_FB_p*FB_p;
+  
+  // Ligand degradation
+  ligand_degradation: L => ; k_deg_L*L;
+
+  //// Species initializations:
+  L = 100;      // pM, corresponds to a high stimulus level
+  R1 = 100;     // a.u.
+  R2 = 100;     // a.u.
+  S2c = 1000;   // a.u.
+  S4c = 1000;   // a.u.
+  Rec_L = 0;
+  Rec_Le = 0;
+  pS2c = 0;
+  pS2_S4_c = 0;
+  FB_m = 0.1;   // Basal level placeholder
+  FB_p = 1;     // Basal level placeholder
+  S2n = 0;
+  S4n = 0;
+  pS2n = 0;
+  pS2_S4_n = 0;
+
+  //// Compartment initializations:
+  cyto = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  // Placeholder kinetic parameters
+  k_prod_R1 = 1;
+  k_deg_R1 = 0.1;
+  k_prod_R2 = 1;
+  k_deg_R2 = 0.1;
+  k_bind = 0.001;
+  k_unbind = 0.1;
+  k_intern = 0.1;
+  k_degrad_Rec_Le = 0.1;
+  k_fb_deact = 0.01;
+  k_phos = 0.01;
+  k_form_het = 0.1;
+  k_diss_het_c = 0.1;
+  k_import = 0.1;
+  k_diss_het_n = 0.1;
+  k_dephos = 0.1;
+  k_export_S2 = 0.1;
+  k_export_S4 = 0.1;
+  k_basal_FB_m = 0.01;
+  k_induced_FB_m = 0.1;
+  k_deg_FB_m = 0.1;
+  k_prod_FB_p = 0.1;
+  k_deg_FB_p = 0.01;
+  k_deg_L = 0.05;
+
+  //// Other declarations:
+  var Smad2_cyto, Smad2_nuc, nuc_cyt_ratio;
+  const cyto, nuc;
+  const k_prod_R1, k_deg_R1, k_prod_R2, k_deg_R2, k_bind, k_unbind;
+  const k_intern, k_degrad_Rec_Le, k_fb_deact, k_phos, k_form_het;
+  const k_diss_het_c, k_import, k_diss_het_n, k_dephos, k_export_S2;
+  const k_export_S4, k_basal_FB_m, k_induced_FB_m, k_deg_FB_m;
+  const k_prod_FB_p, k_deg_FB_p, k_deg_L;
+
+  //// Display Names:
+  cyto is "Cytoplasm";
+  nuc is "Nucleus";
+  L is "TGF-beta ligand";
+  R1 is "TGF-beta Receptor I";
+  R2 is "TGF-beta Receptor II";
+  Rec_L is "Active Receptor-Ligand Complex";
+  Rec_Le is "Endosomal Receptor-Ligand Complex";
+  S2c is "Cytoplasmic SMAD2";
+  S4c is "Cytoplasmic SMAD4";
+  pS2c is "Phosphorylated Cytoplasmic SMAD2";
+  pS2_S4_c is "Cytoplasmic pSMAD2-SMAD4 Complex";
+  FB_m is "Feedback Regulator mRNA";
+  FB_p is "Feedback Regulator Protein (SMAD7)";
+  S2n is "Nuclear SMAD2";
+  S4n is "Nuclear SMAD4";
+  pS2n is "Phosphorylated Nuclear SMAD2";
+  pS2_S4_n is "Nuclear pSMAD2-SMAD4 Complex";
+  nuc_cyt_ratio is "Nuclear/Cytoplasmic SMAD2 Ratio";
+end

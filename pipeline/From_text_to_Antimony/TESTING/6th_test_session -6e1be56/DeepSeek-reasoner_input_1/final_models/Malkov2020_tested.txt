@@ -1,0 +1,69 @@
+model *Malkov2020_SEIRS_COVID19()
+
+  //// Compartments and Species:
+  compartment Population;
+  species S in Population, E in Population, I in Population, R in Population;
+
+  //// Assignment Rules:
+  R_tilde := (R1_tilde + R2_tilde)/2;
+
+  //// Rate Rules:
+  R1_tilde' = -eta1*(R1_tilde - R1_star);
+  R2_tilde' = -eta2*(R2_tilde - R2_star);
+
+  //// Reactions:
+  infection: S -> E; gamma_*R_tilde*S*I;
+  progression: E -> I; sigma*E;
+  recovery: I -> R; gamma_*I;
+  waning: R -> S; omega*R;
+
+  //// Species initializations:
+  S = 0.95525;
+  E = 0.04375;
+  I = 0.001;
+  R = 0;
+
+  //// Compartment initializations:
+  Population = 1;
+
+  //// Variable initializations:
+  sigma = 1/5.2;
+  gamma_ = 1/18;
+  omega = 1/183;
+  eta1 = 0;
+  eta2 = 0;
+  R1_star = 3.0;
+  R2_star = 3.0;
+  R1_tilde = 3.0;
+  R2_tilde = 3.0;
+
+  //// Other declarations:
+  const sigma, gamma_, omega, eta1, eta2, R1_star, R2_star;
+  var R1_tilde, R2_tilde, R_tilde;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  Population is "Total population (normalized to 1)";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infected";
+  R is "Resistant (Recovered)";
+  infection is "Infection (with time-varying transmission)";
+  progression is "Progression from exposed to infected";
+  recovery is "Recovery";
+  waning is "Waning of immunity";
+  R_tilde is "Time-varying reproduction number (average of R1 and R2)";
+  R1_tilde is "First component of reproduction number";
+  R2_tilde is "Second component of reproduction number";
+  sigma is "Incubation rate (1/incubation period)";
+  gamma_ is "Recovery rate (1/infectious period)";
+  omega is "Immunity waning rate";
+  eta1 is "Convergence rate for R1 component";
+  eta2 is "Convergence rate for R2 component";
+  R1_star is "Long-run value for R1 component";
+  R2_star is "Long-run value for R2 component";
+  time_unit is "day";
+
+end

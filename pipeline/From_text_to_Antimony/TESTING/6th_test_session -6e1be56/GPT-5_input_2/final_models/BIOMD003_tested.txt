@@ -1,0 +1,99 @@
+/* Domain: Molecular/cell-cycle regulatory network (cyclin?Cdc2 kinase?protease oscillator)
+   Source: Goldbeter A. (1991) ?A minimal cascade model for the mitotic oscillator involving cyclin and cdc2 kinase? PNAS 88:9107?9111.
+   Model content: Exact ODEs (Eq. 1?2) encoded using reactions (for cyclin C) and rate rules (for fractional activities M, X), with Michaelian (zero-order ultrasensitivity-capable) converter kinetics and cyclin-dependent V1, M-dependent V3.
+*/
+
+model *Goldbeter1991_Minimal_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  //// Rate Rules:
+  M' = V1*((1 - M)/(K1 + (1 - M))) - V2*(M/(K2 + M));
+  X' = V3*((1 - X)/(K3 + (1 - X))) - V4*(X/(K4 + X));
+
+  //// Reactions:
+  Jsyn:   => C; cell*vi;
+  JdegX:  C => ; cell*v_d*X*C/(Kd + C);
+  Jdeg_ns: C => ; cell*k_d*C;
+
+  //// Species initializations:
+  C = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Fractions (state variables)
+  M = 0;
+  X = 0.01;
+
+  # Kinetic parameters (from text and figure captions where readable)
+  vi = 0.023;
+  v_d = 0.1;
+  k_d = 0;
+
+  Kd = 0.02;
+  Kc = 0.3;
+
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  VM1 = 0.5;
+  VM3 = 0.2;
+
+  V2 = 0.167;
+  V4 = 0.1;
+
+  //// Other declarations:
+  var M, X, V1, V3;
+  const cell, vi, v_d, k_d, Kd, Kc, K1, K2, K3, K4, VM1, VM3, V2, V4;
+
+  //// Unit definitions:
+  # Omitted (values provided unitless for simulator compatibility)
+
+  //// Display Names:
+  cell is "well-mixed compartment";
+  C is "Cyclin concentration";
+  M is "Active Cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  Jsyn is "Cyclin synthesis";
+  JdegX is "Cyclin degradation by protease X";
+  Jdeg_ns is "Cyclin nonspecific degradation";
+  V1 is "Effective max rate of Cdc2 activation (cyclin-dependent)";
+  V2 is "Effective max rate of Cdc2 inactivation";
+  V3 is "Effective max rate of protease activation (M-dependent)";
+  V4 is "Effective max rate of protease inactivation";
+  VM1 is "Maximal activase rate (at saturating cyclin)";
+  VM3 is "Maximal kinase E3 rate (at M = 1)";
+  vi is "Cyclin synthesis rate";
+  v_d is "Max rate of cyclin proteolysis";
+  k_d is "First-order nonspecific cyclin degradation";
+  Kd is "Michaelis constant for cyclin proteolysis";
+  Kc is "Cyclin K_M for activase stimulation";
+  K1 is "K_M for Cdc2 activation converter";
+  K2 is "K_M for Cdc2 inactivation converter";
+  K3 is "K_M for protease activation converter";
+  K4 is "K_M for protease inactivation converter";
+
+end
+
+/* Unmapped/assumption notes:
+- Figure caption text was partially garbled. We used explicit values where decipherable:
+  Ki = 0.1 (i = 1..4) ? K1=K2=K3=K4=0.1
+  VM1 = 0.5; VM3 = 0.2
+  vi = 0.023; v_d = 0.1; Kc = 0.3; Kd = 0.02
+  Two entries labeled ?Ve? were interpreted as V2 = 0.167 and V4 = 0.1.
+  ?Ka = 3.33 ? 10^? min^-?? in the caption could not be unambiguously mapped; we set k_d = 0
+  (text states nonspecific degradation is optional and small).
+- Initial X = 0.01 was specified in the caption; initial M and C were not, so set to small/zero values.
+- All parameters are dimensionless or in simulator units; no unit scaling is enforced here.
+If you have the precise original parameter set, replace the initializations above accordingly.
+*/

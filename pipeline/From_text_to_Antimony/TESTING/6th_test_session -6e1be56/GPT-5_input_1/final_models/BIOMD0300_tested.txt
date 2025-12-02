@@ -1,0 +1,99 @@
+model *Schmierer2010_HIF_Skeleton_and_ARD()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $Htot_hat in cell, $H_hat in cell, $A_hat in cell;
+
+  //// Assignment Rules:
+  phi_P := O2_tilde/(1 + O2_tilde);                    # Oxygen factor for PHD (normalized by K_M^P)
+  phi_F := O2_tilde/(alpha + O2_tilde);                # Oxygen factor for FIH (normalized by K_M^F = alpha*K_M^P)
+  phi_FA_bar := O2_bar/(1 + O2_bar);                   # Oxygen factor for AR hydroxylation (normalized by K_M^F)
+  vp := kcatP*Ptot*(1/(KDp + Htot_hat))*phi_P;         # SKM1: PHD-dependent ODD hydroxylation rate (dimensionless)
+  vFH := kcatFH*Ftot*(1/(KDFH + H_hat))*phi_F;         # SKM1: FIH-dependent CAD hydroxylation rate (dimensionless)
+  H_OH_hat := Htot_hat - H_hat;                        # CAD-hydroxylated HIF fraction (dimensionless)
+  HRE_CAD := H_hat/(KD_HRE + Htot_hat);                # Probability (fraction) of HRE occupied by non-CAD-hydroxylated HIF
+  HRE_CADOH := H_OH_hat/(KD_HRE + Htot_hat);           # Probability (fraction) of HRE occupied by CAD-hydroxylated HIF
+  kappa := Atot/KDFA;                                  # SKM2: sequestration capacity
+  AOH_hat := 1 - A_hat;                                # SKM2: hydroxylated AR fraction (since A_hat is normalized to Atot)
+  F_free := 1/(1 + kappa*A_hat);                       # SKM2: free FIH fraction (dimensionless)
+
+  //// Rate Rules:
+  Htot_hat' = 1 - Htot_hat*(1 + vp);                   # SKM1: d?_tot/d? = 1 - ?_tot(1 + ?_p)
+  H_hat'    = 1 - H_hat*(1 + vp + vFH);                # SKM1: d?/d? = 1 - ?(1 + ?_p + ?_FH)
+  A_hat'    = 1 - A_hat - beta*(kappa*A_hat/(1 + kappa*A_hat))*phi_FA_bar;  # SKM2: d?/d? = 1 - ? - ?*(??/(1+??))*(?2/(1+?2))
+
+  //// Reactions:
+  // not present so omitted
+
+  //// Events:
+  // not present so omitted
+
+  //// Species initializations:
+  Htot_hat = 0;     # Dimensionless total HIF (?_tot) at t=0
+  H_hat = 0;        # Dimensionless non-CAD-hydroxylated HIF (?) at t=0
+  A_hat = 1;        # Dimensionless unhydroxylated AR fraction (?) at t=0
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # SKM1 parameters (chosen to match examples: kcatP*Ptot = 100; kcatFH*Ftot = 100)
+  Ptot = 0.2;       # Dimensionless PHD concentration (?P_tot)
+  kcatP = 500;      # (kcat for ODD)/(basal HIF degradation)
+  KDp = 1;          # Dissociation constant of PHD/HIF binding (?K_D^P)
+  Ftot = 1;         # Dimensionless FIH concentration (?F_tot)
+  kcatFH = 100;     # Scaled kcat for HIF CAD hydroxylation so that kcatFH*Ftot = 100
+  KDFH = 1;         # Dissociation constant of FIH/HIF binding (?K_D^FH)
+  alpha = 0.33;     # KM^F / KM^P (oxygen Michaelis ratio)
+  KD_HRE = 0.3;     # Dissociation constant for HIF/HRE binding (?K_D^HRE)
+  O2_tilde = 0.01;  # Oxygen level normalized by KM^P (dimensionless)
+
+  # SKM2 parameters (ankyrin sequestration module, dimensionless)
+  Atot = 100;       # Total FIH target AR repeats (absolute, enters kappa = Atot/KDFA)
+  KDFA = 1;         # Dissociation constant of FIH/ARD binding (K_D^FA)
+  beta = 20;        # Hydroxylation efficiency: (kcat^FA * Ftot) / (k_d^A * Atot)
+  O2_bar = 0.01;    # Oxygen level normalized by KM^F (dimensionless)
+
+  //// Other declarations:
+  var phi_P, phi_F, phi_FA_bar, vp, vFH, H_OH_hat, HRE_CAD, HRE_CADOH, kappa, AOH_hat, F_free;
+  const cell, Ptot, kcatP, KDp, Ftot, kcatFH, KDFH, alpha, KD_HRE, O2_tilde, Atot, KDFA, beta, O2_bar;
+
+  //// Unit definitions:
+  # omitted (dimensionless model)
+
+  //// Display Names:
+  cell is "Well-mixed compartment (dimensionless scaling)";
+  Htot_hat is "Total HIF? (dimensionless, SKM1)";
+  H_hat is "Non-CAD-hydroxylated HIF? (dimensionless, SKM1)";
+  H_OH_hat is "CAD-hydroxylated HIF? (dimensionless, SKM1)";
+  HRE_CAD is "HRE occupancy by non-CAD-hydroxylated HIF?";
+  HRE_CADOH is "HRE occupancy by CAD-hydroxylated HIF?";
+  A_hat is "Unhydroxylated FIH-target ankyrin repeats (dimensionless, SKM2)";
+  AOH_hat is "Hydroxylated FIH-target ankyrin repeats (dimensionless, SKM2)";
+  F_free is "Free FIH fraction (dimensionless, SKM2)";
+  vp is "PHD-dependent ODD hydroxylation rate (dimensionless)";
+  vFH is "FIH-dependent CAD hydroxylation rate (dimensionless)";
+  O2_tilde is "Oxygen (normalized by KM of PHD)";
+  O2_bar is "Oxygen (normalized by KM of FIH)";
+  Ptot is "Total PHD (dimensionless)";
+  Ftot is "Total FIH (dimensionless)";
+  KDp is "PHD/HIF dissociation constant";
+  KDFH is "FIH/HIF dissociation constant";
+  KD_HRE is "HIF/HRE dissociation constant";
+  alpha is "KM^F / KM^P ratio for oxygen";
+  KDFA is "FIH/ARD dissociation constant";
+  beta is "Hydroxylation efficiency parameter (SKM2)";
+  kcatP is "Scaled kcat for ODD hydroxylation";
+  kcatFH is "Scaled kcat for CAD hydroxylation";
+  Atot is "Total FIH-target ankyrin repeats (absolute)";
+end
+
+/* 
+Unmapped/approximated details documented for transparency:
+- The paper defines a Full Model with tight-binding corrections (Eqs. 4?9) including formulas for H_p and H_F via quadratic expressions and an AR competition-adjusted K_i^{FH}. Due to partial OCR corruption of these formulas, this Antimony encodes the two Skeleton Models explicitly:
+  * SKM1 (HIF module): Eqs. (1), (2) with Michaelis?Menten-type ?_p and ?_FH (Eqs. 10?11 approximation).
+  * SKM2 (ARD module): Eq. (12) with definitions of ? (Eq. 14), ? (Eq. 15), and F_free (Eq. 13).
+- Oxygen dependencies follow the forms stated: ?_P = ?2/(1+?2) for PHD, ?_F = ?2/(?+?2) for FIH.
+- Parameters are set to values used in the SKM1 example (kcatP*Ptot = 100, kcatFH*Ftot = 100), ? = 0.33, KD_HRE = 0.3; SKM2 defaults ? = Atot/KDFA with Atot=100, KDFA=1, ?=20. Adjust O2_tilde and O2_bar to explore responses.
+- The Full Model (with AR competition shaping CAD hydroxylation via oxygen-thresholds) can be recovered by replacing ?_p, ?_FH with the tight-binding forms and adding ?_FA plus mass-conservation-based free-species expressions as in Eqs. (4)?(9).
+*/

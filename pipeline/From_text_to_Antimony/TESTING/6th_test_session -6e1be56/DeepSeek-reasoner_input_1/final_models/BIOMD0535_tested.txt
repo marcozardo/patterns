@@ -1,0 +1,220 @@
+model *Dwivedi2014_IL6_Crohn_Multiscale()
+
+  //// Compartments and Species:
+  compartment Liver, GI_tract, Circulation;
+  species $IL6_L in Liver, $sIL6R_L in Liver, $gp130_L in Liver, $STAT3_L in Liver, $pSTAT3_L in Liver, $GeneProd_L in Liver, $CRP_L in Liver, $SOCS_L in Liver;
+  species $IL6_G in GI_tract, $sIL6R_G in GI_tract, $gp130_G in GI_tract, $STAT3_G in GI_tract, $pSTAT3_G in GI_tract, $GeneProd_G in GI_tract, $CRP_G in GI_tract, $SOCS_G in GI_tract;
+  species IL6_C in Circulation, sIL6R_C in Circulation, CRP_C in Circulation, sgp130_C in Circulation;
+  species $Ab_IL6 in Circulation, $Ab_IL6R in Circulation, $Ab_complex in Circulation;
+
+  //// Assignment Rules:
+  ksynfIL6Gut := piecewise(250, disease_state > 0, 14);
+  ksynfIL6Liver := piecewise(10, disease_state > 0, 1);
+  kCRPSecretion := Vmax_CRP * (pSTAT3_L^hill_CRP) / (K50_CRP^hill_CRP + pSTAT3_L^hill_CRP);
+  kdegSR := kdeg_sIL6R_base * (1 + k_CRP_shed * CRP_C);
+
+  //// Rate Rules:
+  pSTAT3_L' = k_phos * IL6_IL6R_gp130_L * STAT3_L - k_dephos * pSTAT3_L;
+  pSTAT3_G' = k_phos * IL6_IL6R_gp130_G * STAT3_G - k_dephos * pSTAT3_G;
+  SOCS_L' = k_socs_synth * pSTAT3_L - k_socs_deg * SOCS_L;
+  SOCS_G' = k_socs_synth * pSTAT3_G - k_socs_deg * SOCS_G;
+  GeneProd_L' = k_gene_synth * pSTAT3_L - k_gene_deg * GeneProd_L;
+  GeneProd_G' = k_gene_synth * pSTAT3_G - k_gene_deg * GeneProd_G;
+
+  //// Reactions:
+  // Classical Pathway Complex Formation
+  R1_L: IL6_L + IL6R_L -> IL6_IL6R_L; kf_bind_IL6_IL6R*IL6_L*IL6R_L - kr_bind_IL6_IL6R*IL6_IL6R_L;
+  R1_G: IL6_G + IL6R_G -> IL6_IL6R_G; kf_bind_IL6_IL6R*IL6_G*IL6R_G - kr_bind_IL6_IL6R*IL6_IL6R_G;
+  
+  // Trans-signaling Complex Formation
+  R2_L: IL6_L + sIL6R_L -> IL6_sIL6R_L; kf_bind_IL6_sIL6R*IL6_L*sIL6R_L - kr_bind_IL6_sIL6R*IL6_sIL6R_L;
+  R2_G: IL6_G + sIL6R_G -> IL6_sIL6R_G; kf_bind_IL6_sIL6R*IL6_G*sIL6R_G - kr_bind_IL6_sIL6R*IL6_sIL6R_G;
+  
+  // gp130 Recruitment and Activation (simplified)
+  R3_L: IL6_IL6R_L + gp130_L -> IL6_IL6R_gp130_L; k_gp130_recruit*IL6_IL6R_L*gp130_L;
+  R3_G: IL6_IL6R_G + gp130_G -> IL6_IL6R_gp130_G; k_gp130_recruit*IL6_IL6R_G*gp130_G;
+  R4_L: IL6_sIL6R_L + gp130_L -> IL6_sIL6R_gp130_L; k_gp130_recruit*IL6_sIL6R_L*gp130_L;
+  R4_G: IL6_sIL6R_G + gp130_G -> IL6_sIL6R_gp130_G; k_gp130_recruit*IL6_sIL6R_G*gp130_G;
+  
+  // SOCS Inhibition (negative feedback on activation)
+  R_inh_L: IL6_IL6R_gp130_L + SOCS_L -> IL6_IL6R_gp130_SOCS_L; k_socs_inhibit*IL6_IL6R_gp130_L*SOCS_L;
+  R_inh_G: IL6_IL6R_gp130_G + SOCS_G -> IL6_IL6R_gp130_SOCS_G; k_socs_inhibit*IL6_IL6R_gp130_G*SOCS_G;
+  
+  // sgp130 Inhibition of Trans-signaling Complex
+  R_sgp130_inh_C: IL6_sIL6R_C + sgp130_C -> IL6_sIL6R_sgp130_C; k_sgp130_bind*IL6_sIL6R_C*sgp130_C;
+  
+  // Antibody Binding
+  R_Ab_IL6: IL6_C + Ab_IL6 -> IL6_Ab_IL6; kf_Ab_IL6*IL6_C*Ab_IL6 - kr_Ab_IL6*IL6_Ab_IL6;
+  R_Ab_IL6R: sIL6R_C + Ab_IL6R -> sIL6R_Ab_IL6R; kf_Ab_IL6R*sIL6R_C*Ab_IL6R - kr_Ab_IL6R*sIL6R_Ab_IL6R;
+  R_Ab_complex: IL6_sIL6R_C + Ab_complex -> IL6_sIL6R_Ab_complex; kf_Ab_complex*IL6_sIL6R_C*Ab_complex - kr_Ab_complex*IL6_sIL6R_Ab_complex;
+  
+  // Production and Degradation (Basal)
+  Prod_IL6_L: -> IL6_L; ksynfIL6Liver;
+  Prod_IL6_G: -> IL6_G; ksynfIL6Gut;
+  Prod_sIL6R_L: -> sIL6R_L; ksyn_sIL6R;
+  Prod_sIL6R_G: -> sIL6R_G; ksyn_sIL6R;
+  Prod_gp130_L: -> gp130_L; ksyn_gp130;
+  Prod_gp130_G: -> gp130_G; ksyn_gp130;
+  Prod_CRP_L: -> CRP_L; kCRPSecretion;
+  Prod_sgp130_C: -> sgp130_C; ksyn_sgp130;
+  
+  Deg_IL6_L: IL6_L -> ; kdeg_IL6*IL6_L;
+  Deg_IL6_G: IL6_G -> ; kdeg_IL6*IL6_G;
+  Deg_sIL6R_L: sIL6R_L -> ; kdegSR*sIL6R_L;
+  Deg_sIL6R_G: sIL6R_G -> ; kdegSR*sIL6R_G;
+  Deg_gp130_L: gp130_L -> ; kdeg_gp130*gp130_L;
+  Deg_gp130_G: gp130_G -> ; kdeg_gp130*gp130_G;
+  Deg_CRP_L: CRP_L -> ; kdeg_CRP*CRP_L;
+  Deg_sgp130_C: sgp130_C -> ; kdeg_sgp130*sgp130_C;
+  Deg_Ab_IL6: Ab_IL6 -> ; kdeg_Ab*Ab_IL6;
+  Deg_Ab_IL6R: Ab_IL6R -> ; kdeg_Ab*Ab_IL6R;
+  Deg_Ab_complex: Ab_complex -> ; kdeg_Ab*Ab_complex;
+  
+  // Inter-compartmental Transport (simplified linear exchange)
+  Trans_IL6_L_to_C: IL6_L -> IL6_C; k_trans_IL6*IL6_L;
+  Trans_IL6_C_to_L: IL6_C -> IL6_L; k_trans_IL6*IL6_C;
+  Trans_IL6_G_to_C: IL6_G -> IL6_C; k_trans_IL6*IL6_G;
+  Trans_IL6_C_to_G: IL6_C -> IL6_G; k_trans_IL6*IL6_C;
+  
+  Trans_sIL6R_L_to_C: sIL6R_L -> sIL6R_C; k_trans_sIL6R*sIL6R_L;
+  Trans_sIL6R_C_to_L: sIL6R_C -> sIL6R_L; k_trans_sIL6R*sIL6R_C;
+  Trans_sIL6R_G_to_C: sIL6R_G -> sIL6R_C; k_trans_sIL6R*sIL6R_G;
+  Trans_sIL6R_C_to_G: sIL6R_C -> sIL6R_G; k_trans_sIL6R*sIL6R_C;
+  
+  Trans_CRP_L_to_C: CRP_L -> CRP_C; k_trans_CRP*CRP_L;
+  Trans_CRP_C_to_L: CRP_C -> CRP_L; k_trans_CRP*CRP_C;
+
+  //// Events:
+  // Dosing Event for Antibodies (example: 8 mg/kg every 4 weeks, converted to nmol/l in circulation)
+  E1: at time >= 0: Ab_IL6R = Ab_IL6R + dose_Ab_IL6R_initial;
+  E2: at time >= (4*7*24): Ab_IL6R = Ab_IL6R + dose_Ab_IL6R_initial;
+  E3: at time >= (8*7*24): Ab_IL6R = Ab_IL6R + dose_Ab_IL6R_initial;
+
+  //// Species initializations:
+  // Initial concentrations for Crohn's disease state (disease_state = 1)
+  IL6_L = 4.22e-4; // 10 pg/ml -> nmol/l
+  sIL6R_L = 2.8; // 140 ng/ml -> nmol/l
+  gp130_L = 1; // arbitrary relative unit
+  STAT3_L = 1; // arbitrary relative unit
+  pSTAT3_L = 3; // fold-change from healthy (1 au to 3 au)
+  GeneProd_L = 0;
+  CRP_L = 280; // 7 mg/l -> nmol/l
+  SOCS_L = 0;
+  
+  IL6_G = 0.01055; // 250 pg/ml -> nmol/l
+  sIL6R_G = 2.8; // same as serum? Assumed similar.
+  gp130_G = 1;
+  STAT3_G = 1;
+  pSTAT3_G = 3;
+  GeneProd_G = 0;
+  CRP_G = 0;
+  SOCS_G = 0;
+  
+  IL6_C = 4.22e-4;
+  sIL6R_C = 2.8;
+  CRP_C = 280;
+  sgp130_C = 2.8; // 280 ng/ml -> nmol/l
+  
+  Ab_IL6 = 0;
+  Ab_IL6R = 0;
+  Ab_complex = 0;
+
+  //// Compartment initializations:
+  Liver = 1;
+  GI_tract = 1;
+  Circulation = 5; // relative volume of circulation
+
+  //// Variable initializations:
+  // Rate constants (placeholder values from literature and fitting)
+  kf_bind_IL6_IL6R = 1e-3;
+  kr_bind_IL6_IL6R = 1e-2;
+  kf_bind_IL6_sIL6R = 1e-3;
+  kr_bind_IL6_sIL6R = 1e-2;
+  k_gp130_recruit = 0.1;
+  k_phos = 0.5;
+  k_dephos = 0.1;
+  k_socs_synth = 0.05;
+  k_socs_deg = 0.01;
+  k_socs_inhibit = 0.1;
+  k_gene_synth = 0.02;
+  k_gene_deg = 0.005;
+  k_sgp130_bind = 0.01;
+  
+  // Production and degradation rates
+  ksyn_sIL6R = 0.1;
+  ksyn_gp130 = 0.05;
+  ksyn_sgp130 = 0.01;
+  kdeg_IL6 = 0.1;
+  kdeg_sIL6R_base = 0.05;
+  kdeg_gp130 = 0.01;
+  kdeg_CRP = 0.1;
+  kdeg_sgp130 = 0.01;
+  kdeg_Ab = 0.005;
+  
+  // Transport rates
+  k_trans_IL6 = 0.1;
+  k_trans_sIL6R = 0.05;
+  k_trans_CRP = 0.1;
+  
+  // CRP synthesis parameters
+  Vmax_CRP = 100;
+  K50_CRP = 1;
+  hill_CRP = 2;
+  k_CRP_shed = 0.01;
+  
+  // Antibody binding parameters
+  kf_Ab_IL6 = 1e-3;
+  kr_Ab_IL6 = 1e-2;
+  kf_Ab_IL6R = 1e-3;
+  kr_Ab_IL6R = 1e-2;
+  kf_Ab_complex = 1e-3;
+  kr_Ab_complex = 1e-2;
+  
+  // Dosing parameters
+  dose_Ab_IL6R_initial = 100; // nmol/l (placeholder for 8 mg/kg)
+  
+  // System state
+  disease_state = 1; // 1 for Crohn's, 0 for healthy
+
+  //// Other declarations:
+  var ksynfIL6Liver, ksynfIL6Gut, kCRPSecretion, kdegSR;
+  const kf_bind_IL6_IL6R, kr_bind_IL6_IL6R, kf_bind_IL6_sIL6R, kr_bind_IL6_sIL6R, k_gp130_recruit, k_phos, k_dephos, k_socs_synth, k_socs_deg, k_socs_inhibit, k_gene_synth, k_gene_deg, k_sgp130_bind, ksyn_sIL6R, ksyn_gp130, ksyn_sgp130, kdeg_IL6, kdeg_sIL6R_base, kdeg_gp130, kdeg_CRP, kdeg_sgp130, kdeg_Ab, k_trans_IL6, k_trans_sIL6R, k_trans_CRP, Vmax_CRP, K50_CRP, hill_CRP, k_CRP_shed, kf_Ab_IL6, kr_Ab_IL6, kf_Ab_IL6R, kr_Ab_IL6R, kf_Ab_complex, kr_Ab_complex, dose_Ab_IL6R_initial, disease_state;
+
+  //// Unit definitions:
+  unit volume = 1 liter;
+  unit time_unit = 1 hour;
+  unit substance = 1e-9 mole;
+
+  //// Display Names:
+  Liver is "Liver compartment";
+  GI_tract is "Gastrointestinal tract compartment";
+  Circulation is "Blood circulation";
+  IL6_L is "Interleukin-6 in Liver";
+  sIL6R_L is "Soluble IL-6 receptor in Liver";
+  gp130_L is "gp130 coreceptor in Liver";
+  STAT3_L is "STAT3 in Liver";
+  pSTAT3_L is "Phosphorylated STAT3 in Liver";
+  GeneProd_L is "Gene products in Liver";
+  CRP_L is "C-reactive protein in Liver";
+  SOCS_L is "SOCS inhibitor in Liver";
+  IL6_G is "Interleukin-6 in GI tract";
+  sIL6R_G is "Soluble IL-6 receptor in GI tract";
+  gp130_G is "gp130 coreceptor in GI tract";
+  STAT3_G is "STAT3 in GI tract";
+  pSTAT3_G is "Phosphorylated STAT3 in GI tract";
+  GeneProd_G is "Gene products in GI tract";
+  CRP_G is "C-reactive protein in GI tract";
+  SOCS_G is "SOCS inhibitor in GI tract";
+  IL6_C is "Interleukin-6 in Circulation";
+  sIL6R_C is "Soluble IL-6 receptor in Circulation";
+  CRP_C is "C-reactive protein in Circulation";
+  sgp130_C is "Soluble gp130 in Circulation";
+  Ab_IL6 is "Anti-IL-6 antibody";
+  Ab_IL6R is "Anti-IL-6 receptor antibody";
+  Ab_complex is "Anti-IL-6/sIL-6R complex antibody";
+  ksynfIL6Gut is "IL-6 synthesis rate in Gut";
+  kCRPSecretion is "CRP secretion rate";
+  kdegSR is "Soluble IL-6R degradation rate";
+  disease_state is "Disease state (0=healthy, 1=Crohn's)";
+
+end

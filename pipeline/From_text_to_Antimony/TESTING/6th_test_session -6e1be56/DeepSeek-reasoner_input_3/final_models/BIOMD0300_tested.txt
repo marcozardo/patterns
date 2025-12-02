@@ -1,0 +1,48 @@
+model *Schmierer2010_Hypoxia_HIF_FIH_ARD()
+
+  //// Compartments and Species:
+  compartment cell;
+  species H_tot in cell, H in cell, $H_OH in cell, A in cell, $A_OH in cell;
+  species $A_tot in cell, $P_tot in cell, $F_tot in cell, $O2 in cell;
+
+  //// Assignment Rules:
+  K_i_FH := K_D_FH * (1 + A/K_D_FA + gamma_ * A_OH/K_D_FA);
+  A_P := -0.5 * (A_tot - P_tot - K_D_P + sqrt((K_D_P + P_tot - A_tot)^2 + 4*K_D_P*A_tot));
+  H_p := H_tot - A_P;
+  A_F := 0.5 * (A - F_tot - K_i_FH + sqrt((K_i_FH + F_tot - A)^2 + 4*K_i_FH*A));
+  H_F := H - A_F;
+  nu_p := k_cat_P * P_tot * (1/(K_D_P + H_p + P_tot)) * (O2/(1 + O2));
+  nu_FH := k_cat_FH * F_tot * (1/(K_i_FH + H_F + F_tot)) * (O2/(alpha + O2));
+  nu_FA := (k_cat_FA * F_tot) / (K_D_FA*(1 + H_F/K_D_FH) + A + gamma_*A_OH) * (O2/(alpha + O2));
+  H_OH := H_tot - H;
+  A_OH := A_tot - A;
+
+  //// Rate Rules:
+  H_tot' = 1 - H_tot*(1 + nu_p);
+  H' = 1 - H*(1 + nu_p + nu_FH);
+  A' = (A_tot - A*(1 + epsilon*nu_FA)) / epsilon;
+
+  //// Species initializations:
+  H_tot = 0;
+  H = 0;
+  A = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  A_tot = 100;
+  P_tot = 0.2;
+  F_tot = 1;
+  O2 = 1;
+  K_D_P = 1;
+  K_D_FH = 1;
+  K_D_FA = 1;
+  k_cat_P = 500;
+  k_cat_FH = 500;
+  k_cat_FA = 500;
+  alpha = 0.33;
+  gamma_ = 0.02;
+  epsilon = 5;
+
+end

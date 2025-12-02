@@ -1,0 +1,72 @@
+model *Malkov2020_SEIRS_COVID19()
+
+  //// Compartments and Species:
+  compartment population;
+  species S in population, E in population, I in population, R in population;
+
+  //// Assignment Rules:
+  R_tilde := (R_tilde_1 + R_tilde_2) / 2;
+  beta := gamma_ * R_tilde;
+
+  //// Rate Rules:
+  R_tilde_1' = -eta1 * (R_tilde_1 - R1_star);
+  R_tilde_2' = -eta2 * (R_tilde_2 - R2_star);
+
+  //// Reactions:
+  infection: S -> E; beta * S * I / N;
+  progression: E -> I; sigma * E;
+  recovery: I -> R; gamma_ * I;
+  waning: R -> S; omega * R;
+
+  //// Species initializations:
+  I = 1/1000;
+  E = 43.75 * I;
+  R = 0;
+  S = N - I - E - R;
+
+  //// Compartment initializations:
+  population = 1;
+
+  //// Variable initializations:
+  # Total population size (normalized)
+  N = 1;
+
+  # Epidemiological parameters from the literature
+  sigma = 1/5.2;    # Mean latent period of 5.2 days
+  gamma_ = 1/18;     # Mean infectious period of 18 days
+  omega = 1/183;    # Representative immunity waning rate (183 days)
+
+  # Parameters for the time-varying reproduction number dynamics (R_tilde)
+  # Based on the "moderate" speed scenario in Section 3
+  R_tilde_1 = 3;    # Initial value for R_tilde component 1
+  R_tilde_2 = 3;    # Initial value for R_tilde component 2
+  eta1 = 1/20;      # Convergence rate for R_tilde_1
+  eta2 = 1/20;      # Convergence rate for R_tilde_2
+  R1_star = 1.6;    # Long-run value for R_tilde_1
+  R2_star = 1.6;    # Long-run value for R_tilde_2
+
+  //// Other declarations:
+  var R_tilde, beta, R_tilde_1, R_tilde_2;
+  const population, N, sigma, gamma_, omega, eta1, eta2, R1_star, R2_star;
+
+  //// Unit definitions:
+  unit time_unit = dimensionless; # Time is in days
+
+  //// Display Names:
+  time_unit is "day";
+  population is "Total Population";
+  S is "Susceptible";
+  E is "Exposed";
+  I is "Infectious";
+  R is "Resistant";
+  R_tilde is "Time-varying reproduction number";
+  beta is "Time-varying transmission rate";
+  sigma is "Progression rate";
+  gamma_ is "Recovery rate";
+  omega is "Immunity waning rate";
+  infection is "Infection process";
+  progression is "Progression to infectious state";
+  recovery is "Recovery from infection";
+  waning is "Waning of immunity";
+
+end

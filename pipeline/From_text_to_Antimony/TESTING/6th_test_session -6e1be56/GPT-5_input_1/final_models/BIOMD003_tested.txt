@@ -1,0 +1,75 @@
+model *Goldbeter1991_Minimal_Mitosis_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C))*VM1;
+  V3 := M*VM3;
+
+  //// Reactions:
+  J_synth:  => C; cell*vi;
+  J_deg_X: C => ; cell*(vd*X*C/(Kd + C));
+  J_deg_ns: C => ; cell*(kd*C);
+  J_M_act:  => M; cell*(V1*(1 - M)/(K1 + (1 - M)));
+  J_M_inact: M => ; cell*(V2*M/(K2 + M));
+  J_X_act:  => X; cell*(V3*(1 - X)/(K3 + (1 - X)));
+  J_X_inact: X => ; cell*(V4*X/(K4 + X));
+
+  //// Species initializations:
+  C = 0.01;
+  M = 0;
+  X = 0.01;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  vi  = 0.023;
+  vd  = 0.1;
+  kd  = 0.00333;
+  Kc  = 0.3;
+  Kd  = 0.02;
+  K1  = 0.1;
+  K2  = 0.1;
+  K3  = 0.1;
+  K4  = 0.1;
+  VM1 = 0.5;
+  V2  = 0.167;
+  VM3 = 0.2;
+  V4  = 0.1;
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, vi, vd, kd, Kc, Kd, K1, K2, K3, K4, VM1, V2, VM3, V4;
+
+  //// Display Names:
+  cell is "Well-mixed cell volume (arbitrary units)";
+  C is "Cyclin";
+  M is "Active cdc2 kinase (fraction)";
+  X is "Active cyclin protease (fraction)";
+  V1 is "Effective Vmax for cdc2 activation (E1), cyclin-driven";
+  V3 is "Effective Vmax for protease activation (E3), M-driven";
+  vi is "Cyclin synthesis rate";
+  vd is "Max cyclin degradation rate by protease X";
+  kd is "Basal (nonspecific) cyclin degradation rate constant";
+  Kc is "Cyclin activation Michaelis const for E1";
+  Kd is "Cyclin degradation Michaelis const";
+  K1 is "Reduced Michaelis const for E1 on cdc2";
+  K2 is "Reduced Michaelis const for E2 on cdc2";
+  K3 is "Reduced Michaelis const for E3 on protease";
+  K4 is "Reduced Michaelis const for E4 on protease";
+  VM1 is "Maximal rate of E1 at saturating cyclin";
+  V2 is "Effective maximal rate of E2 (cdc2 inactivating kinase)";
+  VM3 is "Maximal rate of E3 when M=1";
+  V4 is "Effective maximal rate of E4 (protease inactivating phosphatase)";
+  J_synth is "Cyclin synthesis";
+  J_deg_X is "Cyclin degradation via protease X";
+  J_deg_ns is "Basal cyclin degradation";
+  J_M_act is "Activation of cdc2 kinase (dephosphorylation)";
+  J_M_inact is "Inactivation of cdc2 kinase (phosphorylation)";
+  J_X_act is "Activation of cyclin protease (phosphorylation by cdc2)";
+  J_X_inact is "Inactivation of cyclin protease (dephosphorylation)";
+
+end

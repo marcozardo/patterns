@@ -1,0 +1,122 @@
+model *Dwivedi2014_IL6_CrohnsDisease()
+
+  //// Compartments and Species:
+  compartment circulation, GI_tract, liver;
+  species IL6_c in circulation, sIL6R_c in circulation, CRP_c in circulation;
+  species sgp130_c in circulation, c1 in circulation, c2 in circulation;
+  species IL6_g in GI_tract, pSTAT3_g in GI_tract;
+
+  //// Reactions:
+  # IL-6 dynamics in GI tract and transport to circulation
+  J_IL6g_synthesis:         => IL6_g; ksyn_IL6g;
+  J_IL6g_degradation:    IL6_g => ; kdeg_IL6g * IL6_g;
+  J_IL6_transport:       IL6_g => IL6_c; k_transport_IL6 * IL6_g;
+  J_IL6c_degradation:    IL6_c => ; kdeg_IL6c * IL6_c;
+
+  # Soluble IL-6 Receptor (sIL6R) dynamics in circulation
+  # Basal synthesis plus CRP-mediated shedding from cells
+  J_sIL6R_synthesis:      => sIL6R_c; ksyn_sIL6R + k_shed_CRP * CRP_c;
+  J_sIL6R_degradation: sIL6R_c => ; kdeg_sIL6R * sIL6R_c;
+
+  # Soluble gp130 (sgp130) dynamics in circulation
+  J_sgp130_synthesis:         => sgp130_c; ksyn_sgp130;
+  J_sgp130_degradation:    sgp130_c => ; kdeg_sgp130 * sgp130_c;
+
+  # C-Reactive Protein (CRP) dynamics, produced by liver in response to circulating IL-6
+  J_CRP_synthesis:      => CRP_c; Vmax_CRP * IL6_c / (Km_CRP + IL6_c);
+  J_CRP_degradation: CRP_c => ; kdeg_CRP * CRP_c;
+
+  # Complex formation in circulation
+  # c1 = IL-6/sIL-6R complex
+  J_c1_formation: IL6_c + sIL6R_c -> c1; kon_c1 * IL6_c * sIL6R_c - koff_c1 * c1;
+  J_c1_degradation: c1 => ; kdeg_c1 * c1;
+
+  # c2 = IL-6/sIL-6R/sgp130 complex
+  J_c2_formation: c1 + sgp130_c -> c2; kon_c2 * c1 * sgp130_c - koff_c2 * c2;
+  J_c2_degradation: c2 => ; kdeg_c2 * c2;
+
+  # STAT3 phosphorylation in the GI tract, induced by local IL-6
+  J_pSTAT3_activation:    => pSTAT3_g; Vmax_pSTAT3 * IL6_g / (Km_pSTAT3 + IL6_g);
+  J_pSTAT3_deactivation: pSTAT3_g => ; k_deact_pSTAT3 * pSTAT3_g;
+
+
+  //// Species initializations:
+  # Initial concentrations are set to the steady-state values for Crohn's Disease patients from Table 1.
+  # Units were converted from mass/volume to nmol/L.
+  IL6_c = 0.000422; # 10 pg/ml, MW 23.7 kDa -> 0.422 pmol/L -> 0.000422 nmol/L
+  sIL6R_c = 2.8;    # 140 ng/ml, MW 50 kDa -> 2.8 nmol/L
+  CRP_c = 280;      # 7 mg/l, MW 25 kDa -> 280 nmol/L
+  sgp130_c = 2.8;   # 280 ng/ml, MW 100 kDa -> 2.8 nmol/L
+  IL6_g = 0.01055;  # 250 pg/ml, MW 23.7 kDa -> 10.55 pmol/L -> 0.01055 nmol/L
+  pSTAT3_g = 3.0;   # Gut pSTAT3 is given as 3-fold change (au)
+  c1 = 0;           # Initial concentration of IL6:sIL6R complex
+  c2 = 0;           # Initial concentration of IL6:sIL6R:sgp130 complex
+
+  //// Compartment initializations:
+  # Volumes are set to 1 as they are not specified in the paper.
+  circulation = 1;
+  GI_tract = 1;
+  liver = 1;
+
+  //// Variable initializations:
+  # Parameter values are placeholders, as they were determined by model fitting and not listed in the text.
+  # Rate units are per hour as specified in Methods.
+  ksyn_IL6g = 0.01;
+  kdeg_IL6g = 1;
+  k_transport_IL6 = 1;
+  kdeg_IL6c = 1;
+  ksyn_sIL6R = 1;
+  k_shed_CRP = 0.01;
+  kdeg_sIL6R = 1;
+  ksyn_sgp130 = 1;
+  kdeg_sgp130 = 1;
+  Vmax_CRP = 300;
+  Km_CRP = 0.001;
+  kdeg_CRP = 1;
+  kon_c1 = 1;
+  koff_c1 = 0.1;
+  kdeg_c1 = 1;
+  kon_c2 = 1;
+  koff_c2 = 0.1;
+  kdeg_c2 = 1;
+  Vmax_pSTAT3 = 3;
+  Km_pSTAT3 = 0.01;
+  k_deact_pSTAT3 = 1;
+
+  //// Other declarations:
+  const circulation, GI_tract, liver;
+  const ksyn_IL6g, kdeg_IL6g, k_transport_IL6, kdeg_IL6c;
+  const ksyn_sIL6R, k_shed_CRP, kdeg_sIL6R;
+  const ksyn_sgp130, kdeg_sgp130;
+  const Vmax_CRP, Km_CRP, kdeg_CRP;
+  const kon_c1, koff_c1, kdeg_c1;
+  const kon_c2, koff_c2, kdeg_c2;
+  const Vmax_pSTAT3, Km_pSTAT3, k_deact_pSTAT3;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1 liter;
+  unit time_unit = 3600 second;
+  unit concentration = substance / volume;
+  unit per_hour = 1 / time_unit;
+  unit bimolecular_rate = volume / (substance * time_unit);
+
+  //// Display Names:
+  time_unit is "hour";
+  circulation is "Circulation";
+  GI_tract is "Gastrointestinal Tract";
+  liver is "Liver";
+  IL6_c is "Circulating IL-6";
+  sIL6R_c is "Circulating soluble IL-6 Receptor";
+  CRP_c is "Circulating C-Reactive Protein";
+  sgp130_c is "Circulating soluble gp130";
+  c1 is "IL-6/sIL-6R complex";
+  c2 is "IL-6/sIL-6R/sgp130 complex";
+  IL6_g is "Gut IL-6";
+  pSTAT3_g is "Gut phosphorylated STAT3";
+  J_IL6g_synthesis is "Gut IL-6 Synthesis";
+  J_CRP_synthesis is "Liver CRP Synthesis";
+  J_c1_formation is "Formation of IL-6/sIL-6R complex";
+  J_c2_formation is "Sequestration of complex by sgp130";
+  J_pSTAT3_activation is "Activation of STAT3 in Gut";
+end

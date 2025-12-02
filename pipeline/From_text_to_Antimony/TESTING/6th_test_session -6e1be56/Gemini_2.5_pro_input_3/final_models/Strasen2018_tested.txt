@@ -1,0 +1,127 @@
+model *Strasen2018_TGFb_Signaling()
+
+  //// Compartments and Species:
+  compartment cyt, nuc;
+  species L in cyt;
+  species R1 in cyt, R2 in cyt;
+  species R1_R2_L in cyt;
+  species S2 in cyt, pS2 in cyt, S4 in cyt;
+  species pS2n in nuc, S2n in nuc, S4n in nuc;
+  species FB_mRNA in cyt, FB in cyt;
+
+  //// Assignment Rules:
+  nuc_cyt_S2_ratio := (pS2n + S2n) / (S2 + pS2);
+
+  //// Reactions:
+  // Receptor synthesis and degradation
+  J_R1_synth: => R1; k_prod_R1;
+  J_R1_degrad: R1 => ; k_deg_R1 * R1;
+  J_R2_synth: => R2; k_prod_R2;
+  J_R2_degrad: R2 => ; k_deg_R2 * R2;
+
+  // Ligand binding and complex formation/degradation
+  J_binding: R1 + R2 + L => R1_R2_L; k_binding * R1 * R2 * L;
+  J_complex_degrad: R1_R2_L => ; k_deg_complex * R1_R2_L;
+
+  // SMAD phosphorylation
+  J_phos: S2 + R1_R2_L => pS2 + R1_R2_L; k_phos * S2 * R1_R2_L;
+
+  // SMAD shuttling
+  J_pS2_import: pS2 => pS2n; k_imp_pS2 * pS2;
+  J_S2n_export: S2n => S2; k_exp_S2 * S2n;
+  J_S4_import: S4 => S4n; k_imp_S4 * S4;
+  J_S4_export: S4n => S4; k_exp_S4 * S4n;
+
+  // Nuclear SMAD dephosphorylation
+  J_dephos: pS2n => S2n; k_dephos_S2n * pS2n;
+
+  // Transcriptional feedback
+  J_mRNA_synth: => FB_mRNA; (k_prod_mRNA_basal + k_prod_mRNA_ind * pS2n * S4n) * nuc;
+  J_mRNA_degrad: FB_mRNA => ; k_deg_mRNA * FB_mRNA;
+  J_FB_synth: FB_mRNA => FB_mRNA + FB; k_translation * FB_mRNA;
+  J_FB_degrad: FB => ; k_deg_FB * FB;
+
+  // Feedback protein action on receptor complex
+  J_feedback: R1_R2_L + FB => FB; k_fb * R1_R2_L * FB;
+
+  //// Species initializations:
+  # Initial concentrations are set for a pre-stimulus steady state (L=0).
+  # Initial stimulus (L) of 100 pM is used as an example.
+  # Other values are placeholders.
+  L = 100;
+  R1 = 1000;
+  R2 = 1000;
+  S2 = 10000;
+  S4 = 10000;
+  pS2 = 0;
+  R1_R2_L = 0;
+  pS2n = 0;
+  S2n = 0;
+  S4n = 0;
+  FB_mRNA = 50;  // Corresponds to basal production
+  FB = 500;    // Corresponds to basal production
+
+  //// Compartment initializations:
+  cyt = 1.0;
+  nuc = 0.5;
+
+  //// Variable initializations:
+  # Placeholder kinetic parameters, as values are not provided in the text.
+  k_prod_R1 = 10;
+  k_deg_R1 = 0.01;
+  k_prod_R2 = 10;
+  k_deg_R2 = 0.01;
+  k_binding = 0.001;
+  k_deg_complex = 0.05;
+  k_phos = 0.1;
+  k_imp_pS2 = 0.1;
+  k_exp_S2 = 0.1;
+  k_imp_S4 = 0.1;
+  k_exp_S4 = 0.1;
+  k_dephos_S2n = 0.2;
+  k_prod_mRNA_basal = 0.5;
+  k_prod_mRNA_ind = 0.01;
+  k_deg_mRNA = 0.01;
+  k_translation = 0.1;
+  k_deg_FB = 0.01;
+  k_fb = 0.005;
+
+  //// Other declarations:
+  var nuc_cyt_S2_ratio;
+  const cyt, nuc;
+  const k_prod_R1, k_deg_R1, k_prod_R2, k_deg_R2, k_binding, k_deg_complex;
+  const k_phos, k_imp_pS2, k_exp_S2, k_imp_S4, k_exp_S4, k_dephos_S2n;
+  const k_prod_mRNA_basal, k_prod_mRNA_ind, k_deg_mRNA, k_translation, k_deg_FB, k_fb;
+
+  //// Display Names:
+  L is "TGF-beta ligand";
+  R1 is "TGF-beta Receptor I";
+  R2 is "TGF-beta Receptor II";
+  R1_R2_L is "Active receptor-ligand complex";
+  S2 is "Cytoplasmic SMAD2";
+  pS2 is "Phosphorylated cytoplasmic SMAD2";
+  S4 is "Cytoplasmic SMAD4";
+  pS2n is "Nuclear phosphorylated SMAD2";
+  S2n is "Nuclear SMAD2";
+  S4n is "Nuclear SMAD4";
+  FB_mRNA is "Feedback regulator mRNA";
+  FB is "Feedback regulator protein (SMAD7)";
+  nuc_cyt_S2_ratio is "Nuclear to cytoplasmic SMAD2 ratio";
+  J_R1_synth is "R1 synthesis";
+  J_R1_degrad is "R1 degradation";
+  J_R2_synth is "R2 synthesis";
+  J_R2_degrad is "R2 degradation";
+  J_binding is "Ligand-receptor binding";
+  J_complex_degrad is "Complex internalization and degradation";
+  J_phos is "SMAD2 phosphorylation";
+  J_pS2_import is "pSMAD2 nuclear import";
+  J_S2n_export is "SMAD2 nuclear export";
+  J_S4_import is "SMAD4 nuclear import";
+  J_S4_export is "SMAD4 nuclear export";
+  J_dephos is "Nuclear pSMAD2 dephosphorylation";
+  J_mRNA_synth is "Feedback mRNA synthesis";
+  J_mRNA_degrad is "Feedback mRNA degradation";
+  J_FB_synth is "Feedback protein synthesis (translation)";
+  J_FB_degrad is "Feedback protein degradation";
+  J_feedback is "Feedback inhibition of receptor complex";
+end

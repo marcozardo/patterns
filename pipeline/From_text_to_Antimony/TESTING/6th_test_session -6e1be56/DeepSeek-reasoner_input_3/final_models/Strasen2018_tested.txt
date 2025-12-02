@@ -1,0 +1,120 @@
+model *Strasen2018_TGFb_Signaling()
+
+  //// Compartments and Species:
+  compartment medium, membrane, cytoplasm, nucleus, endosome;
+  species $TGFb in medium, $R2 in membrane, $R1 in membrane, $R2_TGFb in membrane, $R1_R2_TGFb in membrane;
+  species $R1_R2_TGFb_e in endosome;
+  species S2 in cytoplasm, pS2 in cytoplasm, S4 in cytoplasm, pS2_S4 in cytoplasm;
+  species pS2_S4_n in nucleus, $FB_mRNA in nucleus, $FB_n in nucleus, $FB_c in cytoplasm;
+  species $FB_R1_R2_TGFb in membrane;
+
+  //// Assignment Rules:
+
+  //// Rate Rules:
+
+  //// Reactions:
+  J1: TGFb + R2 => R2_TGFb; k1*TGFb*R2;
+  J2: R2_TGFb + R1 => R1_R2_TGFb; k2*R2_TGFb*R1;
+  J3: R1_R2_TGFb => R1_R2_TGFb_e; k3*R1_R2_TGFb;
+  J4: R1_R2_TGFb_e => ; k4*R1_R2_TGFb_e;
+  J5: S2 => pS2; k5*R1_R2_TGFb*S2;
+  J6: pS2 => S2; k6*pS2;
+  J7: pS2 + S4 => pS2_S4; k7*pS2*S4;
+  J8: pS2_S4 => pS2_S4_n; k8*pS2_S4;
+  J9: pS2_S4_n => pS2_S4; k9*pS2_S4_n;
+  J10: => FB_mRNA; k10*pS2_S4_n;
+  J11: FB_mRNA => FB_mRNA + FB_n; k11*FB_mRNA;
+  J12: FB_mRNA => ; k12*FB_mRNA;
+  J13: FB_c => ; k13*FB_c;
+  J14: FB_c + R1_R2_TGFb => FB_R1_R2_TGFb; k14*FB_c*R1_R2_TGFb;
+  J15: FB_R1_R2_TGFb => ; k15*FB_R1_R2_TGFb;
+
+  //// Events:
+
+  //// Species initializations:
+  TGFb = 100;
+  R2 = 1000;
+  R1 = 500;
+  R2_TGFb = 0;
+  R1_R2_TGFb = 0;
+  R1_R2_TGFb_e = 0;
+  S2 = 10000;
+  pS2 = 0;
+  S4 = 8000;
+  pS2_S4 = 0;
+  pS2_S4_n = 0;
+  FB_mRNA = 0;
+  FB_n = 0;
+  FB_c = 0;
+  FB_R1_R2_TGFb = 0;
+
+  //// Compartment initializations:
+  medium = 1;
+  membrane = 1;
+  cytoplasm = 1;
+  nucleus = 1;
+  endosome = 1;
+
+  //// Variable initializations:
+  k1 = 0.01;
+  k2 = 0.05;
+  k3 = 0.1;
+  k4 = 0.05;
+  k5 = 0.02;
+  k6 = 0.5;
+  k7 = 0.01;
+  k8 = 0.1;
+  k9 = 0.05;
+  k10 = 0.005;
+  k11 = 0.1;
+  k12 = 0.05;
+  k13 = 0.05;
+  k14 = 0.01;
+  k15 = 0.1;
+
+  //// Other declarations:
+  const medium, membrane, cytoplasm, nucleus, endosome;
+  var k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15;
+
+  //// Unit definitions:
+  unit molecule = dimensionless;
+  unit pM = 1e-12 mole / liter;
+  unit minute = 60 second;
+
+  //// Display Names:
+  medium is "Extracellular medium";
+  membrane is "Cell membrane";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  endosome is "Endosome";
+  TGFb is "TGF-beta ligand";
+  R2 is "TGF-beta receptor II (TGFbRII)";
+  R1 is "TGF-beta receptor I (TGFbRI)";
+  R2_TGFb is "TGFb bound to R2";
+  R1_R2_TGFb is "Active receptor complex (R1-R2-TGFb)";
+  R1_R2_TGFb_e is "Internalized receptor complex";
+  S2 is "SMAD2";
+  pS2 is "Phosphorylated SMAD2";
+  S4 is "SMAD4";
+  pS2_S4 is "SMAD2/4 complex in cytoplasm";
+  pS2_S4_n is "SMAD2/4 complex in nucleus";
+  FB_mRNA is "Feedback protein mRNA (e.g., SMAD7)";
+  FB_n is "Feedback protein (nuclear)";
+  FB_c is "Feedback protein (cytoplasmic)";
+  FB_R1_R2_TGFb is "Inhibited receptor complex (FB bound)";
+  J1 is "TGFb binding to R2";
+  J2 is "Formation of active receptor complex";
+  J3 is "Internalization of active complex";
+  J4 is "Degradation of internalized complex";
+  J5 is "SMAD2 phosphorylation";
+  J6 is "SMAD2 dephosphorylation";
+  J7 is "SMAD2/4 complex formation";
+  J8 is "Nuclear import of SMAD2/4";
+  J9 is "Nuclear export of SMAD2/4";
+  J10 is "Transcription of feedback mRNA";
+  J11 is "Translation of feedback protein";
+  J12 is "Degradation of feedback mRNA";
+  J13 is "Degradation of feedback protein";
+  J14 is "Feedback inhibition of receptor complex";
+  J15 is "Turnover of inhibited complex";
+end

@@ -1,0 +1,58 @@
+model *Hou2020_SEIR_COVID19()
+
+  //// Compartments and Species:
+  compartment Wuhan;
+  species S in Wuhan, E in Wuhan, I in Wuhan, R in Wuhan;
+
+  //// Reactions:
+  Infection_from_I: S -> E; Wuhan * r1 * beta1 * S * I / N;
+  Infection_from_E: S -> E; Wuhan * r2 * beta2 * S * E / N;
+  Incubation:       E -> I; Wuhan * alpha * E;
+  Recovery:         I -> R; Wuhan * gamma_ * I;
+
+  //// Species initializations:
+  S = 11080778; // S = N - E - I - R
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  Wuhan = 1;
+
+  //// Variable initializations:
+  N = 11081000;
+  r1 = 6;
+  r2 = 18;
+  beta1 = 0.4;
+  beta2 = 0.2;     // From the assumption beta2 = 0.5 * beta1
+  alpha = 0.14;    // 1/7 days (incubation period)
+  gamma_ = 0.048;   // 1/21 days (duration of disease)
+
+  //// Other declarations:
+  const Wuhan, N, r1, r2, beta1, beta2, alpha, gamma_;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = 1 item;
+
+  //// Display Names:
+  time_unit is "day";
+  substance is "person";
+  Wuhan is "Population of Wuhan City";
+  S is "Susceptible individuals";
+  E is "Exposed individuals";
+  I is "Infectious individuals";
+  R is "Recovered individuals";
+  N is "Total population";
+  r1 is "Contact rate of infectious individuals";
+  r2 is "Contact rate of exposed (latent) individuals";
+  beta1 is "Transmission probability from infectious individuals";
+  beta2 is "Transmission probability from exposed individuals";
+  alpha is "Incubation rate";
+  gamma_ is "Recovery rate";
+  Infection_from_I is "Infection from infectious population";
+  Infection_from_E is "Infection from exposed population";
+  Incubation is "Progression to infectious state";
+  Recovery is "Recovery from infection";
+
+end

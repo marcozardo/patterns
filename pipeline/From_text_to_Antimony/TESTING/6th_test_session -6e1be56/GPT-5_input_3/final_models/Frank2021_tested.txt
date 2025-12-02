@@ -1,0 +1,87 @@
+/* Domain: Molecular/cellular immunology ? macrophage polarization via STAT1/STAT6 signaling */
+
+model *Frank2021_MacrophagePolarization_STAT()
+
+  //// Compartments and Species:
+  compartment cell;
+  species x1 in cell, x2 in cell;  # x1 = activated STAT1; x2 = activated STAT6
+
+  //// Assignment Rules:
+  Hplus_x1 := x1^n1/(x1^n1 + k1^n1);                 # H+(x1; k1, n1)
+  Hplus_x2 := x2^n2/(x2^n2 + k2^n2);                 # H+(x2; k2, n2)
+  Hminus_on_x1 := p2^l2/(p2^l2 + x2^l2);             # H-(x2; p2, l2) acting on x1 pathway
+  Hminus_on_x2 := p1^l1/(p1^l1 + x1^l1);             # H-(x1; p1, l1) acting on x2 pathway
+
+  //// Rate Rules:
+  x1' = (a1*Hplus_x1 + S1)*Hminus_on_x1 + b1 - q1*x1;  # Eq. (1)
+  x2' = a2*Hplus_x2 + S2*Hminus_on_x2 + b2 - q2*x2;    # Eq. (2)
+
+  //// Reactions:
+  // not present (dynamics defined by Rate Rules)
+
+  //// Events:
+  // not present
+
+  //// Species initializations:
+  x1 = 0;   # initial activated STAT1 level (arbitrary units)
+  x2 = 0;   # initial activated STAT6 level (arbitrary units)
+
+  //// Compartment initializations:
+  cell = 1; # dimensionless volume for convenience
+
+  //// Variable initializations:
+  # Parameter set Theta_0 (initial set adapted from Yates et al. 2004)
+  a1 = 5;
+  a2 = 5;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 6;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5;
+  q2 = 5;
+  S1 = 3.75;
+  S2 = 3.75;
+
+  //// Other declarations:
+  var Hplus_x1, Hplus_x2, Hminus_on_x1, Hminus_on_x2;
+  const cell, a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2, q1, q2, S1, S2;
+
+  //// Unit definitions:
+  # omitted (all parameters dimensionless or per-time; time in arbitrary units consistent with 1/day)
+
+  //// Display Names:
+  cell is "Macrophage (well-mixed)";
+  x1 is "Activated STAT1 (M1 proxy)";
+  x2 is "Activated STAT6 (M2 proxy)";
+  Hplus_x1 is "Self-stimulation Hill (x1)";
+  Hplus_x2 is "Self-stimulation Hill (x2)";
+  Hminus_on_x1 is "Inhibition Hill on x1 by x2";
+  Hminus_on_x2 is "Inhibition Hill on x2 by x1";
+end
+
+/* Unmapped/alternate data from the source (not activated in this executable to preserve a single coherent parameter set):
+
+Alternate parameter sets reported (all with l1 = l2 = 1):
+- Theta_1 (only inputs changed vs Theta_0):
+  S1 = 4; S2 = 4; (all other params as in Theta_0)
+
+- Theta_2 (asymmetric self-stimulation and faster deactivation):
+  a1 = 15; a2 = 8;
+  b1 = 0.05; b2 = 0.05;
+  n1 = 22; n2 = 6;
+  k1 = 1; k2 = 1;
+  l1 = 1; l2 = 1;
+  p1 = 0.5; p2 = 1;
+  q1 = 5.8; q2 = 5.8;
+  S1 = 5; S2 = 5;
+
+Notes:
+- All parameters are positive; n1, n2, l1, l2 are integers per text.
+- Time units in the paper are 1/day for rates; this model uses consistent arbitrary time units (numeric values unchanged).
+*/

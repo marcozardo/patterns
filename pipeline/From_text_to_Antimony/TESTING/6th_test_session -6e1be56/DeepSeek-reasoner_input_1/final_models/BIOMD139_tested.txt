@@ -1,0 +1,131 @@
+model *Hoffmann2002_IkB_NFkB()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IKK in cytoplasm;
+  species NFkB_c in cytoplasm, NFkB_n in nucleus;
+  species IkBa in cytoplasm, IkBb in cytoplasm, IkBe in cytoplasm;
+  species NFkB_IkBa in cytoplasm, NFkB_IkBb in cytoplasm, NFkB_IkBe in cytoplasm;
+
+  //// Assignment Rules:
+
+  //// Rate Rules:
+
+  //// Reactions:
+  IKK_activation: => IKK; cytoplasm*(k_act*TNF - k_inact*IKK);
+  IkBa_synthesis: => IkBa; cytoplasm*(k_syn_a*(NFkB_n^h_a/(K_a^h_a + NFkB_n^h_a)));
+  IkBb_synthesis: => IkBb; cytoplasm*(k_syn_b*(NFkB_n^h_b/(K_b^h_b + NFkB_n^h_b)));
+  IkBe_synthesis: => IkBe; cytoplasm*(k_syn_e*(NFkB_n^h_e/(K_e^h_e + NFkB_n^h_e)));
+  IkBa_degradation: IkBa => ; cytoplasm*k_deg_a*IkBa;
+  IkBb_degradation: IkBb => ; cytoplasm*k_deg_b*IkBb;
+  IkBe_degradation: IkBe => ; cytoplasm*k_deg_e*IkBe;
+  binding_IkBa: NFkB_c + IkBa -> NFkB_IkBa; cytoplasm*(k_on_a*NFkB_c*IkBa - k_off_a*NFkB_IkBa);
+  binding_IkBb: NFkB_c + IkBb -> NFkB_IkBb; cytoplasm*(k_on_b*NFkB_c*IkBb - k_off_b*NFkB_IkBb);
+  binding_IkBe: NFkB_c + IkBe -> NFkB_IkBe; cytoplasm*(k_on_e*NFkB_c*IkBe - k_off_e*NFkB_IkBe);
+  degradation_bound_IkBa: NFkB_IkBa => NFkB_c; cytoplasm*k_phos_a*IKK*NFkB_IkBa;
+  degradation_bound_IkBb: NFkB_IkBb => NFkB_c; cytoplasm*k_phos_b*IKK*NFkB_IkBb;
+  degradation_bound_IkBe: NFkB_IkBe => NFkB_c; cytoplasm*k_phos_e*IKK*NFkB_IkBe;
+  translocation_in: NFkB_c -> NFkB_n; cytoplasm*k_in*NFkB_c;
+  translocation_out: NFkB_n -> NFkB_c; nucleus*k_out*NFkB_n;
+
+  //// Events:
+  TNF_pulse: at(time >= pulse_start): TNF = 1;
+  TNF_end: at(time >= pulse_end): TNF = 0;
+
+  //// Species initializations:
+  IKK = 0;
+  NFkB_c = 0.1;
+  NFkB_n = 0;
+  IkBa = 0.5;
+  IkBb = 0.1;
+  IkBe = 0.05;
+  NFkB_IkBa = 0.4;
+  NFkB_IkBb = 0;
+  NFkB_IkBe = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  //// Variable initializations:
+  k_act = 0.1;
+  k_inact = 0.01;
+  k_syn_a = 1;
+  k_syn_b = 0.2;
+  k_syn_e = 0.2;
+  k_deg_a = 0.1;
+  k_deg_b = 0.05;
+  k_deg_e = 0.05;
+  k_on_a = 10;
+  k_off_a = 1;
+  k_on_b = 10;
+  k_off_b = 1;
+  k_on_e = 10;
+  k_off_e = 1;
+  k_phos_a = 1;
+  k_phos_b = 0.5;
+  k_phos_e = 0.5;
+  k_in = 0.1;
+  k_out = 0.1;
+  h_a = 2;
+  K_a = 0.1;
+  h_b = 2;
+  K_b = 0.1;
+  h_e = 2;
+  K_e = 0.1;
+  TNF = 0;
+  pulse_start = 0;
+  pulse_end = 60;
+
+  //// Other declarations:
+  var IKK, NFkB_c, NFkB_n, IkBa, IkBb, IkBe, NFkB_IkBa, NFkB_IkBb, NFkB_IkBe, TNF;
+  const cytoplasm, nucleus, k_act, k_inact, k_syn_a, k_syn_b, k_syn_e, k_deg_a, k_deg_b, k_deg_e, k_on_a, k_off_a, k_on_b, k_off_b, k_on_e, k_off_e, k_phos_a, k_phos_b, k_phos_e, k_in, k_out, h_a, K_a, h_b, K_b, h_e, K_e, pulse_start, pulse_end;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit concentration_unit = 1e-9 mole;
+
+  //// Display Names:
+  time_unit is "minute";
+  concentration_unit is "nanomolar";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  IKK is "Active IKK";
+  NFkB_c is "Cytoplasmic NF-?B";
+  NFkB_n is "Nuclear NF-?B";
+  IkBa is "I?B?";
+  IkBb is "I?B?";
+  IkBe is "I?B?";
+  NFkB_IkBa is "NF-?B:I?B? complex";
+  NFkB_IkBb is "NF-?B:I?B? complex";
+  NFkB_IkBe is "NF-?B:I?B? complex";
+  TNF is "TNF stimulation (0/1)";
+  k_act is "IKK activation rate";
+  k_inact is "IKK inactivation rate";
+  k_syn_a is "I?B? synthesis rate";
+  k_syn_b is "I?B? synthesis rate";
+  k_syn_e is "I?B? synthesis rate";
+  k_deg_a is "I?B? degradation rate";
+  k_deg_b is "I?B? degradation rate";
+  k_deg_e is "I?B? degradation rate";
+  k_on_a is "I?B? binding rate";
+  k_off_a is "I?B? dissociation rate";
+  k_on_b is "I?B? binding rate";
+  k_off_b is "I?B? dissociation rate";
+  k_on_e is "I?B? binding rate";
+  k_off_e is "I?B? dissociation rate";
+  k_phos_a is "I?B? phosphorylation rate";
+  k_phos_b is "I?B? phosphorylation rate";
+  k_phos_e is "I?B? phosphorylation rate";
+  k_in is "NF-?B nuclear import rate";
+  k_out is "NF-?B nuclear export rate";
+  h_a is "Hill coefficient for I?B? synthesis";
+  K_a is "Hill constant for I?B? synthesis";
+  h_b is "Hill coefficient for I?B? synthesis";
+  K_b is "Hill constant for I?B? synthesis";
+  h_e is "Hill coefficient for I?B? synthesis";
+  K_e is "Hill constant for I?B? synthesis";
+  pulse_start is "Start time of TNF pulse";
+  pulse_end is "End time of TNF pulse";
+
+end

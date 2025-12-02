@@ -1,0 +1,82 @@
+```antimony
+model *Frank2021_MacrophagePolarization()
+
+  //// Compartments and Species:
+  compartment macrophage;
+  species x1 in macrophage, x2 in macrophage;
+
+  //// Reactions:
+  // Equation 1: dx1/dt = (a1*H+(x1) + S1)*H-(x2) + b1 - q1*x1
+  R_x1_production: => x1; (a1 * (x1^n1 / (k1^n1 + x1^n1)) + S1) * (p2^l2 / (p2^l2 + x2^l2)) + b1;
+  R_x1_deactivation: x1 => ; q1 * x1;
+  
+  // Equation 2: dx2/dt = a2*H+(x2) + S2*H-(x1) + b2 - q2*x2
+  R_x2_production: => x2; a2 * x2^n2 / (k2^n2 + x2^n2) + S2 * (p1^l1 / (p1^l1 + x1^l1)) + b2;
+  R_x2_deactivation: x2 => ; q2 * x2;
+
+  //// Species initializations:
+  // Initial conditions are not fixed in the paper; set to a naive state (0,0).
+  x1 = 0;
+  x2 = 0;
+
+  //// Compartment initializations:
+  // Assuming a dimensionless model with unit volume
+  macrophage = 1;
+
+  //// Variable initializations:
+  // Using parameter set Theta_2 from Table 2 for the quadstable case
+  a1 = 15;
+  a2 = 8;
+  b1 = 0.05;
+  b2 = 0.05;
+  n1 = 22;
+  n2 = 6;
+  k1 = 1;
+  k2 = 1;
+  l1 = 1;
+  l2 = 1;
+  p1 = 0.5;
+  p2 = 1;
+  q1 = 5.8;
+  q2 = 5.8;
+  S1 = 5;
+  S2 = 5;
+
+  //// Other declarations:
+  const macrophage;
+  const a1, a2, b1, b2, n1, n2, k1, k2, l1, l2, p1, p2;
+  const q1, q2, S1, S2;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+
+  //// Display Names:
+  time_unit is "day";
+  macrophage is "macrophage cell";
+  x1 is "activated STAT1 (M1 proxy)";
+  x2 is "activated STAT6 (M2 proxy)";
+  
+  a1 is "Strength of self-stimulation for STAT1";
+  a2 is "Strength of self-stimulation for STAT6";
+  b1 is "Basal activation rate for STAT1";
+  b2 is "Basal activation rate for STAT6";
+  n1 is "Hill exponent for STAT1 self-stimulation";
+  n2 is "Hill exponent for STAT6 self-stimulation";
+  k1 is "Threshold for STAT1 self-stimulation";
+  k2 is "Threshold for STAT6 self-stimulation";
+  l1 is "Hill exponent for mutual inhibition of STAT6 by STAT1";
+  l2 is "Hill exponent for mutual inhibition of STAT1 by STAT6";
+  p1 is "Threshold for mutual inhibition of STAT6 by STAT1";
+  p2 is "Threshold for mutual inhibition of STAT1 by STAT6";
+  q1 is "Deactivation rate for STAT1";
+  q2 is "Deactivation rate for STAT6";
+  S1 is "Input signal strength for STAT1 (IFN-gamma)";
+  S2 is "Input signal strength for STAT6 (IL-4)";
+  
+  R_x1_production is "Production of activated STAT1";
+  R_x1_deactivation is "Deactivation of STAT1";
+  R_x2_production is "Production of activated STAT6";
+  R_x2_deactivation is "Deactivation of STAT6";
+
+end
+```

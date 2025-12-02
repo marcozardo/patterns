@@ -1,0 +1,37 @@
+model *Hou2020_Wuhan_SEIR()
+
+  //// Compartments and Species:
+  compartment Wuhan;
+  species S in Wuhan, E in Wuhan, I in Wuhan, R in Wuhan;
+
+  //// Assignment Rules:
+  N := S + E + I + R;
+
+  //// Reactions:
+  Infection_from_I: S => E; Wuhan*(r1*beta1*I*S/N);
+  Infection_from_E: S => E; Wuhan*(r2*beta2*E*S/N);
+  Incubation: E => I; Wuhan*(sigma*E);
+  Recovery: I => R; Wuhan*(gamma_*I);
+
+  //// Species initializations:
+  S = 11080778;
+  E = 193;
+  I = 27;
+  R = 2;
+
+  //// Compartment initializations:
+  Wuhan = 1;
+
+  //// Variable initializations:
+  r1 = 6;
+  r2 = 18;
+  beta1 = 0.4;
+  beta2 = 0.2;
+  sigma = 0.14;
+  gamma_ = 0.048;
+
+  //// Other declarations:
+  var N;
+  const Wuhan, r1, r2, beta1, beta2, sigma, gamma_;
+
+end

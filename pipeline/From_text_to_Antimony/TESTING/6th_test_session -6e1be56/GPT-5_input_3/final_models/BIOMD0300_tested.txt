@@ -1,0 +1,87 @@
+model *Schmierer2010_SKM1()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $O2 in cell;
+
+  //// Assignment Rules:
+  O2tilde := O2 / KM_P_O2;  # dimensionless oxygen (O2 / KM of PHD for O2)
+  v_p := kcatPprime*P_tot/(K_D_P + H_tot) * (O2tilde/(1 + O2tilde));  # PHD-dependent ODD-hydroxylation rate (Eq. SKM1 form of Eq.4)
+  v_FH := kcatFHprime*F_tot/(K_D_FH + H) * (O2tilde/(alpha + O2tilde));  # FIH-dependent CAD-hydroxylation rate (Eq.11)
+  H_OH := H_tot - H;  # CAD-hydroxylated HIF? by conservation
+  HRE_CAD := H/(K_D_HRE + H_tot);     # fraction/probability of HRE bound by non-CAD-hydroxylated HIF?
+  HRE_CADOH := H_OH/(K_D_HRE + H_tot);# fraction/probability of HRE bound by CAD-hydroxylated HIF?
+  HRE_any := (H + H_OH)/(K_D_HRE + H_tot); # total HRE occupancy by any HIF?
+
+  //// Rate Rules:
+  H_tot' = ks_H - H_tot*(1 + v_p);             # d?_tot/d? = 1 - ?_tot(1 + ?_p)
+  H'     = ks_H - H*(1 + v_p + v_FH);          # d?/d?     = 1 - ?(1 + ?_p + ?_FH)
+
+  //// Reactions:
+  # no explicit reactions; dynamics defined by rate rules (dimensionless SKM1)
+
+  //// Events:
+  # none
+
+  //// Species initializations:
+  O2 = 0.1;            # initial oxygen (arbitrary units; with KM_P_O2=1 this is O2tilde=0.1)
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # dynamic states (rate rules require initial values)
+  H_tot = 1;           # initial total HIF? (dimensionless, normalized to H_tot^max = 1)
+  H = 1;               # initial non-CAD-hydroxylated HIF?
+
+  # kinetic/affinity parameters (dimensionless SKM1 defaults consistent with paper)
+  P_tot = 0.2;         # total PHD (relative to HIF? max)
+  F_tot = 1;           # total FIH (five-fold over PHD; F_tot/P_tot = 5)
+  K_D_P = 1;           # dissociation constant PHD/HIF?
+  K_D_FH = 1;          # dissociation constant FIH/HIF? (CAD)
+  kcatPprime = 500;    # kcat^P / k_d^H (gives kcatPprime*P_tot = 100 as used in Fig.3)
+  kcatFHprime = 100;   # kcat^FH / k_d^H (so kcatFHprime*F_tot = 100 as used in Fig.3)
+  KM_P_O2 = 1;         # scale for O2 (so O2tilde = O2)
+  alpha = 0.33;        # KM_F / KM_P (FIH has lower KM for O2)
+  K_D_HRE = 0.3;       # HIF/HRE dissociation constant (dimensionless)
+  ks_H = 1;            # basal synthesis term (sets the dimensionless production = 1)
+
+  //// Other declarations:
+  var H_tot, H;
+  var v_p, v_FH, H_OH, O2tilde, HRE_CAD, HRE_CADOH, HRE_any;
+  const cell, P_tot, F_tot, K_D_P, K_D_FH, kcatPprime, kcatFHprime, KM_P_O2, alpha, K_D_HRE, ks_H;
+
+  //// Unit definitions:
+  # omitted (dimensionless model)
+
+  //// Display Names:
+  cell is "Cellular compartment";
+  O2 is "Oxygen";
+  H_tot is "Total HIF? (dimensionless)";
+  H is "Non-CAD-hydroxylated HIF?";
+  H_OH is "CAD-hydroxylated HIF?";
+  v_p is "PHD ODD-hydroxylation rate";
+  v_FH is "FIH CAD-hydroxylation rate";
+  HRE_CAD is "HRE occupancy by non-CAD-hydroxylated HIF?";
+  HRE_CADOH is "HRE occupancy by CAD-hydroxylated HIF?";
+  HRE_any is "Total HRE occupancy";
+end
+
+/* Notes and mapping to Schmierer et al. (2010), BMC Syst Biol 4:139
+- Domain: molecular/cellular oxygen-sensing (HIF pathway).
+- This executable Antimony encodes Skeleton Model 1 (SKM1) from the paper:
+  d?_tot/d? = 1 - ?_tot(1 + ?_p)
+  d?/d?     = 1 - ?(1 + ?_p + ?_FH)
+  with ?_p and ?_FH given by the SKM1 Michaelis?Menten forms (Eqs. 4 & 11 in the text).
+- H_OH is defined by conservation: H_OH = H_tot - H.
+- HRE binding probabilities implemented per page 5: HRE_CAD = H/(K_D_HRE + H_tot), HRE_CADOH = H_OH/(K_D_HRE + H_tot).
+
+Parameterization:
+- Defaults reproduce the qualitative setting of Figure 3 (K_D^P = K_D^FH = 1; kcat^P*P_tot = kcat^FH*F_tot = 100; alpha = 0.33; K_D^HRE = 0.3).
+- Oxygen is represented as a boundary species O2; O2tilde = O2/KM_P_O2.
+
+Unmapped (not included here due to missing full algebraic detail in the excerpt):
+- Full Model binding-corrected rate functions and auxiliary algebra (Eqs. 5, 7, 8, 9) requiring explicit expressions for free/bound pools (PHD/FIH/ARD).
+- Skeleton Model 2 (SKM2) ARD-only module and parameters ?, ?.
+- Time-dependent oxygen protocols/events used in some simulations.
+*/

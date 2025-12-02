@@ -1,0 +1,176 @@
+/* Domain: Molecular/cellular cell-cycle regulation in budding yeast (S. cerevisiae)
+Source: Queralt et al., Cell (2006) ? ?Downregulation of PP2A^Cdc55 Phosphatase by Separase Initiates Mitotic Exit in Budding Yeast?
+
+Model intent:
+- Encodes the qualitative network proposed in the paper?s ?A Model for Mitotic Exit? (Figure 7), capturing:
+  ? APC^Cdc20-dependent securin degradation ? separase activation
+  ? Separase-dependent downregulation of PP2A^Cdc55
+  ? Cdk (Clb2-Cdk) and MEN-dependent Net1 phosphorylation versus dephosphorylation by PP2A^Cdc55 and Cdc14
+  ? Cdc14 release from Net1 upon Net1 phosphorylation and resequestration upon Net1 dephosphorylation
+  ? MEN activation by Cdc14 and relief from PP2A^Cdc55/Bfa1 inhibition; MEN inhibited by high Cdk
+  ? Cdh1 activation at high Cdc14/low Cdk, promoting Clb2-Cdk downregulation (APC^Cdh1 surrogate)
+- Numerical parameter values here are placeholders to allow direct simulation; the paper?s fitted ODE parameter set (Figure S6) is not available in the provided text.
+*/
+
+model *Queralt2006_MitoticExit_CoreNetwork()
+
+  //// Compartments and Species:
+  compartment cell;
+  species APC_Cdc20 in cell, Securin in cell, Separase in cell, PP2A_Cdc55 in cell, Net1_P in cell;
+  species Cdc14 in cell, MEN in cell, Bfa1_P in cell, Clb2Cdk in cell, Cdh1 in cell;
+
+  //// Assignment Rules:
+  Net1_U := Net1_total - Net1_P;  # Unphosphorylated Net1 pool (algebraic), 0 <= Net1_P <= Net1_total
+
+  //// Reactions:
+  # APC^Cdc20 activation and inactivation (induced at t = t_on by event via k_act_Cdc20)
+  R1_act_APC_Cdc20:  => APC_Cdc20; cell*k_act_Cdc20*Clb2Cdk;
+  R2_inact_APC_Cdc20: APC_Cdc20 => ; cell*k_inact_Cdc20*APC_Cdc20;
+
+  # Securin synthesis and APC^Cdc20-dependent degradation
+  R3_syn_Securin:  => Securin; cell*k_syn_securin;
+  R4_deg_Securin: Securin => ; cell*k_deg_securin*APC_Cdc20*Securin;
+
+  # Separase activation upon securin loss and spontaneous inactivation
+  R5_act_Separase:  => Separase; cell*k_act_separase*APC_Cdc20*Securin;
+  R6_inact_Separase: Separase => ; cell*k_deact_separase*Separase;
+
+  # PP2A^Cdc55 production, separase-dependent downregulation, and basal decay
+  R7_prod_PP2A:  => PP2A_Cdc55; cell*k_prod_PP2A;
+  R8_down_PP2A_by_Separase: PP2A_Cdc55 => ; cell*k_down_PP2A*Separase*PP2A_Cdc55;
+  R9_basal_PP2A_decay: PP2A_Cdc55 => ; cell*k_decay_PP2A*PP2A_Cdc55;
+
+  # Net1 phosphorylation by Clb2-Cdk and MEN; dephosphorylation by PP2A^Cdc55 and Cdc14
+  R10_phos_Net1:  => Net1_P; cell*(k_phos_Cdk*Clb2Cdk + k_phos_MEN*MEN)*Net1_U;
+  R11_dephos_Net1: Net1_P => ; cell*(k_dephos_PP2A*PP2A_Cdc55 + k_dephos_Cdc14*Cdc14)*Net1_P;
+
+  # Cdc14 release driven by Net1 phosphorylation and resequestration when Net1 is dephosphorylated
+  R12_release_Cdc14:  => Cdc14; cell*k_rel_Cdc14*Net1_P;
+  R13_resequester_Cdc14: Cdc14 => ; cell*k_resq_Cdc14*Net1_U*Cdc14;
+
+  # MEN activation by Cdc14 (via Cdc15) and by Bfa1 phosphorylation; MEN inhibited by Cdk and decays basally
+  R14_act_MEN:  => MEN; cell*(k_MEN_act_Cdc14*Cdc14 + k_MEN_act_Bfa1*Bfa1_P);
+  R15_inhibit_MEN_by_Cdk: MEN => ; cell*k_MEN_inh_Cdk*Clb2Cdk*MEN;
+  R16_decay_MEN: MEN => ; cell*k_MEN_decay*MEN;
+
+  # Bfa1 phosphorylation opposed by PP2A^Cdc55 (and dephosphorylation by PP2A^Cdc55 and Cdc14)
+  R17_phos_Bfa1:  => Bfa1_P; cell*(k_bfa1_phos*Polo)/(1 + alpha_PP2A_bfa*PP2A_Cdc55);
+  R18_dephos_Bfa1: Bfa1_P => ; cell*k_bfa1_deph*(PP2A_Cdc55 + Cdc14)*Bfa1_P;
+
+  # Clb2-Cdk synthesis and APC-driven degradation (APC^Cdc20 early, APC^Cdh1 surrogate later via Cdh1)
+  R19_syn_Clb2Cdk:  => Clb2Cdk; cell*k_syn_Clb2;
+  R20_deg_Clb2Cdk: Clb2Cdk => ; cell*k_deg_Clb2*(APC_Cdc20 + k_cdh1_eff*Cdh1)*Clb2Cdk;
+
+  # Cdh1 activation by Cdc14 when Cdk is low; inactivation by Cdk
+  R21_act_Cdh1:  => Cdh1; cell*(k_Cdh1_act*Cdc14)/(1 + alpha_Cdk_inhib*Clb2Cdk);
+  R22_inact_Cdh1: Cdh1 => ; cell*k_Cdh1_inact*Clb2Cdk*Cdh1;
+
+  //// Events:
+  E0_APC_Cdc20_induction: at (time >= t_on): k_act_Cdc20 = k_act_Cdc20_on;
+
+  //// Species initializations:
+  APC_Cdc20 = 0;
+  Securin = 1;
+  Separase = 0;
+  PP2A_Cdc55 = 1;
+  Net1_P = 0;
+  Cdc14 = 0;
+  MEN = 0;
+  Bfa1_P = 0;
+  Clb2Cdk = 1;
+  Cdh1 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  Net1_total = 1;
+
+  # APC^Cdc20 dynamics
+  k_act_Cdc20 = 0;         # turned on by event at t_on
+  k_act_Cdc20_on = 0.2;
+  k_inact_Cdc20 = 0.05;
+
+  # Securin and separase
+  k_syn_securin = 0.1;
+  k_deg_securin = 0.5;
+  k_act_separase = 0.5;
+  k_deact_separase = 0.05;
+
+  # PP2A^Cdc55
+  k_prod_PP2A = 0.05;
+  k_down_PP2A = 0.2;
+  k_decay_PP2A = 0.01;
+
+  # Net1 phosphorylation cycle
+  k_phos_Cdk = 0.6;
+  k_phos_MEN = 0.5;
+  k_dephos_PP2A = 0.8;
+  k_dephos_Cdc14 = 0.6;
+
+  # Cdc14 release and resequestration
+  k_rel_Cdc14 = 0.5;
+  k_resq_Cdc14 = 0.5;
+
+  # MEN dynamics
+  k_MEN_act_Cdc14 = 0.4;
+  k_MEN_act_Bfa1 = 0.3;
+  k_MEN_inh_Cdk = 0.3;
+  k_MEN_decay = 0.05;
+
+  # Bfa1 phosphorylation module
+  Polo = 1;
+  k_bfa1_phos = 0.3;
+  alpha_PP2A_bfa = 2;
+  k_bfa1_deph = 0.4;
+
+  # Clb2-Cdk and Cdh1 switch
+  k_syn_Clb2 = 0.2;
+  k_deg_Clb2 = 0.5;
+  k_cdh1_eff = 1;
+  k_Cdh1_act = 0.5;
+  alpha_Cdk_inhib = 2;
+  k_Cdh1_inact = 0.5;
+
+  # Induction timing
+  t_on = 0;
+
+  //// Other declarations:
+  var Net1_U, k_act_Cdc20;
+  const cell, Net1_total, k_act_Cdc20_on, k_inact_Cdc20, k_syn_securin, k_deg_securin, k_act_separase, k_deact_separase;
+  const k_prod_PP2A, k_down_PP2A, k_decay_PP2A, k_phos_Cdk, k_phos_MEN, k_dephos_PP2A, k_dephos_Cdc14;
+  const k_rel_Cdc14, k_resq_Cdc14, k_MEN_act_Cdc14, k_MEN_act_Bfa1, k_MEN_inh_Cdk, k_MEN_decay;
+  const Polo, k_bfa1_phos, alpha_PP2A_bfa, k_bfa1_deph, k_syn_Clb2, k_deg_Clb2, k_cdh1_eff, k_Cdh1_act, alpha_Cdk_inhib, k_Cdh1_inact, t_on;
+
+  //// Unit definitions:
+  # Omitted ? placeholder values are dimensionless for generic simulation.
+
+  //// Display Names:
+  cell is "Yeast cell";
+  APC_Cdc20 is "APC^Cdc20 activity";
+  Securin is "Securin";
+  Separase is "Active separase";
+  PP2A_Cdc55 is "PP2A^Cdc55 phosphatase activity";
+  Net1_P is "Phosphorylated Net1";
+  Cdc14 is "Released (active) Cdc14";
+  MEN is "Mitotic Exit Network activity";
+  Bfa1_P is "Phosphorylated Bfa1";
+  Clb2Cdk is "Clb2-Cdk activity";
+  Cdh1 is "Active Cdh1 (APC^Cdh1 surrogate)";
+  Net1_U is "Unphosphorylated Net1 (computed)";
+  R10_phos_Net1 is "Net1 phosphorylation by Cdk and MEN";
+  R11_dephos_Net1 is "Net1 dephosphorylation by PP2A^Cdc55 and Cdc14";
+  R12_release_Cdc14 is "Cdc14 release driven by Net1-P";
+  R13_resequester_Cdc14 is "Cdc14 resequestration when Net1 dephosphorylated";
+  R14_act_MEN is "MEN activation by Cdc14 and Bfa1-P";
+  R15_inhibit_MEN_by_Cdk is "MEN inhibition by Cdk";
+  R20_deg_Clb2Cdk is "Clb2-Cdk degradation by APCs";
+  E0_APC_Cdc20_induction is "Induction of APC^Cdc20 activation at t_on";
+end
+
+/* Unmapped or approximated elements (due to missing explicit equations/parameters in the provided text):
+- Exact differential equations and parameter set referenced as Figure S6 are not included in the input; placeholder rate constants were assigned to enable simulation.
+- Explicit roles for Sic1 and detailed Polo regulation were summarized in the paper but not parameterized here; APC^Cdh1 action is approximated by Cdh1-dependent Clb2-Cdk degradation.
+- Direct MEN phosphorylation of Net1 is represented phenomenologically (k_phos_MEN*MEN); specific MEN kinase components (Tem1, Cdc15, Mob1-Dbf2) are abstracted into MEN activity.
+- Bfa1/Bub2 regulation is simplified: Bfa1 phosphorylation depends on a constant Polo term and is opposed by PP2A^Cdc55; Bub2 is not explicitly represented.
+- Scenarios (e.g., MEN inactive, securin^mdb, cdc55?) can be emulated by parameter tweaks (e.g., set k_MEN_act_* to 0, increase k_syn_securin or set k_deg_securin?0, set k_prod_PP2A high / k_down_PP2A low), but are not hard-coded as separate models. */

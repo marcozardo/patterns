@@ -1,0 +1,139 @@
+model *Queralt2006_MitoticExit()
+
+//// Compartments and Species:
+compartment Cell;
+species $Clb2 in Cell, $Net1 in Cell, $Net1P in Cell, $Cdc14_free in Cell, $Cdc14_bound in Cell;
+species $Separase_active in Cell, $Separase_inactive in Cell, $Securin in Cell;
+species $PP2A_active in Cell, $PP2A_inactive in Cell;
+species $Cdc15_active in Cell, $Cdc15_inactive in Cell;
+species $Cdh1_active in Cell, $Cdh1_inactive in Cell;
+
+//// Assignment Rules:
+Net1_tot := Net1 + Net1P + Cdc14_bound;
+Cdc14_tot := Cdc14_free + Cdc14_bound;
+Cdc15_tot := Cdc15_active + Cdc15_inactive;
+Cdh1_tot := Cdh1_active + Cdh1_inactive;
+PP2A_tot := PP2A_active + PP2A_inactive;
+Separase_tot := Separase_active + Separase_inactive;
+
+//// Rate Rules:
+// Phosphorylation/dephosphorylation of Net1
+Net1' = -k1*Clb2*Net1 - k2*Cdc15_active*Net1 + k3*PP2A_active*Net1P + k4*Cdc14_free*Net1P;
+Net1P' = k1*Clb2*Net1 + k2*Cdc15_active*Net1 - k3*PP2A_active*Net1P - k4*Cdc14_free*Net1P;
+
+// Cdc14 binding to Net1 (unphosphorylated) and release upon phosphorylation
+Cdc14_bound' = k5*Cdc14_free*Net1 - k6*Cdc14_bound - k7*Net1P*Cdc14_bound; // release also promoted by Net1P
+Cdc14_free' = -k5*Cdc14_free*Net1 + k6*Cdc14_bound + k7*Net1P*Cdc14_bound;
+
+// Separase activation by securin degradation
+Separase_inactive' = -k8*APCCdc20*Separase_inactive;
+Separase_active' = k8*APCCdc20*Separase_inactive;
+
+// Securin degradation by APCCdc20
+Securin' = -k9*APCCdc20*Securin;
+
+// PP2A inactivation by active separase
+PP2A_active' = -k10*Separase_active*PP2A_active;
+PP2A_inactive' = k10*Separase_active*PP2A_active;
+
+// Cdc15 inactivation (phosphorylation) by Clb2 and activation (dephosphorylation) by Cdc14
+Cdc15_inactive' = k11*Clb2*Cdc15_active - k12*Cdc14_free*Cdc15_inactive;
+Cdc15_active' = -k11*Clb2*Cdc15_active + k12*Cdc14_free*Cdc15_inactive;
+
+// Cdh1 inactivation (phosphorylation) by Clb2 and activation (dephosphorylation) by Cdc14
+Cdh1_inactive' = k13*Clb2*Cdh1_active - k14*Cdc14_free*Cdh1_inactive;
+Cdh1_active' = -k13*Clb2*Cdh1_active + k14*Cdc14_free*Cdh1_inactive;
+
+// Clb2 degradation by APCCdc20 and APCCdh1 (when Cdh1_active is present)
+Clb2' = -k15*APCCdc20*Clb2 - k16*Cdh1_active*Clb2;
+
+//// Reactions:
+// No explicit reactions; all dynamics captured by rate rules
+
+//// Events:
+// Trigger anaphase onset by activating APCCdc20 at time=0 (simulating Cdc20 re-addition)
+at(time >= 0): APCCdc20 = 1;
+
+//// Species initializations:
+Clb2 = 10;
+Securin = 10;
+Net1 = 10;
+Net1P = 0;
+Cdc14_free = 0;
+Cdc14_bound = 10;
+Separase_active = 0;
+Separase_inactive = 10;
+PP2A_active = 10;
+PP2A_inactive = 0;
+Cdc15_active = 0;
+Cdc15_inactive = 10;
+Cdh1_active = 0;
+Cdh1_inactive = 10;
+
+//// Compartment initializations:
+Cell = 1;
+
+//// Variable initializations:
+// Rate constants (arbitrary units for demonstration)
+k1 = 0.5;   // Net1 phosphorylation by Clb2
+k2 = 0.3;   // Net1 phosphorylation by MEN (Cdc15_active)
+k3 = 0.4;   // Net1 dephosphorylation by PP2A
+k4 = 0.2;   // Net1 dephosphorylation by Cdc14
+k5 = 1.0;   // Cdc14 binding to Net1
+k6 = 0.1;   // Cdc14 dissociation from Net1 (unphosphorylated)
+k7 = 0.5;   // Cdc14 release promoted by Net1P
+k8 = 0.8;   // Separase activation by APCCdc20
+k9 = 0.8;   // Securin degradation by APCCdc20
+k10 = 0.6;  // PP2A inactivation by separase
+k11 = 0.4;  // Cdc15 inactivation by Clb2
+k12 = 0.3;  // Cdc15 activation by Cdc14
+k13 = 0.4;  // Cdh1 inactivation by Clb2
+k14 = 0.3;  // Cdh1 activation by Cdc14
+k15 = 0.2;  // Clb2 degradation by APCCdc20
+k16 = 0.1;  // Clb2 degradation by APCCdh1
+APCCdc20 = 0;  // Initially inactive, triggered by event
+
+//// Other declarations:
+const Cell, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16;
+var APCCdc20, Net1_tot, Cdc14_tot, Cdc15_tot, Cdh1_tot, PP2A_tot, Separase_tot;
+
+//// Unit definitions:
+// Arbitrary units for concentration and time
+unit concentration = dimensionless;
+unit time_unit = dimensionless;
+
+//// Display Names:
+Cell is "Cell";
+Clb2 is "Cyclin B (Clb2)";
+Net1 is "Unphosphorylated Net1";
+Net1P is "Phosphorylated Net1";
+Cdc14_free is "Active Cdc14";
+Cdc14_bound is "Cdc14 bound to Net1";
+Separase_active is "Active Separase";
+Separase_inactive is "Inactive Separase (bound to securin)";
+Securin is "Securin (Pds1)";
+PP2A_active is "Active PP2A^Cdc55";
+PP2A_inactive is "Inactive PP2A^Cdc55";
+Cdc15_active is "Active Cdc15 (dephosphorylated)";
+Cdc15_inactive is "Inactive Cdc15 (phosphorylated)";
+Cdh1_active is "Active Cdh1 (dephosphorylated)";
+Cdh1_inactive is "Inactive Cdh1 (phosphorylated)";
+APCCdc20 is "APC^Cdc20 activity";
+k1 is "Rate constant for Net1 phosphorylation by Clb2";
+k2 is "Rate constant for Net1 phosphorylation by MEN";
+k3 is "Rate constant for Net1 dephosphorylation by PP2A";
+k4 is "Rate constant for Net1 dephosphorylation by Cdc14";
+k5 is "Rate constant for Cdc14 binding to Net1";
+k6 is "Rate constant for Cdc14 dissociation from Net1";
+k7 is "Rate constant for Cdc14 release by Net1P";
+k8 is "Rate constant for separase activation";
+k9 is "Rate constant for securin degradation";
+k10 is "Rate constant for PP2A inactivation by separase";
+k11 is "Rate constant for Cdc15 inactivation by Clb2";
+k12 is "Rate constant for Cdc15 activation by Cdc14";
+k13 is "Rate constant for Cdh1 inactivation by Clb2";
+k14 is "Rate constant for Cdh1 activation by Cdc14";
+k15 is "Rate constant for Clb2 degradation by APC^Cdc20";
+k16 is "Rate constant for Clb2 degradation by APC^Cdh1";
+
+end

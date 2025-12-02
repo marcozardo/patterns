@@ -1,0 +1,191 @@
+model *Proctor2007_UPS_UbiquitinProteasome()
+
+  //// Compartments and Species:
+  compartment cell;
+  species NatP in cell, MisP in cell, Ub in cell, E1 in cell, E2 in cell, E3 in cell, DUB in cell, Proteasome in cell;
+  species $ATP in cell, $ADP in cell, $AMP in cell, $ROS in cell;
+  species E3_MisP in cell, E1_Ub in cell, E2_Ub in cell;
+  species MisP_Ub in cell, MisP_Ub2 in cell, MisP_Ub3 in cell, MisP_Ub4 in cell, MisP_Ub5 in cell, MisP_Ub6 in cell, MisP_Ub7 in cell, MisP_Ub8 in cell;
+  species MisP_Ub4_Proteasome in cell, MisP_Ub5_Proteasome in cell, MisP_Ub6_Proteasome in cell, MisP_Ub7_Proteasome in cell, MisP_Ub8_Proteasome in cell;
+  species AggP in cell, SeqAggP in cell, AggP_Proteasome in cell;
+  species degUb4 in cell, degUb5 in cell, degUb6 in cell, degUb7 in cell, degUb8 in cell;
+
+  //// Reactions:
+  # Protein synthesis, misfolding, and refolding
+  R1_ProteinSynthesis:  => NatP; k1; 
+  R2_Misfolding: NatP + ROS => MisP + ROS; k2*NatP*ROS; 
+  R3_Refolding: MisP => NatP; k3*MisP; 
+
+  # E3 binding to misfolded protein (reversible)
+  R4_E3_bind_MisP: E3 + MisP => E3_MisP; k61*E3*MisP; 
+  R5_E3_MisP_dissoc: E3_MisP => E3 + MisP; k61r*E3_MisP; 
+
+  # E1 activation (ATP-dependent) and E2 loading
+  R6_E1_Ub_activation: E1 + Ub + ATP => E1_Ub + AMP; k62*E1*Ub*ATP/(5000 + ATP); 
+  R7_E2_load_from_E1Ub: E2 + E1_Ub => E2_Ub + E1; k63*E2*E1_Ub; 
+
+  # First (mono) ubiquitination on E3_MisP
+  R8_Monoubiquitination: E2_Ub + E3_MisP => MisP_Ub + E2 + E3; k64*E2_Ub*E3_MisP; 
+
+  # Polyubiquitination chain extension (free substrates)
+  R9_PolyUb1to2: MisP_Ub + E2_Ub => MisP_Ub2 + E2; k65*MisP_Ub*E2_Ub; 
+  R10_PolyUb2to3: MisP_Ub2 + E2_Ub => MisP_Ub3 + E2; k65*MisP_Ub2*E2_Ub; 
+  R11_PolyUb3to4: MisP_Ub3 + E2_Ub => MisP_Ub4 + E2; k65*MisP_Ub3*E2_Ub; 
+  R12_PolyUb4to5: MisP_Ub4 + E2_Ub => MisP_Ub5 + E2; k65*MisP_Ub4*E2_Ub; 
+  R13_PolyUb5to6: MisP_Ub5 + E2_Ub => MisP_Ub6 + E2; k65*MisP_Ub5*E2_Ub; 
+  R14_PolyUb6to7: MisP_Ub6 + E2_Ub => MisP_Ub7 + E2; k65*MisP_Ub6*E2_Ub; 
+  R15_PolyUb7to8: MisP_Ub7 + E2_Ub => MisP_Ub8 + E2; k65*MisP_Ub7*E2_Ub; 
+
+  # Deubiquitination (free substrates, stepwise shortening)
+  R16_DUB_free_8to7: DUB + MisP_Ub8 => DUB + MisP_Ub7 + Ub; k66*DUB*MisP_Ub8; 
+  R17_DUB_free_7to6: DUB + MisP_Ub7 => DUB + MisP_Ub6 + Ub; k66*DUB*MisP_Ub7; 
+  R18_DUB_free_6to5: DUB + MisP_Ub6 => DUB + MisP_Ub5 + Ub; k66*DUB*MisP_Ub6; 
+  R19_DUB_free_5to4: DUB + MisP_Ub5 => DUB + MisP_Ub4 + Ub; k66*DUB*MisP_Ub5; 
+  R20_DUB_free_4to3: DUB + MisP_Ub4 => DUB + MisP_Ub3 + Ub; k66*DUB*MisP_Ub4; 
+  R21_DUB_free_3to2: DUB + MisP_Ub3 => DUB + MisP_Ub2 + Ub; k66*DUB*MisP_Ub3; 
+  R22_DUB_free_2to1: DUB + MisP_Ub2 => DUB + MisP_Ub + Ub; k66*DUB*MisP_Ub2; 
+  R23_DUB_free_1to0: DUB + MisP_Ub => DUB + MisP + Ub; k66*DUB*MisP_Ub; 
+
+  # Binding of polyubiquitinated substrates (i >= 4) to proteasome
+  R24_BindUb4: MisP_Ub4 + Proteasome => MisP_Ub4_Proteasome; k67*MisP_Ub4*Proteasome; 
+  R25_BindUb5: MisP_Ub5 + Proteasome => MisP_Ub5_Proteasome; k67*MisP_Ub5*Proteasome; 
+  R26_BindUb6: MisP_Ub6 + Proteasome => MisP_Ub6_Proteasome; k67*MisP_Ub6*Proteasome; 
+  R27_BindUb7: MisP_Ub7 + Proteasome => MisP_Ub7_Proteasome; k67*MisP_Ub7*Proteasome; 
+  R28_BindUb8: MisP_Ub8 + Proteasome => MisP_Ub8_Proteasome; k67*MisP_Ub8*Proteasome; 
+
+  # Deubiquitination while bound (stepwise shortening, stays bound for i>=5)
+  R29_DUB_bound_8to7: DUB + MisP_Ub8_Proteasome => DUB + MisP_Ub7_Proteasome + Ub; k68*DUB*MisP_Ub8_Proteasome; 
+  R30_DUB_bound_7to6: DUB + MisP_Ub7_Proteasome => DUB + MisP_Ub6_Proteasome + Ub; k68*DUB*MisP_Ub7_Proteasome; 
+  R31_DUB_bound_6to5: DUB + MisP_Ub6_Proteasome => DUB + MisP_Ub5_Proteasome + Ub; k68*DUB*MisP_Ub6_Proteasome; 
+  R32_DUB_bound_5to4: DUB + MisP_Ub5_Proteasome => DUB + MisP_Ub4_Proteasome + Ub; k68*DUB*MisP_Ub5_Proteasome; 
+
+  # Release from proteasome when chain falls below 4 (i = 4 -> 3)
+  R33_DUB_bound_4to3_release: DUB + MisP_Ub4_Proteasome => DUB + MisP_Ub3 + Ub + Proteasome; kdss*DUB*MisP_Ub4_Proteasome; 
+
+  # Proteasomal degradation of bound substrates (ATP-dependent), releases i Ub and destroys substrate
+  R34_ProtAct_Ub4: MisP_Ub4_Proteasome + ATP => Proteasome + ADP + 4 Ub + degUb4; k69*MisP_Ub4_Proteasome*ATP/(5000 + ATP); 
+  R35_ProtAct_Ub5: MisP_Ub5_Proteasome + ATP => Proteasome + ADP + 5 Ub + degUb5; k69*MisP_Ub5_Proteasome*ATP/(5000 + ATP); 
+  R36_ProtAct_Ub6: MisP_Ub6_Proteasome + ATP => Proteasome + ADP + 6 Ub + degUb6; k69*MisP_Ub6_Proteasome*ATP/(5000 + ATP); 
+  R37_ProtAct_Ub7: MisP_Ub7_Proteasome + ATP => Proteasome + ADP + 7 Ub + degUb7; k69*MisP_Ub7_Proteasome*ATP/(5000 + ATP); 
+  R38_ProtAct_Ub8: MisP_Ub8_Proteasome + ATP => Proteasome + ADP + 8 Ub + degUb8; k69*MisP_Ub8_Proteasome*ATP/(5000 + ATP); 
+
+  # Aggregation and sequestration/inhibition processes
+  R39_Aggregation_2MisP: 2 MisP => AggP; 0.5*k71*MisP*MisP; 
+  R40_Aggregation_MisP_AggP: MisP + AggP => 2 AggP; k71*MisP*AggP; 
+  R41_Aggregation_2MisP_Ub: 2 MisP_Ub => AggP; 0.5*k72*MisP_Ub*MisP_Ub; 
+  R42_Aggregation_2MisP_Ub8: 2 MisP_Ub8 => AggP; 0.5*k72*MisP_Ub8*MisP_Ub8; 
+  R43_Aggregation_MisP_MisP_Ub: MisP + MisP_Ub => AggP; k72*MisP*MisP_Ub; 
+  R44_Aggregation_MisP_Ub7_Ub8: MisP_Ub7 + MisP_Ub8 => AggP; k72*MisP_Ub7*MisP_Ub8; 
+  R45_Sequester_AggP: AggP => SeqAggP; k73*AggP; 
+  R46_AggP_bind_Proteasome: AggP + Proteasome => AggP_Proteasome; k74*AggP; 
+
+  //// Events:
+  # ts20 E1 inactivation experiment (temperature shift) implemented as parameter shutoff
+  E1_shutoff: at (time >= 1800): k62 = 0;
+
+  //// Species initializations:
+  NatP = 500;
+  MisP = 0;
+  Ub = 500;
+  E1 = 100;
+  E2 = 100;
+  E3 = 100;
+  DUB = 200;
+  Proteasome = 100;
+  ATP = 10000;
+  ADP = 1000;
+  AMP = 1000;
+  ROS = 10;
+  E3_MisP = 0;
+  E1_Ub = 0;
+  E2_Ub = 0;
+  MisP_Ub = 0;
+  MisP_Ub2 = 0;
+  MisP_Ub3 = 0;
+  MisP_Ub4 = 0;
+  MisP_Ub5 = 0;
+  MisP_Ub6 = 0;
+  MisP_Ub7 = 0;
+  MisP_Ub8 = 0;
+  MisP_Ub4_Proteasome = 0;
+  MisP_Ub5_Proteasome = 0;
+  MisP_Ub6_Proteasome = 0;
+  MisP_Ub7_Proteasome = 0;
+  MisP_Ub8_Proteasome = 0;
+  AggP = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+  degUb4 = 0;
+  degUb5 = 0;
+  degUb6 = 0;
+  degUb7 = 0;
+  degUb8 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k1 = 0.01;
+  k2 = 2.0e-6;
+  k3 = 4.0e-6;
+  k61 = 1.7e-5;
+  k61r = 2.0e-4;
+  k62 = 2.0e-4;
+  k63 = 1.0e-3;
+  k64 = 1.0e-3;
+  k65 = 1.0e-2;
+  k66 = 1.0e-5;
+  k67 = 1.0e-5;
+  k68 = 1.0e-5;
+  kdss = 1.0e-5;
+  k69 = 1.0e-3;
+  k71 = 1.0e-8;
+  k72 = 1.0e-8;
+  k73 = 1.0e-3;
+  k74 = 1.0e-5;
+
+  //// Other declarations:
+  const cell;
+  var k62;
+  const k1, k2, k3, k61, k61r, k63, k64, k65, k66, k67, k68, kdss, k69, k71, k72, k73, k74;
+
+  //// Display Names:
+  cell is "Generic intracellular volume";
+  NatP is "Native protein pool";
+  MisP is "Misfolded protein";
+  Ub is "Ubiquitin (monomer)";
+  E1 is "Ubiquitin-activating enzyme (E1)";
+  E2 is "Ubiquitin-conjugating enzyme (E2)";
+  E3 is "Ubiquitin ligase (HECT-type)";
+  DUB is "De-ubiquitinating enzyme";
+  Proteasome is "26S Proteasome";
+  ATP is "Adenosine triphosphate (boundary)";
+  ADP is "Adenosine diphosphate (boundary)";
+  AMP is "Adenosine monophosphate (boundary)";
+  ROS is "Reactive oxygen species (boundary)";
+  E3_MisP is "E3 bound to MisP";
+  E1_Ub is "E1~Ub thioester";
+  E2_Ub is "E2~Ub thioester";
+  MisP_Ub is "Mono-ubiquitinated MisP";
+  MisP_Ub2 is "Poly-Ub (2) MisP";
+  MisP_Ub3 is "Poly-Ub (3) MisP";
+  MisP_Ub4 is "Poly-Ub (4) MisP";
+  MisP_Ub5 is "Poly-Ub (5) MisP";
+  MisP_Ub6 is "Poly-Ub (6) MisP";
+  MisP_Ub7 is "Poly-Ub (7) MisP";
+  MisP_Ub8 is "Poly-Ub (8) MisP";
+  MisP_Ub4_Proteasome is "Ub4-MisP bound to proteasome";
+  MisP_Ub5_Proteasome is "Ub5-MisP bound to proteasome";
+  MisP_Ub6_Proteasome is "Ub6-MisP bound to proteasome";
+  MisP_Ub7_Proteasome is "Ub7-MisP bound to proteasome";
+  MisP_Ub8_Proteasome is "Ub8-MisP bound to proteasome";
+  AggP is "Aggregated protein";
+  SeqAggP is "Sequestered aggregates";
+  AggP_Proteasome is "Aggregates bound to proteasome (inhibition)";
+  degUb4 is "Degradation counter (Ub4 substrates)";
+  degUb5 is "Degradation counter (Ub5 substrates)";
+  degUb6 is "Degradation counter (Ub6 substrates)";
+  degUb7 is "Degradation counter (Ub7 substrates)";
+  degUb8 is "Degradation counter (Ub8 substrates)";
+
+end

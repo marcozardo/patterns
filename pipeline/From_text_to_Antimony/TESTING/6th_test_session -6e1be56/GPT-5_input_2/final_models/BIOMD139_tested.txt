@@ -1,0 +1,130 @@
+model *Hoffmann2002_NFkB_IkB_Module()
+
+  //// Compartments and Species:
+  compartment cyt, nuc;
+  species NFkB_c in cyt, IkBa in cyt, IkBb in cyt, IkBe in cyt, C_a in cyt;
+  species C_b in cyt, C_e in cyt, mA in cyt, mB in cyt, mE in cyt;
+  species NFkB_n in nuc;
+
+  //// Reactions:
+  # NF-?B nuclear transport
+  R_import: NFkB_c => NFkB_n; cyt*(k_in*NFkB_c);
+  R_export: NFkB_n => NFkB_c; nuc*(k_out*NFkB_n);
+
+  # Binding of NF-?B to I?B isoforms (cytoplasm), with reversible association
+  R_bind_a: NFkB_c + IkBa -> C_a; cyt*(kon_a*NFkB_c*IkBa - koff_a*C_a);
+  R_bind_b: NFkB_c + IkBb -> C_b; cyt*(kon_b*NFkB_c*IkBb - koff_b*C_b);
+  R_bind_e: NFkB_c + IkBe -> C_e; cyt*(kon_e*NFkB_c*IkBe - koff_e*C_e);
+
+  # IKK-mediated degradation of I?B within complexes, releasing NF-?B
+  R_IKK_deg_a: C_a => NFkB_c; cyt*(k_deg_a*IKK_active*C_a);
+  R_IKK_deg_b: C_b => NFkB_c; cyt*(k_deg_b*IKK_active*C_b);
+  R_IKK_deg_e: C_e => NFkB_c; cyt*(k_deg_e*IKK_active*C_e);
+
+  # Basal degradation of free I?B isoforms
+  R_basdeg_a: IkBa => ; cyt*(k_di_a*IkBa);
+  R_basdeg_b: IkBb => ; cyt*(k_di_b*IkBb);
+  R_basdeg_e: IkBe => ; cyt*(k_di_e*IkBe);
+
+  # Translation (protein synthesis) of I?B isoforms from their mRNAs
+  R_tl_a:  => IkBa; cyt*(k_tl_a*mA);
+  R_tl_b:  => IkBb; cyt*(k_tl_b*mB);
+  R_tl_e:  => IkBe; cyt*(k_tl_e*mE);
+
+  # Transcription of I?B mRNAs (NF-?B?dependent) and mRNA degradation
+  R_tx_a:  => mA; cyt*(k_tx_a*NFkB_n/(K_tx_a + NFkB_n) + leak_a);
+  R_tx_b:  => mB; cyt*(k_tx_b*NFkB_n/(K_tx_b + NFkB_n) + leak_b);
+  R_tx_e:  => mE; cyt*(k_tx_e*NFkB_n/(K_tx_e + NFkB_n) + leak_e);
+
+  R_mdeg_a: mA => ; cyt*(dm_a*mA);
+  R_mdeg_b: mB => ; cyt*(dm_b*mB);
+  R_mdeg_e: mE => ; cyt*(dm_e*mE);
+
+  //// Events:
+  stim_on:  at (time >= t_on):  IKK_active = IKK_stim;
+  stim_off: at (time >= t_off): IKK_active = IKK_base;
+
+  //// Species initializations:
+  NFkB_c = 1;
+  NFkB_n = 0;
+  IkBa = 3;
+  IkBb = 1;
+  IkBe = 1;
+  C_a = 0;
+  C_b = 0;
+  C_e = 0;
+  mA = 0;
+  mB = 0;
+  mE = 0;
+
+  //// Compartment initializations:
+  cyt = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  k_in = 0.5;
+  k_out = 0.5;
+
+  kon_a = 1;   koff_a = 0.5;
+  kon_b = 1;   koff_b = 0.5;
+  kon_e = 1;   koff_e = 0.5;
+
+  k_deg_a = 1;
+  k_deg_b = 0.5;
+  k_deg_e = 0.5;
+
+  k_di_a = 0.1;
+  k_di_b = 0.05;
+  k_di_e = 0.05;
+
+  k_tl_a = 1.0;
+  k_tl_b = 0.5;
+  k_tl_e = 0.5;
+
+  k_tx_a = 2.0;  K_tx_a = 0.5;  leak_a = 0.01;
+  k_tx_b = 0.5;  K_tx_b = 0.5;  leak_b = 0.01;
+  k_tx_e = 0.5;  K_tx_e = 0.5;  leak_e = 0.01;
+
+  dm_a = 0.2;
+  dm_b = 0.2;
+  dm_e = 0.2;
+
+  IKK_active = 0;
+  IKK_base = 0;
+  IKK_stim = 1;
+
+  t_on = 0;
+  t_off = 1e9;
+
+  //// Other declarations:
+  var IKK_active;
+  const cyt, nuc, k_in, k_out, kon_a, koff_a, kon_b, koff_b, kon_e, koff_e;
+  const k_deg_a, k_deg_b, k_deg_e, k_di_a, k_di_b, k_di_e, k_tl_a, k_tl_b, k_tl_e;
+  const k_tx_a, K_tx_a, leak_a, k_tx_b, K_tx_b, leak_b, k_tx_e, K_tx_e, leak_e;
+  const dm_a, dm_b, dm_e, IKK_base, IKK_stim, t_on, t_off;
+
+  //// Display Names:
+  cyt is "Cytoplasm";
+  nuc is "Nucleus";
+  NFkB_c is "NF-?B (cytoplasm)";
+  NFkB_n is "NF-?B (nucleus)";
+  IkBa is "I?B?";
+  IkBb is "I?B?";
+  IkBe is "I?B?";
+  C_a is "NF-?B:I?B? complex";
+  C_b is "NF-?B:I?B? complex";
+  C_e is "NF-?B:I?B? complex";
+  mA is "I?B? mRNA";
+  mB is "I?B? mRNA";
+  mE is "I?B? mRNA";
+  IKK_active is "Active IKK (stimulus-controlled)";
+
+end
+
+/* Unmapped data and assumptions:
+- The article describes an ODE model with many measured/fit parameters but does not list numeric values in the provided text. The parameter values above are normalized placeholders to enable simulation and reflect qualitative roles:
+  * Stronger negative feedback via I?B? (higher k_tx_a, k_deg_a).
+  * Slower/damping roles for I?B? and I?B? (lower k_tx and k_deg).
+- Time units are arbitrary; set t_off to 1e9 for persistent stimulation by default. To model a 15-minute pulse, set t_off accordingly (e.g., t_off = 15 if time is in minutes).
+- This model captures: IKK-driven I?B degradation, NF-?B nuclear translocation, NF-?B?dependent I?B transcription/translation, binding inhibition, and isoform-specific negative feedback/damping as described.
+- Additional complexities mentioned (e.g., tertiary IKK?I?B?NF-?B complexes, differential transport of each isoform/protein) are represented here in lumped effective reactions to keep the structure executable without detailed kinetic data. */

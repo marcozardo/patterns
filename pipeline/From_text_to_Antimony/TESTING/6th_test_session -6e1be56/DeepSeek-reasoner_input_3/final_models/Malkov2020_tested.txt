@@ -1,0 +1,70 @@
+model *Malkov2020_SEIRS_COVID19()
+
+  //// Compartments and Species:
+  compartment Population;
+  species S in Population, E in Population, I in Population, R in Population;
+
+  //// Assignment Rules:
+  R_tilde := (R1_tilde + R2_tilde) / 2;
+  beta := gamma_ * R_tilde;
+
+  //// Rate Rules:
+  R1_tilde' = -eta1 * (R1_tilde - R1star);
+  R2_tilde' = -eta2 * (R2_tilde - R2star);
+
+  //// Reactions:
+  Infection: S -> E; Population * beta * S * I;
+  Progression: E -> I; Population * sigma * E;
+  Recovery: I -> R; Population * gamma_ * I;
+  LossOfImmunity: R -> S; Population * omega * R;
+
+  //// Species initializations:
+  S = 1 - 43.75/1000 - 1/1000;
+  E = 43.75/1000;
+  I = 1/1000;
+  R = 0;
+
+  //// Compartment initializations:
+  Population = 1;
+
+  //// Variable initializations:
+  sigma = 1/5.2;
+  gamma_ = 1/18;
+  omega = 0;
+  R1_tilde = 3.0;
+  R2_tilde = 3.0;
+  R1star = 3.0;
+  R2star = 3.0;
+  eta1 = 0;
+  eta2 = 0;
+
+  //// Other declarations:
+  var R_tilde, beta;
+  const sigma, gamma_, omega, R1_tilde, R2_tilde, R1star, R2star, eta1, eta2;
+
+  //// Unit definitions:
+  unit time_unit = day;
+
+  //// Display Names:
+  Population is "Total population (normalized)";
+  S is "Susceptible fraction";
+  E is "Exposed fraction";
+  I is "Infected fraction";
+  R is "Resistant (recovered) fraction";
+  Infection is "Infection (force of infection)";
+  Progression is "Progression to infectious";
+  Recovery is "Recovery";
+  LossOfImmunity is "Loss of immunity (reinfection)";
+  R_tilde is "Time-varying reproduction number";
+  beta is "Transmission rate";
+  sigma is "Incubation rate (1/incubation period)";
+  gamma_ is "Recovery rate (1/infectious period)";
+  omega is "Immunity waning rate (reinfection rate)";
+  R1_tilde is "Component 1 of time-varying reproduction number";
+  R2_tilde is "Component 2 of time-varying reproduction number";
+  R1star is "Long-run value of R1_tilde";
+  R2star is "Long-run value of R2_tilde";
+  eta1 is "Convergence rate for R1_tilde";
+  eta2 is "Convergence rate for R2_tilde";
+
+end

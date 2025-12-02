@@ -1,0 +1,79 @@
+model *Gevertz2019_minimal_model()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species U in tumor, I in tumor, V in tumor, T in tumor, D in tumor;
+
+  //// Assignment Rules:
+  N := U + I + T;
+
+  //// Rate Rules:
+  U' = r*U - beta*U*V/N - (kappa0 + c_kill*I)*U*T/N;
+  I' = beta*U*V/N - delta_I*I - (kappa0 + c_kill*I)*I*T/N;
+  V' = alpha*delta_I*I - delta_V*V;
+  T' = c_T*I + chi_D*D - delta_T*T;
+  D' = - delta_D*D;
+
+  //// Events:
+  at (time >= 0): V = V + dose_V;
+  at (time >= 2): V = V + dose_V;
+  at (time >= 4): V = V + dose_V;
+  at (time >= 1): D = D + dose_D;
+  at (time >= 3): D = D + dose_D;
+  at (time >= 5): D = D + dose_D;
+
+  //// Species initializations:
+  U = 100;
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  r = 0.3198;
+  beta = 0.00100854;
+  c_T = 1.428064;
+  c_kill = 6.234e7;
+  delta_D = 4.901894;
+  kappa0 = 1;
+  delta_I = 1;
+  alpha = 1;
+  delta_V = 1;
+  chi_D = 1;
+  delta_T = 1;
+  dose_V = 5e9;
+  dose_D = 1e6;
+
+  //// Other declarations:
+  const r, beta, c_T, c_kill, delta_D, kappa0, delta_I, alpha, delta_V, chi_D, delta_T, dose_V, dose_D;
+
+  //// Unit definitions:
+  unit time_unit = day;
+  unit volume_unit = mm^3;
+
+  //// Display Names:
+  tumor is "tumor microenvironment";
+  U is "uninfected tumor cell volume";
+  I is "infected tumor cell volume";
+  V is "free virus volume";
+  T is "tumor-targeting T cell volume";
+  D is "dendritic cell volume";
+  N is "total cell volume (U+I+T)";
+  r is "tumor growth rate";
+  beta is "infection rate";
+  c_T is "T cell recruitment rate by cytokines";
+  c_kill is "enhanced killing rate by T cells";
+  delta_D is "dendritic cell decay rate";
+  kappa0 is "baseline T cell killing rate";
+  delta_I is "infected cell lysis rate";
+  alpha is "virions released per lysed cell";
+  delta_V is "virus decay rate";
+  chi_D is "T cell recruitment rate by dendritic cells";
+  delta_T is "T cell death rate";
+  dose_V is "virus injection dose";
+  dose_D is "dendritic cell injection dose";
+
+end

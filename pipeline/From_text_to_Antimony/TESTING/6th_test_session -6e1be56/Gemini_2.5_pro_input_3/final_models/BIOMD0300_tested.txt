@@ -1,0 +1,89 @@
+```antimony
+model Schmierer2010_HIF_FIH_ARD_interaction()
+
+  //// Compartments and Species:
+  compartment cell;
+  species H_hat_tot in cell, H_hat in cell, A_hat in cell;
+
+  //// Assignment Rules:
+  // Mass conservation equations
+  H_OH_hat := H_hat_tot - H_hat;
+  A_OH_hat := A_hat_tot - A_hat;
+  
+  // Rate constant definitions based on parameter ratios
+  k_prime_cat_FH := rho * k_prime_cat_P;
+  k_prime_cat_FA := k_prime_cat_FH;
+  
+  // Apparent substrates for hydroxylation reactions
+  H_p := H_hat_tot;
+  H_F := H_hat;
+  
+  // Dimensionless hydroxylation rate functions
+  nu_dot_p := k_prime_cat_P * P_hat_tot * (1 / (K_hat_D_P + H_p + P_hat_tot)) * (O2_tilde / (1 + O2_tilde));
+  
+  K_hat_i_FH := K_hat_D_FH * (1 + A_hat / K_hat_D_FA + gamma_ * A_OH_hat / K_hat_D_FA);
+  nu_dot_FH := k_prime_cat_FH * F_hat_tot * (1 / (K_hat_i_FH + H_F + F_hat_tot)) * (O2_tilde / (alpha + O2_tilde));
+  
+  # The oxygen dependency term for nu_dot_FA in Equation 9 of the paper appears to contain a typo.
+  # It is written as 1/(O2_tilde/(alpha + O2_tilde)), which would cause the rate to decrease with increasing oxygen.
+  # This is inconsistent with the biology of an oxygenase and the model's behavior shown in the paper's figures.
+  # The term has been corrected here to match the form used for nu_dot_FH, making the rate increase with oxygen.
+  nu_dot_FA := (k_prime_cat_FA * F_hat_tot) / (K_hat_D_FA * (1 + H_F / K_hat_D_FH) + A_hat + gamma_ * A_OH_hat) * (O2_tilde / (alpha + O2_tilde));
+
+  //// Rate Rules:
+  H_hat_tot' = 1 - H_hat_tot*(1 + nu_dot_p);
+  H_hat' = 1 - H_hat*(1 + nu_dot_p + nu_dot_FH);
+  A_hat' = (A_hat_tot - A_hat*(1 + epsilon*nu_dot_FA))/epsilon;
+
+  //// Species initializations:
+  # Initial conditions are not specified; set to 0 to allow simulation from a basal state.
+  H_hat_tot = 0;
+  H_hat = 0;
+  A_hat = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Base parameter values are taken from Table 2 and Figure 5 captions.
+  P_hat_tot = 0.2;
+  K_hat_D_P = 1;
+  k_prime_cat_P = 500;
+  F_hat_tot = 1;
+  K_hat_D_FH = 1;
+  rho = 1;
+  alpha = 0.33;
+  A_hat_tot = 100;     # This parameter is varied in the paper (0-500); a representative value is used.
+  K_hat_D_FA = 1;
+  gamma_ = 0.02;        # This parameter is varied in the paper (0-0.1); a representative value is used.
+  epsilon = 5;         # This parameter is varied in the paper (1-10); a representative value is used.
+  O2_tilde = 1;        # Represents oxygen tension, a key independent variable in the paper's simulations.
+
+  //// Other declarations:
+  var H_OH_hat, A_OH_hat, k_prime_cat_FH, k_prime_cat_FA, H_p, H_F, nu_dot_p, K_hat_i_FH, nu_dot_FH, nu_dot_FA, O2_tilde;
+  const cell, P_hat_tot, K_hat_D_P, k_prime_cat_P, F_hat_tot, K_hat_D_FH, rho, alpha, A_hat_tot, K_hat_D_FA, gamma_, epsilon;
+
+  //// Display Names:
+  cell is "Cellular compartment";
+  H_hat_tot is "Dimensionless total HIF-alpha";
+  H_hat is "Dimensionless non-CAD-hydroxylated HIF-alpha";
+  A_hat is "Dimensionless unhydroxylated ARs";
+  H_OH_hat is "Dimensionless CAD-hydroxylated HIF-alpha";
+  A_OH_hat is "Dimensionless hydroxylated ARs";
+  nu_dot_p is "Dimensionless rate of PHD-dependent HIF-alpha ODD-hydroxylation";
+  nu_dot_FH is "Dimensionless rate of FIH-dependent HIF-alpha CAD-hydroxylation";
+  nu_dot_FA is "Dimensionless rate of FIH-dependent AR-hydroxylation";
+  O2_tilde is "Dimensionless oxygen concentration";
+  P_hat_tot is "Dimensionless PHD concentration";
+  K_hat_D_P is "Dimensionless dissociation constant of PHD/HIF-alpha binding";
+  k_prime_cat_P is "Dimensionless kcat for ODD-hydroxylation";
+  F_hat_tot is "Dimensionless FIH concentration";
+  K_hat_D_FH is "Dimensionless dissociation constant of FIH/HIF-alpha binding";
+  rho is "Ratio of kcat for HIF-alpha CAD-hydroxylation to ODD-hydroxylation";
+  alpha is "Ratio of KM of FIH for oxygen to KM of PHD for oxygen";
+  A_hat_tot is "Dimensionless total concentration of FIH target ARs";
+  K_hat_D_FA is "Dimensionless dissociation constant of FIH/ARD binding";
+  gamma_ is "Ratio of FIH affinity for hydroxylated to unhydroxylated ARs";
+  epsilon is "Ratio of basal HIF-alpha degradation rate constant to AR degradation rate constant";
+end
+```

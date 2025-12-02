@@ -1,0 +1,139 @@
+```antimony
+model Gevertz2020_MinimalModel_ViroImmunotherapy()
+
+  /*
+   * This model represents the "Minimal Model" of viro-immunotherapy for optimizing treatment protocols,
+   * as described by Gevertz and Wares in Computational and Mathematical Methods in Medicine (2020).
+   * The model simplifies a previous six-variable system to five variables by removing the naive T cell
+   * population (A), based on sensitivity and sloppiness analyses.
+   *
+   * It describes the interaction between uninfected tumor cells (U), infected tumor cells (I),
+   * oncolytic adenovirus (V), tumor-targeting T cells (T), and injected dendritic cells (D).
+   */
+
+  //// Compartments and Species:
+  compartment tumor_microenvironment;
+  species U in tumor_microenvironment;  // Uninfected tumor cell volume
+  species I in tumor_microenvironment;  // Infected cancer cell volume
+  species V in tumor_microenvironment;  // Oncolytic adenovirus
+  species T in tumor_microenvironment;  // Tumor-targeting T cells
+  species D in tumor_microenvironment;  // Injected dendritic cells
+
+  //// Assignment Rules:
+  N := U + I + T;  // Total volume of cells (tumor and T cells)
+
+  //// Reactions:
+  // Tumor growth
+  J_U_growth: => U; r*U;
+
+  // Tumor infection by oncolytic virus
+  J_infection: U => I; beta*U*V/N;
+
+  // Lysis of infected cells and release of new virions
+  J_I_lysis_and_V_release: I => alpha * V; delta_I * I;
+
+  // Killing of uninfected tumor cells by T cells
+  J_U_killing: U => ; (kappa_0 + c_kill*I)*U*T/N;
+
+  // Killing of infected tumor cells by T cells
+  J_I_killing: I => ; (kappa_0 + c_kill*I)*I*T/N;
+
+  // Natural decay of oncolytic virus
+  J_V_decay: V => ; delta_V*V;
+
+  // Recruitment of T cells stimulated by infected cells (I) and dendritic cells (D)
+  J_T_recruitment: => T; c_T*I + chi_D*D;
+
+  // Natural death of T cells
+  J_T_decay: T => ; delta_T*T;
+
+  // Decay of injected dendritic cells
+  J_D_decay: D => ; delta_D*D;
+
+  //// Events:
+  # Dosing schedule as described in the caption of Figure 4 for the combined therapy.
+  # Ad/4-1BBL/IL-12 (V) injections on days 0, 2, 4.
+  # DC injections on days 1, 3, 5.
+  # Dose amounts are not specified in the text and are represented by placeholder parameters.
+  E_V1: at (time == 0): V = V + dose_V;
+  E_V2: at (time == 2): V = V + dose_V;
+  E_V3: at (time == 4): V = V + dose_V;
+  E_D1: at (time == 1): D = D + dose_D;
+  E_D2: at (time == 3): D = D + dose_D;
+  E_D3: at (time == 5): D = D + dose_D;
+
+  //// Species initializations:
+  U = U0;  // Initial tumor volume; value U0 not provided in the text.
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor_microenvironment = 1;
+
+  //// Variable initializations:
+  # Best-fit parameter values for the minimal model from Table 2.
+  r = 0.3198;
+  beta = 0.00100854;
+  c_T = 1.428064;
+  c_kill = 6.234e7;
+  chi_D = 4.901894;
+
+  # The following parameter values were not specified in the provided text.
+  # They are included as constants with placeholder values for model completeness.
+  kappa_0 = 0;      // Basal T cell killing rate
+  delta_I = 0.5;    // Lysis rate of infected cells (placeholder value)
+  alpha = 100;      // Virions released per cell lysis (placeholder value)
+  delta_V = 0.5;    // Virus decay rate (placeholder value)
+  delta_T = 0.1;    // T cell decay rate (placeholder value)
+  delta_D = 0.5;    // DC decay rate (placeholder value)
+  U0 = 100;         // Initial uninfected tumor volume (placeholder value)
+  dose_V = 1e9;     // Virus dose (placeholder value)
+  dose_D = 1e6;     // DC dose (placeholder value)
+
+  //// Other declarations:
+  var N;
+  const tumor_microenvironment, r, beta, c_T, c_kill, chi_D;
+  const kappa_0, delta_I, alpha, delta_V, delta_T, delta_D, U0, dose_V, dose_D;
+
+  //// Unit definitions:
+  unit volume = 1e-9 meter^3; # mm^3
+  unit time_unit = 86400 second;   # day
+  unit substance = item;
+
+  //// Display Names:
+  time_unit is "day";
+  volume is "cubic millimeter";
+  tumor_microenvironment is "Tumor Microenvironment";
+  U is "Uninfected tumor cell volume";
+  I is "Infected cancer cell volume";
+  V is "Oncolytic adenovirus";
+  T is "Tumor-targeting T cells";
+  D is "Injected dendritic cells";
+  N is "Total cell volume";
+  r is "Tumor growth rate";
+  beta is "Tumor infection rate by virus";
+  delta_I is "Lysis rate of infected cells";
+  alpha is "Virions released per lysed cell";
+  kappa_0 is "Basal T cell killing rate";
+  c_kill is "I-dependent T cell killing rate enhancement";
+  delta_V is "Virus natural decay rate";
+  c_T is "T cell recruitment rate by infected cells";
+  chi_D is "T cell recruitment rate by dendritic cells";
+  delta_T is "T cell natural death rate";
+  delta_D is "Dendritic cell decay rate";
+  U0 is "Initial uninfected tumor volume";
+  dose_V is "Oncolytic virus dose";
+  dose_D is "Dendritic cell dose";
+  J_U_growth is "Exponential growth of uninfected tumor";
+  J_infection is "Infection of tumor cells by virus";
+  J_I_lysis_and_V_release is "Lysis of infected cells and virion release";
+  J_U_killing is "Killing of uninfected tumor by T cells";
+  J_I_killing is "Killing of infected tumor by T cells";
+  J_V_decay is "Natural decay of virus";
+  J_T_recruitment is "Recruitment of T cells";
+  J_T_decay is "Natural death of T cells";
+  J_D_decay is "Decay of dendritic cells";
+end
+```

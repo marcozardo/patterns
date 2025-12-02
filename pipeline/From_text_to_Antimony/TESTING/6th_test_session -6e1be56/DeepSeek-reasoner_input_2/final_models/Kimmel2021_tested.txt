@@ -1,0 +1,81 @@
+model *Kimmel2021_CAR_T_cell_therapy()
+
+  //// Compartments and Species:
+  compartment body;
+  species N in body, C in body, B in body;
+
+  //// Assignment Rules:
+  T := N + C;
+  r_C := rho_C + (b * (T - K_N)^2) / (a * T^2 + (T - K_N)^2);
+  birth_rate_N := piecewise(r_N * N * ln(K_N / T), T < K_N, 0);
+  death_rate_N := piecewise(r_N * N * ln(T / K_N), T > K_N, 0);
+  birth_rate_C := piecewise(r_C * C * ln(K_C / T), T < K_C, 0);
+  death_rate_C := piecewise(r_C * C * ln(T / K_C), T > K_C, 0);
+
+  //// Rate Rules:
+
+  //// Reactions:
+  R_birth_N: -> N; body * birth_rate_N;
+  R_death_N: N -> ; body * death_rate_N;
+  R_birth_C: -> C; body * birth_rate_C;
+  R_death_C: C -> ; body * death_rate_C;
+  R_birth_B: B -> 2 B; body * r_B * B;
+  R_kill_B: B -> ; body * gamma_B * B * (C / (k_B + C));
+
+  //// Events:
+
+  //// Species initializations:
+  N = 3.00e9;
+  C = 1.80e8;
+  B = 9.486e10;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  K_N = 2.50e11;
+  K_C = 6.96e10;
+  r_N = 0.170;
+  rho_C = 0.0251;
+  a = 0.423;
+  b = 0.525;
+  r_B = 0.19;
+  gamma_B = 1.15;
+  k_B = 2.024e9;
+
+  //// Other declarations:
+  var T, r_C, birth_rate_N, death_rate_N, birth_rate_C, death_rate_C;
+  const K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B, body;
+
+  //// Unit definitions:
+  unit cell = dimensionless;
+  unit day = 86400 second;
+
+  //// Display Names:
+  body is "body";
+  N is "normal T cells";
+  C is "CAR T cells";
+  B is "tumor cells (CD19+)";
+  T is "total T cells";
+  r_C is "CAR T cell growth rate function";
+  birth_rate_N is "normal T cell birth rate";
+  death_rate_N is "normal T cell death rate";
+  birth_rate_C is "CAR T cell birth rate";
+  death_rate_C is "CAR T cell death rate";
+  R_birth_N is "normal T cell birth";
+  R_death_N is "normal T cell death";
+  R_birth_C is "CAR T cell birth";
+  R_death_C is "CAR T cell death";
+  R_birth_B is "tumor growth";
+  R_kill_B is "tumor killing by CAR T cells";
+  K_N is "normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "normal T cell net growth rate";
+  rho_C is "baseline CAR T net growth rate";
+  a is "signaling inefficiency factor";
+  b is "immune reconstitution impact factor";
+  r_B is "tumor net growth rate";
+  gamma_B is "maximal tumor-killing rate";
+  k_B is "killing saturation parameter";
+
+end

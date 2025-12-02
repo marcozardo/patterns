@@ -1,0 +1,153 @@
+model *Hoffmann2002_NFkB_IkB_Module()
+
+  //// Compartments and Species:
+  compartment Cytoplasm, Nucleus;
+  species NFkB_c in Cytoplasm, NFkB_n in Nucleus;
+  species IkBa_c in Cytoplasm, IkBb_c in Cytoplasm, IkBe_c in Cytoplasm;
+  species IkBa_m in Cytoplasm, IkBb_m in Cytoplasm, IkBe_m in Cytoplasm;
+  species C_a in Cytoplasm, C_b in Cytoplasm, C_e in Cytoplasm;
+  species $IKK_act in Cytoplasm;
+
+  //// Assignment Rules:
+  // (none)
+
+  //// Rate Rules:
+  // (none)
+  
+  //// Reactions:
+  # NF-?B cytoplasm-nucleus shuttling
+  R_import:  NFkB_c -> NFkB_n; Cytoplasm*k_imp*NFkB_c;
+  R_export:  NFkB_n -> NFkB_c; Nucleus*k_exp*NFkB_n;
+
+  # I?B? binding/unbinding with NF-?B in cytoplasm
+  R_bind_a:     NFkB_c + IkBa_c -> C_a; Cytoplasm*kon_a*NFkB_c*IkBa_c;
+  R_unbind_a:   C_a -> NFkB_c + IkBa_c; Cytoplasm*koff_a*C_a;
+  # IKK-mediated degradation of I?B? in complex, releasing NF-?B
+  R_deg_complex_a: C_a => NFkB_c; Cytoplasm*kdeg_a*IKK_act*C_a;
+  # Free I?B? turnover
+  R_deg_free_a: IkBa_c => ; Cytoplasm*kdi_a*IkBa_c;
+  # I?B? transcription (NF-?B?responsive) and translation
+  R_tx_a:  => IkBa_m; Cytoplasm*ktx_a*NFkB_n;
+  R_tl_a:  IkBa_m => IkBa_c; Cytoplasm*ktl_a*IkBa_m;
+  R_dm_a:  IkBa_m => ; Cytoplasm*kdm_a*IkBa_m;
+
+  # I?B? binding/unbinding with NF-?B in cytoplasm
+  R_bind_b:     NFkB_c + IkBb_c -> C_b; Cytoplasm*kon_b*NFkB_c*IkBb_c;
+  R_unbind_b:   C_b -> NFkB_c + IkBb_c; Cytoplasm*koff_b*C_b;
+  # IKK-mediated degradation of I?B? in complex
+  R_deg_complex_b: C_b => NFkB_c; Cytoplasm*kdeg_b*IKK_act*C_b;
+  # Free I?B? turnover
+  R_deg_free_b: IkBb_c => ; Cytoplasm*kdi_b*IkBb_c;
+  # I?B? transcription/translation
+  R_tx_b:  => IkBb_m; Cytoplasm*ktx_b*NFkB_n;
+  R_tl_b:  IkBb_m => IkBb_c; Cytoplasm*ktl_b*IkBb_m;
+  R_dm_b:  IkBb_m => ; Cytoplasm*kdm_b*IkBb_m;
+
+  # I?B? binding/unbinding with NF-?B in cytoplasm
+  R_bind_e:     NFkB_c + IkBe_c -> C_e; Cytoplasm*kon_e*NFkB_c*IkBe_c;
+  R_unbind_e:   C_e -> NFkB_c + IkBe_c; Cytoplasm*koff_e*C_e;
+  # IKK-mediated degradation of I?B? in complex
+  R_deg_complex_e: C_e => NFkB_c; Cytoplasm*kdeg_e*IKK_act*C_e;
+  # Free I?B? turnover
+  R_deg_free_e: IkBe_c => ; Cytoplasm*kdi_e*IkBe_c;
+  # I?B? transcription/translation
+  R_tx_e:  => IkBe_m; Cytoplasm*ktx_e*NFkB_n;
+  R_tl_e:  IkBe_m => IkBe_c; Cytoplasm*ktl_e*IkBe_m;
+  R_dm_e:  IkBe_m => ; Cytoplasm*kdm_e*IkBe_m;
+
+  //// Events:
+  # Generic TNF-??like stimulation modeled as IKK activation pulse
+  E_on:  at (time >= StimStart): IKK_act = StimLevel;
+  E_off: at (time >= StimStart + StimDur): IKK_act = 0;
+
+  //// Species initializations:
+  NFkB_c = 1;
+  NFkB_n = 0;
+  IkBa_c = 1;
+  IkBb_c = 1;
+  IkBe_c = 1;
+  IkBa_m = 0;
+  IkBb_m = 0;
+  IkBe_m = 0;
+  C_a = 0;
+  C_b = 0;
+  C_e = 0;
+  IKK_act = 0;
+
+  //// Compartment initializations:
+  Cytoplasm = 1;
+  Nucleus = 1;
+
+  //// Variable initializations:
+  # NF-?B shuttling
+  k_imp = 1;
+  k_exp = 0.5;
+
+  # I?B? parameters
+  kon_a = 1;
+  koff_a = 0.1;
+  kdeg_a = 0.5;
+  kdi_a  = 0.01;
+  ktx_a  = 1;
+  ktl_a  = 1;
+  kdm_a  = 0.1;
+
+  # I?B? parameters
+  kon_b = 1;
+  koff_b = 0.1;
+  kdeg_b = 0.3;
+  kdi_b  = 0.01;
+  ktx_b  = 0.5;
+  ktl_b  = 1;
+  kdm_b  = 0.1;
+
+  # I?B? parameters
+  kon_e = 1;
+  koff_e = 0.1;
+  kdeg_e = 0.3;
+  kdi_e  = 0.01;
+  ktx_e  = 0.5;
+  ktl_e  = 1;
+  kdm_e  = 0.1;
+
+  # Stimulation (IKK activation) timing and amplitude
+  StimStart = 0;
+  StimDur = 0.25;    # e.g., 0.25 time-units ? 15 minutes if 1 h = 1 time-unit
+  StimLevel = 1;
+
+  //// Other declarations:
+  const Cytoplasm, Nucleus;
+  const k_imp, k_exp;
+  const kon_a, koff_a, kdeg_a, kdi_a, ktx_a, ktl_a, kdm_a;
+  const kon_b, koff_b, kdeg_b, kdi_b, ktx_b, ktl_b, kdm_b;
+  const kon_e, koff_e, kdeg_e, kdi_e, ktx_e, ktl_e, kdm_e;
+  const StimStart, StimDur, StimLevel;
+
+  //// Unit definitions:
+  // (omitted: units not specified in the source text)
+
+  //// Display Names:
+  Cytoplasm is "Cytoplasm";
+  Nucleus is "Nucleus";
+  NFkB_c is "NF-?B (cytoplasm)";
+  NFkB_n is "NF-?B (nucleus)";
+  IkBa_c is "I?B? (cytoplasm)";
+  IkBb_c is "I?B? (cytoplasm)";
+  IkBe_c is "I?B? (cytoplasm)";
+  IkBa_m is "I?B? mRNA";
+  IkBb_m is "I?B? mRNA";
+  IkBe_m is "I?B? mRNA";
+  C_a is "NF-?B:I?B? complex";
+  C_b is "NF-?B:I?B? complex";
+  C_e is "NF-?B:I?B? complex";
+  IKK_act is "Active IKK (input)";
+
+end
+
+/* Unmapped/unspecified details from the source text:
+- Numerical parameter values (rate constants, transport rates, synthesis/degradation rates) were not provided; placeholder values are used to yield a runnable model.
+- The original work considers ternary complexes (IKK?I?B?NF-?B), isoform-specific transport/localization rates, and distinct kinetic parameterizations; here we use simplified binary complexes and mass-action kinetics.
+- Precise compartmental localization of mRNA (nuclear transcription and export) is simplified by placing mRNAs in Cytoplasm.
+- The stimulus (TNF-?) to IKK activation cascade is abstracted as Events that toggle IKK_act; real signaling intermediates are not explicitly modeled.
+Scientific domain: molecular/cellular signal transduction (NF-?B?I?B negative feedback module with nuclear-cytoplasmic shuttling and gene regulation).
+*/

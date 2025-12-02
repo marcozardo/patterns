@@ -1,0 +1,123 @@
+model *Queralt2006_MitoticExit()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $APC_Cdc20 in cell;
+  species $APC_Cdh1 in cell;
+  species Clb2 in cell;
+  species $MEN in cell;
+  species Net1 in cell;
+  species Net1P in cell;
+  species $Cdc14_inactive in cell;
+  species Cdc14_active in cell;
+  species PP2A_active in cell;
+  species PP2A_inactive in cell;
+  species Separase_inactive in cell;
+  species Separase_active in cell;
+  species Securin in cell;
+  species Cdc15 in cell;
+  species Cdc15P in cell;
+  species Cdh1 in cell;
+  species Cdh1P in cell;
+
+  //// Assignment Rules:
+  APC_Cdh1 := Cdh1P;
+  MEN := Cdc15;
+
+  //// Rate Rules:
+
+  //// Reactions:
+  R1: Securin -> ; cell*k_deg_sec*APC_Cdc20*Securin;
+  R2: Separase_inactive -> Separase_active; cell*k_act_sep*Separase_inactive;
+  R3: PP2A_active -> PP2A_inactive; cell*k_inact_pp2a*Separase_active*PP2A_active;
+  R4: Net1 -> Net1P; cell*k_phosph_net1_cdk*Clb2*Net1;
+  R5: Net1P -> Net1; cell*k_dephosph_net1_pp2a*PP2A_active*Net1P;
+  R6: Net1P -> Net1; cell*k_dephosph_net1_cdc14*Cdc14_active*Net1P;
+  R7: Cdc14_inactive -> Cdc14_active; cell*k_release_cdc14*Net1P*Cdc14_inactive;
+  R8: Cdc15 -> Cdc15P; cell*k_phosph_cdc15*Clb2*Cdc15;
+  R9: Cdc15P -> Cdc15; cell*k_dephosph_cdc15*Cdc14_active*Cdc15P;
+  R10: Cdh1 -> Cdh1P; cell*k_phosph_cdh1*Clb2*Cdh1;
+  R11: Cdh1P -> Cdh1; cell*k_dephosph_cdh1*Cdc14_active*Cdh1P;
+  R12: Clb2 -> ; cell*k_deg_clb2*APC_Cdh1*Clb2;
+  R13: Net1 -> Net1P; cell*k_phosph_net1_men*MEN*Net1;
+
+  //// Events:
+  E1: at time >= 0: APC_Cdc20 = 1;
+
+  //// Species initializations:
+  APC_Cdc20 = 0;
+  Clb2 = 100;
+  Net1 = 90;
+  Net1P = 10;
+  Cdc14_inactive = 95;
+  Cdc14_active = 5;
+  PP2A_active = 80;
+  PP2A_inactive = 20;
+  Separase_inactive = 90;
+  Separase_active = 10;
+  Securin = 100;
+  Cdc15 = 20;
+  Cdc15P = 80;
+  Cdh1 = 20;
+  Cdh1P = 80;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_deg_sec = 0.1;
+  k_act_sep = 0.05;
+  k_inact_pp2a = 0.1;
+  k_phosph_net1_cdk = 0.01;
+  k_dephosph_net1_pp2a = 0.1;
+  k_dephosph_net1_cdc14 = 0.01;
+  k_release_cdc14 = 0.05;
+  k_phosph_cdc15 = 0.01;
+  k_dephosph_cdc15 = 0.01;
+  k_phosph_cdh1 = 0.01;
+  k_dephosph_cdh1 = 0.01;
+  k_deg_clb2 = 0.05;
+  k_phosph_net1_men = 0.01;
+
+  //// Other declarations:
+  const cell;
+  var APC_Cdc20, APC_Cdh1, MEN;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+
+  //// Display Names:
+  cell is "Yeast cell";
+  APC_Cdc20 is "APC-Cdc20 active";
+  APC_Cdh1 is "APC-Cdh1 active";
+  Clb2 is "Cyclin B (Clb2)";
+  MEN is "Mitotic Exit Network activity";
+  Net1 is "Unphosphorylated Net1";
+  Net1P is "Phosphorylated Net1";
+  Cdc14_inactive is "Nucleolar Cdc14";
+  Cdc14_active is "Active Cdc14";
+  PP2A_active is "Active PP2A-Cdc55";
+  PP2A_inactive is "Inactive PP2A-Cdc55";
+  Separase_inactive is "Inactive Separase (bound)";
+  Separase_active is "Active Separase";
+  Securin is "Securin (Pds1)";
+  Cdc15 is "Inactive Cdc15 (phosphorylated)";
+  Cdc15P is "Active Cdc15 (dephosphorylated)";
+  Cdh1 is "Inactive Cdh1 (phosphorylated)";
+  Cdh1P is "Active Cdh1 (dephosphorylated)";
+  k_deg_sec is "Securin degradation rate";
+  k_act_sep is "Separase activation rate";
+  k_inact_pp2a is "PP2A inactivation rate by separase";
+  k_phosph_net1_cdk is "Net1 phosphorylation rate by Clb2-Cdk";
+  k_dephosph_net1_pp2a is "Net1 dephosphorylation rate by PP2A";
+  k_dephosph_net1_cdc14 is "Net1 dephosphorylation rate by Cdc14";
+  k_release_cdc14 is "Cdc14 release rate from Net1-P";
+  k_phosph_cdc15 is "Cdc15 phosphorylation rate by Clb2-Cdk";
+  k_dephosph_cdc15 is "Cdc15 dephosphorylation rate by Cdc14";
+  k_phosph_cdh1 is "Cdh1 phosphorylation rate by Clb2-Cdk";
+  k_dephosph_cdh1 is "Cdh1 dephosphorylation rate by Cdc14";
+  k_deg_clb2 is "Clb2 degradation rate by APC-Cdh1";
+  k_phosph_net1_men is "Net1 phosphorylation rate by MEN";
+
+end

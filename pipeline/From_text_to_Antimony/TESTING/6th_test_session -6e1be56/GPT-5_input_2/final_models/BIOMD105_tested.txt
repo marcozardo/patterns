@@ -1,0 +1,194 @@
+/* Domain: molecular systems biology; intracellular protein quality control (ubiquitin-proteasome system) */
+
+model *Proctor2007_UPS()
+
+  //// Compartments and Species:
+  compartment cell;
+
+  species NatP in cell, MisP in cell, Ub in cell, E1 in cell, E2 in cell;
+  species E3 in cell, DUB in cell, Proteasome in cell, E3_MisP in cell, E1_Ub in cell;
+  species E2_Ub in cell, MisP_Ub in cell, MisP_Ub2 in cell, MisP_Ub3 in cell, MisP_Ub4 in cell;
+  species MisP_Ub5 in cell, MisP_Ub6 in cell, MisP_Ub7 in cell, MisP_Ub8 in cell, MisP_Ub4_Proteasome in cell;
+  species MisP_Ub5_Proteasome in cell, MisP_Ub6_Proteasome in cell, MisP_Ub7_Proteasome in cell, MisP_Ub8_Proteasome in cell, AggP in cell;
+  species SeqAggP in cell, AggP_Proteasome in cell, degUb4 in cell, degUb5 in cell, degUb6 in cell;
+  species degUb7 in cell, degUb8 in cell;
+
+  species $ROS in cell, $ATP in cell, $ADP in cell, $AMP in cell;
+
+  //// Reactions:
+  Protein_synthesis:  => NatP; cell*k1;
+  Misfolding: NatP + ROS => MisP + ROS; cell*k2*NatP*ROS;
+  Refolding: MisP => NatP; cell*k3*MisP;
+
+  E3_bind: E3 + MisP => E3_MisP; cell*k61*E3*MisP;
+  E3_release: E3_MisP => E3 + MisP; cell*k61r*E3_MisP;
+
+  E1_activation: E1 + Ub + ATP => E1_Ub + AMP; cell*k62*E1*Ub*ATP/(K_ATP + ATP);
+  E2_loading: E2 + E1_Ub => E2_Ub + E1; cell*k63*E2*E1_Ub;
+  Monoubiquitination: E2_Ub + E3_MisP => MisP_Ub + E2 + E3; cell*k64*E2_Ub*E3_MisP;
+
+  PolyUb_1: E2_Ub + MisP_Ub => MisP_Ub2 + E2; cell*k65*E2_Ub*MisP_Ub;
+  PolyUb_2: E2_Ub + MisP_Ub2 => MisP_Ub3 + E2; cell*k65*E2_Ub*MisP_Ub2;
+  PolyUb_3: E2_Ub + MisP_Ub3 => MisP_Ub4 + E2; cell*k65*E2_Ub*MisP_Ub3;
+  PolyUb_4: E2_Ub + MisP_Ub4 => MisP_Ub5 + E2; cell*k65*E2_Ub*MisP_Ub4;
+  PolyUb_5: E2_Ub + MisP_Ub5 => MisP_Ub6 + E2; cell*k65*E2_Ub*MisP_Ub5;
+  PolyUb_6: E2_Ub + MisP_Ub6 => MisP_Ub7 + E2; cell*k65*E2_Ub*MisP_Ub6;
+  PolyUb_7: E2_Ub + MisP_Ub7 => MisP_Ub8 + E2; cell*k65*E2_Ub*MisP_Ub7;
+
+  DUB_free_8: DUB + MisP_Ub8 => DUB + MisP_Ub7 + Ub; cell*k66*DUB*MisP_Ub8;
+  DUB_free_7: DUB + MisP_Ub7 => DUB + MisP_Ub6 + Ub; cell*k66*DUB*MisP_Ub7;
+  DUB_free_6: DUB + MisP_Ub6 => DUB + MisP_Ub5 + Ub; cell*k66*DUB*MisP_Ub6;
+  DUB_free_5: DUB + MisP_Ub5 => DUB + MisP_Ub4 + Ub; cell*k66*DUB*MisP_Ub5;
+  DUB_free_4: DUB + MisP_Ub4 => DUB + MisP_Ub3 + Ub; cell*k66*DUB*MisP_Ub4;
+  DUB_free_3: DUB + MisP_Ub3 => DUB + MisP_Ub2 + Ub; cell*k66*DUB*MisP_Ub3;
+  DUB_free_2: DUB + MisP_Ub2 => DUB + MisP_Ub + Ub; cell*k66*DUB*MisP_Ub2;
+
+  BindProt_4: MisP_Ub4 + Proteasome => MisP_Ub4_Proteasome; cell*k67*MisP_Ub4*Proteasome;
+  BindProt_5: MisP_Ub5 + Proteasome => MisP_Ub5_Proteasome; cell*k67*MisP_Ub5*Proteasome;
+  BindProt_6: MisP_Ub6 + Proteasome => MisP_Ub6_Proteasome; cell*k67*MisP_Ub6*Proteasome;
+  BindProt_7: MisP_Ub7 + Proteasome => MisP_Ub7_Proteasome; cell*k67*MisP_Ub7*Proteasome;
+  BindProt_8: MisP_Ub8 + Proteasome => MisP_Ub8_Proteasome; cell*k67*MisP_Ub8*Proteasome;
+
+  DUB_bound_8: DUB + MisP_Ub8_Proteasome => DUB + MisP_Ub7_Proteasome + Ub; cell*k68*DUB*MisP_Ub8_Proteasome;
+  DUB_bound_7: DUB + MisP_Ub7_Proteasome => DUB + MisP_Ub6_Proteasome + Ub; cell*k68*DUB*MisP_Ub7_Proteasome;
+  DUB_bound_6: DUB + MisP_Ub6_Proteasome => DUB + MisP_Ub5_Proteasome + Ub; cell*k68*DUB*MisP_Ub6_Proteasome;
+  DUB_bound_5: DUB + MisP_Ub5_Proteasome => DUB + MisP_Ub4_Proteasome + Ub; cell*k68*DUB*MisP_Ub5_Proteasome;
+
+  Release_below4: DUB + MisP_Ub4_Proteasome => DUB + MisP_Ub3 + Proteasome; cell*kdss*DUB*MisP_Ub4_Proteasome;
+
+  Degrade_4: ATP + MisP_Ub4_Proteasome => ADP + Proteasome + 4 Ub + degUb4; cell*k69*MisP_Ub4_Proteasome*ATP/(K_ATP + ATP);
+  Degrade_5: ATP + MisP_Ub5_Proteasome => ADP + Proteasome + 5 Ub + degUb5; cell*k69*MisP_Ub5_Proteasome*ATP/(K_ATP + ATP);
+  Degrade_6: ATP + MisP_Ub6_Proteasome => ADP + Proteasome + 6 Ub + degUb6; cell*k69*MisP_Ub6_Proteasome*ATP/(K_ATP + ATP);
+  Degrade_7: ATP + MisP_Ub7_Proteasome => ADP + Proteasome + 7 Ub + degUb7; cell*k69*MisP_Ub7_Proteasome*ATP/(K_ATP + ATP);
+  Degrade_8: ATP + MisP_Ub8_Proteasome => ADP + Proteasome + 8 Ub + degUb8; cell*k69*MisP_Ub8_Proteasome*ATP/(K_ATP + ATP);
+
+  Agg_2MisP: 2 MisP => AggP; cell*k71*MisP*(MisP - 1)/2;
+  Agg_seed_MisP: MisP + AggP => 2 AggP; cell*k71*MisP*AggP;
+
+  Agg_2MisP_Ub: 2 MisP_Ub => AggP; cell*k72*MisP_Ub*(MisP_Ub - 1)/2;
+  Agg_MisP_and_MisP_Ub: MisP + MisP_Ub => AggP; cell*k72*MisP*MisP_Ub;
+  Agg_2MisP_Ub8: 2 MisP_Ub8 => AggP; cell*k72*MisP_Ub8*(MisP_Ub8 - 1)/2;
+  Agg_MisP_Ub7_Ub8: MisP_Ub7 + MisP_Ub8 => AggP; cell*k72*MisP_Ub7*MisP_Ub8;
+
+  Sequester_Agg: AggP => SeqAggP; cell*k73*AggP;
+  Agg_Proteasome_bind: AggP + Proteasome => AggP_Proteasome; cell*k74*AggP*Proteasome;
+
+  //// Events:
+  Shutdown_E1: at(time >= 1800): k62 = 0;
+
+  //// Species initializations:
+  NatP = 500;
+  MisP = 0;
+  Ub = 500;
+  E1 = 100;
+  E2 = 100;
+  E3 = 100;
+  DUB = 200;
+  Proteasome = 100;
+  E3_MisP = 0;
+  E1_Ub = 0;
+  E2_Ub = 0;
+  MisP_Ub = 0;
+  MisP_Ub2 = 0;
+  MisP_Ub3 = 0;
+  MisP_Ub4 = 0;
+  MisP_Ub5 = 0;
+  MisP_Ub6 = 0;
+  MisP_Ub7 = 0;
+  MisP_Ub8 = 0;
+  MisP_Ub4_Proteasome = 0;
+  MisP_Ub5_Proteasome = 0;
+  MisP_Ub6_Proteasome = 0;
+  MisP_Ub7_Proteasome = 0;
+  MisP_Ub8_Proteasome = 0;
+  AggP = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+  degUb4 = 0;
+  degUb5 = 0;
+  degUb6 = 0;
+  degUb7 = 0;
+  degUb8 = 0;
+
+  ROS = 10;
+  ATP = 10000;
+  ADP = 1000;
+  AMP = 1000;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k1 = 0.01;
+  k2 = 2e-6;
+  k3 = 4e-6;
+
+  k61 = 1.7e-5;
+  k61r = 2e-4;
+
+  k62 = 2e-4;     // var; can be set to 0 by event to mimic E1 shutdown
+  k63 = 1e-3;
+  k64 = 1e-3;
+  k65 = 1e-2;
+  k66 = 1e-5;
+  k67 = 1e-5;
+  k68 = 1e-5;
+  kdss = 1e-5;
+  k69 = 1e-3;
+
+  k71 = 1e-8;
+  k72 = 1e-8;
+  k73 = 1e-3;
+  k74 = 1e-5;
+
+  K_ATP = 5000;
+
+  //// Other declarations:
+  var k62;
+  const cell, K_ATP, k1, k2, k3, k61, k61r, k63, k64, k65, k66, k67, k68, kdss, k69, k71, k72, k73, k74;
+
+  //// Display Names:
+  cell is "Intracellular space";
+  NatP is "Native protein pool";
+  MisP is "Misfolded protein pool";
+  Ub is "Ubiquitin (monomeric)";
+  E1 is "Ubiquitin-activating enzyme (E1)";
+  E2 is "Ubiquitin-conjugating enzyme (E2)";
+  E3 is "Ubiquitin ligase (HECT E3)";
+  DUB is "Deubiquitinating enzyme";
+  Proteasome is "26S Proteasome";
+  E3_MisP is "E3 bound to misfolded protein";
+  E1_Ub is "E1~Ub thioester";
+  E2_Ub is "E2~Ub thioester";
+  MisP_Ub is "Monoubiquitinated misfolded protein";
+  MisP_Ub2 is "PolyUb (2) misfolded protein";
+  MisP_Ub3 is "PolyUb (3) misfolded protein";
+  MisP_Ub4 is "PolyUb (4) misfolded protein";
+  MisP_Ub5 is "PolyUb (5) misfolded protein";
+  MisP_Ub6 is "PolyUb (6) misfolded protein";
+  MisP_Ub7 is "PolyUb (7) misfolded protein";
+  MisP_Ub8 is "PolyUb (8) misfolded protein";
+  MisP_Ub4_Proteasome is "PolyUb4 substrate bound to proteasome";
+  MisP_Ub5_Proteasome is "PolyUb5 substrate bound to proteasome";
+  MisP_Ub6_Proteasome is "PolyUb6 substrate bound to proteasome";
+  MisP_Ub7_Proteasome is "PolyUb7 substrate bound to proteasome";
+  MisP_Ub8_Proteasome is "PolyUb8 substrate bound to proteasome";
+  AggP is "Aggregated protein";
+  SeqAggP is "Sequestered aggregate";
+  AggP_Proteasome is "Aggregate bound to proteasome";
+  degUb4 is "Degradation count (Ub4 substrates)";
+  degUb5 is "Degradation count (Ub5 substrates)";
+  degUb6 is "Degradation count (Ub6 substrates)";
+  degUb7 is "Degradation count (Ub7 substrates)";
+  degUb8 is "Degradation count (Ub8 substrates)";
+  ROS is "Reactive oxygen species (boundary)";
+  ATP is "ATP (boundary)";
+  ADP is "ADP (boundary)";
+  AMP is "AMP (boundary)";
+end
+
+/* Notes:
+- Boundary species ($ATP, $ADP, $AMP, $ROS) are held constant, as in the source model.
+- Event 'Shutdown_E1' (time >= 1800 s) mimics ts20 E1 inactivation by setting k62 = 0.
+- Proteasomal degradation reactions produce degUb4..degUb8 as counters for chain-length-at-degradation as per Table 1.
+- ATP dependence is represented by saturation term ATP/(K_ATP + ATP) with K_ATP = 5000, following Table 2. */

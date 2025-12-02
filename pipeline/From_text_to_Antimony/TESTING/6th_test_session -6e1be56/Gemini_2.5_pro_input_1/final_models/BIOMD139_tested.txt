@@ -1,0 +1,143 @@
+/*
+This Antimony model represents the I??????B-NF-??????B signaling module as described
+by Hoffmann et al. (2002). The model captures the core regulatory logic where
+the transcription factor NF-??????B is controlled by three inhibitor isoforms: I??????B??????, I??????B??????, and I??????B??????.
+
+The model is based on the following key principles from the paper:
+1. Two functional classes of inhibitors: I??????B?????? acts as a fast, strong negative
+   feedback regulator, driving oscillatory potential. I??????B?????? and I??????B?????? (lumped
+   into a single species IKBbe) act as slower, damping elements that stabilize the response.
+2. Compartmentalization: The model includes cytoplasmic and nuclear compartments,
+   as translocation of NF-??????B and its inhibitors is central to the mechanism.
+3. NF-??????B-induced Feedback: Nuclear NF-??????B activates the transcription of its
+   own inhibitor, I??????B??????, creating the negative feedback loop.
+4. Signal Transduction: An external stimulus (e.g., TNF??????) is represented by the
+   activity of the IKK kinase, which triggers the degradation of I??????B proteins.
+
+NOTE: The provided text describes the model structure and behavior qualitatively
+but does not contain the specific mathematical equations or parameter values. Therefore,
+the rate laws, parameter values, and initial conditions in this model are representative
+placeholders designed to be consistent with the described biology and to make the
+model executable. They are not the exact values from the original publication.
+*/
+model *Hoffmann2002_NFkB_module()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+
+  // Cytoplasmic Species
+  species NFKB_c in cytoplasm, IKBa_c in cytoplasm, IKBbe_c in cytoplasm;
+  species NFKB_IKBa_c in cytoplasm, NFKB_IKBbe_c in cytoplasm;
+  species mIKBa_c in cytoplasm;
+
+  // Nuclear Species
+  species NFKB_n in nucleus, IKBa_n in nucleus, IKBbe_n in nucleus;
+  species NFKB_IKBa_n in nucleus, NFKB_IKBbe_n in nucleus;
+
+  //// Assignment Rules:
+  // The IKK activity represents the external stimulus (e.g., TNF-alpha).
+  // This rule models a persistent stimulus applied at time=0.
+  IKK_activity := piecewise(1, time > 0, 0);
+
+  //// Reactions:
+  // IKK-mediated degradation of inhibitor complexes in cytoplasm, releasing free NFKB
+  R_degradation_a: NFKB_IKBa_c -> NFKB_c; cytoplasm * k_degradation_a * IKK_activity * NFKB_IKBa_c;
+  R_degradation_be: NFKB_IKBbe_c -> NFKB_c; cytoplasm * k_degradation_be * IKK_activity * NFKB_IKBbe_c;
+
+  // Free NFKB nuclear import
+  R_import_NFKB: NFKB_c -> NFKB_n; cytoplasm * k_import_NFKB * NFKB_c;
+
+  // IKBa transcription, translation, and degradation (negative feedback loop)
+  R_transcription_a: NFKB_n => NFKB_n + mIKBa_c; nucleus * k_transcription_a * NFKB_n;
+  R_mrna_decay_a: mIKBa_c => ; cytoplasm * k_mrna_decay_a * mIKBa_c;
+  R_translation_a: mIKBa_c => mIKBa_c + IKBa_c; cytoplasm * k_translation_a * mIKBa_c;
+  R_decay_a: IKBa_c => ; cytoplasm * k_decay_a * IKBa_c;
+
+  // IKBbe constitutive production and degradation
+  R_synthesis_be:  => IKBbe_c; cytoplasm * k_synthesis_be;
+  R_decay_be: IKBbe_c => ; cytoplasm * k_decay_be * IKBbe_c;
+
+  // Transport of free inhibitors between cytoplasm and nucleus
+  R_transport_a: IKBa_c -> IKBa_n; cytoplasm * k_import_a * IKBa_c - nucleus * k_export_a * IKBa_n;
+  R_transport_be: IKBbe_c -> IKBbe_n; cytoplasm * k_import_be * IKBbe_c - nucleus * k_export_be * IKBbe_n;
+
+  // Association and dissociation of complexes in cytoplasm
+  R_assoc_ac: NFKB_c + IKBa_c -> NFKB_IKBa_c; cytoplasm * k_assoc_ac * NFKB_c * IKBa_c - cytoplasm * k_diss_ac * NFKB_IKBa_c;
+  R_assoc_bec: NFKB_c + IKBbe_c -> NFKB_IKBbe_c; cytoplasm * k_assoc_bec * NFKB_c * IKBbe_c - cytoplasm * k_diss_bec * NFKB_IKBbe_c;
+
+  // Association and dissociation of complexes in nucleus
+  R_assoc_an: NFKB_n + IKBa_n -> NFKB_IKBa_n; nucleus * k_assoc_an * NFKB_n * IKBa_n - nucleus * k_diss_an * NFKB_IKBa_n;
+  R_assoc_ben: NFKB_n + IKBbe_n -> NFKB_IKBbe_n; nucleus * k_assoc_ben * NFKB_n * IKBbe_n - nucleus * k_diss_ben * NFKB_IKBbe_n;
+
+  // Nuclear export of NFKB-IKB complexes
+  R_export_com_a: NFKB_IKBa_n -> NFKB_IKBa_c; nucleus * k_export_com_a * NFKB_IKBa_n;
+  R_export_com_be: NFKB_IKBbe_n -> NFKB_IKBbe_c; nucleus * k_export_com_be * NFKB_IKBbe_n;
+
+  //// Species initializations:
+  # Values are placeholders to establish a pre-stimulation steady state where most NFKB is inactive in the cytoplasm.
+  NFKB_c = 0.01;
+  NFKB_n = 0;
+  IKBa_c = 0.05;
+  IKBa_n = 0;
+  IKBbe_c = 0.2;
+  IKBbe_n = 0;
+  NFKB_IKBa_c = 0.2;
+  NFKB_IKBa_n = 0;
+  NFKB_IKBbe_c = 0.7;
+  NFKB_IKBbe_n = 0;
+  mIKBa_c = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 0.5;
+
+  //// Variable initializations:
+  # Parameter values are illustrative placeholders.
+  # "a" refers to IKBa, "be" to the lumped IKBbeta/epsilon.
+  k_degradation_a = 0.2;      # Fast degradation for alpha complex
+  k_degradation_be = 0.1;     # Slower degradation for be complex
+  k_import_NFKB = 0.1;
+  k_transcription_a = 0.5;
+  k_mrna_decay_a = 0.1;
+  k_translation_a = 0.2;
+  k_decay_a = 0.02;
+  k_synthesis_be = 0.02;
+  k_decay_be = 0.01;
+  k_import_a = 0.1;
+  k_export_a = 0.1;
+  k_import_be = 0.1;
+  k_export_be = 0.1;
+  k_assoc_ac = 1;
+  k_diss_ac = 0.05;
+  k_assoc_bec = 1;
+  k_diss_bec = 0.05;
+  k_assoc_an = 1;
+  k_diss_an = 0.05;
+  k_assoc_ben = 1;
+  k_diss_ben = 0.05;
+  k_export_com_a = 0.2;       # Fast export for alpha complex
+  k_export_com_be = 0.1;      # Slower export for be complex
+
+  //// Other declarations:
+  var IKK_activity;
+  const cytoplasm, nucleus;
+  const k_degradation_a, k_degradation_be, k_import_NFKB, k_transcription_a;
+  const k_mrna_decay_a, k_translation_a, k_decay_a, k_synthesis_be;
+  const k_decay_be, k_import_a, k_export_a, k_import_be, k_export_be;
+  const k_assoc_ac, k_diss_ac, k_assoc_bec, k_diss_bec, k_assoc_an;
+  const k_diss_an, k_assoc_ben, k_diss_ben, k_export_com_a, k_export_com_be;
+
+  //// Display Names:
+  IKK_activity is "IKK Kinase Activity (Stimulus)";
+  NFKB_c is "Cytoplasmic NF-kappaB";
+  NFKB_n is "Nuclear NF-kappaB";
+  IKBa_c is "Cytoplasmic I-kappaB-alpha";
+  IKBa_n is "Nuclear I-kappaB-alpha";
+  IKBbe_c is "Cytoplasmic I-kappaB-beta/epsilon";
+  IKBbe_n is "Nuclear I-kappaB-beta/epsilon";
+  NFKB_IKBa_c is "Cytoplasmic NF-kappaB:I-kappaB-alpha complex";
+  NFKB_IKBa_n is "Nuclear NF-kappaB:I-kappaB-alpha complex";
+  NFKB_IKBbe_c is "Cytoplasmic NF-kappaB:I-kappaB-beta/epsilon complex";
+  NFKB_IKBbe_n is "Nuclear NF-kappaB:I-kappaB-beta/epsilon complex";
+  mIKBa_c is "I-kappaB-alpha mRNA";
+end

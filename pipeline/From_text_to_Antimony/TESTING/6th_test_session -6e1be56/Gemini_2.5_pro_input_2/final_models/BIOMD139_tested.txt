@@ -1,0 +1,202 @@
+/*
+MODEL SOURCE:
+This model is based on the descriptions in the paper "The I??????B??????NF-??????B Signaling Module: Temporal Control and Selective Gene Activation" by Hoffmann et al. (Science, 2002).
+
+MODEL NOTE:
+The provided source text describes the components and interactions of the NF-??????B signaling module in detail, forming the basis for the reactions and species in this model. However, the text does not contain explicit mathematical equations, parameter values, or initial concentrations. The kinetic laws have been formulated based on standard mass-action assumptions consistent with the described biology (e.g., enzyme kinetics for IKK, transcriptional regulation by NF-??????Bn). All numerical values for parameters and initial conditions are placeholders and do not represent the original authors' calibrated model. They are included to ensure the model is syntactically complete and executable. Users should refer to the original publication's supplementary materials or curated database entries for the authors' original parameter set.
+*/
+
+model *Hoffmann2002_NFkB_Signaling_Module()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IKKa in cytoplasm, IKKi in cytoplasm;
+  species NFkBc in cytoplasm, NFkBn in nucleus;
+  species IkBa_m in cytoplasm, IkBac in cytoplasm, IkBan in nucleus;
+  species IkBb_m in cytoplasm, IkBbc in cytoplasm, IkBbn in nucleus;
+  species IkBe_m in cytoplasm, IkBec in cytoplasm, IkBen in nucleus;
+  species NFkB_IkBa_c in cytoplasm, NFkB_IkBa_n in nucleus;
+  species NFkB_IkBb_c in cytoplasm, NFkB_IkBb_n in nucleus;
+  species NFkB_IkBe_c in cytoplasm, NFkB_IkBe_n in nucleus;
+
+  //// Assignment Rules:
+  TNF := piecewise(1, time >= stim_start and time < stim_start + stim_dur, 0);
+
+  //// Rate Rules:
+  # None described in the text.
+
+  //// Reactions:
+  # IKK Activation stimulated by TNF
+  J_IKK_activation:   IKKi => IKKa; k_act * IKKi * TNF;
+  J_IKK_inactivation: IKKa => IKKi; k_inact * IKKa;
+
+  # Cytoplasmic Binding of NFkB and IkB isoforms
+  J_c_binding_a: NFkBc + IkBac -> NFkB_IkBa_c; k_ass_a*NFkBc*IkBac - k_diss_a*NFkB_IkBa_c;
+  J_c_binding_b: NFkBc + IkBbc -> NFkB_IkBb_c; k_ass_b*NFkBc*IkBbc - k_diss_b*NFkB_IkBb_c;
+  J_c_binding_e: NFkBc + IkBec -> NFkB_IkBe_c; k_ass_e*NFkBc*IkBec - k_diss_e*NFkB_IkBe_c;
+
+  # IKK-mediated degradation of free and bound IkB in cytoplasm
+  J_c_degradation_a: IkBac => ; d_a * IkBac * IKKa;
+  J_c_degradation_b: IkBbc => ; d_b * IkBbc * IKKa;
+  J_c_degradation_e: IkBec => ; d_e * IkBec * IKKa;
+  J_c_degradation_complex_a: NFkB_IkBa_c => NFkBc; d_c_a * NFkB_IkBa_c * IKKa;
+  J_c_degradation_complex_b: NFkB_IkBb_c => NFkBc; d_c_b * NFkB_IkBb_c * IKKa;
+  J_c_degradation_complex_e: NFkB_IkBe_c => NFkBc; d_c_e * NFkB_IkBe_c * IKKa;
+
+  # Nuclear import of free NFkB
+  J_import_NFkB: NFkBc => NFkBn; k_imp_nfkb * NFkBc;
+
+  # Nucleocytoplasmic transport of free IkB isoforms
+  J_transport_a: IkBac -> IkBan; k_imp_a*IkBac - k_exp_a*IkBan;
+  J_transport_b: IkBbc -> IkBbn; k_imp_b*IkBbc - k_exp_b*IkBbn;
+  J_transport_e: IkBec -> IkBen; k_imp_e*IkBec - k_exp_e*IkBen;
+
+  # NFkB-induced transcription of IkB mRNA
+  J_transcription_a: => IkBa_m; nucleus*(c_a + i_a*NFkBn);
+  J_transcription_b: => IkBb_m; nucleus*(c_b + i_b*NFkBn);
+  J_transcription_e: => IkBe_m; nucleus*(c_e + i_e*NFkBn);
+
+  # Degradation of IkB mRNA
+  J_mRNA_degradation_a: IkBa_m => ; d_m_a*IkBa_m;
+  J_mRNA_degradation_b: IkBb_m => ; d_m_b*IkBb_m;
+  J_mRNA_degradation_e: IkBe_m => ; d_m_e*IkBe_m;
+
+  # Translation of IkB proteins
+  J_translation_a: => IkBac; cytoplasm*t_a*IkBa_m;
+  J_translation_b: => IkBbc; cytoplasm*t_b*IkBb_m;
+  J_translation_e: => IkBec; cytoplasm*t_e*IkBe_m;
+
+  # Nuclear Binding of NFkB and IkB isoforms
+  J_n_binding_a: NFkBn + IkBan -> NFkB_IkBa_n; k_n_ass_a*NFkBn*IkBan - k_n_diss_a*NFkB_IkBa_n;
+  J_n_binding_b: NFkBn + IkBbn -> NFkB_IkBb_n; k_n_ass_b*NFkBn*IkBbn - k_n_diss_b*NFkB_IkBb_n;
+  J_n_binding_e: NFkBn + IkBen -> NFkB_IkBe_n; k_n_ass_e*NFkBn*IkBen - k_n_diss_e*NFkB_IkBe_n;
+
+  # Nuclear export of NFkB-IkB complexes
+  J_complex_export_a: NFkB_IkBa_n => NFkB_IkBa_c; k_exp_c_a*NFkB_IkBa_n;
+  J_complex_export_b: NFkB_IkBb_n => NFkB_IkBb_c; k_exp_c_b*NFkB_IkBb_n;
+  J_complex_export_e: NFkB_IkBe_n => NFkB_IkBe_c; k_exp_c_e*NFkB_IkBe_n;
+
+  //// Events:
+  # None; stimulus is handled by an assignment rule.
+
+  //// Species initializations:
+  # Placeholder values as none were provided in the source text.
+  IKKi = 1.0;
+  IKKa = 0.0;
+  NFkBc = 0.0;
+  NFkBn = 0.0;
+  IkBa_m = 0.0;
+  IkBac = 0.05;
+  IkBan = 0;
+  IkBb_m = 0.0;
+  IkBbc = 0.1;
+  IkBbn = 0;
+  IkBe_m = 0.0;
+  IkBec = 0.0;
+  IkBen = 0;
+  # Assume most NFkB is initially bound to IkB isoforms in cytoplasm.
+  NFkB_IkBa_c = 0.05;
+  NFkB_IkBa_n = 0;
+  NFkB_IkBb_c = 0.05;
+  NFkB_IkBb_n = 0;
+  NFkB_IkBe_c = 0.0;
+  NFkB_IkBe_n = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1.0;
+  nucleus = 1.0;
+
+  //// Variable initializations:
+  # Placeholder values as none were provided in the source text.
+  stim_start = 0;     # Time to start stimulus
+  stim_dur = 360;     # Duration of stimulus in minutes (for a 6-hour experiment)
+  # IKK kinetics
+  k_act = 0.1;
+  k_inact = 0.1;
+  # Association/dissociation kinetics
+  k_ass_a = 0.1;
+  k_diss_a = 0.1;
+  k_ass_b = 0.1;
+  k_diss_b = 0.1;
+  k_ass_e = 0.1;
+  k_diss_e = 0.1;
+  k_n_ass_a = 0.1;
+  k_n_diss_a = 0.1;
+  k_n_ass_b = 0.1;
+  k_n_diss_b = 0.1;
+  k_n_ass_e = 0.1;
+  k_n_diss_e = 0.1;
+  # Degradation rates
+  d_a = 0.1;
+  d_b = 0.1;
+  d_e = 0.1;
+  d_c_a = 0.1;
+  d_c_b = 0.1;
+  d_c_e = 0.1;
+  d_m_a = 0.1;
+  d_m_b = 0.1;
+  d_m_e = 0.1;
+  # Transport rates
+  k_imp_nfkb = 0.1;
+  k_imp_a = 0.1;
+  k_exp_a = 0.1;
+  k_imp_b = 0.1;
+  k_exp_b = 0.1;
+  k_imp_e = 0.1;
+  k_exp_e = 0.1;
+  k_exp_c_a = 0.1;
+  k_exp_c_b = 0.1;
+  k_exp_c_e = 0.1;
+  # Synthesis rates
+  c_a = 0.01;
+  i_a = 0.1;
+  t_a = 0.1;
+  c_b = 0.01;
+  i_b = 0.01;
+  t_b = 0.1;
+  c_e = 0.01;
+  i_e = 0.01;
+  t_e = 0.1;
+
+  //// Other declarations:
+  var TNF;
+  const cytoplasm, nucleus;
+  const stim_start, stim_dur, k_act, k_inact;
+  const k_ass_a, k_diss_a, k_ass_b, k_diss_b, k_ass_e, k_diss_e;
+  const k_n_ass_a, k_n_diss_a, k_n_ass_b, k_n_diss_b, k_n_ass_e, k_n_diss_e;
+  const d_a, d_b, d_e, d_c_a, d_c_b, d_c_e, d_m_a, d_m_b, d_m_e;
+  const k_imp_nfkb, k_imp_a, k_exp_a, k_imp_b, k_exp_b, k_imp_e, k_exp_e;
+  const k_exp_c_a, k_exp_c_b, k_exp_c_e;
+  const c_a, i_a, t_a, c_b, i_b, t_b, c_e, i_e, t_e;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit volume = 1 liter;
+
+  //// Display Names:
+  time_unit is "minute";
+  substance is "nanomole";
+  cytoplasm is "Cytoplasm";
+  nucleus is "Nucleus";
+  IKKa is "Active IKK";
+  IKKi is "Inactive IKK";
+  NFkBc is "Cytoplasmic NF-kB";
+  NFkBn is "Nuclear NF-kB";
+  IkBa_m is "IkB-alpha mRNA";
+  IkBac is "Cytoplasmic IkB-alpha";
+  IkBan is "Nuclear IkB-alpha";
+  IkBb_m is "IkB-beta mRNA";
+  IkBbc is "Cytoplasmic IkB-beta";
+  IkBbn is "Nuclear IkB-beta";
+  IkBe_m is "IkB-epsilon mRNA";
+  IkBec is "Cytoplasmic IkB-epsilon";
+  IkBen is "Nuclear IkB-epsilon";
+  NFkB_IkBa_c is "Cytoplasmic NF-kB:IkB-alpha complex";
+  NFkB_IkBa_n is "Nuclear NF-kB:IkB-alpha complex";
+  NFkB_IkBb_c is "Cytoplasmic NF-kB:IkB-beta complex";
+  NFkB_IkBb_n is "Nuclear NF-kB:IkB-beta complex";
+  NFkB_IkBe_c is "Cytoplasmic NF-kB:IkB-epsilon complex";
+  NFkB_IkBe_n is "Nuclear NF-kB:IkB-epsilon complex";
+  TNF is "TNF stimulus signal";
+end

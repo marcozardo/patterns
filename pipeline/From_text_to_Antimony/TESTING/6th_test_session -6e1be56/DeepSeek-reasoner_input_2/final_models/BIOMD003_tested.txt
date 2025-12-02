@@ -1,0 +1,82 @@
+model *Goldbeter1991_Mitotic_Oscillator()
+
+  //// Compartments and Species:
+  compartment cell;
+  species C in cell;
+  species M_active in cell, M_inactive in cell;
+  species X_active in cell, X_inactive in cell;
+
+  //// Assignment Rules:
+  V1 := (C/(Kc + C)) * VM1;
+  V3 := M_active * VM3;
+
+  //// Rate Rules:
+  M_active' = V1 * ((1 - M_active)/(K1 + (1 - M_active))) - V2 * (M_active/(K2 + M_active));
+  X_active' = V3 * ((1 - X_active)/(K3 + (1 - X_active))) - V4 * (X_active/(K4 + X_active));
+
+  //// Reactions:
+  syn: => C; cell * vi;
+  deg_enzymatic: C => ; cell * vd * X_active * C/(Kd + C);
+  deg_first_order: C => ; cell * kd * C;
+
+  //// Species initializations:
+  C = 0.01;
+  M_active = 0.01;
+  M_inactive = 0.99;
+  X_active = 0.01;
+  X_inactive = 0.99;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  vi = 0.023;
+  vd = 0.1;
+  Kd = 0.02;
+  kd = 3.33e-3;
+  VM1 = 0.5;
+  Kc = 0.3;
+  V2 = 0.167;
+  VM3 = 0.2;
+  V4 = 0.1;
+  K1 = 0.1;
+  K2 = 0.1;
+  K3 = 0.1;
+  K4 = 0.1;
+
+  //// Other declarations:
+  var V1, V3;
+  const cell, vi, vd, Kd, kd, VM1, Kc, V2, VM3, V4, K1, K2, K3, K4;
+
+  //// Unit definitions:
+  unit concentration = 1e-6 mole / liter;
+  unit minute = 60 second;
+  unit per_min = 1 / minute;
+
+  //// Display Names:
+  cell is "Cell volume";
+  C is "Cyclin concentration";
+  M_active is "Active cdc2 kinase (fraction)";
+  M_inactive is "Inactive cdc2 kinase (fraction)";
+  X_active is "Active cyclin protease (fraction)";
+  X_inactive is "Inactive cyclin protease (fraction)";
+  syn is "Cyclin synthesis";
+  deg_enzymatic is "Cyclin degradation (enzymatic)";
+  deg_first_order is "Cyclin degradation (non-specific)";
+  vi is "Cyclin synthesis rate";
+  vd is "Max cyclin degradation rate by protease";
+  Kd is "Michaelis constant for cyclin degradation";
+  kd is "First-order degradation rate constant";
+  VM1 is "Max rate of cdc2 activase (at saturating cyclin)";
+  Kc is "Michaelis constant for cyclin activation of cdc2 activase";
+  V2 is "Effective max rate of cdc2 inactivase";
+  VM3 is "Max rate of protease-activating kinase (at saturating cdc2)";
+  V4 is "Effective max rate of protease inactivase";
+  K1 is "Reduced Michaelis constant for cdc2 activase";
+  K2 is "Reduced Michaelis constant for cdc2 inactivase";
+  K3 is "Reduced Michaelis constant for protease-activating kinase";
+  K4 is "Reduced Michaelis constant for protease inactivase";
+  V1 is "Effective max rate of cdc2 activase";
+  V3 is "Effective max rate of protease-activating kinase";
+
+end

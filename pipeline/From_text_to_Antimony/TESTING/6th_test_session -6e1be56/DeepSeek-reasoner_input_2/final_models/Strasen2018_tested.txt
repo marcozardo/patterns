@@ -1,0 +1,123 @@
+model *Strasen2018_TGFb_Signaling()
+
+//// Compartments and Species:
+compartment extracellular, cytosol, nucleus;
+species $L in extracellular, $R1 in cytosol, $R2 in cytosol, $C in cytosol, $Ce in cytosol;
+species $S2 in cytosol, $S2p in cytosol, $S4 in cytosol, $S2p_S4 in cytosol;
+species $S2p_S4_n in nucleus;
+species $FB_mRNA in nucleus, $FB in cytosol;
+
+//// Assignment Rules:
+S2_total := S2 + S2p + S2p_S4;
+S4_total := S4 + S2p_S4;
+FB := k_fb_prod * FB_mRNA / (k_fb_deg + FB_mRNA);
+k_int := k_int_basal + k_int_fb * FB;
+k_degL := k_degL_basal + k_degL_fb * FB;
+
+//// Rate Rules:
+L' = - kon * L * R2 + koff * C - k_degL * Ce;
+R1' = - krec * C * R1 + k_dephos * Ce;
+R2' = - kon * L * R2 + koff * C;
+C' = kon * L * R2 - koff * C - krec * C * R1;
+Ce' = krec * C * R1 - k_dephos * Ce - k_int * Ce;
+S2' = - k_phos * Ce * S2 + k_dephos_nuc * S2p + k_export_S2 * S2p - k_import_S2 * S2;
+S2p' = k_phos * Ce * S2 - k_complex * S2p * S4 + k_dissoc * S2p_S4 - k_import_S2 * S2p + k_export_S2 * S2p;
+S4' = - k_complex * S2p * S4 + k_dissoc * S2p_S4 - k_import_S4 * S4 + k_export_S4 * S4;
+S2p_S4' = k_complex * S2p * S4 - k_dissoc * S2p_S4 - k_import_S2S4 * S2p_S4 + k_export_S2S4 * S2p_S4_n;
+S2p_S4_n' = k_import_S2S4 * S2p_S4 - k_export_S2S4 * S2p_S4_n - k_dephos_nuc * S2p_S4_n;
+FB_mRNA' = k_basal_FBmRNA + k_ind_FBmRNA * S2p_S4_n - k_deg_FBmRNA * FB_mRNA;
+
+//// Reactions:
+
+//// Species initializations:
+L = 100;
+R1 = 1;
+R2 = 1;
+C = 0;
+Ce = 0;
+S2 = 1;
+S2p = 0;
+S4 = 1;
+S2p_S4 = 0;
+S2p_S4_n = 0;
+FB_mRNA = 0;
+
+//// Compartment initializations:
+extracellular = 1;
+cytosol = 1;
+nucleus = 1;
+
+//// Variable initializations:
+kon = 0.1;
+koff = 0.1;
+krec = 1.0;
+k_dephos = 0.1;
+k_int_basal = 0.05;
+k_int_fb = 0.1;
+k_degL_basal = 0.01;
+k_degL_fb = 0.02;
+k_phos = 1.0;
+k_complex = 1.0;
+k_dissoc = 0.1;
+k_import_S2 = 0.5;
+k_export_S2 = 0.5;
+k_import_S4 = 0.5;
+k_export_S4 = 0.5;
+k_import_S2S4 = 0.5;
+k_export_S2S4 = 0.5;
+k_dephos_nuc = 0.1;
+k_basal_FBmRNA = 0.01;
+k_ind_FBmRNA = 0.1;
+k_deg_FBmRNA = 0.1;
+k_fb_prod = 1.0;
+k_fb_deg = 0.1;
+
+//// Other declarations:
+var S2_total, S4_total, k_int, k_degL;
+const extracellular, cytosol, nucleus, kon, koff, krec, k_dephos, k_int_basal, k_int_fb, k_degL_basal, k_degL_fb, k_phos, k_complex, k_dissoc, k_import_S2, k_export_S2, k_import_S4, k_export_S4, k_import_S2S4, k_export_S2S4, k_dephos_nuc, k_basal_FBmRNA, k_ind_FBmRNA, k_deg_FBmRNA, k_fb_prod, k_fb_deg;
+
+//// Unit definitions:
+unit substance = 1e-12 mole;
+unit time_unit = 3600 second;
+
+//// Display Names:
+extracellular is "Extracellular medium";
+cytosol is "Cytosol";
+nucleus is "Nucleus";
+L is "TGF? ligand";
+R1 is "TGF? receptor I";
+R2 is "TGF? receptor II";
+C is "Ligand-ReceptorII complex";
+Ce is "Active receptor complex";
+S2 is "SMAD2";
+S2p is "Phosphorylated SMAD2";
+S4 is "SMAD4";
+S2p_S4 is "SMAD2/SMAD4 complex";
+S2p_S4_n is "Nuclear SMAD2/SMAD4 complex";
+FB_mRNA is "Feedback mRNA (e.g., SMAD7)";
+FB is "Feedback protein (e.g., SMAD7)";
+kon is "Ligand-receptor binding rate";
+koff is "Ligand-receptor dissociation rate";
+krec is "Receptor I recruitment rate";
+k_dephos is "Receptor complex dephosphorylation rate";
+k_int_basal is "Basal internalization rate";
+k_int_fb is "Feedback-enhanced internalization rate";
+k_degL_basal is "Basal ligand degradation rate";
+k_degL_fb is "Feedback-enhanced ligand degradation rate";
+k_phos is "SMAD2 phosphorylation rate";
+k_complex is "SMAD2/SMAD4 complex formation rate";
+k_dissoc is "SMAD2/SMAD4 complex dissociation rate";
+k_import_S2 is "SMAD2 nuclear import rate";
+k_export_S2 is "SMAD2 nuclear export rate";
+k_import_S4 is "SMAD4 nuclear import rate";
+k_export_S4 is "SMAD4 nuclear export rate";
+k_import_S2S4 is "SMAD2/SMAD4 complex nuclear import rate";
+k_export_S2S4 is "SMAD2/SMAD4 complex nuclear export rate";
+k_dephos_nuc is "Nuclear SMAD2 dephosphorylation rate";
+k_basal_FBmRNA is "Basal feedback mRNA production";
+k_ind_FBmRNA is "Induced feedback mRNA production rate";
+k_deg_FBmRNA is "Feedback mRNA degradation rate";
+k_fb_prod is "Feedback protein production rate";
+k_fb_deg is "Feedback protein degradation saturation constant";
+
+end

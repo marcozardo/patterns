@@ -1,0 +1,282 @@
+model *Kok2020_IFNa_SignalTransduction()
+
+  //// Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species $IFN in cytoplasm;
+  species Rec in cytoplasm, aRecIFN in cytoplasm;
+  species STAT1c in cytoplasm, STAT2c in cytoplasm, IRF9c in cytoplasm;
+  species pSTAT1dimc in cytoplasm, pSTAT1pSTAT2c in cytoplasm, ISGF3c in cytoplasm;
+  species STAT1n in nucleus, STAT2n in nucleus, IRF9n in nucleus;
+  species pSTAT1dimn in nucleus, pSTAT1pSTAT2n in nucleus, ISGF3n in nucleus;
+  species SOCS1c in cytoplasm, SOCS3c in cytoplasm, USP18c in cytoplasm, IRF2c in cytoplasm;
+  species SOCS1_USP18c in cytoplasm;
+  species STAT1mRNA in cytoplasm, STAT2mRNA in cytoplasm, IRF9mRNA in cytoplasm, USP18mRNA in cytoplasm;
+  species SOCS1mRNA in cytoplasm, SOCS3mRNA in cytoplasm, IRF2mRNA in cytoplasm;
+  species GASbs in nucleus, ISREbs in nucleus, GAS_ISREbs in nucleus;
+  species OccGASbs in nucleus, OccISREbs in nucleus, OccGAS_ISREbs_pS1S2n in nucleus, OccGAS_ISREbs_ISGF3n in nucleus;
+
+  //// Reactions:
+  // Receptor Activation and Regulation
+  R1_Rec_activation: Rec + IFN -> aRecIFN; k_Rec_a * Rec * IFN / ((1 + SOCS1c/KI_SOCS1) * (1 + SOCS3c/KI_SOCS3));
+  R2_Rec_deactivation: aRecIFN -> Rec + IFN; k_Rec_d * aRecIFN;
+  R3_SOCS1_USP18_assoc: SOCS1c + USP18c -> SOCS1_USP18c; k_assoc_S1U18 * SOCS1c * USP18c;
+  R4_SOCS1_USP18_dissoc: SOCS1_USP18c -> SOCS1c + USP18c; k_diss_S1U18 * SOCS1_USP18c;
+  R5_aRec_degradation_SOCS1: aRecIFN -> ; k_aRec_degrad_S1 * aRecIFN * SOCS1c;
+  R6_aRec_degradation_SOCS1_USP18: aRecIFN -> ; k_aRec_degrad_S1U18 * aRecIFN * SOCS1_USP18c;
+  R7_Rec_turnover: Rec => ; k_Rec_turnover * Rec;
+  R8_Rec_synthesis: => Rec; k_Rec_synth;
+
+  // Cytoplasmic STAT Phosphorylation, Dimerization and ISGF3 formation
+  R9_pSTAT1_dimerization: 2 STAT1c -> pSTAT1dimc; cytoplasm * k_pSTAT1_form * aRecIFN * STAT1c^2 / (1 + USP18c/KI_USP18);
+  R10_pSTAT1_pSTAT2_dimerization: STAT1c + STAT2c -> pSTAT1pSTAT2c; cytoplasm * k_pSTAT12_form * aRecIFN * STAT1c * STAT2c / (1 + USP18c/KI_USP18);
+  R11_ISGF3_formation: pSTAT1pSTAT2c + IRF9c -> ISGF3c; k_ISGF3_form * pSTAT1pSTAT2c * IRF9c;
+  R12_ISGF3_dissociation: ISGF3c -> pSTAT1pSTAT2c + IRF9c; k_ISGF3_diss * ISGF3c;
+
+  // Nuclear Transport
+  R13_pSTAT1dim_import: pSTAT1dimc -> pSTAT1dimn; k_imp_pS1d * pSTAT1dimc;
+  R14_pSTAT1dim_export: pSTAT1dimn -> pSTAT1dimc; k_exp_pS1d * pSTAT1dimn;
+  R15_pSTAT1pSTAT2_import: pSTAT1pSTAT2c -> pSTAT1pSTAT2n; k_imp_pS12 * pSTAT1pSTAT2c;
+  R16_pSTAT1pSTAT2_export: pSTAT1pSTAT2n -> pSTAT1pSTAT2c; k_exp_pS12 * pSTAT1pSTAT2n;
+  R17_ISGF3_import: ISGF3c -> ISGF3n; k_imp_ISGF3 * ISGF3c;
+  R18_ISGF3_export: ISGF3n -> ISGF3c; k_exp_ISGF3 * ISGF3n;
+  R19_STAT1_import: STAT1c -> STAT1n; k_imp_S1 * STAT1c;
+  R20_STAT1_export: STAT1n -> STAT1c; k_exp_S1 * STAT1n;
+  R21_STAT2_import: STAT2c -> STAT2n; k_imp_S2 * STAT2c;
+  R22_STAT2_export: STAT2n -> STAT2c; k_exp_S2 * STAT2n;
+  R23_IRF9_import: IRF9c -> IRF9n; k_imp_I9 * IRF9c;
+  R24_IRF9_export: IRF9n -> IRF9c; k_exp_I9 * IRF9n;
+
+  // Nuclear STAT complex dissociation (dephosphorylation implied)
+  R25_pSTAT1dimn_diss: pSTAT1dimn -> 2 STAT1n; k_dis_pS1d_n * pSTAT1dimn;
+  R26_pSTAT1pSTAT2n_diss: pSTAT1pSTAT2n -> STAT1n + STAT2n; k_dis_pS12_n * pSTAT1pSTAT2n;
+  R27_ISGF3n_diss: ISGF3n -> STAT1n + STAT2n + IRF9n; k_dis_ISGF3_n * ISGF3n;
+
+  // Transcription Factor Binding to Promoters
+  R28_GAS_binding: pSTAT1dimn + GASbs -> OccGASbs; k_bind_GAS * pSTAT1dimn * GASbs;
+  R29_GAS_unbinding: OccGASbs -> pSTAT1dimn + GASbs; k_unbind_GAS * OccGASbs;
+  R30_ISRE_binding: ISGF3n + ISREbs -> OccISREbs; k_bind_ISRE * ISGF3n * ISREbs;
+  R31_ISRE_unbinding: OccISREbs -> ISGF3n + ISREbs; k_unbind_ISRE * OccISREbs;
+  R32_GAS_ISRE_binding_pS1S2: pSTAT1pSTAT2n + GAS_ISREbs -> OccGAS_ISREbs_pS1S2n; k_bind_GI_pS12 * pSTAT1pSTAT2n * GAS_ISREbs;
+  R33_GAS_ISRE_unbinding_pS1S2: OccGAS_ISREbs_pS1S2n -> pSTAT1pSTAT2n + GAS_ISREbs; k_unbind_GI_pS12 * OccGAS_ISREbs_pS1S2n;
+  R34_GAS_ISRE_binding_ISGF3: ISGF3n + GAS_ISREbs -> OccGAS_ISREbs_ISGF3n; k_bind_GI_ISGF3 * ISGF3n * GAS_ISREbs;
+  R35_GAS_ISRE_unbinding_ISGF3: OccGAS_ISREbs_ISGF3n -> ISGF3n + GAS_ISREbs; k_unbind_GI_ISGF3 * OccGAS_ISREbs_ISGF3n;
+
+  // Transcription (mRNA Synthesis)
+  R36_SOCS3_transcription: => SOCS3mRNA; nucleus * (Vmax_SOCS3 * OccGASbs) / (Km_SOCS3 + OccGASbs);
+  R37_STAT1_transcription: => STAT1mRNA; nucleus * (Vmax_STAT1_pS12 * OccGAS_ISREbs_pS1S2n + Vmax_STAT1_ISGF3 * OccGAS_ISREbs_ISGF3n) / (Km_STAT1 + OccGAS_ISREbs_pS1S2n + OccGAS_ISREbs_ISGF3n);
+  R38_STAT2_transcription: => STAT2mRNA; nucleus * (Vmax_STAT2_pS12 * OccGAS_ISREbs_pS1S2n + Vmax_STAT2_ISGF3 * OccGAS_ISREbs_ISGF3n) / (Km_STAT2 + OccGAS_ISREbs_pS1S2n + OccGAS_ISREbs_ISGF3n);
+  R39_IRF9_transcription: => IRF9mRNA; nucleus * (Vmax_IRF9_pS12 * OccGAS_ISREbs_pS1S2n + Vmax_IRF9_ISGF3 * OccGAS_ISREbs_ISGF3n) / (Km_IRF9 + OccGAS_ISREbs_pS1S2n + OccGAS_ISREbs_ISGF3n);
+  R40_USP18_transcription: => USP18mRNA; nucleus * (Vmax_USP18_pS12 * OccGAS_ISREbs_pS1S2n + Vmax_USP18_ISGF3 * OccGAS_ISREbs_ISGF3n) / (Km_USP18 + OccGAS_ISREbs_pS1S2n + OccGAS_ISREbs_ISGF3n);
+  R41_SOCS1_transcription: => SOCS1mRNA; nucleus * (Vmax_SOCS1_pS12 * OccGAS_ISREbs_pS1S2n + Vmax_SOCS1_ISGF3 * OccGAS_ISREbs_ISGF3n) / (Km_SOCS1 + OccGAS_ISREbs_pS1S2n + OccGAS_ISREbs_ISGF3n);
+  R42_IRF2_transcription: => IRF2mRNA; nucleus * (Vmax_IRF2_pS12 * OccGAS_ISREbs_pS1S2n + Vmax_IRF2_ISGF3 * OccGAS_ISREbs_ISGF3n) / (Km_IRF2 + OccGAS_ISREbs_pS1S2n + OccGAS_ISREbs_ISGF3n);
+  // Note: ISRE-only genes (DDX58, etc.) are omitted for model simplicity, but would follow the SOCS3 transcription model with OccISREbs.
+
+  // Translation (Protein Synthesis)
+  R43_STAT1_translation: STAT1mRNA => STAT1mRNA + STAT1c; k_tl_STAT1 * STAT1mRNA;
+  R44_STAT2_translation: STAT2mRNA => STAT2mRNA + STAT2c; k_tl_STAT2 * STAT2mRNA;
+  R45_IRF9_translation: IRF9mRNA => IRF9mRNA + IRF9c; k_tl_IRF9 * IRF9mRNA;
+  R46_USP18_translation: USP18mRNA => USP18mRNA + USP18c; k_tl_USP18 * USP18mRNA;
+  R47_SOCS1_translation: SOCS1mRNA => SOCS1mRNA + SOCS1c; k_tl_SOCS1 * SOCS1mRNA;
+  R48_SOCS3_translation: SOCS3mRNA => SOCS3mRNA + SOCS3c; k_tl_SOCS3 * SOCS3mRNA;
+  R49_IRF2_translation: IRF2mRNA => IRF2mRNA + IRF2c; k_tl_IRF2 * IRF2mRNA;
+
+  // mRNA Degradation
+  R50_STAT1mRNA_degrad: STAT1mRNA => ; k_deg_mSTAT1 * STAT1mRNA;
+  R51_STAT2mRNA_degrad: STAT2mRNA => ; k_deg_mSTAT2 * STAT2mRNA;
+  R52_IRF9mRNA_degrad: IRF9mRNA => ; k_deg_mIRF9 * IRF9mRNA;
+  R53_USP18mRNA_degrad: USP18mRNA => ; k_deg_mUSP18 * USP18mRNA;
+  R54_SOCS1mRNA_degrad: SOCS1mRNA => ; (k_deg_mSOCS1_basal + k_deg_mSOCS1_IRF2 * IRF2c) * SOCS1mRNA;
+  R55_SOCS3mRNA_degrad: SOCS3mRNA => ; k_deg_mSOCS3 * SOCS3mRNA;
+  R56_IRF2mRNA_degrad: IRF2mRNA => ; k_deg_mIRF2 * IRF2mRNA;
+
+  // Protein Degradation
+  R57_STAT1c_degrad: STAT1c => ; k_deg_pSTAT1 * STAT1c;
+  R58_STAT2c_degrad: STAT2c => ; k_deg_pSTAT2 * STAT2c;
+  R59_IRF9c_degrad: IRF9c => ; k_deg_pIRF9 * IRF9c;
+  R60_USP18c_degrad: USP18c => ; k_deg_pUSP18 * USP18c;
+  R61_SOCS1c_degrad: SOCS1c => ; k_deg_pSOCS1 * SOCS1c;
+  R62_SOCS3c_degrad: SOCS3c => ; k_deg_pSOCS3 * SOCS3c;
+  R63_IRF2c_degrad: IRF2c => ; k_deg_pIRF2 * IRF2c;
+
+  //// Events:
+  E1_Prestimulation: at (time > 0): IFN = IFN_prestim;
+  E2_Stimulation: at (time >= 24): IFN = IFN_stim;
+
+  //// Species initializations:
+  // Initial amounts from Fig 3C for Huh7.5 untreated cells (molecules per cell)
+  STAT1c = 750000;
+  STAT2c = 50000;
+  IRF9c = 5000;
+  USP18c = 5000;
+  Rec = 1000; # Assumed initial value
+  aRecIFN = 0;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  SOCS1c = 0;
+  SOCS3c = 0;
+  IRF2c = 0;
+  SOCS1_USP18c = 0;
+  STAT1mRNA = 0;
+  STAT2mRNA = 0;
+  IRF9mRNA = 0;
+  USP18mRNA = 0;
+  SOCS1mRNA = 0;
+  SOCS3mRNA = 0;
+  IRF2mRNA = 0;
+  GASbs = 100; # Assumed value
+  ISREbs = 100; # Assumed value
+  GAS_ISREbs = 100; # Assumed value
+  OccGASbs = 0;
+  OccISREbs = 0;
+  OccGAS_ISREbs_pS1S2n = 0;
+  OccGAS_ISREbs_ISGF3n = 0;
+  IFN = 0;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+  nucleus = 0.5; # Assumed volume ratio
+
+  //// Variable initializations:
+  // Stimulation doses (pM) for a representative experiment (low prestim, high stim)
+  IFN_prestim = 2.8;
+  IFN_stim = 1400;
+
+  // Placeholder kinetic parameters (values are illustrative, not from paper)
+  k_Rec_a=0.1;
+  k_Rec_d=0.1;
+  k_assoc_S1U18=0.1;
+  k_diss_S1U18=0.1;
+  k_aRec_degrad_S1=0.1;
+  k_aRec_degrad_S1U18=0.1;
+  k_Rec_turnover=0.01;
+  k_Rec_synth=0.1;
+  k_pSTAT1_form=0.1;
+  k_pSTAT12_form=0.1;
+  KI_USP18=100;
+  k_ISGF3_form=0.1;
+  k_ISGF3_diss=0.1;
+  k_imp_pS1d=0.1;
+  k_exp_pS1d=0.1;
+  k_imp_pS12=0.1;
+  k_exp_pS12=0.1;
+  k_imp_ISGF3=0.1;
+  k_exp_ISGF3=0.1;
+  k_imp_S1=0.1;
+  k_exp_S1=0.1;
+  k_imp_S2=0.1;
+  k_exp_S2=0.1;
+  k_imp_I9=0.1;
+  k_exp_I9=0.1;
+  k_dis_pS1d_n=0.1;
+  k_dis_pS12_n=0.1;
+  k_dis_ISGF3_n=0.1;
+  k_bind_GAS=0.1;
+  k_unbind_GAS=0.1;
+  k_bind_ISRE=0.1;
+  k_unbind_ISRE=0.1;
+  k_bind_GI_pS12=0.1;
+  k_unbind_GI_pS12=0.1;
+  k_bind_GI_ISGF3=0.1;
+  k_unbind_GI_ISGF3=0.1;
+  Vmax_SOCS3=10;
+  Km_SOCS3=100;
+  Vmax_STAT1_pS12=10;
+  Vmax_STAT1_ISGF3=20;
+  Km_STAT1=100;
+  Vmax_STAT2_pS12=10;
+  Vmax_STAT2_ISGF3=20;
+  Km_STAT2=100;
+  Vmax_IRF9_pS12=10;
+  Vmax_IRF9_ISGF3=20;
+  Km_IRF9=100;
+  Vmax_USP18_pS12=10;
+  Vmax_USP18_ISGF3=20;
+  Km_USP18=100;
+  Vmax_SOCS1_pS12=10;
+  Vmax_SOCS1_ISGF3=20;
+  Km_SOCS1=100;
+  Vmax_IRF2_pS12=10;
+  Vmax_IRF2_ISGF3=20;
+  Km_IRF2=100;
+  k_tl_STAT1=0.1;
+  k_tl_STAT2=0.1;
+  k_tl_IRF9=0.1;
+  k_tl_USP18=0.1;
+  k_tl_SOCS1=0.1;
+  k_tl_SOCS3=0.1;
+  k_tl_IRF2=0.1;
+  k_deg_mSTAT1=0.1;
+  k_deg_mSTAT2=0.1;
+  k_deg_mIRF9=0.1;
+  k_deg_mUSP18=0.1;
+  k_deg_mSOCS1_basal=0.1;
+  k_deg_mSOCS1_IRF2=0.1;
+  k_deg_mSOCS3=0.1;
+  k_deg_mIRF2=0.1;
+  k_deg_pSTAT1=0.01;
+  k_deg_pSTAT2=0.01;
+  k_deg_pIRF9=0.01;
+  k_deg_pUSP18=0.01;
+  k_deg_pSOCS1=0.01;
+  k_deg_pSOCS3=0.01;
+  k_deg_pIRF2=0.01;
+  KI_SOCS1=100;
+  KI_SOCS3=100;
+
+  //// Other declarations:
+  const cytoplasm, nucleus;
+  const IFN_prestim, IFN_stim;
+  const k_Rec_a, k_Rec_d, k_assoc_S1U18, k_diss_S1U18, k_aRec_degrad_S1, k_aRec_degrad_S1U18;
+  const k_Rec_turnover, k_Rec_synth, k_pSTAT1_form, k_pSTAT12_form, KI_USP18, k_ISGF3_form, k_ISGF3_diss;
+  const k_imp_pS1d, k_exp_pS1d, k_imp_pS12, k_exp_pS12, k_imp_ISGF3, k_exp_ISGF3, k_imp_S1, k_exp_S1;
+  const k_imp_S2, k_exp_S2, k_imp_I9, k_exp_I9, k_dis_pS1d_n, k_dis_pS12_n, k_dis_ISGF3_n;
+  const k_bind_GAS, k_unbind_GAS, k_bind_ISRE, k_unbind_ISRE, k_bind_GI_pS12, k_unbind_GI_pS12;
+  const k_bind_GI_ISGF3, k_unbind_GI_ISGF3;
+  const Vmax_SOCS3, Km_SOCS3, Vmax_STAT1_pS12, Vmax_STAT1_ISGF3, Km_STAT1;
+  const Vmax_STAT2_pS12, Vmax_STAT2_ISGF3, Km_STAT2, Vmax_IRF9_pS12, Vmax_IRF9_ISGF3, Km_IRF9;
+  const Vmax_USP18_pS12, Vmax_USP18_ISGF3, Km_USP18, Vmax_SOCS1_pS12, Vmax_SOCS1_ISGF3, Km_SOCS1;
+  const Vmax_IRF2_pS12, Vmax_IRF2_ISGF3, Km_IRF2;
+  const k_tl_STAT1, k_tl_STAT2, k_tl_IRF9, k_tl_USP18, k_tl_SOCS1, k_tl_SOCS3, k_tl_IRF2;
+  const k_deg_mSTAT1, k_deg_mSTAT2, k_deg_mIRF9, k_deg_mUSP18, k_deg_mSOCS1_basal, k_deg_mSOCS1_IRF2;
+  const k_deg_mSOCS3, k_deg_mIRF2, k_deg_pSTAT1, k_deg_pSTAT2, k_deg_pIRF9;
+  const k_deg_pUSP18, k_deg_pSOCS1, k_deg_pSOCS3, k_deg_pIRF2;
+  const KI_SOCS1, KI_SOCS3;
+
+  //// Unit definitions:
+  unit substance = 1 mole; # Representing molecules/cell
+  unit time_unit = 3600 second; # Time in hours
+
+  //// Display Names:
+  time_unit is "hour";
+  IFN is "Interferon alpha";
+  Rec is "IFN alpha Receptor";
+  aRecIFN is "Activated IFN alpha Receptor";
+  STAT1c is "Cytoplasmic STAT1";
+  STAT2c is "Cytoplasmic STAT2";
+  IRF9c is "Cytoplasmic IRF9";
+  pSTAT1dimc is "Cytoplasmic pSTAT1 homodimer";
+  pSTAT1pSTAT2c is "Cytoplasmic pSTAT1:pSTAT2 heterodimer";
+  ISGF3c is "Cytoplasmic ISGF3 complex";
+  STAT1n is "Nuclear STAT1";
+  STAT2n is "Nuclear STAT2";
+  IRF9n is "Nuclear IRF9";
+  pSTAT1dimn is "Nuclear pSTAT1 homodimer";
+  pSTAT1pSTAT2n is "Nuclear pSTAT1:pSTAT2 heterodimer";
+  ISGF3n is "Nuclear ISGF3 complex";
+  SOCS1c is "Cytoplasmic SOCS1";
+  SOCS3c is "Cytoplasmic SOCS3";
+  USP18c is "Cytoplasmic USP18";
+  IRF2c is "Cytoplasmic IRF2";
+  GASbs is "Gamma-Activated Sequence binding site";
+  ISREbs is "Interferon-Stimulated Response Element";
+  GAS_ISREbs is "Combined GAS and ISRE binding site";
+  OccGASbs is "Occupied GAS binding site";
+  OccISREbs is "Occupied ISRE binding site";
+end

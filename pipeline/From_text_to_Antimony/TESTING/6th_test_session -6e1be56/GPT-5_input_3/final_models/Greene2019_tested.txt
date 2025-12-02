@@ -1,0 +1,106 @@
+/* Domain: Physiological/oncological population dynamics (tumor cell subpopulations). 
+This Antimony model encodes the nondimensional two-compartment (Sensitive S, Resistant R) minimal ODE system from Greene, Gevertz, and Sontag (2019) that captures both spontaneous (epsilon) and drug-induced (alpha*u(t)) resistance during therapy. 
+Logistic growth with shared carrying capacity (scaled to 1), drug-induced death of S with sensitivity d (and optionally R with d_R, default 0), and optional resensitization gamma (default 0). 
+Therapy input u(t) is driven by detection-triggered events and supports constant or pulsed regimens (select with 'regimen': 0=constant, 1=pulsed). 
+Parameter set corresponds to Table 1 (nondimensional): S(0)=0.01, R(0)=0, Vd=0.1 (detection), Vc=0.9 (failure), epsilon=1e-6, d=1, pr=0.2, U_on=1.5, dt_on=1, dt_off=3, alpha default 0.01 (inductive drug). 
+Set alpha=0 for phenotype-preserving drug. */
+
+model *Greene2019_InducedResistance_Minimal()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;
+  T_period := dt_on + dt_off;
+  u_const := therapy_active * U_on;
+  u_pulse := therapy_active * U_on * piecewise(1, sin(2*PI*t_since/T_period) > 0, 0);
+  u := piecewise(u_const, regimen == 0, u_pulse, regimen == 1, 0);
+
+  //// Rate Rules:
+  t_since' = therapy_active;
+
+  //// Reactions:
+  S_logistic_growth:  => S; tumor*((1 - (S + R)) * S);
+  R_logistic_growth:  => R; tumor*(pr * (1 - (S + R)) * R);
+  S_to_R_transition: S => R; tumor*((epsilon + alpha*u) * S);
+  S_drug_kill: S => ; tumor*(d * u * S);
+  R_drug_kill: R => ; tumor*(d_R * u * R);
+  R_to_S_resensitization: R => S; tumor*(gamma_ * R);
+
+  //// Events:
+  at((V >= Vd) && (therapy_active < 1)): therapy_active = 1, t_since = 0;
+  at(V >= Vc): therapy_active = 0, t_failure = time;
+
+  //// Species initializations:
+  S = 0.01;
+  R = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  pr = 0.2;
+  d = 1;
+  d_R = 0;
+  epsilon = 1e-6;
+  alpha = 0.01;    # set to 0 for phenotype-preserving (non-inductive) drug
+  U_on = 1.5;
+  dt_on = 1;
+  dt_off = 3;
+  Vd = 0.1;
+  Vc = 0.9;
+  gamma_ = 0;
+  regimen = 1;     # 0 = constant infusion, 1 = pulsed
+  therapy_active = 0;
+  t_since = 0;
+  t_failure = 0;
+  PI = 3.141592653589793;
+
+  //// Other declarations:
+  var V, u, u_const, u_pulse, t_since, therapy_active, t_failure, T_period;
+  const tumor, pr, d, d_R, epsilon, alpha, U_on, dt_on, dt_off, Vd, Vc, gamma_, regimen, PI;
+
+  //// Unit definitions:
+  # Nondimensional model; units omitted by design.
+
+  //// Display Names:
+  tumor is "Tumor compartment (nondimensional volume)";
+  S is "Drug-sensitive tumor cells (fraction of carrying capacity)";
+  R is "Drug-resistant tumor cells (fraction of carrying capacity)";
+  V is "Total tumor burden (S + R)";
+  u is "Effective therapy input";
+  u_const is "Constant therapy input (on when active)";
+  u_pulse is "Pulsed therapy input (square-wave when active)";
+  T_period is "Pulse period (dt_on + dt_off)";
+  pr is "Resistant relative growth fraction";
+  d is "Drug-induced death sensitivity of S";
+  d_R is "Drug-induced death sensitivity of R";
+  epsilon is "Spontaneous resistance rate";
+  alpha is "Drug-induced resistance rate";
+  U_on is "Therapy magnitude during on-phase";
+  dt_on is "Pulse on-duration";
+  dt_off is "Pulse off-duration";
+  Vd is "Detection threshold";
+  Vc is "Failure threshold";
+  gamma_ is "Resensitization rate (R -> S)";
+  regimen is "Therapy regimen selector (0=constant, 1=pulsed)";
+  therapy_active is "Therapy active flag (0/1)";
+  t_since is "Time since therapy start";
+  t_failure is "Recorded time of failure (V >= Vc)";
+  S_logistic_growth is "Logistic net growth of S";
+  R_logistic_growth is "Logistic net growth of R";
+  S_to_R_transition is "Spontaneous and drug-induced S->R transition";
+  S_drug_kill is "Drug killing of sensitive cells";
+  R_drug_kill is "Drug killing of resistant cells";
+  R_to_S_resensitization is "Resensitization (reversible resistance)";
+
+end
+
+/* Unmapped/notes:
+- Pharmacokinetic/pharmacodynamic mapping from dosing to u(t) is simplified as direct proportionality, per main text assumption.
+- Detection time t_d is not explicitly computed; instead, an event activates therapy when V >= Vd.
+- Simulation stop at failure (V >= Vc) is not enforced; we zero therapy and record t_failure.
+- For strictly nonreversible resistance and drug-insensitive R as in Eqs (4)-(5), keep gamma=0 and d_R=0 (defaults).
+- To reproduce phenotype-preserving drug case, set alpha = 0 and choose regimen as desired. */

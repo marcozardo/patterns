@@ -1,0 +1,94 @@
+model *MinimalModel_OncolyticVirus_DC()
+
+  //// Compartments and Species:
+  compartment tumor_site;
+  species U in tumor_site, I in tumor_site, V in tumor_site, T in tumor_site, D in tumor_site;
+
+  //// Assignment Rules:
+  N := U + I + T;  # Total cell volume
+
+  //// Reactions:
+  R_growth: U -> 2 U; r * U;  # Exponential growth of uninfected tumor cells
+  R_infection: U -> I; beta * U * V / N;  # Infection of tumor cells by virus
+  R_killing_U: U -> ; (kappa0 + c_kill * I) * U * T / N;  # Killing of uninfected cells by T cells
+  R_lysis: I -> alpha V; delta_I * I;  # Lysis of infected cells releases virus
+  R_killing_I: I -> ; (kappa0 + c_kill * I) * I * T / N;  # Killing of infected cells by T cells
+  V_decay: V -> ; delta_V * V;  # Natural decay of free virus
+  T_from_I: -> T; c_T * I;  # Recruitment of T cells stimulated by infected cells
+  T_from_D: -> T; chi_D * D;  # Recruitment of T cells stimulated by dendritic cells
+  T_decay: T -> ; delta_T * T;  # Natural death of T cells
+  D_decay: D -> ; delta_D * D;  # Natural death of dendritic cells
+
+  //// Events:
+  # Virus injections on days 0, 2, 4 (each adds dose_V to V)
+  at (time >= 0 && V_inj1_done == 0): V = V + dose_V, V_inj1_done = 1;
+  at (time >= 2 && V_inj2_done == 0): V = V + dose_V, V_inj2_done = 1;
+  at (time >= 4 && V_inj3_done == 0): V = V + dose_V, V_inj3_done = 1;
+  # Dendritic cell injections on days 1, 3, 5 (each adds dose_D to D)
+  at (time >= 1 && D_inj1_done == 0): D = D + dose_D, D_inj1_done = 1;
+  at (time >= 3 && D_inj2_done == 0): D = D + dose_D, D_inj2_done = 1;
+  at (time >= 5 && D_inj3_done == 0): D = D + dose_D, D_inj3_done = 1;
+
+  //// Species initializations:
+  U = 50;  # Initial tumor volume (mm^3) - approximate from Fig. 4
+  I = 0;
+  V = 0;
+  T = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor_site = 1;  # Fixed compartment volume (dimensionless)
+
+  //// Variable initializations:
+  # Parameters from Table 2 (minimal model best-fit)
+  r = 0.3198;
+  beta = 0.00100854;
+  c_T = 1.428064;
+  c_kill = 6.234e7;
+  delta_D = 4.901894;
+  # Placeholder parameters (not provided in text; set to 1 for demonstration)
+  kappa0 = 0.1;
+  delta_I = 1;
+  alpha = 1;
+  delta_V = 1;
+  chi_D = 1;
+  delta_T = 1;
+  # Dosing amounts (placeholder values; actual units unclear)
+  dose_V = 5e9;
+  dose_D = 1e6;
+  # Event flags (ensure each injection occurs only once)
+  V_inj1_done = 0;
+  V_inj2_done = 0;
+  V_inj3_done = 0;
+  D_inj1_done = 0;
+  D_inj2_done = 0;
+  D_inj3_done = 0;
+
+  //// Other declarations:
+  var N, V_inj1_done, V_inj2_done, V_inj3_done, D_inj1_done, D_inj2_done, D_inj3_done;  # Assignment rule variable and event flags
+  const r, beta, kappa0, c_kill, delta_I, alpha, delta_V, c_T, chi_D, delta_T, delta_D, dose_V, dose_D;
+  # Note: Event flags are var by default because they change
+
+  //// Display Names:
+  tumor_site is "Tumor microenvironment";
+  U is "Uninfected tumor volume";
+  I is "Infected tumor volume";
+  V is "Free virus";
+  T is "Tumor-targeting T cells";
+  D is "Dendritic cells";
+  N is "Total cell volume";
+  r is "Tumor growth rate";
+  beta is "Infection rate";
+  kappa0 is "Baseline killing rate by T cells";
+  c_kill is "Killing enhancement by infected cells";
+  delta_I is "Lysis rate of infected cells";
+  alpha is "Virus burst size";
+  delta_V is "Virus decay rate";
+  c_T is "T cell recruitment rate from infected cells";
+  chi_D is "T cell recruitment rate from dendritic cells";
+  delta_T is "T cell death rate";
+  delta_D is "Dendritic cell death rate";
+  dose_V is "Virus injection dose";
+  dose_D is "Dendritic cell injection dose";
+
+end

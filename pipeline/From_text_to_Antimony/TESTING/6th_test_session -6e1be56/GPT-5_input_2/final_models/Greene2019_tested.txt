@@ -1,0 +1,98 @@
+model *Greene2019_InducedResistance()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  V := S + R;  # Tumor volume (dimensionless)
+
+  //// Reactions:
+  # Sensitive-cell logistic growth (birth and crowding loss split for clarity)
+  rS_birth:           => S; tumor*(S);
+  rS_density_death:   S => ; tumor*(S*(S + R));
+  # Spontaneous and drug-induced transition from Sensitive to Resistant
+  rS_to_R:            S => R; tumor*((epsilon + alpha*u)*S);
+  # Drug-induced death of Sensitive cells (log-kill on S)
+  rS_drugkill:        S => ; tumor*(d*u*S);
+  # Resistant-cell logistic growth (slower intrinsic rate pr)
+  rR_birth:           => R; tumor*(pr*R);
+  rR_density_death:   R => ; tumor*(pr*R*(S + R));
+
+  //// Events:
+  # Start constant therapy at detection (protocol = 0)
+  E_detect_const: at (protocol <= 0.5) && (V >= V_d) && (started < 0.5): u = U_on, started = 1;
+  # Start pulsed therapy at detection (protocol = 1)
+  E_detect_pulse: at (protocol >= 0.5) && (V >= V_d) && (started < 0.5): u = U_on, phase = 1, t_next = time + dt_on, started = 1;
+  # Pulse OFF after dt_on, then schedule next OFF/ON alternation
+  E_pulse_off: at (protocol >= 0.5) && (phase >= 0.5) && (time >= t_next): u = 0, phase = 0, t_next = time + dt_off;
+  # Pulse ON after dt_off
+  E_pulse_on:  at (protocol >= 0.5) && (phase < 0.5) && (started >= 0.5) && (time >= t_next): u = U_on, phase = 1, t_next = time + dt_on;
+
+  //// Species initializations:
+  S = 0.01;   # Initial sensitive population (dimensionless fraction of carrying capacity)
+  R = 0;      # Initial resistant population
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Core model parameters (nondimensional, as per Eqs. 4?5)
+  epsilon = 1e-6;   # Background (spontaneous) resistance rate
+  alpha = 0;        # Drug-induced resistance rate (set to 1e-2 for inducing drug scenarios)
+  d = 1;            # Drug cytotoxicity on sensitive cells
+  pr = 0.2;         # Resistant growth fraction (0 <= pr < 1)
+
+  # Therapy control parameters
+  U_on = 1.5;       # Treatment magnitude during ON periods
+  dt_on = 1;        # Pulse duration
+  dt_off = 3;       # Holiday duration
+  V_d = 0.1;        # Detection threshold for initiating therapy
+  protocol = 0;     # 0 = constant therapy; 1 = pulsed therapy
+
+  # Therapy state variables (controlled by events)
+  u = 0;            # Effective applied drug dose (control input)
+  started = 0;      # Flag to ensure therapy initiation happens once
+  phase = 0;        # Pulse phase: 1 = ON, 0 = OFF
+  t_next = 0;       # Next switching time for pulsed schedule
+
+  //// Other declarations:
+  const tumor, epsilon, alpha, d, pr, U_on, dt_on, dt_off, V_d, protocol;
+  var V, u, started, phase, t_next;
+
+  //// Display Names:
+  tumor is "Tumor compartment (nondimensional volume scale)";
+  S is "Sensitive tumor cells (fraction of carrying capacity)";
+  R is "Resistant tumor cells (fraction of carrying capacity)";
+  V is "Total tumor burden (S + R)";
+  epsilon is "Background (spontaneous) resistance acquisition rate";
+  alpha is "Drug-induced resistance rate";
+  d is "Drug cytotoxicity (sensitive cells)";
+  pr is "Resistant intrinsic growth fraction";
+  U_on is "Therapy magnitude during ON";
+  dt_on is "Pulse ON duration";
+  dt_off is "Pulse OFF duration";
+  V_d is "Detection threshold to start therapy";
+  protocol is "Therapy protocol selector: 0=constant, 1=pulsed";
+  u is "Effective drug input";
+  started is "Therapy initiated flag";
+  phase is "Pulse phase (1=ON, 0=OFF)";
+  t_next is "Next scheduled switch time";
+  rS_birth is "S birth (logistic)";
+  rS_density_death is "S crowding loss";
+  rS_to_R is "Spontaneous + drug-induced S->R";
+  rS_drugkill is "Drug kill of S (log-kill)";
+  rR_birth is "R birth (logistic with pr)";
+  rR_density_death is "R crowding loss";
+
+end
+
+/* Unmapped or simplified elements from the source:
+- Critical failure volume V_c (used to measure time-to-failure) is not enforced here; simulations run unchecked until user-defined stop time.
+- Reversible resistance (gamma > 0) and drug killing of R (d_R) are excluded per the main-text assumption (gamma = 0, d_R = 0).
+- Pharmacokinetic/pharmacodynamic details for converting administered dose to effective concentration u(t) are not modeled; u is treated as a direct control input.
+- Normalized AUC comparisons and alternative dosing normalizations (Appendix) are not included.
+Usage notes:
+- To model a resistance-inducing drug set alpha = 1e-2 (as in figures); phenotype-preserving case uses alpha = 0.
+- To simulate constant therapy after detection, use protocol=0 (default). For pulsed therapy, set protocol=1; pulses begin at detection with dt_on and dt_off durations repeating indefinitely via events.
+*/

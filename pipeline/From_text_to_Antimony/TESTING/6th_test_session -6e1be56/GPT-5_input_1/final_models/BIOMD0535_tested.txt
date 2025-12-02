@@ -1,0 +1,178 @@
+/* Domain: Immunology/Systems Pharmacology (molecular-to-organ multiscale)
+   Captures reduced IL-6 signaling with trans-signaling emphasis, organ-level coupling (GI, Liver) via Serum,
+   basal production/decay, CRP-controlled sIL-6R shedding, sgp130 sequestration, STAT3 phosphorylation (GI, Liver),
+   and CRP production in Liver released to Serum. Kinetics follow mass-action for binding/transport and
+   Michaelis?Menten for pSTAT3-induced CRP expression as described; units aligned to nmol/l and 1/hr.
+*/
+
+model *Dwivedi2014_IL6_Crohns_reduced_multiscale()
+
+  //// Compartments and Species:
+  compartment Serum, Liver;
+  compartment GI;
+  species IL6_Ser in Serum, sIL6R_Ser in Serum, sgp130_Ser in Serum;
+  species IL6sIL6R_Ser in Serum, IL6sIL6R_sgp130_Ser in Serum, CRP_Ser in Serum;
+  species IL6_GI in GI, sIL6R_GI in GI, sgp130_GI in GI;
+  species IL6sIL6R_GI in GI, IL6sIL6R_sgp130_GI in GI, pSTAT3_GI in GI;
+  species pSTAT3_Liv in Liver;
+
+  //// Reactions:
+  # Basal IL-6 synthesis and degradation (Serum, GI)
+  R_syn_IL6_Ser:  => IL6_Ser; Serum*ksyn_IL6_Ser;
+  R_deg_IL6_Ser: IL6_Ser => ; Serum*kdeg_IL6_Ser*IL6_Ser;
+  R_syn_IL6_GI:   => IL6_GI; GI*ksyn_IL6_GI;
+  R_deg_IL6_GI:  IL6_GI => ; GI*kdeg_IL6_GI*IL6_GI;
+
+  # sIL-6R synthesis (basal) and CRP-mediated shedding; degradation (Serum)
+  R_syn_sR_basal:   => sIL6R_Ser; Serum*ksyn_sR;
+  R_shed_sR_CRP:    => sIL6R_Ser; Serum*kshed*CRP_Ser;
+  R_deg_sR_Ser: sIL6R_Ser => ; Serum*kdeg_sR*sIL6R_Ser;
+
+  # sgp130 synthesis and degradation (Serum)
+  R_syn_sgp_Ser:  => sgp130_Ser; Serum*ksyn_sgp;
+  R_deg_sgp_Ser: sgp130_Ser => ; Serum*kdeg_sgp*sgp130_Ser;
+
+  # Trans-signaling complex formation and sequestration (Serum)
+  R_bind_trans_Ser: IL6_Ser + sIL6R_Ser -> IL6sIL6R_Ser; Serum*(kon_trans*IL6_Ser*sIL6R_Ser - koff_trans*IL6sIL6R_Ser);
+  R_bind_sgp_Ser:  IL6sIL6R_Ser + sgp130_Ser -> IL6sIL6R_sgp130_Ser; Serum*(kon_sgp*IL6sIL6R_Ser*sgp130_Ser - koff_sgp*IL6sIL6R_sgp130_Ser);
+  R_deg_cplx_Ser:  IL6sIL6R_Ser => ; Serum*kdeg_cplx*IL6sIL6R_Ser;
+  R_deg_tern_Ser:  IL6sIL6R_sgp130_Ser => ; Serum*kdeg_tern*IL6sIL6R_sgp130_Ser;
+
+  # Exchange Serum <-> GI for soluble mediators
+  Ex_IL6_S2G:      IL6_Ser   -> IL6_GI; k_S2G_IL6*IL6_Ser;
+  Ex_IL6_G2S:      IL6_GI    -> IL6_Ser; k_G2S_IL6*IL6_GI;
+  Ex_sR_S2G:       sIL6R_Ser -> sIL6R_GI; k_S2G_sR*sIL6R_Ser;
+  Ex_sR_G2S:       sIL6R_GI  -> sIL6R_Ser; k_G2S_sR*sIL6R_GI;
+  Ex_sgp_S2G:      sgp130_Ser -> sgp130_GI; k_S2G_sgp*sgp130_Ser;
+  Ex_sgp_G2S:      sgp130_GI  -> sgp130_Ser; k_G2S_sgp*sgp130_GI;
+  Ex_cplx_S2G:     IL6sIL6R_Ser -> IL6sIL6R_GI; k_S2G_cplx*IL6sIL6R_Ser;
+  Ex_cplx_G2S:     IL6sIL6R_GI  -> IL6sIL6R_Ser; k_G2S_cplx*IL6sIL6R_GI;
+
+  # Trans-signaling complex formation and sequestration (GI)
+  R_bind_trans_GI: IL6_GI + sIL6R_GI -> IL6sIL6R_GI; GI*(kon_trans_GI*IL6_GI*sIL6R_GI - koff_trans_GI*IL6sIL6R_GI);
+  R_bind_sgp_GI:   IL6sIL6R_GI + sgp130_GI -> IL6sIL6R_sgp130_GI; GI*(kon_sgp_GI*IL6sIL6R_GI*sgp130_GI - koff_sgp_GI*IL6sIL6R_sgp130_GI);
+  R_deg_cplx_GI:   IL6sIL6R_GI => ; GI*kdeg_cplx_GI*IL6sIL6R_GI;
+  R_deg_tern_GI:   IL6sIL6R_sgp130_GI => ; GI*kdeg_tern_GI*IL6sIL6R_sgp130_GI;
+
+  # STAT3 phosphorylation dynamics (GI, Liver) via trans-signaling complex (mass-action proxy)
+  R_prod_pS3_GI:  => pSTAT3_GI; GI*k_pS3_GI*IL6sIL6R_GI;
+  R_deg_pS3_GI:  pSTAT3_GI => ; GI*kdeg_pS3_GI*pSTAT3_GI;
+  R_prod_pS3_Liv: => pSTAT3_Liv; Liver*k_pS3_Liv*IL6sIL6R_Ser;
+  R_deg_pS3_Liv: pSTAT3_Liv => ; Liver*kdeg_pS3_Liv*pSTAT3_Liv;
+
+  # CRP production in Liver (released to Serum) induced by pSTAT3_Liv (Michaelis?Menten) with basal secretion; degradation
+  R_prod_CRP:  => CRP_Ser; Serum*(Vbasal_CRP + Vmax_CRP*pSTAT3_Liv/(Km_CRP + pSTAT3_Liv));
+  R_deg_CRP: CRP_Ser => ; Serum*kdeg_CRP*CRP_Ser;
+
+  //// Species initializations:
+  # Crohn's disease representative baseline values from Table 1 (converted to nmol/l); others set to 0 unless noted
+  IL6_Ser = 0.000422;        # 10 pg/ml serum IL-6 ~ 0.000422 nmol/l
+  sIL6R_Ser = 2.8;           # 140 ng/ml serum sIL-6R ~ 2.8 nmol/l
+  sgp130_Ser = 2.8;          # 280 ng/ml serum sgp130 ~ 2.8 nmol/l
+  IL6sIL6R_Ser = 0;
+  IL6sIL6R_sgp130_Ser = 0;
+  CRP_Ser = 280;             # 7 mg/l serum CRP ~ 280 nmol/l
+  IL6_GI = 0.01055;          # 250 pg/ml gut IL-6 ~ 0.01055 nmol/l
+  sIL6R_GI = 0;
+  sgp130_GI = 0;
+  IL6sIL6R_GI = 0;
+  IL6sIL6R_sgp130_GI = 0;
+  pSTAT3_GI = 3;             # Gut pSTAT3 ~ 3 (fold vs healthy), treated as arbitrary units
+  pSTAT3_Liv = 1;            # Liver pSTAT3 initial (arbitrary unit; no direct data provided)
+
+  //// Compartment initializations:
+  Serum = 1;
+  Liver = 1;
+  GI = 1;
+
+  //// Variable initializations:
+  # Synthesis/degradation (1/hr unless second-order noted)
+  ksyn_IL6_Ser = 0;
+  kdeg_IL6_Ser = 0;
+  ksyn_IL6_GI = 0;
+  kdeg_IL6_GI = 0;
+  ksyn_sR = 0;
+  kshed = 0;
+  kdeg_sR = 0;
+  ksyn_sgp = 0;
+  kdeg_sgp = 0;
+
+  # Binding kinetics (l/(nmol*hr) for kon; 1/hr for koff)
+  kon_trans = 0;
+  koff_trans = 0;
+  kon_sgp = 0;
+  koff_sgp = 0;
+  kdeg_cplx = 0;
+  kdeg_tern = 0;
+
+  # Exchange rates (1/hr)
+  k_S2G_IL6 = 0;
+  k_G2S_IL6 = 0;
+  k_S2G_sR = 0;
+  k_G2S_sR = 0;
+  k_S2G_sgp = 0;
+  k_G2S_sgp = 0;
+  k_S2G_cplx = 0;
+  k_G2S_cplx = 0;
+
+  # GI binding kinetics (l/(nmol*hr) for kon; 1/hr for koff)
+  kon_trans_GI = 0;
+  koff_trans_GI = 0;
+  kon_sgp_GI = 0;
+  koff_sgp_GI = 0;
+  kdeg_cplx_GI = 0;
+  kdeg_tern_GI = 0;
+
+  # STAT3 phosphorylation (1/hr for k_pS3_* and kdeg_pS3_*)
+  k_pS3_GI = 0;
+  kdeg_pS3_GI = 0;
+  k_pS3_Liv = 0;
+  kdeg_pS3_Liv = 0;
+
+  # CRP production (Michaelis?Menten; Vmax in nmol/(l*hr), Km in nmol/l), degradation 1/hr
+  Vbasal_CRP = 0;
+  Vmax_CRP = 0;
+  Km_CRP = 1;       # positive to avoid division by zero; actual value not specified in text
+  kdeg_CRP = 0;
+
+  //// Other declarations:
+  const Serum, Liver, GI;
+  const ksyn_IL6_Ser, kdeg_IL6_Ser, ksyn_IL6_GI, kdeg_IL6_GI, ksyn_sR, kshed, kdeg_sR, ksyn_sgp, kdeg_sgp;
+  const kon_trans, koff_trans, kon_sgp, koff_sgp, kdeg_cplx, kdeg_tern;
+  const k_S2G_IL6, k_G2S_IL6, k_S2G_sR, k_G2S_sR, k_S2G_sgp, k_G2S_sgp, k_S2G_cplx, k_G2S_cplx;
+  const kon_trans_GI, koff_trans_GI, kon_sgp_GI, koff_sgp_GI, kdeg_cplx_GI, kdeg_tern_GI;
+  const k_pS3_GI, kdeg_pS3_GI, k_pS3_Liv, kdeg_pS3_Liv;
+  const Vbasal_CRP, Vmax_CRP, Km_CRP, kdeg_CRP;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole / liter;
+  unit time_unit = 3600 second;
+
+  //// Display Names:
+  Serum is "Circulation (serum)";
+  GI is "Gastrointestinal tract compartment";
+  Liver is "Liver compartment";
+  IL6_Ser is "Interleukin-6 (serum)";
+  IL6_GI is "Interleukin-6 (gut)";
+  sIL6R_Ser is "Soluble IL-6 receptor (serum)";
+  sIL6R_GI is "Soluble IL-6 receptor (gut)";
+  sgp130_Ser is "Soluble gp130 (serum)";
+  sgp130_GI is "Soluble gp130 (gut)";
+  IL6sIL6R_Ser is "IL-6:sIL-6R complex (serum)";
+  IL6sIL6R_GI is "IL-6:sIL-6R complex (gut)";
+  IL6sIL6R_sgp130_Ser is "Sequestered IL-6:sIL-6R:sgp130 (serum)";
+  IL6sIL6R_sgp130_GI is "Sequestered IL-6:sIL-6R:sgp130 (gut)";
+  pSTAT3_GI is "Phospho-STAT3 (gut cells)";
+  pSTAT3_Liv is "Phospho-STAT3 (liver cells)";
+  CRP_Ser is "C-reactive protein (serum)";
+  R_shed_sR_CRP is "CRP-mediated sIL-6R shedding";
+  R_prod_CRP is "CRP production (pSTAT3-induced)";
+
+end
+
+/* Unmapped/unspecified elements and notes:
+- Numerical values for kinetic parameters (production/degradation rates; binding kon/koff; exchange rates; STAT3 phosphorylation rates; CRP Vmax) are not provided in the text and are therefore initialized to 0 to avoid guessing. Km_CRP is set to 1 nmol/l to prevent division by zero; replace with appropriate value if available.
+- Classical signaling via membrane IL-6R and gp130 was abstracted; only soluble trans-signaling explicitly represented per reduced model depiction. Inclusion of membrane receptor species and Jak steps would require additional kinetic details from Supplementary Text S1/S2 (not provided here).
+- Pharmacokinetic module for therapeutic antibodies (anti?IL-6, anti?IL-6R, sgp130Fc) and target-mediated disposition described in the paper is not instantiated due to missing explicit structures/parameters in the main text; add from Supplementary Figures and files when available.
+- Parameter units should follow: 1/hr for first-order, l/(nmol*hr) for second-order, concentrations in nmol/l, consistent with Methods.
+*/

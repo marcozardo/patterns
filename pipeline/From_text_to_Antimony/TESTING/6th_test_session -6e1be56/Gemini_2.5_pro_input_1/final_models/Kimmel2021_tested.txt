@@ -1,0 +1,68 @@
+model *Kimmel2021_CAR_T_Therapy()
+
+  /*
+  This model describes the dynamics of normal T cells (N), chimeric antigen receptor (CAR) T cells (C),
+  and tumor cells (B) following CAR T cell therapy. It is based on the publication:
+  Kimmel GJ, Locke FL, Altrock PM. 2021 The roles of T cell competition and stochastic extinction
+  events in chimeric antigen receptor T cell therapy. Proc. R. Soc. B 288: 20210229.
+  https://doi.org/10.1098/rspb.2021.0229
+  */
+
+  //// Compartments and Species:
+  compartment patient;
+  species $N in patient, $C in patient, B in patient;
+
+  //// Assignment Rules:
+  T := N + C;
+  r_C := rho_C + (b*(T - K_N)^2)/(a*T^2 + (T - K_N)^2);
+
+  //// Rate Rules:
+  N' = r_N * N * log(K_N / T);
+  C' = r_C * C * log(K_C / T);
+
+  //// Reactions:
+  Tumor_Growth:  => B; patient * r_B * B;
+  Tumor_Killing: B => ; patient * gamma_B * B * C / (k_B + C);
+
+  //// Species initializations:
+  N = 3.00e9;   // initial median normal T cell number (cells)
+  C = 1.80e8;   // initial CAR T cell number (cells)
+  B = 9.486e10; // initial median tumour cell number (cells)
+
+  //// Compartment initializations:
+  patient = 1;  // Unspecified volume, set to 1 for cell count modeling
+
+  //// Variable initializations:
+  K_N = 2.50e11;    // normal T cell carrying capacity (cells)
+  K_C = 6.96e10;    // CAR T cell carrying capacity (cells)
+  r_N = 0.17;       // normal T cell net growth rate (day^-1)
+  rho_C = 0.0251;   // baseline CAR T net growth rate (day^-1)
+  a = 0.423;        // signalling inefficiency factor in r_C (dimensionless)
+  b = 0.525;        // immune reconstitution impact in r_C (day^-1)
+  r_B = 0.19;       // tumour net growth rate (day^-1), medium value from paper
+  gamma_B = 1.15;   // tumour-killing rate (by effector CAR) (day^-1)
+  k_B = 2.024e9;    // killing rate saturation parameter (cells)
+
+  //// Other declarations:
+  var T, r_C;
+  const patient, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  //// Display Names:
+  N is "Normal T cells";
+  C is "CAR T cells";
+  B is "Tumor cells";
+  T is "Total lymphocyte count";
+  K_N is "Normal T cell carrying capacity";
+  K_C is "CAR T cell carrying capacity";
+  r_N is "Normal T cell net growth rate";
+  rho_C is "Baseline CAR T net growth rate";
+  a is "Signalling inefficiency factor in r_C";
+  b is "Immune reconstitution impact in r_C";
+  r_C is "CAR T cell growth rate function";
+  r_B is "Tumour net growth rate";
+  gamma_B is "Tumour-killing rate";
+  k_B is "Killing rate saturation parameter";
+  Tumor_Growth is "Autonomous tumor growth";
+  Tumor_Killing is "Tumor killing by CAR T cells";
+
+end

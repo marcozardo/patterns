@@ -1,0 +1,69 @@
+model *Greene2019_ConstantTherapy()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species S in tumor, R in tumor;
+
+  //// Assignment Rules:
+  // none for constant therapy; u is set by event
+
+  //// Rate Rules:
+  // none; all dynamics via reactions
+
+  //// Reactions:
+  J_growth_S: => S; tumor*S;
+  J_death_comp_S: S => ; tumor*S*(S+R);
+  J_death_drug_S: S => ; tumor*d*u*S;
+  J_conv: S => R; tumor*(epsilon + alpha*u)*S;
+  J_growth_R: => R; tumor*p_r*R;
+  J_death_comp_R: R => ; tumor*p_r*R*(S+R);
+
+  //// Events:
+  E_detect: at (S+R >= Vd) && (detected == 0): detected = 1, u = U_on;
+
+  //// Species initializations:
+  S = 0.01;
+  R = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  epsilon = 1e-06;
+  alpha = 0;   # phenotype?preserving drug; for induced resistance set e.g., alpha = 0.01
+  d = 1;
+  p_r = 0.2;
+  U_on = 1.5;
+  Vd = 0.1;
+  Vc = 0.9;    # critical volume (not used in dynamics, only for simulation stopping)
+  u = 0;
+  detected = 0;
+
+  //// Other declarations:
+  var u, detected;
+  const tumor, epsilon, alpha, d, p_r, U_on, Vd, Vc;
+
+  //// Unit definitions:
+  // dimensionless model
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  S is "Sensitive cells";
+  R is "Resistant cells";
+  J_growth_S is "Autocatalytic growth of sensitive cells";
+  J_death_comp_S is "Density?dependent death of sensitive cells";
+  J_death_drug_S is "Drug?induced death of sensitive cells";
+  J_conv is "Conversion from sensitive to resistant";
+  J_growth_R is "Autocatalytic growth of resistant cells";
+  J_death_comp_R is "Density?dependent death of resistant cells";
+  epsilon is "Spontaneous resistance rate";
+  alpha is "Drug?induced resistance rate";
+  d is "Drug cytotoxicity against sensitive cells";
+  p_r is "Relative growth rate of resistant cells";
+  U_on is "Therapeutic dose level";
+  Vd is "Detection volume";
+  Vc is "Critical treatment?failure volume";
+  u is "Drug concentration";
+  detected is "Detection flag";
+
+end

@@ -1,0 +1,266 @@
+model *Kok2020_IFNa_JAKSTAT_sensitization()
+
+  //// Compartments and Species:
+  compartment Cyt, Nuc;
+  species Rec in Cyt, aRecIFN in Cyt;
+  species $IFN in Cyt;
+  species STAT1c in Cyt, STAT2c in Cyt, IRF9c in Cyt;
+  species STAT1n in Nuc, STAT2n in Nuc, IRF9n in Nuc;
+  species pSTAT1dimc in Cyt, pSTAT1pSTAT2c in Cyt, ISGF3c in Cyt;
+  species pSTAT1dimn in Nuc, pSTAT1pSTAT2n in Nuc, ISGF3n in Nuc;
+  species SOCS3_mRNA in Nuc, SOCS1_mRNA in Nuc, IRF2_mRNA in Nuc, USP18_mRNA in Nuc, STAT1_mRNA in Nuc, STAT2_mRNA in Nuc, IRF9_mRNA in Nuc;
+  species SOCS3 in Cyt, SOCS1 in Cyt, IRF2 in Cyt, USP18 in Cyt;
+
+  //// Reactions:
+  # Receptor turnover
+  R_rec_synth:  => Rec; Cyt*k_rec_syn;
+  R_rec_deg: Rec => ; Cyt*k_rec_deg*Rec;
+
+  # IFN-driven receptor activation with inhibition by SOCS1, SOCS3, USP18 and SOCS1:USP18 cooperation; SOCS1-mediated degradation of active receptor
+  R_act: Rec + IFN => aRecIFN; Cyt*k_act*Rec*IFN/(1 + i_S1*SOCS1 + i_S3*SOCS3 + i_USP*USP18 + i_S1USP*SOCS1*USP18);
+  R_deact: aRecIFN => ; Cyt*(k_deact*aRecIFN + k_deg_S1*SOCS1*aRecIFN + k_deg_S1USP*SOCS1*USP18*aRecIFN);
+
+  # STAT phosphorylation/dimerization (approximated single steps catalyzed by aRecIFN)
+  D1_form: 2 STAT1c => pSTAT1dimc; Cyt*k1*aRecIFN*STAT1c*STAT1c;
+  D2_form: STAT1c + STAT2c => pSTAT1pSTAT2c; Cyt*k2*aRecIFN*STAT1c*STAT2c;
+  ISGF3_form: pSTAT1pSTAT2c + IRF9c => ISGF3c; Cyt*k3*pSTAT1pSTAT2c*IRF9c;
+
+  # Nuclear import/export of complexes
+  D1_imp: pSTAT1dimc => pSTAT1dimn; Cyt*kimp_dim1*pSTAT1dimc;
+  D1_exp: pSTAT1dimn => pSTAT1dimc; Nuc*kexp_dim1*pSTAT1dimn;
+  D2_imp: pSTAT1pSTAT2c => pSTAT1pSTAT2n; Cyt*kimp_het*pSTAT1pSTAT2c;
+  D2_exp: pSTAT1pSTAT2n => pSTAT1pSTAT2c; Nuc*kexp_het*pSTAT1pSTAT2n;
+  ISGF3_imp: ISGF3c => ISGF3n; Cyt*kimp_ISGF3*ISGF3c;
+  ISGF3_exp: ISGF3n => ISGF3c; Nuc*kexp_ISGF3*ISGF3n;
+
+  # Complex dissociation in nucleus
+  D1_diss: pSTAT1dimn => 2 STAT1n; Nuc*kdiss_dim1*pSTAT1dimn;
+  D2_diss: pSTAT1pSTAT2n => STAT1n + STAT2n; Nuc*kdiss_het*pSTAT1pSTAT2n;
+  ISGF3_diss: ISGF3n => pSTAT1pSTAT2n + IRF9n; Nuc*kdiss_ISGF3*ISGF3n;
+
+  # Constitutive shuttling of monomers
+  STAT1_c2n: STAT1c => STAT1n; Cyt*kimp_STAT1*STAT1c;
+  STAT1_n2c: STAT1n => STAT1c; Nuc*kexp_STAT1*STAT1n;
+  STAT2_c2n: STAT2c => STAT2n; Cyt*kimp_STAT2*STAT2c;
+  STAT2_n2c: STAT2n => STAT2c; Nuc*kexp_STAT2*STAT2n;
+  IRF9_c2n: IRF9c => IRF9n; Cyt*kimp_IRF9*IRF9c;
+  IRF9_n2c: IRF9n => IRF9c; Nuc*kexp_IRF9*IRF9n;
+
+  # Transcription (ISGF3n dominant; pSTAT1pSTAT2n contributory; SOCS3 is GAS-driven by pSTAT1dimn)
+  Tx_STAT1:  => STAT1_mRNA; Nuc*(Vmax_STAT1*(ISGF3n/(K_STAT1 + ISGF3n) + w_STAT1*pSTAT1pSTAT2n/(Kp_STAT1 + pSTAT1pSTAT2n)) + Vb_STAT1);
+  Tx_STAT2:  => STAT2_mRNA; Nuc*(Vmax_STAT2*(ISGF3n/(K_STAT2 + ISGF3n) + w_STAT2*pSTAT1pSTAT2n/(Kp_STAT2 + pSTAT1pSTAT2n)) + Vb_STAT2);
+  Tx_IRF9:   => IRF9_mRNA;  Nuc*(Vmax_IRF9*(ISGF3n/(K_IRF9 + ISGF3n) + w_IRF9*pSTAT1pSTAT2n/(Kp_IRF9 + pSTAT1pSTAT2n)) + Vb_IRF9);
+  Tx_USP18:  => USP18_mRNA; Nuc*(Vmax_USP18*(ISGF3n/(K_USP18 + ISGF3n) + w_USP18*pSTAT1pSTAT2n/(Kp_USP18 + pSTAT1pSTAT2n)) + Vb_USP18);
+  Tx_SOCS1:  => SOCS1_mRNA; Nuc*(Vmax_SOCS1*(ISGF3n/(K_SOCS1 + ISGF3n) + w_SOCS1*pSTAT1pSTAT2n/(Kp_SOCS1 + pSTAT1pSTAT2n)) + Vb_SOCS1);
+  Tx_IRF2:   => IRF2_mRNA;  Nuc*(Vmax_IRF2*(ISGF3n/(K_IRF2 + ISGF3n) + w_IRF2*pSTAT1pSTAT2n/(Kp_IRF2 + pSTAT1pSTAT2n)) + Vb_IRF2);
+  Tx_SOCS3:  => SOCS3_mRNA; Nuc*(Vmax_SOCS3*(pSTAT1dimn/(K_SOCS3 + pSTAT1dimn)) + Vb_SOCS3);
+
+  # mRNA degradation
+  d_STAT1_m: STAT1_mRNA => ; Nuc*kdeg_m_STAT1*STAT1_mRNA;
+  d_STAT2_m: STAT2_mRNA => ; Nuc*kdeg_m_STAT2*STAT2_mRNA;
+  d_IRF9_m:  IRF9_mRNA  => ; Nuc*kdeg_m_IRF9*IRF9_mRNA;
+  d_USP18_m: USP18_mRNA => ; Nuc*kdeg_m_USP18*USP18_mRNA;
+  d_SOCS1_m: SOCS1_mRNA => ; Nuc*kdeg_m_SOCS1*SOCS1_mRNA;
+  d_IRF2_m:  IRF2_mRNA  => ; Nuc*kdeg_m_IRF2*IRF2_mRNA;
+  d_SOCS3_m: SOCS3_mRNA => ; Nuc*kdeg_m_SOCS3*SOCS3_mRNA;
+
+  # Translation to proteins (cytoplasm)
+  Tl_STAT1: STAT1_mRNA => STAT1c; Cyt*ktrans_STAT1*STAT1_mRNA;
+  Tl_STAT2: STAT2_mRNA => STAT2c; Cyt*ktrans_STAT2*STAT2_mRNA;
+  Tl_IRF9:  IRF9_mRNA  => IRF9c;  Cyt*ktrans_IRF9*IRF9_mRNA;
+  Tl_USP18: USP18_mRNA => USP18;  Cyt*ktrans_USP18*USP18_mRNA;
+  Tl_SOCS1: SOCS1_mRNA => SOCS1;  Cyt*ktrans_SOCS1*SOCS1_mRNA;
+  Tl_SOCS3: SOCS3_mRNA => SOCS3;  Cyt*ktrans_SOCS3*SOCS3_mRNA;
+  Tl_IRF2:  IRF2_mRNA  => IRF2;   Cyt*ktrans_IRF2*IRF2_mRNA;
+
+  # Protein degradation
+  d_STAT1_p: STAT1c => ; Cyt*kdeg_p_STAT1*STAT1c;
+  d_STAT2_p: STAT2c => ; Cyt*kdeg_p_STAT2*STAT2c;
+  d_IRF9_p:  IRF9c  => ; Cyt*kdeg_p_IRF9*IRF9c;
+  d_USP18_p: USP18  => ; Cyt*kdeg_p_USP18*USP18;
+  d_SOCS1_p: SOCS1  => ; Cyt*kdeg_p_SOCS1*SOCS1;
+  d_SOCS3_p: SOCS3  => ; Cyt*kdeg_p_SOCS3*SOCS3;
+  d_IRF2_p:  IRF2   => ; Cyt*kdeg_p_IRF2*IRF2;
+
+  //// Events:
+  E_prestim: at (time >= t_pre): IFN = IFN_prestim;
+  E_stim:    at (time >= t_stim): IFN = IFN_stim;
+
+  //// Species initializations:
+  Rec = 1;
+  aRecIFN = 0;
+  IFN = 0;
+  STAT1c = 1;
+  STAT2c = 0.1;
+  IRF9c = 0.05;
+  STAT1n = 0;
+  STAT2n = 0;
+  IRF9n = 0;
+  pSTAT1dimc = 0;
+  pSTAT1pSTAT2c = 0;
+  ISGF3c = 0;
+  pSTAT1dimn = 0;
+  pSTAT1pSTAT2n = 0;
+  ISGF3n = 0;
+  SOCS3_mRNA = 0;
+  SOCS1_mRNA = 0;
+  IRF2_mRNA = 0;
+  USP18_mRNA = 0;
+  STAT1_mRNA = 0;
+  STAT2_mRNA = 0;
+  IRF9_mRNA = 0;
+  SOCS3 = 0.01;
+  SOCS1 = 0.01;
+  IRF2 = 0.02;
+  USP18 = 0.01;
+
+  //// Compartment initializations:
+  Cyt = 1;
+  Nuc = 1;
+
+  //// Variable initializations:
+  # Receptor dynamics and inhibition
+  k_rec_syn = 0.05;
+  k_rec_deg = 0.01;
+  k_act = 1;
+  k_deact = 0.1;
+  k_deg_S1 = 0.2;
+  k_deg_S1USP = 0.5;
+  i_S1 = 1;
+  i_S3 = 0.2;
+  i_USP = 1;
+  i_S1USP = 1;
+
+  # STAT complex formation
+  k1 = 0.5;
+  k2 = 0.3;
+  k3 = 0.5;
+
+  # Import/export of complexes
+  kimp_dim1 = 0.5;
+  kexp_dim1 = 0.2;
+  kimp_het = 0.5;
+  kexp_het = 0.2;
+  kimp_ISGF3 = 0.5;
+  kexp_ISGF3 = 0.2;
+
+  # Complex dissociation in nucleus
+  kdiss_dim1 = 0.1;
+  kdiss_het = 0.05;
+  kdiss_ISGF3 = 0.02;
+
+  # Monomer shuttling
+  kimp_STAT1 = 0.05;
+  kexp_STAT1 = 0.05;
+  kimp_STAT2 = 0.05;
+  kexp_STAT2 = 0.05;
+  kimp_IRF9 = 0.05;
+  kexp_IRF9 = 0.05;
+
+  # Transcription parameters (ISGF3 dominant, heterodimer contributory)
+  Vmax_STAT1 = 0.5; K_STAT1 = 0.1; w_STAT1 = 0.3; Kp_STAT1 = 0.2; Vb_STAT1 = 0.001;
+  Vmax_STAT2 = 0.5; K_STAT2 = 0.1; w_STAT2 = 0.3; Kp_STAT2 = 0.2; Vb_STAT2 = 0.001;
+  Vmax_IRF9  = 0.5; K_IRF9  = 0.1; w_IRF9  = 0.3; Kp_IRF9  = 0.2; Vb_IRF9  = 0.001;
+  Vmax_USP18 = 0.4; K_USP18 = 0.1; w_USP18 = 0.3; Kp_USP18 = 0.2; Vb_USP18 = 0.001;
+  Vmax_SOCS1 = 0.4; K_SOCS1 = 0.1; w_SOCS1 = 0.3; Kp_SOCS1 = 0.2; Vb_SOCS1 = 0.001;
+  Vmax_IRF2  = 0.2; K_IRF2  = 0.1; w_IRF2  = 0.3; Kp_IRF2  = 0.2; Vb_IRF2  = 0.001;
+  Vmax_SOCS3 = 0.6; K_SOCS3 = 0.1; Vb_SOCS3 = 0.001;
+
+  # mRNA degradation
+  kdeg_m_STAT1 = 0.1;
+  kdeg_m_STAT2 = 0.1;
+  kdeg_m_IRF9  = 0.1;
+  kdeg_m_USP18 = 0.1;
+  kdeg_m_SOCS1 = 0.12;
+  kdeg_m_IRF2  = 0.12;
+  kdeg_m_SOCS3 = 0.3;
+
+  # Translation
+  ktrans_STAT1 = 0.2;
+  ktrans_STAT2 = 0.2;
+  ktrans_IRF9  = 0.2;
+  ktrans_USP18 = 0.2;
+  ktrans_SOCS1 = 0.2;
+  ktrans_SOCS3 = 0.2;
+  ktrans_IRF2  = 0.2;
+
+  # Protein degradation
+  kdeg_p_STAT1 = 0.01;
+  kdeg_p_STAT2 = 0.01;
+  kdeg_p_IRF9  = 0.01;
+  kdeg_p_USP18 = 0.02;
+  kdeg_p_SOCS1 = 0.05;
+  kdeg_p_SOCS3 = 0.05;
+  kdeg_p_IRF2  = 0.03;
+
+  # Stimulation protocol (prestimulation and stimulation times/doses)
+  t_pre = 0;
+  t_stim = 24;
+  IFN_prestim = 0.002;  # qualitative low dose (e.g., 2.8 pM equivalent)
+  IFN_stim = 1;         # qualitative high dose (e.g., 1400 pM equivalent)
+
+  //// Other declarations:
+  const Cyt, Nuc;
+  const k_rec_syn, k_rec_deg, k_act, k_deact, k_deg_S1, k_deg_S1USP, i_S1, i_S3, i_USP, i_S1USP;
+  const k1, k2, k3, kimp_dim1, kexp_dim1, kimp_het, kexp_het, kimp_ISGF3, kexp_ISGF3;
+  const kdiss_dim1, kdiss_het, kdiss_ISGF3, kimp_STAT1, kexp_STAT1, kimp_STAT2, kexp_STAT2, kimp_IRF9, kexp_IRF9;
+  const Vmax_STAT1, K_STAT1, w_STAT1, Kp_STAT1, Vb_STAT1;
+  const Vmax_STAT2, K_STAT2, w_STAT2, Kp_STAT2, Vb_STAT2;
+  const Vmax_IRF9,  K_IRF9,  w_IRF9,  Kp_IRF9,  Vb_IRF9;
+  const Vmax_USP18, K_USP18, w_USP18, Kp_USP18, Vb_USP18;
+  const Vmax_SOCS1, K_SOCS1, w_SOCS1, Kp_SOCS1, Vb_SOCS1;
+  const Vmax_IRF2,  K_IRF2,  w_IRF2,  Kp_IRF2,  Vb_IRF2;
+  const Vmax_SOCS3, K_SOCS3, Vb_SOCS3;
+  const kdeg_m_STAT1, kdeg_m_STAT2, kdeg_m_IRF9, kdeg_m_USP18, kdeg_m_SOCS1, kdeg_m_IRF2, kdeg_m_SOCS3;
+  const ktrans_STAT1, ktrans_STAT2, ktrans_IRF9, ktrans_USP18, ktrans_SOCS1, ktrans_SOCS3, ktrans_IRF2;
+  const kdeg_p_STAT1, kdeg_p_STAT2, kdeg_p_IRF9, kdeg_p_USP18, kdeg_p_SOCS1, kdeg_p_SOCS3, kdeg_p_IRF2;
+  const t_pre, t_stim, IFN_prestim, IFN_stim;
+
+  //// Display Names:
+  Cyt is "Cytoplasm";
+  Nuc is "Nucleus";
+  Rec is "IFNAR1/2 receptor (lumped)";
+  aRecIFN is "Active IFN-bound receptor";
+  IFN is "Interferon alpha (type I IFN), extracellular input";
+  STAT1c is "STAT1 (cytoplasm)";
+  STAT2c is "STAT2 (cytoplasm)";
+  IRF9c is "IRF9 (cytoplasm)";
+  STAT1n is "STAT1 (nucleus)";
+  STAT2n is "STAT2 (nucleus)";
+  IRF9n is "IRF9 (nucleus)";
+  pSTAT1dimc is "pSTAT1:STAT1 homodimer (cyt)";
+  pSTAT1pSTAT2c is "pSTAT1:pSTAT2 heterodimer (cyt)";
+  ISGF3c is "ISGF3 (pSTAT1:pSTAT2:IRF9) (cyt)";
+  pSTAT1dimn is "pSTAT1:STAT1 homodimer (nuc)";
+  pSTAT1pSTAT2n is "pSTAT1:pSTAT2 heterodimer (nuc)";
+  ISGF3n is "ISGF3 (nuc)";
+  SOCS3_mRNA is "SOCS3 mRNA";
+  SOCS1_mRNA is "SOCS1 mRNA";
+  IRF2_mRNA is "IRF2 mRNA";
+  USP18_mRNA is "USP18 mRNA";
+  STAT1_mRNA is "STAT1 mRNA";
+  STAT2_mRNA is "STAT2 mRNA";
+  IRF9_mRNA is "IRF9 mRNA";
+  SOCS3 is "SOCS3 protein";
+  SOCS1 is "SOCS1 protein";
+  IRF2 is "IRF2 protein";
+  USP18 is "USP18 protein";
+
+end
+
+/* Notes and mapping:
+- Domain: molecular/cellular signal transduction in hepatocytes (type I IFN?JAK/STAT).
+- Mechanistic coverage:
+  * IFN binds/activates a lumped receptor (Rec -> aRecIFN).
+  * aRecIFN catalyzes STAT phosphorylation and dimerization (pSTAT1 homodimer; pSTAT1:pSTAT2 heterodimer).
+  * IRF9 binds pSTAT1:pSTAT2 to form ISGF3; complexes shuttle to nucleus and dissociate.
+  * Nuclear pSTAT1 homodimer (GAF) drives SOCS3 mRNA (GAS-dependent).
+  * Nuclear ISGF3 (dominant) and pSTAT1:pSTAT2 (weaker) drive STAT1/STAT2/IRF9/USP18/SOCS1/IRF2 mRNAs (ISRE+GAS promoters).
+  * Translation to proteins; degradation of RNAs/proteins.
+  * Negative regulation at receptor level by SOCS1, USP18 (and their cooperation) and SOCS3 (transient).
+  * SOCS1-mediated degradation of active receptor included.
+- Prestimulation/stimulation protocol:
+  * Events set IFN = IFN_prestim at t_pre (default 0 h) and IFN = IFN_stim at t_stim (default 24 h).
+  * IFN_prestim and IFN_stim are qualitative placeholders reflecting ~2.8 pM and 1400 pM, respectively (relative units).
+- This is a reduced executable encoding consistent with the article?s described model structure (Fig. 2 and text), using mass-action and saturable transcription terms.
+- Parameter values are generic placeholders to ensure simulation; article-specific calibrated values were not provided in the excerpt. */

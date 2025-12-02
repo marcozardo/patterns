@@ -1,0 +1,144 @@
+/* Domain: tumor?immune?virus therapy (oncolytic adenovirus + dendritic cells) in a murine melanoma model.
+   Source: Computational and Mathematical Methods in Medicine (excerpts). 
+   This Antimony model encodes the original 6-variable ODE system (Equations (1)?(6)) with time-dependent inputs u_V(t), u_D(t).
+   Notational unification:
+     - beta denotes the infection rate ?.
+     - kappa_0 denotes ?0 (baseline T-cell cytotoxicity).
+     - c_kill denotes c_kill.
+     - delta_X denotes ?_X for X in {I, V, T, A, D}.
+     - chi_A, chi_D denote ?_A, ?_D.
+     - alpha denotes ? (virions released per lysed infected cell).
+     - N is the total cell volume N = U + I + T (as described: tumor cells U+I and tumor-targeting T cells).
+   Time-dependent inputs:
+     - uV and uD are assignment-rule variables that default to 0. They can be set to dosing pulse trains via parameters below (dose amplitudes default to 0).
+   Minimal-model note:
+     - Setting c_A = 0 (and with A(0)=0) effectively removes A-dynamics, yielding the 5-variable minimal model (Equations (15)?(19)).
+*/
+
+model *OV_DC_TumorImmune_FullModel()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species U in tumor, I in tumor, V in tumor, T in tumor, A in tumor, D in tumor;
+
+  //// Assignment Rules:
+  N := U + I + T;  // total cellular volume entering density-dependent terms
+
+  // Rectangular dosing pulses for OV (V) on days tV1,tV2,tV3 of width dV and amplitude doseV (default 0)
+  rectV1 := piecewise(1, (time >= tV1) && (time < tV1 + dV), 0);
+  rectV2 := piecewise(1, (time >= tV2) && (time < tV2 + dV), 0);
+  rectV3 := piecewise(1, (time >= tV3) && (time < tV3 + dV), 0);
+  uV := doseV*(rectV1 + rectV2 + rectV3);
+
+  // Rectangular dosing pulses for DC (D) on days tD1,tD2,tD3 of width dD and amplitude doseD (default 0)
+  rectD1 := piecewise(1, (time >= tD1) && (time < tD1 + dD), 0);
+  rectD2 := piecewise(1, (time >= tD2) && (time < tD2 + dD), 0);
+  rectD3 := piecewise(1, (time >= tD3) && (time < tD3 + dD), 0);
+  uD := doseD*(rectD1 + rectD2 + rectD3);
+
+  //// Reactions:
+  U_growth:        => U;           tumor*(r*U);
+  Infection:       U -> I;         tumor*(beta*U*V/N);
+  Immune_kill_U:   U => ;          tumor*((kappa_0 + c_kill*I)*U*T/N);
+
+  I_lysis:         I => ;          tumor*(delta_I*I);
+  Immune_kill_I:   I => ;          tumor*((kappa_0 + c_kill*I)*I*T/N);
+
+  Virion_release:  => V;           tumor*(alpha*delta_I*I);
+  Virion_decay:    V => ;          tumor*(delta_V*V);
+  OV_input:        => V;           tumor*(uV);
+
+  T_from_I:        => T;           tumor*(c_T*I);
+  T_from_A:        => T;           tumor*(chi_A*A);
+  T_from_D:        => T;           tumor*(chi_D*D);
+  T_death:         T => ;          tumor*(delta_T*T);
+
+  A_prod:          => A;           tumor*(c_A*I);
+  A_death:         A => ;          tumor*(delta_A*A);
+
+  DC_input:        => D;           tumor*(uD);
+  DC_death:        D => ;          tumor*(delta_D*D);
+
+  //// Species initializations:
+  U = U0;
+  I = 0;
+  V = 0;
+  T = 0;
+  A = 0;
+  D = 0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Core kinetic parameters (best-fit or reported where available in the excerpt)
+  r = 0.3198;
+  beta = 0.00100854;
+  c_A = 0.000517;
+  c_T = 1.6984;
+  c_kill = 5.954e7;
+  delta_D = 4.6754;
+
+  # Parameters present in the model but not numerically specified in the provided excerpt (set to 0 by default; see comment after 'end')
+  kappa_0 = 0;
+  delta_I = 0;
+  alpha = 0;
+  delta_V = 0;
+  chi_A = 0;
+  chi_D = 0;
+  delta_T = 0;
+  delta_A = 0;
+
+  # Initial tumor size (not specified; default placeholder)
+  U0 = 1;
+
+  # Dosing schedule parameters (defaults correspond to no dosing: amplitudes 0 or zero-width pulses)
+  doseV = 0;
+  tV1 = 0; tV2 = 2; tV3 = 4; dV = 0;
+
+  doseD = 0;
+  tD1 = 1; tD2 = 3; tD3 = 5; dD = 0;
+
+  //// Other declarations:
+  var N, uV, uD, rectV1, rectV2, rectV3, rectD1, rectD2, rectD3;
+  const tumor, r, beta, kappa_0, c_kill, delta_I, alpha, delta_V, c_T, chi_A, chi_D, delta_T, c_A, delta_A, delta_D, U0, doseV, tV1, tV2, tV3, dV, doseD, tD1, tD2, tD3, dD;
+
+  //// Display Names:
+  tumor is "Tumor compartment";
+  U is "Uninfected tumor cell volume";
+  I is "Infected tumor cell volume";
+  V is "Free oncolytic virions";
+  T is "Tumor-targeting T cells";
+  A is "Naive T cells";
+  D is "Injected dendritic cells";
+  N is "Total cell volume (U+I+T)";
+  U_growth is "Exponential tumor growth";
+  Infection is "Virus-mediated infection of tumor cells";
+  Immune_kill_U is "T-cell killing of uninfected tumor cells";
+  I_lysis is "Infected cell lysis";
+  Immune_kill_I is "T-cell killing of infected tumor cells";
+  Virion_release is "Virion release from lysed infected cells";
+  Virion_decay is "Virion natural decay";
+  OV_input is "Oncolytic virus dosing input uV(t)";
+  T_from_I is "T-cell recruitment/activation from infected cells (4-1BBL/IL-12)";
+  T_from_A is "T-cell production from naive T cells via IL-12 (chi_A*A)";
+  T_from_D is "T-cell production via dendritic cells";
+  T_death is "T-cell natural death";
+  A_prod is "Naive T-cell stimulation via IL-12 (from infected cells)";
+  A_death is "Naive T-cell natural death";
+  DC_input is "Dendritic cell dosing input uD(t)";
+  DC_death is "Dendritic cell decay";
+
+end
+
+/* Unmapped / placeholder data notes:
+- The following parameters are defined by the model but were not given numeric values in the provided excerpt:
+  kappa_0 (baseline T-cell cytotoxicity), delta_I (infected-cell lysis rate), alpha (virions per lysis),
+  delta_V (virion decay), chi_A, chi_D (T-cell production coefficients), delta_T (T-cell death),
+  delta_A (naive T-cell death). They are set to 0 by default to keep the model loadable; set them using calibrated values from the full paper or prior work.
+- Initial uninfected tumor volume U0 is not specified in the excerpt; default set to 1 (arbitrary units).
+- Dosing inputs uV(t), uD(t) are implemented as rectangular pulses whose amplitudes (doseV, doseD) default to 0 (i.e., no treatment). 
+  To emulate Figure 4 protocols (Ad/4-1BBL/IL-12 on days 0,2,4; DC on days 1,3,5), set doseV>0, doseD>0 and choose small positive widths dV, dD.
+- Minimal model (Equations (15)-(19)) can be obtained here by setting c_A=0 (with A(0)=0), which effectively removes A-dynamics (A remains 0).
+- Symbol mapping: ? -> beta; ?0 -> kappa_0; c_kill unchanged; ?_* -> delta_*; ?_* -> chi_*; ? -> alpha; N = U + I + T.
+*/

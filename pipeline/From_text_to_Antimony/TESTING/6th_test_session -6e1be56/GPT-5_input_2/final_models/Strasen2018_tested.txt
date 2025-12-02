@@ -1,0 +1,103 @@
+model *Strasen2018_TGFb_Smad_SingleCellMinimal()
+
+  //// Compartments and Species:
+  compartment ext, mem;
+  compartment endo, cyto;
+  compartment nuc;
+  species L in ext;
+  species R1 in mem, R2 in mem, C in mem;
+  species C_e in endo;
+  species S2 in cyto, S2p in cyto, S4 in cyto, S2pS4 in cyto;
+  species S2_n in nuc, S4_n in nuc, S2pS4_n in nuc;
+  species FB_m in cyto, FB in cyto;
+
+  //// Reactions:
+  R_synth_R1:  -> R1; mem*k_synth_R1;
+  R_synth_R2:  -> R2; mem*k_synth_R2;
+  R_bind: R1 + R2 + L -> C; mem*(k_on*R1*R2*L - k_off*C);
+  R_internalize: C -> C_e; mem*k_int*C;
+  R_complex_degrade: C_e -> ; endo*k_degC*C_e;
+  R_recycle: C_e -> R1 + R2; endo*k_rec*C_e;
+  R_R1_loss: R1 -> ; mem*(k_deg_R1*R1 + k_fbdeg*FB*R1);
+  R_R2_loss: R2 -> ; mem*(k_deg_R2*R2 + k_fbdeg*FB*R2);
+  R_L_decay: L -> ; ext*k_Ldeg*L;
+
+  R_S2_phos: S2 -> S2p; cyto*(k_phos*C*S2/(1 + FB/Ki));
+  R_S2_dephos: S2p -> S2; cyto*k_deph_c*S2p;
+
+  R_Smad_bind: S2p + S4 -> S2pS4; cyto*(k_on_s*S2p*S4 - k_off_s*S2pS4);
+
+  R_import_complex: S2pS4 -> S2pS4_n; cyto*k_imp_c2n*S2pS4;
+  R_export_complex: S2pS4_n -> S2pS4; nuc*k_exp_n2c*S2pS4_n;
+  R_nuclear_dephos: S2pS4_n -> S2_n + S4_n; nuc*k_deph_n*S2pS4_n;
+
+  R_S2_in: S2 -> S2_n; cyto*k_imp_S2*S2;
+  R_S2_out: S2_n -> S2; nuc*k_exp_S2*S2_n;
+  R_S4_in: S4 -> S4_n; cyto*k_imp_S4*S4;
+  R_S4_out: S4_n -> S4; nuc*k_exp_S4*S4_n;
+
+  R_FB_mRNA_prod:  -> FB_m; cyto*(k_basal_FB + k_ind_FB*(S2pS4_n/(K_FB + S2pS4_n)));
+  R_FB_mRNA_deg: FB_m -> ; cyto*k_deg_m*FB_m;
+  R_FB_translation:  -> FB; cyto*k_trans*FB_m;
+  R_FB_deg: FB -> ; cyto*k_deg_FB*FB;
+
+  //// Species initializations:
+  L = 25;
+  R1 = 100;
+  R2 = 100;
+  C = 0;
+  C_e = 0;
+  S2 = 100;
+  S2p = 0;
+  S4 = 100;
+  S2pS4 = 0;
+  S2_n = 0;
+  S4_n = 0;
+  S2pS4_n = 0;
+  FB_m = 0;
+  FB = 0;
+
+  //// Compartment initializations:
+  ext = 1;
+  mem = 1;
+  endo = 1;
+  cyto = 1;
+  nuc = 1;
+
+  //// Variable initializations:
+  k_on = 1e-3;
+  k_off = 1e-3;
+  k_int = 1e-2;
+  k_degC = 1e-2;
+  k_rec = 5e-3;
+  k_synth_R1 = 1;
+  k_synth_R2 = 1;
+  k_deg_R1 = 1e-3;
+  k_deg_R2 = 1e-3;
+  k_fbdeg = 1e-5;
+  k_Ldeg = 1e-3;
+
+  k_phos = 1e-3;
+  Ki = 50;
+  k_deph_c = 1e-3;
+
+  k_on_s = 1e-3;
+  k_off_s = 1e-3;
+
+  k_imp_c2n = 1e-2;
+  k_exp_n2c = 5e-3;
+  k_deph_n = 1e-3;
+
+  k_imp_S2 = 5e-4;
+  k_exp_S2 = 5e-4;
+  k_imp_S4 = 5e-4;
+  k_exp_S4 = 5e-4;
+
+  k_basal_FB = 1e-4;
+  k_ind_FB = 1e-2;
+  K_FB = 10;
+  k_deg_m = 1e-3;
+  k_trans = 5e-3;
+  k_deg_FB = 1e-3;
+
+end

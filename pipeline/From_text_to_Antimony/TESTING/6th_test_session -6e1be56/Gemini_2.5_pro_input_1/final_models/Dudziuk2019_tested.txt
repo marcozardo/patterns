@@ -1,0 +1,104 @@
+```antimony
+model *Dudziuk2019___Biologically_sound_formal_model_of_Hsp70_heat_induction()
+
+// Function definitions
+function Vden(T, T0, T_0_5, nv)
+  (1 - (1 + ((T - T0)/(T_0_5 - T0))^nv)^-1);
+end
+
+function k8_T(T, k8_max, R_k8, T_k8)
+  k8_max*(1 - 1/(1 + exp(-R_k8*(T - T_k8))));
+end
+
+function k11_T(T, k10, T_0, T_0_5, n_v)
+  k10*(Vden(T, T_0, T_0_5, n_v)/(1 - Vden(T, T_0, T_0_5, n_v)));
+end
+
+
+//// Compartments and Species:
+compartment compartment_cell;
+species HSP in compartment_cell, HSF in compartment_cell, S in compartment_cell;
+species HSP_HSF in compartment_cell, HSP_S in compartment_cell, HSF3 in compartment_cell;
+species HSE in compartment_cell, HSE_HSF3 in compartment_cell, mRNA in compartment_cell;
+species P in compartment_cell;
+
+//// Assignment Rules:
+l7_T := piecewise(T < 41, l7_37 + (T - 37)*(l7_41 - l7_37)/(41 - 37), T <= 42, l7_41 + (T - 41)*(l7_42 - l7_41)/(42 - 41), T <= 43, l7_42 + (T - 42)*(l7_43 - l7_42)/(43 - 42), T <= 44, l7_43 + (T - 43)*(l7_44 - l7_43)/(44 - 43), l7_44 + (T - 44)*(l7_45 - l7_44)/(45 - 44));
+HSF3tot := HSF3 + HSE_HSF3;
+P_tot := P + S + HSP_S;
+HSF_tot := HSF + HSP_HSF + 3*HSF3 + 3*HSE_HSF3;
+HSE_tot := HSE + HSE_HSF3;
+k_p := k8_T(T, k8_max, R_k8, T_k8);
+HSF_free := HSF + 3*HSE_HSF3 + 3*HSF3;
+HSF_free_fraction := HSF_free/HSF_tot;
+S_free_fraction := S/(S + HSP_S);
+HSPtot0 := HSP + HSP_S + HSP_HSF;
+Kd2 := l2/k2;
+Kd7 := l7_T/k7;
+
+//// Reactions:
+HSFactivation: 3 HSF -> HSF3; compartment_cell*k3*HSF^2*HSF;
+HSF3_to_DNA: HSF3 + HSE -> HSE_HSF3; compartment_cell*k7*HSF3*HSE;
+HSE_HSF3_dissociation: HSE_HSF3 -> HSF3 + HSE; compartment_cell*l7_T*HSE_HSF3;
+Transcription: HSE_HSF3 -> HSE_HSF3 + mRNA; compartment_cell*k8_T(T, k8_max, R_k8, T_k8)*HSE_HSF3;
+HSFinactivation: HSP + HSF3 -> HSP_HSF + 2 HSF; compartment_cell*l3*HSP*HSF3;
+HSP_substrate_dissociation: HSP_S -> HSP + S; compartment_cell*k1*HSP_S;
+HSP_substrate_association: HSP + S -> HSP_S; compartment_cell*l1*HSP*S;
+HSP_HSF_association: HSP + HSF -> HSP_HSF; compartment_cell*k2*HSP*HSF;
+HSP_HSF_dissociation: HSP_HSF -> HSP + HSF; compartment_cell*l2*HSP_HSF;
+HSP_degradation: HSP -> ; compartment_cell*k9*HSP;
+Protein_refolding: HSP_S -> HSP + P; compartment_cell*k10*HSP_S;
+Protein_denaturation: P -> S; compartment_cell*k11_T(T, k10, T_0, T_0_5, n_v)*P;
+Translation: mRNA -> mRNA + HSP; compartment_cell*k4*mRNA;
+mRNA_degradation: mRNA -> ; compartment_cell*k5*mRNA;
+Constitutive_HSP_production:  -> HSP; compartment_cell*k6;
+
+//// Species initializations:
+HSP = 52.06;
+HSF = 0.001363;
+S = 0.00008122;
+HSP_HSF = 0.01429;
+HSP_S = 0.0005268;
+HSF3 = 0.000009082;
+HSE = 0.000003996;
+HSE_HSF3 = 0.000004484;
+mRNA = 0.0004946;
+P = 1297;
+
+//// Compartment initializations:
+compartment_cell = 1;
+
+//// Variable initializations:
+k1 = 12.6;
+l1 = 0.003028;
+k2 = 0.218;
+l2 = 1.162;
+k3 = 446500;
+l3 = 2.392;
+k4 = 18.85;
+k5 = 0.0008709;
+k6 = 0.08899;
+k7 = 5892;
+k9 = 0.001888;
+k10 = 0.09813;
+k8_max = 96.07;
+R_k8 = 15.93;
+T_k8 = 42.89;
+T_0 = 35.81;
+T_0_5 = 47.13;
+n_v = 6.522;
+T = 37;
+l7_37 = 47.68;
+l7_41 = 1.233;
+l7_42 = 0.6628;
+l7_43 = 0.01639;
+l7_44 = 50.01;
+l7_45 = 84.27;
+
+//// Other declarations:
+var l7_T, HSF3tot, P_tot, HSF_tot, HSE_tot, k_p, HSF_free, HSF_free_fraction, S_free_fraction, HSPtot0, Kd2, Kd7;
+const compartment_cell, k1, l1, k2, l2, k3, l3, k4, k5, k6, k7, k9, k10;
+const k8_max, R_k8, T_k8, T_0, T_0_5, n_v, T, l7_37, l7_41, l7_42, l7_43, l7_44, l7_45;
+
+end
+```

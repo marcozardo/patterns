@@ -1,0 +1,141 @@
+model *Dwivedi2014_Multiscale_IL6_Crohn_Model()
+
+//// Compartments and Species:
+compartment GI_tract, Liver, Serum;
+species IL6_GI in GI_tract, IL6_Liver in Liver, IL6_Serum in Serum;
+species IL6R_GI in GI_tract, IL6R_Liver in Liver;
+species $sIL6R in Serum;
+species $sgp130 in Serum;
+species STAT3_GI in GI_tract, STAT3_Liver in Liver;
+species pSTAT3_GI in GI_tract, pSTAT3_Liver in Liver;
+species CRP_Liver in Liver, CRP_Serum in Serum;
+species $Anti_IL6 in Serum;
+species $Anti_IL6R in Serum;
+species $IL6_Anti_IL6 in Serum;
+species $IL6R_Anti_IL6R in Serum;
+species $IL6_sIL6R in Serum;
+species $IL6_sIL6R_sgp130 in Serum;
+
+//// Assignment Rules:
+CRP_Secretion := k_CRP_Secretion * pSTAT3_Liver;
+CRP_Degradation := k_deg_CRP * CRP_Serum;
+sIL6R_Production := k_syn_sIL6R * CRP_Serum;
+sIL6R_Degradation := k_deg_sIL6R * sIL6R;
+sgp130_Production := k_syn_sgp130;
+sgp130_Degradation := k_deg_sgp130 * sgp130;
+IL6_Production_GI := k_synf_IL6_Gut;
+IL6_Production_Liver := k_synf_IL6_Liver;
+IL6_Degradation := k_deg_IL6 * IL6_Serum;
+
+//// Rate Rules:
+STAT3_GI' = k_syn_STAT3 - k_deg_STAT3*STAT3_GI - k_phos*IL6_GI*STAT3_GI + k_dephos*pSTAT3_GI;
+pSTAT3_GI' = k_phos*IL6_GI*STAT3_GI - k_dephos*pSTAT3_GI;
+STAT3_Liver' = k_syn_STAT3 - k_deg_STAT3*STAT3_Liver - k_phos*IL6_Liver*STAT3_Liver + k_dephos*pSTAT3_Liver;
+pSTAT3_Liver' = k_phos*IL6_Liver*STAT3_Liver - k_dephos*pSTAT3_Liver;
+CRP_Liver' = CRP_Secretion - k_transport_CRP*(CRP_Liver - CRP_Serum);
+CRP_Serum' = k_transport_CRP*(CRP_Liver - CRP_Serum) - CRP_Degradation;
+IL6_GI' = IL6_Production_GI - k_transport_IL6*(IL6_GI - IL6_Serum) - k_deg_IL6*IL6_GI;
+IL6_Liver' = IL6_Production_Liver - k_transport_IL6*(IL6_Liver - IL6_Serum) - k_deg_IL6*IL6_Liver;
+IL6_Serum' = k_transport_IL6*(IL6_GI + IL6_Liver - 2*IL6_Serum) - IL6_Degradation - k_bind_IL6_sIL6R*IL6_Serum*sIL6R + k_unbind_IL6_sIL6R*IL6_sIL6R - k_bind_IL6_Ab*IL6_Serum*Anti_IL6 + k_unbind_IL6_Ab*IL6_Anti_IL6;
+sIL6R' = sIL6R_Production - sIL6R_Degradation - k_bind_IL6_sIL6R*IL6_Serum*sIL6R + k_unbind_IL6_sIL6R*IL6_sIL6R - k_bind_sIL6R_sgp130*IL6_sIL6R*sgp130 + k_unbind_sIL6R_sgp130*IL6_sIL6R_sgp130 - k_bind_sIL6R_Ab*sIL6R*Anti_IL6R + k_unbind_sIL6R_Ab*IL6R_Anti_IL6R;
+sgp130' = sgp130_Production - sgp130_Degradation - k_bind_sIL6R_sgp130*IL6_sIL6R*sgp130 + k_unbind_sIL6R_sgp130*IL6_sIL6R_sgp130;
+IL6_sIL6R' = k_bind_IL6_sIL6R*IL6_Serum*sIL6R - k_unbind_IL6_sIL6R*IL6_sIL6R - k_bind_sIL6R_sgp130*IL6_sIL6R*sgp130 + k_unbind_sIL6R_sgp130*IL6_sIL6R_sgp130 - k_bind_Complex_Ab*IL6_sIL6R*Anti_IL6 + k_unbind_Complex_Ab*IL6_Anti_IL6;
+IL6_sIL6R_sgp130' = k_bind_sIL6R_sgp130*IL6_sIL6R*sgp130 - k_unbind_sIL6R_sgp130*IL6_sIL6R_sgp130;
+Anti_IL6' = -k_bind_IL6_Ab*IL6_Serum*Anti_IL6 + k_unbind_IL6_Ab*IL6_Anti_IL6 - k_bind_Complex_Ab*IL6_sIL6R*Anti_IL6 + k_unbind_Complex_Ab*IL6_Anti_IL6 - k_deg_Ab*Anti_IL6;
+Anti_IL6R' = -k_bind_sIL6R_Ab*sIL6R*Anti_IL6R + k_unbind_sIL6R_Ab*IL6R_Anti_IL6R - k_deg_Ab*Anti_IL6R;
+IL6_Anti_IL6' = k_bind_IL6_Ab*IL6_Serum*Anti_IL6 - k_unbind_IL6_Ab*IL6_Anti_IL6 + k_bind_Complex_Ab*IL6_sIL6R*Anti_IL6 - k_unbind_Complex_Ab*IL6_Anti_IL6 - k_deg_Ab*IL6_Anti_IL6;
+IL6R_Anti_IL6R' = k_bind_sIL6R_Ab*sIL6R*Anti_IL6R - k_unbind_sIL6R_Ab*IL6R_Anti_IL6R - k_deg_Ab*IL6R_Anti_IL6R;
+
+//// Reactions:
+// No reactions defined as ODEs are implemented via Rate Rules.
+
+//// Events:
+// Dosing events for antibodies (example for Anti-IL-6R every 4 weeks)
+at(time >= 0): Anti_IL6R = Anti_IL6R + 8;
+at(time >= 672): Anti_IL6R = Anti_IL6R + 8;
+at(time >= 1344): Anti_IL6R = Anti_IL6R + 8;
+
+//// Species initializations:
+IL6_GI = 0.014;
+IL6_Liver = 0.001;
+IL6_Serum = 0.001;
+sIL6R = 1.6;
+sgp130 = 3.9;
+STAT3_GI = 1;
+pSTAT3_GI = 1;
+STAT3_Liver = 1;
+pSTAT3_Liver = 1;
+CRP_Liver = 40;
+CRP_Serum = 40;
+Anti_IL6 = 0;
+Anti_IL6R = 0;
+IL6_Anti_IL6 = 0;
+IL6R_Anti_IL6R = 0;
+IL6_sIL6R = 0;
+IL6_sIL6R_sgp130 = 0;
+
+//// Compartment initializations:
+GI_tract = 1;
+Liver = 1;
+Serum = 1;
+
+//// Variable initializations:
+k_synf_IL6_Gut = 0.014;
+k_synf_IL6_Liver = 0.001;
+k_deg_IL6 = 0.1;
+k_syn_STAT3 = 1;
+k_deg_STAT3 = 0.1;
+k_phos = 1;
+k_dephos = 1;
+k_CRP_Secretion = 40;
+k_deg_CRP = 1;
+k_transport_IL6 = 0.1;
+k_transport_CRP = 0.1;
+k_syn_sIL6R = 1.6;
+k_deg_sIL6R = 1;
+k_syn_sgp130 = 3.9;
+k_deg_sgp130 = 1;
+k_bind_IL6_sIL6R = 1;
+k_unbind_IL6_sIL6R = 1;
+k_bind_sIL6R_sgp130 = 1;
+k_unbind_sIL6R_sgp130 = 1;
+k_bind_IL6_Ab = 1000;
+k_unbind_IL6_Ab = 1;
+k_bind_sIL6R_Ab = 1000;
+k_unbind_sIL6R_Ab = 1;
+k_bind_Complex_Ab = 1000;
+k_unbind_Complex_Ab = 1;
+k_deg_Ab = 0.01;
+
+//// Other declarations:
+var k_synf_IL6_Gut, k_synf_IL6_Liver, k_deg_IL6, k_syn_STAT3, k_deg_STAT3, k_phos, k_dephos, k_CRP_Secretion, k_deg_CRP, k_transport_IL6, k_transport_CRP, k_syn_sIL6R, k_deg_sIL6R, k_syn_sgp130, k_deg_sgp130, k_bind_IL6_sIL6R, k_unbind_IL6_sIL6R, k_bind_sIL6R_sgp130, k_unbind_sIL6R_sgp130, k_bind_IL6_Ab, k_unbind_IL6_Ab, k_bind_sIL6R_Ab, k_unbind_sIL6R_Ab, k_bind_Complex_Ab, k_unbind_Complex_Ab, k_deg_Ab;
+const GI_tract, Liver, Serum;
+
+//// Unit definitions:
+unit volume = 1 liter;
+unit time_unit = 1 hour;
+unit substance = 1e-9 mole;
+
+//// Display Names:
+GI_tract is "Gastrointestinal Tract";
+Liver is "Liver";
+Serum is "Blood Serum";
+IL6_GI is "IL-6 in GI Tract";
+IL6_Liver is "IL-6 in Liver";
+IL6_Serum is "IL-6 in Serum";
+sIL6R is "Soluble IL-6 Receptor";
+sgp130 is "Soluble gp130";
+STAT3_GI is "STAT3 in GI Tract";
+pSTAT3_GI is "Phosphorylated STAT3 in GI Tract";
+STAT3_Liver is "STAT3 in Liver";
+pSTAT3_Liver is "Phosphorylated STAT3 in Liver";
+CRP_Liver is "C-Reactive Protein in Liver";
+CRP_Serum is "C-Reactive Protein in Serum";
+Anti_IL6 is "Anti-IL-6 Antibody";
+Anti_IL6R is "Anti-IL-6R Antibody";
+IL6_Anti_IL6 is "IL-6:Anti-IL-6 Complex";
+IL6R_Anti_IL6R is "IL-6R:Anti-IL-6R Complex";
+IL6_sIL6R is "IL-6:sIL-6R Complex";
+IL6_sIL6R_sgp130 is "IL-6:sIL-6R:sgp130 Complex";
+
+end

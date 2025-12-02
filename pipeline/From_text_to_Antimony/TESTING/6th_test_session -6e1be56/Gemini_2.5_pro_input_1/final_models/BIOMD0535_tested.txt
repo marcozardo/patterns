@@ -1,0 +1,114 @@
+model *Dwivedi2014_IL6_CrohnsDisease()
+
+  //// Compartments and Species:
+  compartment Circulation, Gut, Liver;
+  species IL6_c in Circulation, sIL6R_c in Circulation, CRP_c in Circulation, sgp130_c in Circulation;
+  species IL6_sIL6R_c in Circulation, IL6_sIL6R_sgp130_c in Circulation;
+  species IL6_g in Gut, STAT3_g in Gut, pSTAT3_g in Gut;
+  species CRP_l in Liver;
+
+  //// Reactions:
+  # Note: The following reactions represent the biological processes described in the paper.
+  # The kinetic laws and parameter values are placeholders, as the exact mathematical
+  # formulation was provided in supplementary materials not available in the input text.
+
+  # --- Synthesis and Degradation ---
+  R1:  => IL6_g; ksyn_IL6g;                                 # Basal IL-6 synthesis in the Gut
+  R2: IL6_g => ; kdeg_IL6g * IL6_g;                          # IL-6 degradation in the Gut
+  R3:  => sIL6R_c; ksyn_sIL6R_basal + ksyn_sIL6R_CRP * CRP_c; # sIL-6R shedding, accelerated by CRP
+  R4: sIL6R_c => ; kdeg_sIL6R * sIL6R_c;                     # sIL-6R degradation
+  R5:  => CRP_l; ksyn_CRP_basal + ksyn_CRP_pSTAT3 * pSTAT3_g; # CRP synthesis in Liver, induced by IL-6 signaling (pSTAT3)
+  R6: CRP_l => ; kdeg_CRPl * CRP_l;                          # CRP degradation in Liver
+  R7: CRP_c => ; kdeg_CRPc * CRP_c;                          # CRP degradation in Circulation
+  R8:  => sgp130_c; ksyn_sgp130;                              # sgp130 synthesis
+  R9: sgp130_c => ; kdeg_sgp130 * sgp130_c;                   # sgp130 degradation
+  R10: => STAT3_g; ksyn_STAT3;                               # STAT3 synthesis in Gut
+  R11: STAT3_g => ; kdeg_STAT3 * STAT3_g;                     # STAT3 degradation in Gut
+  R12: pSTAT3_g => ; kdeg_pSTAT3 * pSTAT3_g;                  # pSTAT3 degradation/deactivation in Gut
+
+  # --- Transport between Compartments ---
+  R13: IL6_g => IL6_c; k_trans_IL6 * IL6_g; # Transport of IL-6 from Gut to Circulation
+  R14: CRP_l => CRP_c; k_trans_CRP * CRP_l; # Transport of CRP from Liver to Circulation
+
+  # --- Complex Formation and Signaling ---
+  R15: IL6_c + sIL6R_c -> IL6_sIL6R_c; kf_complex * IL6_c * sIL6R_c - kr_complex * IL6_sIL6R_c;
+  R16: IL6_sIL6R_c + sgp130_c -> IL6_sIL6R_sgp130_c; kf_inhibit * IL6_sIL6R_c * sgp130_c - kr_inhibit * IL6_sIL6R_sgp130_c;
+  R17: STAT3_g -> pSTAT3_g; k_phos * IL6_g * STAT3_g;                                            # IL-6 mediated STAT3 phosphorylation in Gut
+  R18: pSTAT3_g -> STAT3_g; Vm_dephos * pSTAT3_g / (Km_dephos + pSTAT3_g);                       # pSTAT3 dephosphorylation (enzymatic)
+
+  //// Species initializations:
+  # Values are for Crohn's patient from Table 1, converted to nmol/L.
+  IL6_c = 0.0004219;       # Serum IL-6 (10 pg/ml)
+  sIL6R_c = 2.8;           # Serum sIL-6R (140 ng/ml)
+  CRP_c = 280;             # Serum CRP (7 mg/l)
+  sgp130_c = 2.8;          # Serum sgp130 (280 ng/ml)
+  IL6_g = 0.01055;         # Gut IL-6 (250 pg/ml)
+  pSTAT3_g = 3;            # Gut pSTAT3 (3 au, fold change)
+  # Assumed initial values for other species
+  IL6_sIL6R_c = 0;
+  IL6_sIL6R_sgp130_c = 0;
+  STAT3_g = 100;           # Assumed baseline total STAT3, mostly unphosphorylated
+  CRP_l = 280;             # Assumed to be in equilibrium with circulation
+
+  //// Compartment initializations:
+  Circulation = 1;
+  Gut = 1;
+  Liver = 1;
+
+  //// Variable initializations:
+  # Note: These parameter values are placeholders.
+  ksyn_IL6g = 0.01;
+  kdeg_IL6g = 1;
+  ksyn_sIL6R_basal = 0.1;
+  ksyn_sIL6R_CRP = 0.001;
+  kdeg_sIL6R = 0.1;
+  ksyn_CRP_basal = 10;
+  ksyn_CRP_pSTAT3 = 10;
+  kdeg_CRPl = 0.1;
+  kdeg_CRPc = 0.1;
+  ksyn_sgp130 = 0.28;
+  kdeg_sgp130 = 0.1;
+  ksyn_STAT3 = 10;
+  kdeg_STAT3 = 0.1;
+  kdeg_pSTAT3 = 1;
+  k_trans_IL6 = 1;
+  k_trans_CRP = 1;
+  kf_complex = 1;
+  kr_complex = 0.1;
+  kf_inhibit = 1;
+  kr_inhibit = 0.1;
+  k_phos = 100;
+  Vm_dephos = 10;
+  Km_dephos = 1;
+
+  //// Other declarations:
+  const Circulation, Gut, Liver;
+  const ksyn_IL6g, kdeg_IL6g, ksyn_sIL6R_basal, ksyn_sIL6R_CRP, kdeg_sIL6R;
+  const ksyn_CRP_basal, ksyn_CRP_pSTAT3, kdeg_CRPl, kdeg_CRPc;
+  const ksyn_sgp130, kdeg_sgp130, ksyn_STAT3, kdeg_STAT3, kdeg_pSTAT3;
+  const k_trans_IL6, k_trans_CRP, kf_complex, kr_complex, kf_inhibit, kr_inhibit;
+  const k_phos, Vm_dephos, Km_dephos;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1 liter;
+  unit time_unit = 3600 second;
+
+  //// Display Names:
+  time_unit is "hour";
+  # Compartments
+  Circulation is "Circulation (Serum)";
+  Gut is "Gastrointestinal Tract";
+  Liver is "Liver";
+  # Species
+  IL6_c is "Serum Interleukin-6";
+  sIL6R_c is "Serum soluble Interleukin-6 Receptor";
+  CRP_c is "Serum C-reactive protein";
+  sgp130_c is "Serum soluble gp130";
+  IL6_sIL6R_c is "Serum IL-6/sIL-6R complex";
+  IL6_sIL6R_sgp130_c is "Serum IL-6/sIL-6R/sgp130 inhibited complex";
+  IL6_g is "Gut Interleukin-6";
+  STAT3_g is "Gut STAT3";
+  pSTAT3_g is "Gut phosphorylated STAT3";
+  CRP_l is "Liver C-reactive protein";
+end
