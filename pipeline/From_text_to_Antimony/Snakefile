@@ -11,22 +11,21 @@ shell.executable("powershell.exe")
 onstart:
     print("In rule 'evaluation table' remind to log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=\n")
 
-Papers = glob_wildcards("workdir/inputs_1/{text}.md").text
-original_paper = glob_wildcards("workdir/expected_output_1/or{antimony}.txt").antimony
+Papers = glob_wildcards("workdir/input_R/{text}.md").text
 
 rule all:
     input:
-        expand("workdir/fabric_output/{sample}.txt", sample=Papers),
-        expand("workdir/expected_output_1/or{model}.txt", model=original_paper),
+        expand("workdir/fabric_output/{sample}.txt", sample=Papers), 
+        expand("workdir/expected_output_R/or{sample}.txt", sample=Papers),
         #expand("workdir/csv_output/{sample}_result.csv", sample=Papers),
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv",
         "workdir/all_semantic_comparison.csv",
-        "workdir/test_table_5948e29.csv"
+        "workdir/test_table_6e1be56.csv"
 
 rule conversion:
     input:
-        "workdir/inputs_1/{sample}.md"
+        "workdir/input_R/{sample}.md"
 
     output:
         "workdir/fabric_output/{sample}.txt"
@@ -204,9 +203,31 @@ rule third_aggregation:
         df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output[0], index=False)
 
+rule AAFE_Evaluation:
+    input:
+        "workdir/final_models/{sample}_tested.txt",
+        "workdir/expected_output_R/or{sample}.txt"
+    output:
+        "workdir/Evaluation/AAFE/gen{sample}_vs_or{sample}_aafe_eval.csv",
+        "workdir/Sim_plots/gen{sample}_vs_or{sample}.png"
+    script:
+        "scripts/AAFE_&_plots.py"
+
+rule fourth_aggregation:
+    input:
+        expand("workdir/Evaluation/AAFE/gen{sample}_vs_or{sample}_aafe_eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/AAFE_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
 rule aggregate_all:
     input:
-        expand("workdir/CSV/{number}_evaluation.csv", number=["first","second","third"])
+        expand("workdir/CSV/{number}_evaluation.csv", number=["first","second","third", "AAFE"])
 
     output:
         "workdir/all_simulations.csv"
@@ -230,10 +251,10 @@ rule semantic_evaluation_generated:
 
 rule semantic_evaluation_originals:
     input:
-        "workdir/expected_output_1/or{model}.txt"
+        "workdir/expected_output_R/or{sample}.txt"
     
     output:
-        "workdir/semantic_evaluation/original/{model}_O_semantic.csv"
+        "workdir/semantic_evaluation/original/{sample}_O_semantic.csv"
     
     script:
         "scripts/semantic_evaluation.py"
@@ -252,7 +273,7 @@ rule merge_generated:
 
 rule merge_originals:
     input:
-        expand("workdir/semantic_evaluation/original/{model}_O_semantic.csv", model=original_paper)
+        expand("workdir/semantic_evaluation/original/{sample}_O_semantic.csv", sample=Papers)
     output:
         "workdir/semantic_evaluation/Semantic_Outputs_original.csv"
     run:
@@ -280,7 +301,7 @@ rule evaluation_table:
         "workdir/all_semantic_comparison.csv"
     
     output:
-        "workdir/test_table_5948e29.csv"
+        "workdir/test_table_6e1be56.csv"
     
     script:
         "scripts/test_table.py"
