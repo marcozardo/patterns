@@ -12,17 +12,53 @@ output_1 = snakemake.output[0]
 output_2 = snakemake.output[1]
 
 
-with open(input_1, "r") as f1:
-            generated = f1.read()
+def simulate_and_check(file1, file2):
+    
+    gen_ok = True
+    orig_ok = True
 
-gen_load = te.loadAntimonyModel(generated)
-ts_gen = gen_load.simulate(0,100,200)
-
-with open(input_2, "r") as f2:
+    try:
+        with open(file2, "r") as f2:
             original = f2.read()
 
-or_load = te.loadAntimonyModel(original)
-ts_ground = or_load.simulate(0,100,200)
+        or_load = te.loadAntimonyModel(original)
+        ts_ground = or_load.simulate(0,100,200)
+    except Exception:
+        orig_ok = False
+
+    try:
+        with open(file1, "r") as f1:
+            generated = f1.read()
+
+        gen_load = te.loadAntimonyModel(generated)
+        ts_gen = gen_load.simulate(0,100,200)
+    except Exception:
+        gen_ok = False
+
+    #decision logic
+        
+    if orig_ok and gen_ok:
+
+        # Compute reproducibility
+        aafe_result = partial_reproducibility(ts_ground, ts_gen)
+
+        # plot both
+        make_plots(ts_ground, ts_gen, output_2)
+
+        # write CSV
+        with open(output_1, "w") as file:
+            csv1 = pd.DataFrame({"AAFE evaluation": [aafe_result]})
+            csv1.to_csv(output_1, index=False)
+
+    else:
+        # Only original works -> plot only that
+        make_single_plot(ts_ground, output_2)
+
+        # AAEF not computed --> value = 1
+        with open(output_1, "w") as file:
+            csv1 = pd.DataFrame({"AAFE evaluation": [1]})
+            csv1.to_csv(output_1, index=False)
+
 
 """
     Compute AAFE using the formula:
@@ -59,59 +95,79 @@ def partial_reproducibility(obs_matrix, gen_matrix):
 
     return 1           # no reproducible plot
 
-result = partial_reproducibility(ts_ground, ts_gen)
-
-
 # Plots:
 
-# --- get column indices ---
-time_col = ts_ground.colnames.index("time")
-# all species = all columns except "time"
-species = [c for c in ts_ground.colnames if c != "time"]
+def make_single_plot(ts_ground, outfile):
 
-# extract time (1D array)
-time = ts_ground[:, time_col]
+    time_col = ts_ground.colnames.index("time")
+    time = ts_ground[:,time_col]
 
-n = len(species)
+    species = [c for c in ts_ground.colnames if c != "time"]
+    n = len(species)
 
-# --- compute subplot grid: 2 columns ---
-ncols = 2
-nrows = math.ceil(n / ncols)
+    fig, axes = plt.subplots(n,1, figsize=(10, 4*n), sharex=True)
 
-fig, axes = plt.subplots(nrows, ncols, figsize=(10, 4*nrows), sharex=True)
+    if n == 1:
+         axes = [axes]
+    
+    for ax, sp in zip(axes, species):
+        sp_col = ts_ground.colnames.index(sp)
+        # ground-truth (solid)
+        ax.plot(time, ts_ground[:, sp_col], label="Ground-truth", linewidth=2)
+        ax.set_ylabel(sp)
+        ax.legend()
 
-# if only one species, make axes iterable
-if n == 1:
-    axes = [axes]
+    axes[-1].set_xlabel("Time")
 
-# axes might be 2D -> flatten for easy iteration
-axes = axes.flatten()
+    plt.tight_layout()
+    plt.savefig(outfile, dpi=300)
+    plt.close()
 
-for ax, sp in zip(axes, species):
-    sp_col = ts_ground.colnames.index(sp)
-    # ground-truth (solid)
-    ax.plot(time, ts_ground[:, sp_col], label="Ground-truth", linewidth=2)
-    # generated (dashed)
-    ax.plot(time, ts_gen[:, sp_col], '--', label="Generated", linewidth=2)
-    ax.set_ylabel(sp)
-    ax.legend()
+def make_plots(ts_ground, ts_gen, outfile):
+     # --- get column indices ---
+    time_col = ts_ground.colnames.index("time")
+    # all species = all columns except "time"
+    species = [c for c in ts_ground.colnames if c != "time"]
 
-axes[-1].set_xlabel("Time")
+    # extract time (1D array)
+    time = ts_ground[:, time_col]
 
-# turn off any unused axes (if species count is odd)
-for empty_ax in axes[len(species):]:
-    empty_ax.axis("off")
+    n = len(species)
 
-fig.suptitle("Ground-truth vs Generated Simulation", y=0.995)
+    # --- compute subplot grid: 2 columns ---
+    ncols = 2
+    nrows = math.ceil(n / ncols)
 
-plt.tight_layout()
-plt.savefig(output_2, dpi=300)
-plt.close()
+    fig, axes = plt.subplots(nrows, ncols, figsize=(10, 4*nrows), sharex=True)
 
+    # if only one species, make axes iterable
+    if n == 1:
+        axes = [axes]
 
-# AAFE evaluation in csv format:
+    # axes might be 2D -> flatten for easy iteration
+    axes = axes.flatten()
 
-with open(output_1, "w") as file:
-       df = pd.DataFrame({"AAFE evaluation": [result]})
-       df.to_csv(output_1, index=False)
+    for ax, sp in zip(axes, species):
+        sp_col = ts_ground.colnames.index(sp)
+        # ground-truth (solid)
+        ax.plot(time, ts_ground[:, sp_col], label="Ground-truth", linewidth=2)
+        # generated (dashed)
+        ax.plot(time, ts_gen[:, sp_col], '--', label="Generated", linewidth=2)
+        ax.set_ylabel(sp)
+        ax.legend()
+
+    axes[-1].set_xlabel("Time")
+
+    # turn off any unused axes (if species count is odd)
+    for empty_ax in axes[len(species):]:
+        empty_ax.axis("off")
+
+    fig.suptitle("Ground-truth vs Generated Simulation", y=0.995)
+
+    plt.tight_layout()
+    plt.savefig(outfile, dpi=300)
+    plt.close()
+
+         
+simulate_and_check(input_1, input_2)
 
