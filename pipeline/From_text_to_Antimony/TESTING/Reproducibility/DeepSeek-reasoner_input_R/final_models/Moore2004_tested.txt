@@ -1,0 +1,61 @@
+model *Moore2004_CML_Tcell()
+
+  //// Compartments and Species:
+  compartment blood;
+  species Tn in blood, Te in blood, C in blood;
+
+  //// Rate Rules:
+  Tn' = s_n - d_n*Tn - k_n*Tn*(C/(C + eta));
+  Te' = alpha_n*k_n*Tn*(C/(C + eta)) + alpha_e*Te*(C/(C + eta)) - d_e*Te - gamma_e*C*Te;
+  C' = r_c*C*ln(C_max/C) - d_c*C - gamma_c*C*Te;
+
+  //// Species initializations:
+  Tn = 1510;
+  Te = 20;
+  C = 10000;
+
+  //// Compartment initializations:
+  blood = 1;
+
+  //// Variable initializations:
+  s_n = 0.073;
+  d_n = 0.040;
+  d_e = 0.06;
+  d_c = 0.2;
+  k_n = 0.001;
+  eta = 100;
+  alpha_n = 0.41;
+  alpha_e = 0.2;
+  C_max = 3e5;
+  r_c = 0.03;
+  gamma_e = 0.005;
+  gamma_c = 0.005;
+
+  //// Other declarations:
+  var Tn, Te, C;
+  const s_n, d_n, d_e, d_c, k_n, eta, alpha_n, alpha_e, C_max, r_c, gamma_e, gamma_c;
+
+  //// Unit definitions:
+  unit substance = 1 item;
+  unit volume = 1 microliter;
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  blood is "Blood (compartment)";
+  Tn is "Naive T cells";
+  Te is "Effector T cells specific to CML";
+  C is "CML cancer cells";
+  s_n is "Naive T cell source rate";
+  d_n is "Naive T cell death rate";
+  d_e is "Effector T cell death rate";
+  d_c is "CML natural death rate";
+  k_n is "Naive T cell differentiation rate constant";
+  eta is "Michaelis-Menten half-saturation constant";
+  alpha_n is "Activation and proliferation factor for T_e from T_n";
+  alpha_e is "Recruitment constant for T_e";
+  C_max is "Maximum CML concentration";
+  r_c is "CML growth rate";
+  gamma_e is "Effector T cell loss rate due to CML";
+  gamma_c is "CML loss rate due to effector T cells";
+
+end

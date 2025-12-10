@@ -1,0 +1,54 @@
+model *HernandezVargas2012_InnateImmuneInfluenza()
+
+  //// Compartments and Species:
+  compartment Lung;
+  species U_H in Lung, U_E in Lung, U_I in Lung, U_R in Lung, V in Lung, IFN in Lung, K in Lung;
+
+  //// Reactions:
+  R_growth: => U_H; Lung*S_H;
+  R_infection: U_H => U_E; Lung*k_I*U_H*V;
+  R_eclipse: U_E => U_I; Lung*k_E*U_E;
+  R_resistance: U_H => U_R; Lung*k_R*U_H*IFN;
+  R_virus_prod: => V; Lung*rho_V*U_I;
+  R_IFN_prod: => IFN; Lung*a_I*U_I;
+  R_NKkill_E: U_E => ; Lung*q_K*U_E*K;
+  R_NKkill_I: U_I => ; Lung*q_K*U_I*K;
+  R_death_H: U_H => ; Lung*delta_H*U_H;
+  R_death_I: U_I => ; Lung*delta_I*U_I;
+  R_death_R: U_R => ; Lung*delta_R*U_R;
+  R_death_V: V => ; Lung*delta_V*V;
+  R_death_IFN: IFN => ; Lung*delta_IFN*IFN;
+  R_NK_recruit: => K; Lung*Phi_K*U_I;
+  R_NK_death: K => ; Lung*delta_K*K;
+  R_NK_source: => K; Lung*S_K;
+
+  //// Species initializations:
+  U_H = 5e8;
+  U_E = 0;
+  U_I = 0;
+  U_R = 0;
+  V = 1e-3;
+  IFN = 0;
+  K = 8e5;
+
+  //// Compartment initializations:
+  Lung = 1;
+
+  //// Variable initializations:
+  k_I = 3e-3;
+  k_R = 7;
+  k_E = 0.5;
+  q_K = 3e-6;
+  Phi_K = 1e-3;
+  a_I = 3e-6;
+  rho_V = 1e-2;
+  delta_H = 0.01;
+  delta_I = 0.01;
+  delta_R = 0.01;
+  delta_V = 5.2;
+  delta_IFN = 4;
+  delta_K = 0.04;
+  S_H = 5e8*0.01;
+  S_K = 8e5*0.04;
+
+end

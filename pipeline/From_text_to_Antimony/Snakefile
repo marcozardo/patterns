@@ -9,7 +9,7 @@ shell.executable("powershell.exe")
 
 # info to provide on each test:
 onstart:
-    print("In rule 'evaluation table' remind to log:\nLLM utilized=\nnumber of times this LLM was used so far=\nnumber of input papers=\n")
+    print("In rule 'evaluation table' remind to log:\nLLM utilized=\nday/time-slot where this LLM has been used so far=\nnumber of input papers=\n")
 
 Papers = glob_wildcards("workdir/input_R/{text}.md").text
 
@@ -21,7 +21,7 @@ rule all:
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv",
         "workdir/all_semantic_comparison.csv",
-        "workdir/test_table_6e1be56.csv"
+        "workdir/test_table.csv"
 
 rule conversion:
     input:

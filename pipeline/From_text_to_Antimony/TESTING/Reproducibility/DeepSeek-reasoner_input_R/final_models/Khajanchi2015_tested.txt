@@ -1,0 +1,62 @@
+model *Khajanchi2015_combined_effects_optimal_control_cancer_remission()
+
+//// Compartments and Species:
+compartment tumor_site;
+species $E in tumor_site, $T in tumor_site;
+
+//// Assignment Rules:
+
+//// Rate Rules:
+E' = s*epsilon1 + (p*E*T)/(g + T) - m*E*T - d*E;
+T' = a*T*(1 - b*T) - n*E*T - epsilon2*T;
+
+//// Reactions:
+
+//// Events:
+
+//// Species initializations:
+E = 1.70811e6;
+T = 8.28638e6;
+
+//// Compartment initializations:
+tumor_site = 1;
+
+//// Variable initializations:
+s = 1.3e4;
+p = 0.1245;
+g = 2.019e7;
+m = 3.422e-10;
+d = 0.0412;
+a = 0.18;
+b = 2.0e-9;
+n = 1.101e-7;
+epsilon1 = 1;
+epsilon2 = 0;
+
+//// Other declarations:
+var epsilon1, epsilon2;
+const s, p, g, m, d, a, b, n;
+
+//// Unit definitions:
+unit time_unit = day;
+unit cell = dimensionless;
+unit cell_per_day = cell/day;
+unit per_day = 1/day;
+unit per_cell_per_day = 1/(cell*day);
+
+//// Display Names:
+tumor_site is "Tumor site";
+E is "Effector cells";
+T is "Tumor cells";
+epsilon1 is "IL-2 therapy efficacy";
+epsilon2 is "Adoptive Cellular Immunotherapy efficacy";
+s is "Constant source rate of effector cells";
+p is "Maximum rate of effector cell proliferation";
+g is "Half saturation constant";
+m is "Effector cell inactivation rate by tumor cells";
+d is "Natural death rate of effector cells";
+a is "Maximal growth rate of tumor cells";
+b is "Inverse carrying capacity of tumor cells";
+n is "Inactivation rate of tumor cells by effector cells";
+
+end

@@ -1,0 +1,73 @@
+model *Murphy2016_TumorGrowthComparison()
+
+  //// Compartments and Species:
+  compartment body;
+  species V_exp in body, V_men in body, V_log in body, V_lin in body, V_surf in body, V_gomp in body, V_bert in body;
+
+  //// Rate Rules:
+  V_exp' = a_exp * V_exp - C0 * V_exp;
+  V_men' = a_men * (V_men ^ b_men) - C0 * V_men;
+  V_log' = a_log * V_log * (1 - V_log / b_log) - C0 * V_log;
+  V_lin' = a_lin * V_lin / (V_lin + b_lin) - C0 * V_lin;
+  V_surf' = a_surf * V_surf / ((V_surf + b_surf) ^ 3) - C0 * V_surf;
+  V_gomp' = a_gomp * V_gomp * ln(b_gomp / (V_gomp + c_gomp)) - C0 * V_gomp;
+  V_bert' = a_bert * (V_bert ^ (2.0/3.0)) - b_bert * V_bert - C0 * V_bert;
+
+  //// Species initializations:
+  V_exp = 250;
+  V_men = 250;
+  V_log = 250;
+  V_lin = 250;
+  V_surf = 250;
+  V_gomp = 250;
+  V_bert = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a_exp = 0.0262;
+  a_men = 0.286;
+  b_men = 0.616;
+  a_log = 0.0370;
+  b_log = 2000;
+  a_lin = 58.7;
+  b_lin = 1690;
+  a_surf = 0.265;
+  b_surf = 506;
+  a_gomp = 0.279;
+  b_gomp = 13900;
+  c_gomp = 12000;
+  a_bert = 0.306;
+  b_bert = 0.0119;
+  C0 = 0;
+
+  //// Other declarations:
+  const a_exp, a_men, b_men, a_log, b_log, a_lin, b_lin, a_surf, b_surf, a_gomp, b_gomp, c_gomp, a_bert, b_bert, C0;
+
+  //// Display Names:
+  body is "simulation space";
+  V_exp is "Tumor volume (Exponential model)";
+  V_men is "Tumor volume (Mendelsohn model)";
+  V_log is "Tumor volume (Logistic model)";
+  V_lin is "Tumor volume (Linear model)";
+  V_surf is "Tumor volume (Surface model)";
+  V_gomp is "Tumor volume (Gompertz model)";
+  V_bert is "Tumor volume (Bertalanffy model)";
+  a_exp is "Exponential growth rate";
+  a_men is "Mendelsohn growth rate";
+  b_men is "Mendelsohn exponent";
+  a_log is "Logistic growth rate";
+  b_log is "Logistic carrying capacity";
+  a_lin is "Linear growth rate";
+  b_lin is "Linear half-saturation volume";
+  a_surf is "Surface growth parameter";
+  b_surf is "Surface half-saturation volume";
+  a_gomp is "Gompertz growth rate";
+  b_gomp is "Gompertz upper asymptote parameter";
+  c_gomp is "Gompertz lower asymptote parameter";
+  a_bert is "Bertalanffy surface growth coefficient";
+  b_bert is "Bertalanffy loss rate";
+  C0 is "Chemotherapy kill rate";
+
+end

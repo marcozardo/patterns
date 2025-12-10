@@ -1,0 +1,87 @@
+model *Muller2008_Reduced_MAPK_Model()
+
+  //// Compartments and Species:
+  compartment cell;
+  species F in cell, M in cell, C in cell, B in cell, E in cell;
+  species $FGF in cell, $MSH in cell;
+
+  //// Rate Rules:
+  F' = kf_act*FGF*(1 - F) - kf_deact*F;
+  M' = km_act*MSH*(1 - M) - km_deact*M;
+  C' = (kc_act_F*F + kc_act_B*B + kc_act_E*E)*(C_total - C) - (kc_deact + kc_inh_M*M)*C;
+  B' = (kb_act_F*F + kb_act_C*C + kb_act_E*E)*(B_total - B) - (kb_deact + kb_inh_M*M + kb_inh_C*C)*B;
+  E' = (ke_act_C*C + ke_act_B*B)*(E_total - E) - ke_deact*E;
+
+  //// Events:
+  // simulation_case: 1=FGF only, 2=MSH only, 3=MSH then FGF
+  E0: at(time >= 0 and simulation_case == 1): FGF = 1;
+  E1: at(time >= 5 and simulation_case == 1): FGF = 0;
+  E2: at(time >= 0 and simulation_case == 2): MSH = 1;
+  E3: at(time >= 5 and simulation_case == 2): MSH = 0;
+  E4: at(time >= 0 and simulation_case == 3): MSH = 1;
+  E5: at(time >= 5 and simulation_case == 3): MSH = 0, FGF = 1;
+  E6: at(time >= 10 and simulation_case == 3): FGF = 0;
+
+  //// Species initializations:
+  F = 0;
+  M = 0;
+  C = 0;
+  B = 0;
+  E = 0;
+  FGF = 0;
+  MSH = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Rate constants for receptor activation/deactivation
+  kf_act = 10;
+  kf_deact = 10;
+  km_act = 10;
+  km_deact = 10;
+
+  // Total protein amounts (fractional units)
+  C_total = 1;
+  B_total = 1;
+  E_total = 1;
+
+  // C-Raf activation rate constants
+  kc_act_F = 0.5;
+  kc_act_B = 0.3;
+  kc_act_E = 0.2;
+  kc_deact = 0.1;
+  kc_inh_M = 2.0;  // strong inhibition by active MC1R
+
+  // B-Raf activation rate constants
+  kb_act_F = 0.5;
+  kb_act_C = 0.4;
+  kb_act_E = 0.2;
+  kb_deact = 0.1;
+  kb_inh_M = 0.5;  // inhibition by active MC1R
+  kb_inh_C = 0.5;  // inhibition by active C-Raf
+
+  // MAPK1,2 activation rate constants
+  ke_act_C = 0.4;
+  ke_act_B = 0.4;
+  ke_deact = 0.2;
+
+  // Simulation case selector (1, 2, or 3)
+  simulation_case = 1;
+
+  //// Other declarations:
+  var F, M, C, B, E, FGF, MSH, simulation_case;
+  const kf_act, kf_deact, km_act, km_deact, C_total, B_total, E_total, kc_act_F, kc_act_B, kc_act_E, kc_deact, kc_inh_M, kb_act_F, kb_act_C, kb_act_E, kb_deact, kb_inh_M, kb_inh_C, ke_act_C, ke_act_B, ke_deact;
+
+  //// Display Names:
+  cell is "Cell";
+  F is "Active FGFR";
+  M is "Active MC1R";
+  C is "Active C-Raf";
+  B is "Active B-Raf";
+  E is "Active MAPK1,2";
+  FGF is "FGF ligand";
+  MSH is "MSH ligand";
+  simulation_case is "Simulation case (1=FGF,2=MSH,3=MSH->FGF)";
+
+end

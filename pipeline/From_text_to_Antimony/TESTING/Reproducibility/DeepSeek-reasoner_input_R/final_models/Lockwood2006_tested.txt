@@ -1,0 +1,96 @@
+model *Lockwood2006_CI1017_PKPD()
+
+  //// Compartments and Species:
+  compartment central, peripheral;
+  species A_Depot, A_Central in central, A_Peripheral in peripheral;
+
+  //// Assignment Rules:
+  C_central := A_Central / Vc;
+  ADAS_placebo := (beta_p * Keq_p / (Keq_p - Kel_p)) * (exp(-Kel_p * time) - exp(-Keq_p * time));
+  ADAS_drug := Emax_U * (C_effect^N / (EC50_agonist^N + C_effect^N) - C_effect^N / (IC50_antagonist^N + C_effect^N));
+  ADAS_disease := alpha * time;
+  ADAS_total := S0 + ADAS_disease + ADAS_placebo + ADAS_drug;
+
+  //// Rate Rules:
+  C_effect' = k1e * C_central - k2e * C_effect;
+
+  //// Reactions:
+  J_abs: A_Depot -> A_Central; ka * A_Depot;
+  J_elim: A_Central -> ; (CL/Vc) * A_Central;
+  J_dist1: A_Central -> A_Peripheral; (Q/Vc) * A_Central;
+  J_dist2: A_Peripheral -> A_Central; (Q/Vp) * A_Peripheral;
+
+  //// Events:
+  E1: at time >= tlag: A_Depot = A_Depot + Dose;
+
+  //// Species initializations:
+  A_Depot = 0;
+  A_Central = 0;
+  A_Peripheral = 0;
+
+  //// Compartment initializations:
+  central = 172;  # volume of central compartment (L)
+  peripheral = 222; # volume of peripheral compartment (L)
+
+  //// Variable initializations:
+  S0 = 30;
+  alpha = 0.0164/24; # ADAS-Cog per hour
+  beta_p = -3;
+  Keq_p = ln(2)/144; # per hour (t1/2eqp=6 days=144 hours)
+  Kel_p = ln(2)/168; # per hour (t1/2elp=7 days=168 hours)
+  Emax_U = -6;
+  EC50_agonist = 0.018; # mg/L (converted from 18 ng/mL)
+  IC50_antagonist = 0.038; # mg/L (converted from 38 ng/mL)
+  N = 3;
+  k2e = ln(2)/384; # per hour (t1/2eqa=16 days=384 hours)
+  k1e = k2e;
+  ka = 4.81; # per hour
+  CL = 94.5; # L/h
+  Vc = 172; # L
+  Q = 31.8; # L/h
+  Vp = 222; # L
+  tlag = 0.322; # hours
+  Dose = 25; # mg
+  C_effect = 0; # effect compartment concentration (mg/L)
+
+  //// Other declarations:
+  var C_central, ADAS_placebo, ADAS_drug, ADAS_disease, ADAS_total, C_effect;
+  const S0, alpha, beta_p, Keq_p, Kel_p, Emax_U, EC50_agonist, IC50_antagonist, N, k1e, k2e, ka, CL, Vc, Q, Vp, tlag, Dose;
+
+  //// Unit definitions:
+  unit time_unit = hour;
+  unit concentration = mg/liter;
+  unit ADAS_unit = dimensionless;
+
+  //// Display Names:
+  central is "Central compartment (plasma)";
+  peripheral is "Peripheral compartment";
+  A_Depot is "Drug amount at absorption site";
+  A_Central is "CI-1017 amount in central compartment";
+  A_Peripheral is "CI-1017 amount in peripheral compartment";
+  C_central is "CI-1017 plasma concentration";
+  C_effect is "CI-1017 effect site concentration";
+  ADAS_placebo is "Placebo effect on ADAS-Cog";
+  ADAS_drug is "Drug effect on ADAS-Cog";
+  ADAS_disease is "Disease progression effect on ADAS-Cog";
+  ADAS_total is "Total ADAS-Cog score";
+  S0 is "Baseline ADAS-Cog score";
+  alpha is "Disease progression rate (ADAS-Cog per hour)";
+  beta_p is "Placebo effect magnitude";
+  Keq_p is "Placebo effect onset rate constant";
+  Kel_p is "Placebo effect offset rate constant";
+  Emax_U is "Maximum drug effect (U-shaped model)";
+  EC50_agonist is "Agonist EC50 (mg/L)";
+  IC50_antagonist is "Antagonist IC50 (mg/L)";
+  N is "Hill coefficient";
+  k1e is "Effect compartment rate constant (into)";
+  k2e is "Effect compartment rate constant (out of)";
+  ka is "Absorption rate constant";
+  CL is "Clearance";
+  Vc is "Volume of central compartment";
+  Q is "Inter-compartmental clearance";
+  Vp is "Volume of peripheral compartment";
+  tlag is "Lag time for absorption";
+  Dose is "Dose of CI-1017";
+
+end

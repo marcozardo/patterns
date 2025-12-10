@@ -1,0 +1,128 @@
+model *Heldt2018_Proliferation_Quiescence_Decision()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $GF in cell, $Damage in cell;
+  species Rb in cell, E2F in cell, CycE in cell, CycA in cell, Cdk2 in cell;
+  species CycE_Cdk2 in cell, CycA_Cdk2 in cell, p21 in cell, Emi1 in cell;
+  species Cdh1 in cell, aRC in cell, p53 in cell, Skp2 in cell, Cdt2 in cell;
+  species Rb_p in cell, E2F_Rb in cell, CycE_Cdk2_p21 in cell, CycA_Cdk2_p21 in cell, Emi1_Cdh1 in cell;
+
+  //// Assignment Rules:
+  GF := 1;
+  Damage := piecewise(1, (time >= 2) && (time <= 7), 0);
+
+  //// Rate Rules:
+  Rb' = k_dephospho * Rb_p - (k_phospho_GF*GF + k_phospho_E*CycE_Cdk2 + k_phospho_A*CycA_Cdk2) * Rb;
+  Rb_p' = (k_phospho_GF*GF + k_phospho_E*CycE_Cdk2 + k_phospho_A*CycA_Cdk2) * Rb - k_dephospho * Rb_p;
+  E2F' = k_synth_E2F * E2F - k_degr_E2F * E2F - kon_E2F_Rb * E2F * Rb + koff_E2F_Rb * E2F_Rb;
+  E2F_Rb' = kon_E2F_Rb * E2F * Rb - koff_E2F_Rb * E2F_Rb;
+  CycE' = k_synth_CycE * E2F - k_degr_CycE * CycE - kf_E * CycE * Cdk2 + kr_E * CycE_Cdk2;
+  CycA' = k_synth_CycA * E2F - k_degr_CycA * Cdh1 * CycA - kf_A * CycA * Cdk2 + kr_A * CycA_Cdk2;
+  Cdk2' = -kf_E * CycE * Cdk2 + kr_E * CycE_Cdk2 - kf_A * CycA * Cdk2 + kr_A * CycA_Cdk2;
+  CycE_Cdk2' = kf_E * CycE * Cdk2 - kr_E * CycE_Cdk2 - kf_inh * CycE_Cdk2 * p21 + kr_inh * CycE_Cdk2_p21;
+  CycA_Cdk2' = kf_A * CycA * Cdk2 - kr_A * CycA_Cdk2 - kf_inh * CycA_Cdk2 * p21 + kr_inh * CycA_Cdk2_p21;
+  CycE_Cdk2_p21' = kf_inh * CycE_Cdk2 * p21 - kr_inh * CycE_Cdk2_p21;
+  CycA_Cdk2_p21' = kf_inh * CycA_Cdk2 * p21 - kr_inh * CycA_Cdk2_p21;
+  p21' = k_synth_p21 * p53 - (k_degr_Skp2*Skp2 + k_degr_Cdt2*Cdt2) * p21 - kf_inh * (CycE_Cdk2 + CycA_Cdk2) * p21 + kr_inh * (CycE_Cdk2_p21 + CycA_Cdk2_p21);
+  Emi1' = k_synth_Emi1 * E2F - k_degr_Emi1 * Emi1 - kf_Emi1 * Emi1 * Cdh1 + kr_Emi1 * Emi1_Cdh1;
+  Cdh1' = -kf_Emi1 * Emi1 * Cdh1 + kr_Emi1 * Emi1_Cdh1;
+  Emi1_Cdh1' = kf_Emi1 * Emi1 * Cdh1 - kr_Emi1 * Emi1_Cdh1;
+  aRC' = k_act_aRC * (CycE_Cdk2 + CycA_Cdk2) - k_degr_aRC * aRC;
+  p53' = k_act_p53 * Damage - k_degr_p53 * p53;
+  Skp2' = 0;
+  Cdt2' = k_act_Cdt2 * aRC - k_degr_Cdt2 * Cdt2;
+
+  //// Reactions:
+
+  //// Events:
+
+  //// Species initializations:
+  Rb = 1;
+  Rb_p = 0;
+  E2F = 0.1;
+  E2F_Rb = 0;
+  CycE = 0;
+  CycA = 0;
+  Cdk2 = 1;
+  CycE_Cdk2 = 0;
+  CycA_Cdk2 = 0;
+  CycE_Cdk2_p21 = 0;
+  CycA_Cdk2_p21 = 0;
+  p21 = 0;
+  Emi1 = 0;
+  Cdh1 = 1;
+  Emi1_Cdh1 = 0;
+  aRC = 0;
+  p53 = 0;
+  Skp2 = 1;
+  Cdt2 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_phospho_GF = 1;
+  k_phospho_E = 1;
+  k_phospho_A = 1;
+  k_dephospho = 0.1;
+  k_synth_E2F = 0.5;
+  k_degr_E2F = 0.1;
+  kon_E2F_Rb = 10;
+  koff_E2F_Rb = 1;
+  k_synth_CycE = 0.5;
+  k_degr_CycE = 0.1;
+  k_synth_CycA = 0.5;
+  k_degr_CycA = 1;
+  kf_E = 10;
+  kr_E = 1;
+  kf_A = 10;
+  kr_A = 1;
+  kf_inh = 10;
+  kr_inh = 1;
+  k_synth_p21 = 1;
+  k_degr_Skp2 = 0.5;
+  k_degr_Cdt2 = 0.5;
+  k_synth_Emi1 = 0.5;
+  k_degr_Emi1 = 0.1;
+  kf_Emi1 = 10;
+  kr_Emi1 = 1;
+  k_act_aRC = 1;
+  k_degr_aRC = 0.1;
+  k_act_p53 = 1;
+  k_degr_p53 = 0.1;
+  k_act_Cdt2 = 1;
+
+  //// Other declarations:
+  var GF, Damage;
+  const cell, k_phospho_GF, k_phospho_E, k_phospho_A, k_dephospho, k_synth_E2F, k_degr_E2F, kon_E2F_Rb, koff_E2F_Rb, k_synth_CycE, k_degr_CycE, k_synth_CycA, k_degr_CycA, kf_E, kr_E, kf_A, kr_A, kf_inh, kr_inh, k_synth_p21, k_degr_Skp2, k_degr_Cdt2, k_synth_Emi1, k_degr_Emi1, kf_Emi1, kr_Emi1, k_act_aRC, k_degr_aRC, k_act_p53, k_degr_p53, k_act_Cdt2;
+
+  //// Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+
+  //// Display Names:
+  cell is "Cell";
+  GF is "Growth Factor";
+  Damage is "DNA Damage";
+  Rb is "Rb (hypophosphorylated)";
+  Rb_p is "Rb (hyperphosphorylated)";
+  E2F is "Active E2F";
+  E2F_Rb is "E2F-Rb complex";
+  CycE is "Cyclin E";
+  CycA is "Cyclin A";
+  Cdk2 is "Cdk2";
+  CycE_Cdk2 is "Cyclin E:Cdk2 complex";
+  CycA_Cdk2 is "Cyclin A:Cdk2 complex";
+  CycE_Cdk2_p21 is "Cyclin E:Cdk2:p21 complex";
+  CycA_Cdk2_p21 is "Cyclin A:Cdk2:p21 complex";
+  p21 is "p21 (Cip1/Waf1)";
+  Emi1 is "Emi1";
+  Cdh1 is "Active APC/Cdh1";
+  Emi1_Cdh1 is "Emi1:Cdh1 complex";
+  aRC is "Active replication complexes";
+  p53 is "Active p53";
+  Skp2 is "Skp2";
+  Cdt2 is "Cdt2";
+
+end

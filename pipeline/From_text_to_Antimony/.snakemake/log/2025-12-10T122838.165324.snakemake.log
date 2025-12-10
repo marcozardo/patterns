@@ -1,0 +1,2684 @@
+Building DAG of jobs...
+Using shell: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                              count
+-----------------------------  -------
+AAFE_Evaluation                     12
+aggregate_all                        1
+all                                  1
+conversion                          12
+evaluation_table                     1
+first_Evaluation                    12
+first_aggregation                    1
+first_correction                    12
+first_decode                        12
+first_simulation                    12
+fourth_aggregation                   1
+merge_generated                      1
+merge_originals                      1
+parameter_comparison                 1
+second_Evaluation                   12
+second_aggregation                   1
+second_correction                   12
+second_decode                       12
+second_simulation                   12
+semantic_evaluation_generated       12
+semantic_evaluation_originals       12
+third_Evaluation                    12
+third_aggregation                    1
+third_decode                        12
+third_simulation                    12
+total                              190
+
+Select jobs to execute...
+
+[Wed Dec 10 12:28:39 2025]
+rule conversion:
+    input: workdir/input_R/Diedrichs2018.md
+    output: workdir/fabric_output/Diedrichs2018.txt
+    jobid: 3
+    reason: Missing output files: workdir/fabric_output/Diedrichs2018.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:30:56 2025]
+Finished job 3.
+1 of 190 steps (1%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:30:56 2025]
+rule conversion:
+    input: workdir/input_R/Muller2008.md
+    output: workdir/fabric_output/Muller2008.txt
+    jobid: 9
+    reason: Missing output files: workdir/fabric_output/Muller2008.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:34:10 2025]
+Finished job 9.
+2 of 190 steps (1%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:34:10 2025]
+rule conversion:
+    input: workdir/input_R/Khajanchi2015.md
+    output: workdir/fabric_output/Khajanchi2015.txt
+    jobid: 6
+    reason: Missing output files: workdir/fabric_output/Khajanchi2015.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:36:05 2025]
+Finished job 6.
+3 of 190 steps (2%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:36:05 2025]
+rule conversion:
+    input: workdir/input_R/Lockwood2006.md
+    output: workdir/fabric_output/Lockwood2006.txt
+    jobid: 7
+    reason: Missing output files: workdir/fabric_output/Lockwood2006.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:41:30 2025]
+Finished job 7.
+4 of 190 steps (2%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:41:30 2025]
+rule conversion:
+    input: workdir/input_R/Moore2004.md
+    output: workdir/fabric_output/Moore2004.txt
+    jobid: 8
+    reason: Missing output files: workdir/fabric_output/Moore2004.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:44:50 2025]
+Finished job 8.
+5 of 190 steps (3%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:44:50 2025]
+rule conversion:
+    input: workdir/input_R/Wodarz2007.md
+    output: workdir/fabric_output/Wodarz2007.txt
+    jobid: 12
+    reason: Missing output files: workdir/fabric_output/Wodarz2007.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:50:00 2025]
+Finished job 12.
+6 of 190 steps (3%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:50:00 2025]
+rule conversion:
+    input: workdir/input_R/Heldt2018.md
+    output: workdir/fabric_output/Heldt2018.txt
+    jobid: 4
+    reason: Missing output files: workdir/fabric_output/Heldt2018.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:53:54 2025]
+Finished job 4.
+7 of 190 steps (4%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:53:54 2025]
+rule conversion:
+    input: workdir/input_R/Murphy2016.md
+    output: workdir/fabric_output/Murphy2016.txt
+    jobid: 10
+    reason: Missing output files: workdir/fabric_output/Murphy2016.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 12:58:50 2025]
+Finished job 10.
+8 of 190 steps (4%) done
+Select jobs to execute...
+
+[Wed Dec 10 12:58:50 2025]
+rule conversion:
+    input: workdir/input_R/Jiao2018.md
+    output: workdir/fabric_output/Jiao2018.txt
+    jobid: 5
+    reason: Missing output files: workdir/fabric_output/Jiao2018.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:01:57 2025]
+Finished job 5.
+9 of 190 steps (5%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:01:57 2025]
+rule conversion:
+    input: workdir/input_R/Aguda1999.md
+    output: workdir/fabric_output/Aguda1999.txt
+    jobid: 2
+    reason: Missing output files: workdir/fabric_output/Aguda1999.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:09:32 2025]
+Finished job 2.
+10 of 190 steps (5%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:09:32 2025]
+rule conversion:
+    input: workdir/input_R/Admon2017.md
+    output: workdir/fabric_output/Admon2017.txt
+    jobid: 1
+    reason: Missing output files: workdir/fabric_output/Admon2017.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:13:03 2025]
+Finished job 1.
+11 of 190 steps (6%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:13:03 2025]
+rule conversion:
+    input: workdir/input_R/Vargas2012.md
+    output: workdir/fabric_output/Vargas2012.txt
+    jobid: 11
+    reason: Missing output files: workdir/fabric_output/Vargas2012.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:44 2025]
+Finished job 11.
+12 of 190 steps (6%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:44 2025]
+rule first_decode:
+    input: workdir/fabric_output/Wodarz2007.txt
+    output: workdir/decoded/Wodarz2007_1dec.txt
+    jobid: 108
+    reason: Missing output files: workdir/decoded/Wodarz2007_1dec.txt; Input files updated by another job: workdir/fabric_output/Wodarz2007.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:44 2025]
+Finished job 108.
+13 of 190 steps (7%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:44 2025]
+rule first_decode:
+    input: workdir/fabric_output/Heldt2018.txt
+    output: workdir/decoded/Heldt2018_1dec.txt
+    jobid: 44
+    reason: Missing output files: workdir/decoded/Heldt2018_1dec.txt; Input files updated by another job: workdir/fabric_output/Heldt2018.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:44 2025]
+Finished job 44.
+14 of 190 steps (7%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:44 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orHeldt2018.txt
+    output: workdir/semantic_evaluation/original/Heldt2018_O_semantic.csv
+    jobid: 180
+    reason: Missing output files: workdir/semantic_evaluation/original/Heldt2018_O_semantic.csv
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:46 2025]
+Finished job 180.
+15 of 190 steps (8%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:46 2025]
+rule first_decode:
+    input: workdir/fabric_output/Diedrichs2018.txt
+    output: workdir/decoded/Diedrichs2018_1dec.txt
+    jobid: 36
+    reason: Missing output files: workdir/decoded/Diedrichs2018_1dec.txt; Input files updated by another job: workdir/fabric_output/Diedrichs2018.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:46 2025]
+Finished job 36.
+16 of 190 steps (8%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:46 2025]
+rule first_decode:
+    input: workdir/fabric_output/Aguda1999.txt
+    output: workdir/decoded/Aguda1999_1dec.txt
+    jobid: 28
+    reason: Missing output files: workdir/decoded/Aguda1999_1dec.txt; Input files updated by another job: workdir/fabric_output/Aguda1999.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:46 2025]
+Finished job 28.
+17 of 190 steps (9%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:46 2025]
+rule first_decode:
+    input: workdir/fabric_output/Murphy2016.txt
+    output: workdir/decoded/Murphy2016_1dec.txt
+    jobid: 92
+    reason: Missing output files: workdir/decoded/Murphy2016_1dec.txt; Input files updated by another job: workdir/fabric_output/Murphy2016.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:46 2025]
+Finished job 92.
+18 of 190 steps (9%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:46 2025]
+rule first_simulation:
+    input: workdir/decoded/Wodarz2007_1dec.txt
+    output: workdir/Error/Wodarz2007_1er.txt, workdir/simulated/Wodarz2007_1S.txt
+    jobid: 107
+    reason: Missing output files: workdir/simulated/Wodarz2007_1S.txt, workdir/Error/Wodarz2007_1er.txt; Input files updated by another job: workdir/decoded/Wodarz2007_1dec.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:17:50 2025]
+Finished job 107.
+19 of 190 steps (10%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:17:50 2025]
+rule first_correction:
+    input: workdir/simulated/Wodarz2007_1S.txt, workdir/Error/Wodarz2007_1er.txt
+    output: workdir/corrected/Wodarz2007_1C.txt
+    jobid: 106
+    reason: Missing output files: workdir/corrected/Wodarz2007_1C.txt; Input files updated by another job: workdir/simulated/Wodarz2007_1S.txt, workdir/Error/Wodarz2007_1er.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:36 2025]
+Finished job 106.
+20 of 190 steps (11%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:36 2025]
+rule second_decode:
+    input: workdir/corrected/Wodarz2007_1C.txt
+    output: workdir/decoded/Wodarz2007_2dec.txt
+    jobid: 105
+    reason: Missing output files: workdir/decoded/Wodarz2007_2dec.txt; Input files updated by another job: workdir/corrected/Wodarz2007_1C.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:36 2025]
+Finished job 105.
+21 of 190 steps (11%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:36 2025]
+rule first_decode:
+    input: workdir/fabric_output/Jiao2018.txt
+    output: workdir/decoded/Jiao2018_1dec.txt
+    jobid: 52
+    reason: Missing output files: workdir/decoded/Jiao2018_1dec.txt; Input files updated by another job: workdir/fabric_output/Jiao2018.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:36 2025]
+Finished job 52.
+22 of 190 steps (12%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:36 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orAguda1999.txt
+    output: workdir/semantic_evaluation/original/Aguda1999_O_semantic.csv
+    jobid: 178
+    reason: Missing output files: workdir/semantic_evaluation/original/Aguda1999_O_semantic.csv
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:38 2025]
+Finished job 178.
+23 of 190 steps (12%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:38 2025]
+rule first_decode:
+    input: workdir/fabric_output/Lockwood2006.txt
+    output: workdir/decoded/Lockwood2006_1dec.txt
+    jobid: 68
+    reason: Missing output files: workdir/decoded/Lockwood2006_1dec.txt; Input files updated by another job: workdir/fabric_output/Lockwood2006.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:38 2025]
+Finished job 68.
+24 of 190 steps (13%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:38 2025]
+rule first_decode:
+    input: workdir/fabric_output/Vargas2012.txt
+    output: workdir/decoded/Vargas2012_1dec.txt
+    jobid: 100
+    reason: Missing output files: workdir/decoded/Vargas2012_1dec.txt; Input files updated by another job: workdir/fabric_output/Vargas2012.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:38 2025]
+Finished job 100.
+25 of 190 steps (13%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:38 2025]
+rule first_decode:
+    input: workdir/fabric_output/Muller2008.txt
+    output: workdir/decoded/Muller2008_1dec.txt
+    jobid: 84
+    reason: Missing output files: workdir/decoded/Muller2008_1dec.txt; Input files updated by another job: workdir/fabric_output/Muller2008.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:38 2025]
+Finished job 84.
+26 of 190 steps (14%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:38 2025]
+rule first_simulation:
+    input: workdir/decoded/Heldt2018_1dec.txt
+    output: workdir/Error/Heldt2018_1er.txt, workdir/simulated/Heldt2018_1S.txt
+    jobid: 43
+    reason: Missing output files: workdir/simulated/Heldt2018_1S.txt, workdir/Error/Heldt2018_1er.txt; Input files updated by another job: workdir/decoded/Heldt2018_1dec.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:23:41 2025]
+Finished job 43.
+27 of 190 steps (14%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:23:41 2025]
+rule first_correction:
+    input: workdir/simulated/Heldt2018_1S.txt, workdir/Error/Heldt2018_1er.txt
+    output: workdir/corrected/Heldt2018_1C.txt
+    jobid: 42
+    reason: Missing output files: workdir/corrected/Heldt2018_1C.txt; Input files updated by another job: workdir/simulated/Heldt2018_1S.txt, workdir/Error/Heldt2018_1er.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:25:44 2025]
+Finished job 42.
+28 of 190 steps (15%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:25:44 2025]
+rule second_decode:
+    input: workdir/corrected/Heldt2018_1C.txt
+    output: workdir/decoded/Heldt2018_2dec.txt
+    jobid: 41
+    reason: Missing output files: workdir/decoded/Heldt2018_2dec.txt; Input files updated by another job: workdir/corrected/Heldt2018_1C.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:25:44 2025]
+Finished job 41.
+29 of 190 steps (15%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:25:44 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orDiedrichs2018.txt
+    output: workdir/semantic_evaluation/original/Diedrichs2018_O_semantic.csv
+    jobid: 179
+    reason: Missing output files: workdir/semantic_evaluation/original/Diedrichs2018_O_semantic.csv
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:25:46 2025]
+Finished job 179.
+30 of 190 steps (16%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:25:46 2025]
+rule second_simulation:
+    input: workdir/decoded/Wodarz2007_2dec.txt
+    output: workdir/Error/Wodarz2007_2er.txt, workdir/simulated/Wodarz2007_2S.txt
+    jobid: 104
+    reason: Missing output files: workdir/Error/Wodarz2007_2er.txt, workdir/simulated/Wodarz2007_2S.txt; Input files updated by another job: workdir/decoded/Wodarz2007_2dec.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:25:49 2025]
+Finished job 104.
+31 of 190 steps (16%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:25:49 2025]
+rule second_correction:
+    input: workdir/simulated/Wodarz2007_2S.txt, workdir/Error/Wodarz2007_2er.txt
+    output: workdir/corrected/Wodarz2007_2C.txt
+    jobid: 103
+    reason: Missing output files: workdir/corrected/Wodarz2007_2C.txt; Input files updated by another job: workdir/Error/Wodarz2007_2er.txt, workdir/simulated/Wodarz2007_2S.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:27:36 2025]
+Finished job 103.
+32 of 190 steps (17%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:27:36 2025]
+rule third_decode:
+    input: workdir/corrected/Wodarz2007_2C.txt
+    output: workdir/decoded/Wodarz2007_3dec.txt
+    jobid: 102
+    reason: Missing output files: workdir/decoded/Wodarz2007_3dec.txt; Input files updated by another job: workdir/corrected/Wodarz2007_2C.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:27:36 2025]
+Finished job 102.
+33 of 190 steps (17%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:27:36 2025]
+rule third_simulation:
+    input: workdir/decoded/Wodarz2007_3dec.txt
+    output: workdir/Error/Wodarz2007_3er.txt, workdir/final_models/Wodarz2007_tested.txt
+    jobid: 101
+    reason: Missing output files: workdir/Error/Wodarz2007_3er.txt, workdir/final_models/Wodarz2007_tested.txt; Input files updated by another job: workdir/decoded/Wodarz2007_3dec.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:27:39 2025]
+Finished job 101.
+34 of 190 steps (18%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:27:39 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Wodarz2007_tested.txt, workdir/expected_output_R/orWodarz2007.txt
+    output: workdir/Evaluation/AAFE/genWodarz2007_vs_orWodarz2007_aafe_eval.csv, workdir/Sim_plots/genWodarz2007_vs_orWodarz2007.png
+    jobid: 161
+    reason: Missing output files: workdir/Evaluation/AAFE/genWodarz2007_vs_orWodarz2007_aafe_eval.csv; Input files updated by another job: workdir/final_models/Wodarz2007_tested.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:27:42 2025]
+Finished job 161.
+35 of 190 steps (18%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:27:42 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Wodarz2007_tested.txt
+    output: workdir/semantic_evaluation/generated/Wodarz2007_G_semantic.csv
+    jobid: 175
+    reason: Missing output files: workdir/semantic_evaluation/generated/Wodarz2007_G_semantic.csv; Input files updated by another job: workdir/final_models/Wodarz2007_tested.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:27:44 2025]
+Finished job 175.
+36 of 190 steps (19%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:27:44 2025]
+rule first_simulation:
+    input: workdir/decoded/Diedrichs2018_1dec.txt
+    output: workdir/Error/Diedrichs2018_1er.txt, workdir/simulated/Diedrichs2018_1S.txt
+    jobid: 35
+    reason: Missing output files: workdir/simulated/Diedrichs2018_1S.txt, workdir/Error/Diedrichs2018_1er.txt; Input files updated by another job: workdir/decoded/Diedrichs2018_1dec.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:27:47 2025]
+Finished job 35.
+37 of 190 steps (19%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:27:47 2025]
+rule first_correction:
+    input: workdir/simulated/Diedrichs2018_1S.txt, workdir/Error/Diedrichs2018_1er.txt
+    output: workdir/corrected/Diedrichs2018_1C.txt
+    jobid: 34
+    reason: Missing output files: workdir/corrected/Diedrichs2018_1C.txt; Input files updated by another job: workdir/Error/Diedrichs2018_1er.txt, workdir/simulated/Diedrichs2018_1S.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:31:27 2025]
+Finished job 34.
+38 of 190 steps (20%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:31:27 2025]
+rule second_decode:
+    input: workdir/corrected/Diedrichs2018_1C.txt
+    output: workdir/decoded/Diedrichs2018_2dec.txt
+    jobid: 33
+    reason: Missing output files: workdir/decoded/Diedrichs2018_2dec.txt; Input files updated by another job: workdir/corrected/Diedrichs2018_1C.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:31:27 2025]
+Finished job 33.
+39 of 190 steps (21%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:31:27 2025]
+rule first_simulation:
+    input: workdir/decoded/Aguda1999_1dec.txt
+    output: workdir/Error/Aguda1999_1er.txt, workdir/simulated/Aguda1999_1S.txt
+    jobid: 27
+    reason: Missing output files: workdir/simulated/Aguda1999_1S.txt, workdir/Error/Aguda1999_1er.txt; Input files updated by another job: workdir/decoded/Aguda1999_1dec.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:31:29 2025]
+Finished job 27.
+40 of 190 steps (21%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:31:29 2025]
+rule first_correction:
+    input: workdir/simulated/Aguda1999_1S.txt, workdir/Error/Aguda1999_1er.txt
+    output: workdir/corrected/Aguda1999_1C.txt
+    jobid: 26
+    reason: Missing output files: workdir/corrected/Aguda1999_1C.txt; Input files updated by another job: workdir/simulated/Aguda1999_1S.txt, workdir/Error/Aguda1999_1er.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:35:14 2025]
+Finished job 26.
+41 of 190 steps (22%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:35:14 2025]
+rule second_decode:
+    input: workdir/corrected/Aguda1999_1C.txt
+    output: workdir/decoded/Aguda1999_2dec.txt
+    jobid: 25
+    reason: Missing output files: workdir/decoded/Aguda1999_2dec.txt; Input files updated by another job: workdir/corrected/Aguda1999_1C.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:35:14 2025]
+Finished job 25.
+42 of 190 steps (22%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:35:14 2025]
+rule second_simulation:
+    input: workdir/decoded/Aguda1999_2dec.txt
+    output: workdir/Error/Aguda1999_2er.txt, workdir/simulated/Aguda1999_2S.txt
+    jobid: 24
+    reason: Missing output files: workdir/Error/Aguda1999_2er.txt, workdir/simulated/Aguda1999_2S.txt; Input files updated by another job: workdir/decoded/Aguda1999_2dec.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:35:17 2025]
+Finished job 24.
+43 of 190 steps (23%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:35:17 2025]
+rule second_correction:
+    input: workdir/simulated/Aguda1999_2S.txt, workdir/Error/Aguda1999_2er.txt
+    output: workdir/corrected/Aguda1999_2C.txt
+    jobid: 23
+    reason: Missing output files: workdir/corrected/Aguda1999_2C.txt; Input files updated by another job: workdir/Error/Aguda1999_2er.txt, workdir/simulated/Aguda1999_2S.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:36:58 2025]
+Finished job 23.
+44 of 190 steps (23%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:36:58 2025]
+rule third_decode:
+    input: workdir/corrected/Aguda1999_2C.txt
+    output: workdir/decoded/Aguda1999_3dec.txt
+    jobid: 22
+    reason: Missing output files: workdir/decoded/Aguda1999_3dec.txt; Input files updated by another job: workdir/corrected/Aguda1999_2C.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:36:58 2025]
+Finished job 22.
+45 of 190 steps (24%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:36:58 2025]
+rule third_simulation:
+    input: workdir/decoded/Aguda1999_3dec.txt
+    output: workdir/Error/Aguda1999_3er.txt, workdir/final_models/Aguda1999_tested.txt
+    jobid: 21
+    reason: Missing output files: workdir/Error/Aguda1999_3er.txt, workdir/final_models/Aguda1999_tested.txt; Input files updated by another job: workdir/decoded/Aguda1999_3dec.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:37:01 2025]
+Finished job 21.
+46 of 190 steps (24%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:37:01 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Aguda1999_tested.txt, workdir/expected_output_R/orAguda1999.txt
+    output: workdir/Evaluation/AAFE/genAguda1999_vs_orAguda1999_aafe_eval.csv, workdir/Sim_plots/genAguda1999_vs_orAguda1999.png
+    jobid: 151
+    reason: Missing output files: workdir/Evaluation/AAFE/genAguda1999_vs_orAguda1999_aafe_eval.csv; Input files updated by another job: workdir/final_models/Aguda1999_tested.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:37:06 2025]
+Finished job 151.
+47 of 190 steps (25%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:37:06 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Aguda1999_tested.txt
+    output: workdir/semantic_evaluation/generated/Aguda1999_G_semantic.csv
+    jobid: 165
+    reason: Missing output files: workdir/semantic_evaluation/generated/Aguda1999_G_semantic.csv; Input files updated by another job: workdir/final_models/Aguda1999_tested.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:37:08 2025]
+Finished job 165.
+48 of 190 steps (25%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:37:08 2025]
+rule second_simulation:
+    input: workdir/decoded/Diedrichs2018_2dec.txt
+    output: workdir/Error/Diedrichs2018_2er.txt, workdir/simulated/Diedrichs2018_2S.txt
+    jobid: 32
+    reason: Missing output files: workdir/simulated/Diedrichs2018_2S.txt, workdir/Error/Diedrichs2018_2er.txt; Input files updated by another job: workdir/decoded/Diedrichs2018_2dec.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:37:11 2025]
+Finished job 32.
+49 of 190 steps (26%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:37:11 2025]
+rule second_correction:
+    input: workdir/simulated/Diedrichs2018_2S.txt, workdir/Error/Diedrichs2018_2er.txt
+    output: workdir/corrected/Diedrichs2018_2C.txt
+    jobid: 31
+    reason: Missing output files: workdir/corrected/Diedrichs2018_2C.txt; Input files updated by another job: workdir/simulated/Diedrichs2018_2S.txt, workdir/Error/Diedrichs2018_2er.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:40:05 2025]
+Finished job 31.
+50 of 190 steps (26%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:40:05 2025]
+rule third_decode:
+    input: workdir/corrected/Diedrichs2018_2C.txt
+    output: workdir/decoded/Diedrichs2018_3dec.txt
+    jobid: 30
+    reason: Missing output files: workdir/decoded/Diedrichs2018_3dec.txt; Input files updated by another job: workdir/corrected/Diedrichs2018_2C.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:40:05 2025]
+Finished job 30.
+51 of 190 steps (27%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:40:05 2025]
+rule third_simulation:
+    input: workdir/decoded/Diedrichs2018_3dec.txt
+    output: workdir/Error/Diedrichs2018_3er.txt, workdir/final_models/Diedrichs2018_tested.txt
+    jobid: 29
+    reason: Missing output files: workdir/final_models/Diedrichs2018_tested.txt, workdir/Error/Diedrichs2018_3er.txt; Input files updated by another job: workdir/decoded/Diedrichs2018_3dec.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:40:08 2025]
+Finished job 29.
+52 of 190 steps (27%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:40:08 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Diedrichs2018_tested.txt, workdir/expected_output_R/orDiedrichs2018.txt
+    output: workdir/Evaluation/AAFE/genDiedrichs2018_vs_orDiedrichs2018_aafe_eval.csv, workdir/Sim_plots/genDiedrichs2018_vs_orDiedrichs2018.png
+    jobid: 152
+    reason: Missing output files: workdir/Evaluation/AAFE/genDiedrichs2018_vs_orDiedrichs2018_aafe_eval.csv; Input files updated by another job: workdir/final_models/Diedrichs2018_tested.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:40:12 2025]
+Finished job 152.
+53 of 190 steps (28%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:40:12 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Diedrichs2018_tested.txt
+    output: workdir/semantic_evaluation/generated/Diedrichs2018_G_semantic.csv
+    jobid: 166
+    reason: Missing output files: workdir/semantic_evaluation/generated/Diedrichs2018_G_semantic.csv; Input files updated by another job: workdir/final_models/Diedrichs2018_tested.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:40:14 2025]
+Finished job 166.
+54 of 190 steps (28%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:40:14 2025]
+rule second_simulation:
+    input: workdir/decoded/Heldt2018_2dec.txt
+    output: workdir/Error/Heldt2018_2er.txt, workdir/simulated/Heldt2018_2S.txt
+    jobid: 40
+    reason: Missing output files: workdir/Error/Heldt2018_2er.txt, workdir/simulated/Heldt2018_2S.txt; Input files updated by another job: workdir/decoded/Heldt2018_2dec.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:40:17 2025]
+Finished job 40.
+55 of 190 steps (29%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:40:17 2025]
+rule second_correction:
+    input: workdir/simulated/Heldt2018_2S.txt, workdir/Error/Heldt2018_2er.txt
+    output: workdir/corrected/Heldt2018_2C.txt
+    jobid: 39
+    reason: Missing output files: workdir/corrected/Heldt2018_2C.txt; Input files updated by another job: workdir/Error/Heldt2018_2er.txt, workdir/simulated/Heldt2018_2S.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:42:10 2025]
+Finished job 39.
+56 of 190 steps (29%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:42:10 2025]
+rule third_decode:
+    input: workdir/corrected/Heldt2018_2C.txt
+    output: workdir/decoded/Heldt2018_3dec.txt
+    jobid: 38
+    reason: Missing output files: workdir/decoded/Heldt2018_3dec.txt; Input files updated by another job: workdir/corrected/Heldt2018_2C.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:42:10 2025]
+Finished job 38.
+57 of 190 steps (30%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:42:10 2025]
+rule third_simulation:
+    input: workdir/decoded/Heldt2018_3dec.txt
+    output: workdir/Error/Heldt2018_3er.txt, workdir/final_models/Heldt2018_tested.txt
+    jobid: 37
+    reason: Missing output files: workdir/final_models/Heldt2018_tested.txt, workdir/Error/Heldt2018_3er.txt; Input files updated by another job: workdir/decoded/Heldt2018_3dec.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:42:13 2025]
+Finished job 37.
+58 of 190 steps (31%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:42:13 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Heldt2018_tested.txt, workdir/expected_output_R/orHeldt2018.txt
+    output: workdir/Evaluation/AAFE/genHeldt2018_vs_orHeldt2018_aafe_eval.csv, workdir/Sim_plots/genHeldt2018_vs_orHeldt2018.png
+    jobid: 153
+    reason: Missing output files: workdir/Evaluation/AAFE/genHeldt2018_vs_orHeldt2018_aafe_eval.csv; Input files updated by another job: workdir/final_models/Heldt2018_tested.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:42:19 2025]
+Finished job 153.
+59 of 190 steps (31%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:42:19 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Heldt2018_tested.txt
+    output: workdir/semantic_evaluation/generated/Heldt2018_G_semantic.csv
+    jobid: 167
+    reason: Missing output files: workdir/semantic_evaluation/generated/Heldt2018_G_semantic.csv; Input files updated by another job: workdir/final_models/Heldt2018_tested.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:42:20 2025]
+Finished job 167.
+60 of 190 steps (32%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:42:20 2025]
+rule first_simulation:
+    input: workdir/decoded/Murphy2016_1dec.txt
+    output: workdir/Error/Murphy2016_1er.txt, workdir/simulated/Murphy2016_1S.txt
+    jobid: 91
+    reason: Missing output files: workdir/Error/Murphy2016_1er.txt, workdir/simulated/Murphy2016_1S.txt; Input files updated by another job: workdir/decoded/Murphy2016_1dec.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:42:23 2025]
+Finished job 91.
+61 of 190 steps (32%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:42:23 2025]
+rule first_correction:
+    input: workdir/simulated/Murphy2016_1S.txt, workdir/Error/Murphy2016_1er.txt
+    output: workdir/corrected/Murphy2016_1C.txt
+    jobid: 90
+    reason: Missing output files: workdir/corrected/Murphy2016_1C.txt; Input files updated by another job: workdir/Error/Murphy2016_1er.txt, workdir/simulated/Murphy2016_1S.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:43:29 2025]
+Finished job 90.
+62 of 190 steps (33%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:43:29 2025]
+rule second_decode:
+    input: workdir/corrected/Murphy2016_1C.txt
+    output: workdir/decoded/Murphy2016_2dec.txt
+    jobid: 89
+    reason: Missing output files: workdir/decoded/Murphy2016_2dec.txt; Input files updated by another job: workdir/corrected/Murphy2016_1C.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:43:29 2025]
+Finished job 89.
+63 of 190 steps (33%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:43:29 2025]
+rule first_decode:
+    input: workdir/fabric_output/Khajanchi2015.txt
+    output: workdir/decoded/Khajanchi2015_1dec.txt
+    jobid: 60
+    reason: Missing output files: workdir/decoded/Khajanchi2015_1dec.txt; Input files updated by another job: workdir/fabric_output/Khajanchi2015.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:43:29 2025]
+Finished job 60.
+64 of 190 steps (34%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:43:29 2025]
+rule first_decode:
+    input: workdir/fabric_output/Admon2017.txt
+    output: workdir/decoded/Admon2017_1dec.txt
+    jobid: 20
+    reason: Missing output files: workdir/decoded/Admon2017_1dec.txt; Input files updated by another job: workdir/fabric_output/Admon2017.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:43:29 2025]
+Finished job 20.
+65 of 190 steps (34%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:43:29 2025]
+rule first_decode:
+    input: workdir/fabric_output/Moore2004.txt
+    output: workdir/decoded/Moore2004_1dec.txt
+    jobid: 76
+    reason: Missing output files: workdir/decoded/Moore2004_1dec.txt; Input files updated by another job: workdir/fabric_output/Moore2004.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:43:29 2025]
+Finished job 76.
+66 of 190 steps (35%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:43:29 2025]
+rule first_simulation:
+    input: workdir/decoded/Jiao2018_1dec.txt
+    output: workdir/Error/Jiao2018_1er.txt, workdir/simulated/Jiao2018_1S.txt
+    jobid: 51
+    reason: Missing output files: workdir/simulated/Jiao2018_1S.txt, workdir/Error/Jiao2018_1er.txt; Input files updated by another job: workdir/decoded/Jiao2018_1dec.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:43:32 2025]
+Finished job 51.
+67 of 190 steps (35%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:43:32 2025]
+rule first_correction:
+    input: workdir/simulated/Jiao2018_1S.txt, workdir/Error/Jiao2018_1er.txt
+    output: workdir/corrected/Jiao2018_1C.txt
+    jobid: 50
+    reason: Missing output files: workdir/corrected/Jiao2018_1C.txt; Input files updated by another job: workdir/simulated/Jiao2018_1S.txt, workdir/Error/Jiao2018_1er.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:44:51 2025]
+Finished job 50.
+68 of 190 steps (36%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:44:51 2025]
+rule second_decode:
+    input: workdir/corrected/Jiao2018_1C.txt
+    output: workdir/decoded/Jiao2018_2dec.txt
+    jobid: 49
+    reason: Missing output files: workdir/decoded/Jiao2018_2dec.txt; Input files updated by another job: workdir/corrected/Jiao2018_1C.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:44:51 2025]
+Finished job 49.
+69 of 190 steps (36%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:44:51 2025]
+rule first_simulation:
+    input: workdir/decoded/Lockwood2006_1dec.txt
+    output: workdir/Error/Lockwood2006_1er.txt, workdir/simulated/Lockwood2006_1S.txt
+    jobid: 67
+    reason: Missing output files: workdir/simulated/Lockwood2006_1S.txt, workdir/Error/Lockwood2006_1er.txt; Input files updated by another job: workdir/decoded/Lockwood2006_1dec.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:44:54 2025]
+Finished job 67.
+70 of 190 steps (37%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:44:54 2025]
+rule first_correction:
+    input: workdir/simulated/Lockwood2006_1S.txt, workdir/Error/Lockwood2006_1er.txt
+    output: workdir/corrected/Lockwood2006_1C.txt
+    jobid: 66
+    reason: Missing output files: workdir/corrected/Lockwood2006_1C.txt; Input files updated by another job: workdir/simulated/Lockwood2006_1S.txt, workdir/Error/Lockwood2006_1er.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:46:04 2025]
+Finished job 66.
+71 of 190 steps (37%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:46:04 2025]
+rule second_decode:
+    input: workdir/corrected/Lockwood2006_1C.txt
+    output: workdir/decoded/Lockwood2006_2dec.txt
+    jobid: 65
+    reason: Missing output files: workdir/decoded/Lockwood2006_2dec.txt; Input files updated by another job: workdir/corrected/Lockwood2006_1C.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:46:04 2025]
+Finished job 65.
+72 of 190 steps (38%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:46:04 2025]
+rule second_simulation:
+    input: workdir/decoded/Lockwood2006_2dec.txt
+    output: workdir/Error/Lockwood2006_2er.txt, workdir/simulated/Lockwood2006_2S.txt
+    jobid: 64
+    reason: Missing output files: workdir/Error/Lockwood2006_2er.txt, workdir/simulated/Lockwood2006_2S.txt; Input files updated by another job: workdir/decoded/Lockwood2006_2dec.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:46:07 2025]
+Finished job 64.
+73 of 190 steps (38%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:46:07 2025]
+rule second_correction:
+    input: workdir/simulated/Lockwood2006_2S.txt, workdir/Error/Lockwood2006_2er.txt
+    output: workdir/corrected/Lockwood2006_2C.txt
+    jobid: 63
+    reason: Missing output files: workdir/corrected/Lockwood2006_2C.txt; Input files updated by another job: workdir/Error/Lockwood2006_2er.txt, workdir/simulated/Lockwood2006_2S.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:48:59 2025]
+Finished job 63.
+74 of 190 steps (39%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:48:59 2025]
+rule third_decode:
+    input: workdir/corrected/Lockwood2006_2C.txt
+    output: workdir/decoded/Lockwood2006_3dec.txt
+    jobid: 62
+    reason: Missing output files: workdir/decoded/Lockwood2006_3dec.txt; Input files updated by another job: workdir/corrected/Lockwood2006_2C.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:48:59 2025]
+Finished job 62.
+75 of 190 steps (39%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:48:59 2025]
+rule third_simulation:
+    input: workdir/decoded/Lockwood2006_3dec.txt
+    output: workdir/Error/Lockwood2006_3er.txt, workdir/final_models/Lockwood2006_tested.txt
+    jobid: 61
+    reason: Missing output files: workdir/Error/Lockwood2006_3er.txt, workdir/final_models/Lockwood2006_tested.txt; Input files updated by another job: workdir/decoded/Lockwood2006_3dec.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:02 2025]
+Finished job 61.
+76 of 190 steps (40%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:02 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Lockwood2006_tested.txt, workdir/expected_output_R/orLockwood2006.txt
+    output: workdir/Evaluation/AAFE/genLockwood2006_vs_orLockwood2006_aafe_eval.csv, workdir/Sim_plots/genLockwood2006_vs_orLockwood2006.png
+    jobid: 156
+    reason: Missing output files: workdir/Evaluation/AAFE/genLockwood2006_vs_orLockwood2006_aafe_eval.csv; Input files updated by another job: workdir/final_models/Lockwood2006_tested.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:05 2025]
+Finished job 156.
+77 of 190 steps (41%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:05 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Lockwood2006_tested.txt
+    output: workdir/semantic_evaluation/generated/Lockwood2006_G_semantic.csv
+    jobid: 170
+    reason: Missing output files: workdir/semantic_evaluation/generated/Lockwood2006_G_semantic.csv; Input files updated by another job: workdir/final_models/Lockwood2006_tested.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:07 2025]
+Finished job 170.
+78 of 190 steps (41%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:07 2025]
+rule first_simulation:
+    input: workdir/decoded/Vargas2012_1dec.txt
+    output: workdir/Error/Vargas2012_1er.txt, workdir/simulated/Vargas2012_1S.txt
+    jobid: 99
+    reason: Missing output files: workdir/Error/Vargas2012_1er.txt, workdir/simulated/Vargas2012_1S.txt; Input files updated by another job: workdir/decoded/Vargas2012_1dec.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:10 2025]
+Finished job 99.
+79 of 190 steps (42%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:10 2025]
+rule first_correction:
+    input: workdir/simulated/Vargas2012_1S.txt, workdir/Error/Vargas2012_1er.txt
+    output: workdir/corrected/Vargas2012_1C.txt
+    jobid: 98
+    reason: Missing output files: workdir/corrected/Vargas2012_1C.txt; Input files updated by another job: workdir/Error/Vargas2012_1er.txt, workdir/simulated/Vargas2012_1S.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:55 2025]
+Finished job 98.
+80 of 190 steps (42%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:55 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orMuller2008.txt
+    output: workdir/semantic_evaluation/original/Muller2008_O_semantic.csv
+    jobid: 185
+    reason: Missing output files: workdir/semantic_evaluation/original/Muller2008_O_semantic.csv
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:57 2025]
+Finished job 185.
+81 of 190 steps (43%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:57 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orVargas2012.txt
+    output: workdir/semantic_evaluation/original/Vargas2012_O_semantic.csv
+    jobid: 187
+    reason: Missing output files: workdir/semantic_evaluation/original/Vargas2012_O_semantic.csv
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:49:59 2025]
+Finished job 187.
+82 of 190 steps (43%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:49:59 2025]
+rule first_simulation:
+    input: workdir/decoded/Muller2008_1dec.txt
+    output: workdir/Error/Muller2008_1er.txt, workdir/simulated/Muller2008_1S.txt
+    jobid: 83
+    reason: Missing output files: workdir/simulated/Muller2008_1S.txt, workdir/Error/Muller2008_1er.txt; Input files updated by another job: workdir/decoded/Muller2008_1dec.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:50:02 2025]
+Finished job 83.
+83 of 190 steps (44%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:50:02 2025]
+rule first_correction:
+    input: workdir/simulated/Muller2008_1S.txt, workdir/Error/Muller2008_1er.txt
+    output: workdir/corrected/Muller2008_1C.txt
+    jobid: 82
+    reason: Missing output files: workdir/corrected/Muller2008_1C.txt; Input files updated by another job: workdir/Error/Muller2008_1er.txt, workdir/simulated/Muller2008_1S.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:52:34 2025]
+Finished job 82.
+84 of 190 steps (44%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:52:34 2025]
+rule second_decode:
+    input: workdir/corrected/Muller2008_1C.txt
+    output: workdir/decoded/Muller2008_2dec.txt
+    jobid: 81
+    reason: Missing output files: workdir/decoded/Muller2008_2dec.txt; Input files updated by another job: workdir/corrected/Muller2008_1C.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:52:34 2025]
+Finished job 81.
+85 of 190 steps (45%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:52:34 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orMoore2004.txt
+    output: workdir/semantic_evaluation/original/Moore2004_O_semantic.csv
+    jobid: 184
+    reason: Missing output files: workdir/semantic_evaluation/original/Moore2004_O_semantic.csv
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:52:36 2025]
+Finished job 184.
+86 of 190 steps (45%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:52:36 2025]
+rule second_simulation:
+    input: workdir/decoded/Jiao2018_2dec.txt
+    output: workdir/Error/Jiao2018_2er.txt, workdir/simulated/Jiao2018_2S.txt
+    jobid: 48
+    reason: Missing output files: workdir/simulated/Jiao2018_2S.txt, workdir/Error/Jiao2018_2er.txt; Input files updated by another job: workdir/decoded/Jiao2018_2dec.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:52:39 2025]
+Finished job 48.
+87 of 190 steps (46%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:52:39 2025]
+rule second_correction:
+    input: workdir/simulated/Jiao2018_2S.txt, workdir/Error/Jiao2018_2er.txt
+    output: workdir/corrected/Jiao2018_2C.txt
+    jobid: 47
+    reason: Missing output files: workdir/corrected/Jiao2018_2C.txt; Input files updated by another job: workdir/simulated/Jiao2018_2S.txt, workdir/Error/Jiao2018_2er.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:22 2025]
+Finished job 47.
+88 of 190 steps (46%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:22 2025]
+rule third_decode:
+    input: workdir/corrected/Jiao2018_2C.txt
+    output: workdir/decoded/Jiao2018_3dec.txt
+    jobid: 46
+    reason: Missing output files: workdir/decoded/Jiao2018_3dec.txt; Input files updated by another job: workdir/corrected/Jiao2018_2C.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:22 2025]
+Finished job 46.
+89 of 190 steps (47%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:22 2025]
+rule third_simulation:
+    input: workdir/decoded/Jiao2018_3dec.txt
+    output: workdir/Error/Jiao2018_3er.txt, workdir/final_models/Jiao2018_tested.txt
+    jobid: 45
+    reason: Missing output files: workdir/Error/Jiao2018_3er.txt, workdir/final_models/Jiao2018_tested.txt; Input files updated by another job: workdir/decoded/Jiao2018_3dec.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:25 2025]
+Finished job 45.
+90 of 190 steps (47%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:25 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Jiao2018_tested.txt, workdir/expected_output_R/orJiao2018.txt
+    output: workdir/Evaluation/AAFE/genJiao2018_vs_orJiao2018_aafe_eval.csv, workdir/Sim_plots/genJiao2018_vs_orJiao2018.png
+    jobid: 154
+    reason: Missing output files: workdir/Evaluation/AAFE/genJiao2018_vs_orJiao2018_aafe_eval.csv; Input files updated by another job: workdir/final_models/Jiao2018_tested.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:29 2025]
+Finished job 154.
+91 of 190 steps (48%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:29 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Jiao2018_tested.txt
+    output: workdir/semantic_evaluation/generated/Jiao2018_G_semantic.csv
+    jobid: 168
+    reason: Missing output files: workdir/semantic_evaluation/generated/Jiao2018_G_semantic.csv; Input files updated by another job: workdir/final_models/Jiao2018_tested.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:31 2025]
+Finished job 168.
+92 of 190 steps (48%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:31 2025]
+rule second_decode:
+    input: workdir/corrected/Vargas2012_1C.txt
+    output: workdir/decoded/Vargas2012_2dec.txt
+    jobid: 97
+    reason: Missing output files: workdir/decoded/Vargas2012_2dec.txt; Input files updated by another job: workdir/corrected/Vargas2012_1C.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:31 2025]
+Finished job 97.
+93 of 190 steps (49%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:31 2025]
+rule second_simulation:
+    input: workdir/decoded/Muller2008_2dec.txt
+    output: workdir/Error/Muller2008_2er.txt, workdir/simulated/Muller2008_2S.txt
+    jobid: 80
+    reason: Missing output files: workdir/Error/Muller2008_2er.txt, workdir/simulated/Muller2008_2S.txt; Input files updated by another job: workdir/decoded/Muller2008_2dec.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:53:34 2025]
+Finished job 80.
+94 of 190 steps (49%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:53:34 2025]
+rule second_correction:
+    input: workdir/simulated/Muller2008_2S.txt, workdir/Error/Muller2008_2er.txt
+    output: workdir/corrected/Muller2008_2C.txt
+    jobid: 79
+    reason: Missing output files: workdir/corrected/Muller2008_2C.txt; Input files updated by another job: workdir/Error/Muller2008_2er.txt, workdir/simulated/Muller2008_2S.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:11 2025]
+Finished job 79.
+95 of 190 steps (50%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:11 2025]
+rule third_decode:
+    input: workdir/corrected/Muller2008_2C.txt
+    output: workdir/decoded/Muller2008_3dec.txt
+    jobid: 78
+    reason: Missing output files: workdir/decoded/Muller2008_3dec.txt; Input files updated by another job: workdir/corrected/Muller2008_2C.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:11 2025]
+Finished job 78.
+96 of 190 steps (51%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:11 2025]
+rule third_simulation:
+    input: workdir/decoded/Muller2008_3dec.txt
+    output: workdir/Error/Muller2008_3er.txt, workdir/final_models/Muller2008_tested.txt
+    jobid: 77
+    reason: Missing output files: workdir/Error/Muller2008_3er.txt, workdir/final_models/Muller2008_tested.txt; Input files updated by another job: workdir/decoded/Muller2008_3dec.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:14 2025]
+Finished job 77.
+97 of 190 steps (51%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:14 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Muller2008_tested.txt, workdir/expected_output_R/orMuller2008.txt
+    output: workdir/Evaluation/AAFE/genMuller2008_vs_orMuller2008_aafe_eval.csv, workdir/Sim_plots/genMuller2008_vs_orMuller2008.png
+    jobid: 158
+    reason: Missing output files: workdir/Evaluation/AAFE/genMuller2008_vs_orMuller2008_aafe_eval.csv; Input files updated by another job: workdir/final_models/Muller2008_tested.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:18 2025]
+Finished job 158.
+98 of 190 steps (52%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:18 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Muller2008_tested.txt
+    output: workdir/semantic_evaluation/generated/Muller2008_G_semantic.csv
+    jobid: 172
+    reason: Missing output files: workdir/semantic_evaluation/generated/Muller2008_G_semantic.csv; Input files updated by another job: workdir/final_models/Muller2008_tested.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:20 2025]
+Finished job 172.
+99 of 190 steps (52%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:20 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orAdmon2017.txt
+    output: workdir/semantic_evaluation/original/Admon2017_O_semantic.csv
+    jobid: 177
+    reason: Missing output files: workdir/semantic_evaluation/original/Admon2017_O_semantic.csv
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:21 2025]
+Finished job 177.
+100 of 190 steps (53%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:21 2025]
+rule second_simulation:
+    input: workdir/decoded/Murphy2016_2dec.txt
+    output: workdir/Error/Murphy2016_2er.txt, workdir/simulated/Murphy2016_2S.txt
+    jobid: 88
+    reason: Missing output files: workdir/Error/Murphy2016_2er.txt, workdir/simulated/Murphy2016_2S.txt; Input files updated by another job: workdir/decoded/Murphy2016_2dec.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:55:24 2025]
+Finished job 88.
+101 of 190 steps (53%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:55:24 2025]
+rule second_correction:
+    input: workdir/simulated/Murphy2016_2S.txt, workdir/Error/Murphy2016_2er.txt
+    output: workdir/corrected/Murphy2016_2C.txt
+    jobid: 87
+    reason: Missing output files: workdir/corrected/Murphy2016_2C.txt; Input files updated by another job: workdir/Error/Murphy2016_2er.txt, workdir/simulated/Murphy2016_2S.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:39 2025]
+Finished job 87.
+102 of 190 steps (54%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:39 2025]
+rule third_decode:
+    input: workdir/corrected/Murphy2016_2C.txt
+    output: workdir/decoded/Murphy2016_3dec.txt
+    jobid: 86
+    reason: Missing output files: workdir/decoded/Murphy2016_3dec.txt; Input files updated by another job: workdir/corrected/Murphy2016_2C.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:39 2025]
+Finished job 86.
+103 of 190 steps (54%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:39 2025]
+rule third_simulation:
+    input: workdir/decoded/Murphy2016_3dec.txt
+    output: workdir/Error/Murphy2016_3er.txt, workdir/final_models/Murphy2016_tested.txt
+    jobid: 85
+    reason: Missing output files: workdir/final_models/Murphy2016_tested.txt, workdir/Error/Murphy2016_3er.txt; Input files updated by another job: workdir/decoded/Murphy2016_3dec.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:42 2025]
+Finished job 85.
+104 of 190 steps (55%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:42 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Murphy2016_tested.txt, workdir/expected_output_R/orMurphy2016.txt
+    output: workdir/Evaluation/AAFE/genMurphy2016_vs_orMurphy2016_aafe_eval.csv, workdir/Sim_plots/genMurphy2016_vs_orMurphy2016.png
+    jobid: 159
+    reason: Missing output files: workdir/Evaluation/AAFE/genMurphy2016_vs_orMurphy2016_aafe_eval.csv; Input files updated by another job: workdir/final_models/Murphy2016_tested.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:46 2025]
+Finished job 159.
+105 of 190 steps (55%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:46 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Murphy2016_tested.txt
+    output: workdir/semantic_evaluation/generated/Murphy2016_G_semantic.csv
+    jobid: 173
+    reason: Missing output files: workdir/semantic_evaluation/generated/Murphy2016_G_semantic.csv; Input files updated by another job: workdir/final_models/Murphy2016_tested.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:48 2025]
+Finished job 173.
+106 of 190 steps (56%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:48 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orLockwood2006.txt
+    output: workdir/semantic_evaluation/original/Lockwood2006_O_semantic.csv
+    jobid: 183
+    reason: Missing output files: workdir/semantic_evaluation/original/Lockwood2006_O_semantic.csv
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:49 2025]
+Finished job 183.
+107 of 190 steps (56%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:49 2025]
+rule first_simulation:
+    input: workdir/decoded/Khajanchi2015_1dec.txt
+    output: workdir/Error/Khajanchi2015_1er.txt, workdir/simulated/Khajanchi2015_1S.txt
+    jobid: 59
+    reason: Missing output files: workdir/Error/Khajanchi2015_1er.txt, workdir/simulated/Khajanchi2015_1S.txt; Input files updated by another job: workdir/decoded/Khajanchi2015_1dec.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:57:52 2025]
+Finished job 59.
+108 of 190 steps (57%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:57:52 2025]
+rule first_correction:
+    input: workdir/simulated/Khajanchi2015_1S.txt, workdir/Error/Khajanchi2015_1er.txt
+    output: workdir/corrected/Khajanchi2015_1C.txt
+    jobid: 58
+    reason: Missing output files: workdir/corrected/Khajanchi2015_1C.txt; Input files updated by another job: workdir/Error/Khajanchi2015_1er.txt, workdir/simulated/Khajanchi2015_1S.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:59:47 2025]
+Finished job 58.
+109 of 190 steps (57%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:59:47 2025]
+rule second_decode:
+    input: workdir/corrected/Khajanchi2015_1C.txt
+    output: workdir/decoded/Khajanchi2015_2dec.txt
+    jobid: 57
+    reason: Missing output files: workdir/decoded/Khajanchi2015_2dec.txt; Input files updated by another job: workdir/corrected/Khajanchi2015_1C.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:59:47 2025]
+Finished job 57.
+110 of 190 steps (58%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:59:47 2025]
+rule first_simulation:
+    input: workdir/decoded/Admon2017_1dec.txt
+    output: workdir/Error/Admon2017_1er.txt, workdir/simulated/Admon2017_1S.txt
+    jobid: 19
+    reason: Missing output files: workdir/simulated/Admon2017_1S.txt, workdir/Error/Admon2017_1er.txt; Input files updated by another job: workdir/decoded/Admon2017_1dec.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 13:59:50 2025]
+Finished job 19.
+111 of 190 steps (58%) done
+Select jobs to execute...
+
+[Wed Dec 10 13:59:50 2025]
+rule first_correction:
+    input: workdir/simulated/Admon2017_1S.txt, workdir/Error/Admon2017_1er.txt
+    output: workdir/corrected/Admon2017_1C.txt
+    jobid: 18
+    reason: Missing output files: workdir/corrected/Admon2017_1C.txt; Input files updated by another job: workdir/simulated/Admon2017_1S.txt, workdir/Error/Admon2017_1er.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:01:56 2025]
+Finished job 18.
+112 of 190 steps (59%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:01:56 2025]
+rule second_decode:
+    input: workdir/corrected/Admon2017_1C.txt
+    output: workdir/decoded/Admon2017_2dec.txt
+    jobid: 17
+    reason: Missing output files: workdir/decoded/Admon2017_2dec.txt; Input files updated by another job: workdir/corrected/Admon2017_1C.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:01:56 2025]
+Finished job 17.
+113 of 190 steps (59%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:01:56 2025]
+rule second_simulation:
+    input: workdir/decoded/Admon2017_2dec.txt
+    output: workdir/Error/Admon2017_2er.txt, workdir/simulated/Admon2017_2S.txt
+    jobid: 16
+    reason: Missing output files: workdir/Error/Admon2017_2er.txt, workdir/simulated/Admon2017_2S.txt; Input files updated by another job: workdir/decoded/Admon2017_2dec.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:01:59 2025]
+Finished job 16.
+114 of 190 steps (60%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:01:59 2025]
+rule second_correction:
+    input: workdir/simulated/Admon2017_2S.txt, workdir/Error/Admon2017_2er.txt
+    output: workdir/corrected/Admon2017_2C.txt
+    jobid: 15
+    reason: Missing output files: workdir/corrected/Admon2017_2C.txt; Input files updated by another job: workdir/Error/Admon2017_2er.txt, workdir/simulated/Admon2017_2S.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:03:24 2025]
+Finished job 15.
+115 of 190 steps (61%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:03:24 2025]
+rule third_decode:
+    input: workdir/corrected/Admon2017_2C.txt
+    output: workdir/decoded/Admon2017_3dec.txt
+    jobid: 14
+    reason: Missing output files: workdir/decoded/Admon2017_3dec.txt; Input files updated by another job: workdir/corrected/Admon2017_2C.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:03:24 2025]
+Finished job 14.
+116 of 190 steps (61%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:03:24 2025]
+rule third_simulation:
+    input: workdir/decoded/Admon2017_3dec.txt
+    output: workdir/Error/Admon2017_3er.txt, workdir/final_models/Admon2017_tested.txt
+    jobid: 13
+    reason: Missing output files: workdir/Error/Admon2017_3er.txt, workdir/final_models/Admon2017_tested.txt; Input files updated by another job: workdir/decoded/Admon2017_3dec.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:03:27 2025]
+Finished job 13.
+117 of 190 steps (62%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:03:27 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Admon2017_tested.txt, workdir/expected_output_R/orAdmon2017.txt
+    output: workdir/Evaluation/AAFE/genAdmon2017_vs_orAdmon2017_aafe_eval.csv, workdir/Sim_plots/genAdmon2017_vs_orAdmon2017.png
+    jobid: 150
+    reason: Missing output files: workdir/Evaluation/AAFE/genAdmon2017_vs_orAdmon2017_aafe_eval.csv; Input files updated by another job: workdir/final_models/Admon2017_tested.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:03:31 2025]
+Finished job 150.
+118 of 190 steps (62%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:03:31 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Admon2017_tested.txt
+    output: workdir/semantic_evaluation/generated/Admon2017_G_semantic.csv
+    jobid: 164
+    reason: Missing output files: workdir/semantic_evaluation/generated/Admon2017_G_semantic.csv; Input files updated by another job: workdir/final_models/Admon2017_tested.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:03:33 2025]
+Finished job 164.
+119 of 190 steps (63%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:03:33 2025]
+rule first_simulation:
+    input: workdir/decoded/Moore2004_1dec.txt
+    output: workdir/Error/Moore2004_1er.txt, workdir/simulated/Moore2004_1S.txt
+    jobid: 75
+    reason: Missing output files: workdir/simulated/Moore2004_1S.txt, workdir/Error/Moore2004_1er.txt; Input files updated by another job: workdir/decoded/Moore2004_1dec.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:03:36 2025]
+Finished job 75.
+120 of 190 steps (63%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:03:36 2025]
+rule first_correction:
+    input: workdir/simulated/Moore2004_1S.txt, workdir/Error/Moore2004_1er.txt
+    output: workdir/corrected/Moore2004_1C.txt
+    jobid: 74
+    reason: Missing output files: workdir/corrected/Moore2004_1C.txt; Input files updated by another job: workdir/simulated/Moore2004_1S.txt, workdir/Error/Moore2004_1er.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:05:09 2025]
+Finished job 74.
+121 of 190 steps (64%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:05:09 2025]
+rule second_decode:
+    input: workdir/corrected/Moore2004_1C.txt
+    output: workdir/decoded/Moore2004_2dec.txt
+    jobid: 73
+    reason: Missing output files: workdir/decoded/Moore2004_2dec.txt; Input files updated by another job: workdir/corrected/Moore2004_1C.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:05:09 2025]
+Finished job 73.
+122 of 190 steps (64%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:05:09 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orJiao2018.txt
+    output: workdir/semantic_evaluation/original/Jiao2018_O_semantic.csv
+    jobid: 181
+    reason: Missing output files: workdir/semantic_evaluation/original/Jiao2018_O_semantic.csv
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:05:11 2025]
+Finished job 181.
+123 of 190 steps (65%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:05:11 2025]
+rule second_simulation:
+    input: workdir/decoded/Moore2004_2dec.txt
+    output: workdir/Error/Moore2004_2er.txt, workdir/simulated/Moore2004_2S.txt
+    jobid: 72
+    reason: Missing output files: workdir/Error/Moore2004_2er.txt, workdir/simulated/Moore2004_2S.txt; Input files updated by another job: workdir/decoded/Moore2004_2dec.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:05:14 2025]
+Finished job 72.
+124 of 190 steps (65%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:05:14 2025]
+rule second_correction:
+    input: workdir/simulated/Moore2004_2S.txt, workdir/Error/Moore2004_2er.txt
+    output: workdir/corrected/Moore2004_2C.txt
+    jobid: 71
+    reason: Missing output files: workdir/corrected/Moore2004_2C.txt; Input files updated by another job: workdir/Error/Moore2004_2er.txt, workdir/simulated/Moore2004_2S.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:11 2025]
+Finished job 71.
+125 of 190 steps (66%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:11 2025]
+rule third_decode:
+    input: workdir/corrected/Moore2004_2C.txt
+    output: workdir/decoded/Moore2004_3dec.txt
+    jobid: 70
+    reason: Missing output files: workdir/decoded/Moore2004_3dec.txt; Input files updated by another job: workdir/corrected/Moore2004_2C.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:11 2025]
+Finished job 70.
+126 of 190 steps (66%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:11 2025]
+rule third_simulation:
+    input: workdir/decoded/Moore2004_3dec.txt
+    output: workdir/Error/Moore2004_3er.txt, workdir/final_models/Moore2004_tested.txt
+    jobid: 69
+    reason: Missing output files: workdir/Error/Moore2004_3er.txt, workdir/final_models/Moore2004_tested.txt; Input files updated by another job: workdir/decoded/Moore2004_3dec.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:14 2025]
+Finished job 69.
+127 of 190 steps (67%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:14 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Moore2004_tested.txt, workdir/expected_output_R/orMoore2004.txt
+    output: workdir/Evaluation/AAFE/genMoore2004_vs_orMoore2004_aafe_eval.csv, workdir/Sim_plots/genMoore2004_vs_orMoore2004.png
+    jobid: 157
+    reason: Missing output files: workdir/Evaluation/AAFE/genMoore2004_vs_orMoore2004_aafe_eval.csv; Input files updated by another job: workdir/final_models/Moore2004_tested.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:18 2025]
+Finished job 157.
+128 of 190 steps (67%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:18 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Moore2004_tested.txt
+    output: workdir/semantic_evaluation/generated/Moore2004_G_semantic.csv
+    jobid: 171
+    reason: Missing output files: workdir/semantic_evaluation/generated/Moore2004_G_semantic.csv; Input files updated by another job: workdir/final_models/Moore2004_tested.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:20 2025]
+Finished job 171.
+129 of 190 steps (68%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:20 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orWodarz2007.txt
+    output: workdir/semantic_evaluation/original/Wodarz2007_O_semantic.csv
+    jobid: 188
+    reason: Missing output files: workdir/semantic_evaluation/original/Wodarz2007_O_semantic.csv
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:21 2025]
+Finished job 188.
+130 of 190 steps (68%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:21 2025]
+rule second_simulation:
+    input: workdir/decoded/Khajanchi2015_2dec.txt
+    output: workdir/Error/Khajanchi2015_2er.txt, workdir/simulated/Khajanchi2015_2S.txt
+    jobid: 56
+    reason: Missing output files: workdir/simulated/Khajanchi2015_2S.txt, workdir/Error/Khajanchi2015_2er.txt; Input files updated by another job: workdir/decoded/Khajanchi2015_2dec.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:07:24 2025]
+Finished job 56.
+131 of 190 steps (69%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:07:24 2025]
+rule second_correction:
+    input: workdir/simulated/Khajanchi2015_2S.txt, workdir/Error/Khajanchi2015_2er.txt
+    output: workdir/corrected/Khajanchi2015_2C.txt
+    jobid: 55
+    reason: Missing output files: workdir/corrected/Khajanchi2015_2C.txt; Input files updated by another job: workdir/simulated/Khajanchi2015_2S.txt, workdir/Error/Khajanchi2015_2er.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:10:06 2025]
+Finished job 55.
+132 of 190 steps (69%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:10:06 2025]
+rule third_decode:
+    input: workdir/corrected/Khajanchi2015_2C.txt
+    output: workdir/decoded/Khajanchi2015_3dec.txt
+    jobid: 54
+    reason: Missing output files: workdir/decoded/Khajanchi2015_3dec.txt; Input files updated by another job: workdir/corrected/Khajanchi2015_2C.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:10:06 2025]
+Finished job 54.
+133 of 190 steps (70%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:10:06 2025]
+rule third_simulation:
+    input: workdir/decoded/Khajanchi2015_3dec.txt
+    output: workdir/Error/Khajanchi2015_3er.txt, workdir/final_models/Khajanchi2015_tested.txt
+    jobid: 53
+    reason: Missing output files: workdir/Error/Khajanchi2015_3er.txt, workdir/final_models/Khajanchi2015_tested.txt; Input files updated by another job: workdir/decoded/Khajanchi2015_3dec.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:10:09 2025]
+Finished job 53.
+134 of 190 steps (71%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:10:09 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Khajanchi2015_tested.txt, workdir/expected_output_R/orKhajanchi2015.txt
+    output: workdir/Evaluation/AAFE/genKhajanchi2015_vs_orKhajanchi2015_aafe_eval.csv, workdir/Sim_plots/genKhajanchi2015_vs_orKhajanchi2015.png
+    jobid: 155
+    reason: Missing output files: workdir/Evaluation/AAFE/genKhajanchi2015_vs_orKhajanchi2015_aafe_eval.csv; Input files updated by another job: workdir/final_models/Khajanchi2015_tested.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:10:12 2025]
+Finished job 155.
+135 of 190 steps (71%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:10:12 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Khajanchi2015_tested.txt
+    output: workdir/semantic_evaluation/generated/Khajanchi2015_G_semantic.csv
+    jobid: 169
+    reason: Missing output files: workdir/semantic_evaluation/generated/Khajanchi2015_G_semantic.csv; Input files updated by another job: workdir/final_models/Khajanchi2015_tested.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:10:14 2025]
+Finished job 169.
+136 of 190 steps (72%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:10:14 2025]
+rule second_simulation:
+    input: workdir/decoded/Vargas2012_2dec.txt
+    output: workdir/Error/Vargas2012_2er.txt, workdir/simulated/Vargas2012_2S.txt
+    jobid: 96
+    reason: Missing output files: workdir/Error/Vargas2012_2er.txt, workdir/simulated/Vargas2012_2S.txt; Input files updated by another job: workdir/decoded/Vargas2012_2dec.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:10:17 2025]
+Finished job 96.
+137 of 190 steps (72%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:10:17 2025]
+rule second_correction:
+    input: workdir/simulated/Vargas2012_2S.txt, workdir/Error/Vargas2012_2er.txt
+    output: workdir/corrected/Vargas2012_2C.txt
+    jobid: 95
+    reason: Missing output files: workdir/corrected/Vargas2012_2C.txt; Input files updated by another job: workdir/Error/Vargas2012_2er.txt, workdir/simulated/Vargas2012_2S.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:14 2025]
+Finished job 95.
+138 of 190 steps (73%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:14 2025]
+rule third_decode:
+    input: workdir/corrected/Vargas2012_2C.txt
+    output: workdir/decoded/Vargas2012_3dec.txt
+    jobid: 94
+    reason: Missing output files: workdir/decoded/Vargas2012_3dec.txt; Input files updated by another job: workdir/corrected/Vargas2012_2C.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:14 2025]
+Finished job 94.
+139 of 190 steps (73%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:14 2025]
+rule third_simulation:
+    input: workdir/decoded/Vargas2012_3dec.txt
+    output: workdir/Error/Vargas2012_3er.txt, workdir/final_models/Vargas2012_tested.txt
+    jobid: 93
+    reason: Missing output files: workdir/Error/Vargas2012_3er.txt, workdir/final_models/Vargas2012_tested.txt; Input files updated by another job: workdir/decoded/Vargas2012_3dec.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:17 2025]
+Finished job 93.
+140 of 190 steps (74%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:17 2025]
+rule AAFE_Evaluation:
+    input: workdir/final_models/Vargas2012_tested.txt, workdir/expected_output_R/orVargas2012.txt
+    output: workdir/Evaluation/AAFE/genVargas2012_vs_orVargas2012_aafe_eval.csv, workdir/Sim_plots/genVargas2012_vs_orVargas2012.png
+    jobid: 160
+    reason: Missing output files: workdir/Evaluation/AAFE/genVargas2012_vs_orVargas2012_aafe_eval.csv; Input files updated by another job: workdir/final_models/Vargas2012_tested.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:21 2025]
+Finished job 160.
+141 of 190 steps (74%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:21 2025]
+rule semantic_evaluation_generated:
+    input: workdir/final_models/Vargas2012_tested.txt
+    output: workdir/semantic_evaluation/generated/Vargas2012_G_semantic.csv
+    jobid: 174
+    reason: Missing output files: workdir/semantic_evaluation/generated/Vargas2012_G_semantic.csv; Input files updated by another job: workdir/final_models/Vargas2012_tested.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:23 2025]
+Finished job 174.
+142 of 190 steps (75%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:23 2025]
+rule merge_generated:
+    input: workdir/semantic_evaluation/generated/Admon2017_G_semantic.csv, workdir/semantic_evaluation/generated/Aguda1999_G_semantic.csv, workdir/semantic_evaluation/generated/Diedrichs2018_G_semantic.csv, workdir/semantic_evaluation/generated/Heldt2018_G_semantic.csv, workdir/semantic_evaluation/generated/Jiao2018_G_semantic.csv, workdir/semantic_evaluation/generated/Khajanchi2015_G_semantic.csv, workdir/semantic_evaluation/generated/Lockwood2006_G_semantic.csv, workdir/semantic_evaluation/generated/Moore2004_G_semantic.csv, workdir/semantic_evaluation/generated/Muller2008_G_semantic.csv, workdir/semantic_evaluation/generated/Murphy2016_G_semantic.csv, workdir/semantic_evaluation/generated/Vargas2012_G_semantic.csv, workdir/semantic_evaluation/generated/Wodarz2007_G_semantic.csv
+    output: workdir/semantic_evaluation/Semantic_Outputs_generated.csv
+    jobid: 163
+    reason: Missing output files: workdir/semantic_evaluation/Semantic_Outputs_generated.csv; Input files updated by another job: workdir/semantic_evaluation/generated/Vargas2012_G_semantic.csv, workdir/semantic_evaluation/generated/Muller2008_G_semantic.csv, workdir/semantic_evaluation/generated/Jiao2018_G_semantic.csv, workdir/semantic_evaluation/generated/Murphy2016_G_semantic.csv, workdir/semantic_evaluation/generated/Moore2004_G_semantic.csv, workdir/semantic_evaluation/generated/Heldt2018_G_semantic.csv, workdir/semantic_evaluation/generated/Admon2017_G_semantic.csv, workdir/semantic_evaluation/generated/Lockwood2006_G_semantic.csv, workdir/semantic_evaluation/generated/Aguda1999_G_semantic.csv, workdir/semantic_evaluation/generated/Wodarz2007_G_semantic.csv, workdir/semantic_evaluation/generated/Khajanchi2015_G_semantic.csv, workdir/semantic_evaluation/generated/Diedrichs2018_G_semantic.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:23 2025]
+Finished job 163.
+143 of 190 steps (75%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:23 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orMurphy2016.txt
+    output: workdir/semantic_evaluation/original/Murphy2016_O_semantic.csv
+    jobid: 186
+    reason: Missing output files: workdir/semantic_evaluation/original/Murphy2016_O_semantic.csv
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:25 2025]
+Finished job 186.
+144 of 190 steps (76%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:25 2025]
+rule semantic_evaluation_originals:
+    input: workdir/expected_output_R/orKhajanchi2015.txt
+    output: workdir/semantic_evaluation/original/Khajanchi2015_O_semantic.csv
+    jobid: 182
+    reason: Missing output files: workdir/semantic_evaluation/original/Khajanchi2015_O_semantic.csv
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:27 2025]
+Finished job 182.
+145 of 190 steps (76%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:27 2025]
+rule merge_originals:
+    input: workdir/semantic_evaluation/original/Admon2017_O_semantic.csv, workdir/semantic_evaluation/original/Aguda1999_O_semantic.csv, workdir/semantic_evaluation/original/Diedrichs2018_O_semantic.csv, workdir/semantic_evaluation/original/Heldt2018_O_semantic.csv, workdir/semantic_evaluation/original/Jiao2018_O_semantic.csv, workdir/semantic_evaluation/original/Khajanchi2015_O_semantic.csv, workdir/semantic_evaluation/original/Lockwood2006_O_semantic.csv, workdir/semantic_evaluation/original/Moore2004_O_semantic.csv, workdir/semantic_evaluation/original/Muller2008_O_semantic.csv, workdir/semantic_evaluation/original/Murphy2016_O_semantic.csv, workdir/semantic_evaluation/original/Vargas2012_O_semantic.csv, workdir/semantic_evaluation/original/Wodarz2007_O_semantic.csv
+    output: workdir/semantic_evaluation/Semantic_Outputs_original.csv
+    jobid: 176
+    reason: Missing output files: workdir/semantic_evaluation/Semantic_Outputs_original.csv; Input files updated by another job: workdir/semantic_evaluation/original/Vargas2012_O_semantic.csv, workdir/semantic_evaluation/original/Admon2017_O_semantic.csv, workdir/semantic_evaluation/original/Aguda1999_O_semantic.csv, workdir/semantic_evaluation/original/Jiao2018_O_semantic.csv, workdir/semantic_evaluation/original/Murphy2016_O_semantic.csv, workdir/semantic_evaluation/original/Muller2008_O_semantic.csv, workdir/semantic_evaluation/original/Lockwood2006_O_semantic.csv, workdir/semantic_evaluation/original/Heldt2018_O_semantic.csv, workdir/semantic_evaluation/original/Khajanchi2015_O_semantic.csv, workdir/semantic_evaluation/original/Moore2004_O_semantic.csv, workdir/semantic_evaluation/original/Diedrichs2018_O_semantic.csv, workdir/semantic_evaluation/original/Wodarz2007_O_semantic.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:27 2025]
+Finished job 176.
+146 of 190 steps (77%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:27 2025]
+rule second_Evaluation:
+    input: workdir/Error/Khajanchi2015_2er.txt
+    output: workdir/Evaluation/second/Khajanchi2015_2eval.csv
+    jobid: 129
+    reason: Missing output files: workdir/Evaluation/second/Khajanchi2015_2eval.csv; Input files updated by another job: workdir/Error/Khajanchi2015_2er.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:28 2025]
+Finished job 129.
+147 of 190 steps (77%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:28 2025]
+rule first_Evaluation:
+    input: workdir/Error/Lockwood2006_1er.txt
+    output: workdir/Evaluation/first/Lockwood2006_1eval.csv
+    jobid: 117
+    reason: Missing output files: workdir/Evaluation/first/Lockwood2006_1eval.csv; Input files updated by another job: workdir/Error/Lockwood2006_1er.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:30 2025]
+Finished job 117.
+148 of 190 steps (78%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:30 2025]
+rule first_Evaluation:
+    input: workdir/Error/Muller2008_1er.txt
+    output: workdir/Evaluation/first/Muller2008_1eval.csv
+    jobid: 119
+    reason: Missing output files: workdir/Evaluation/first/Muller2008_1eval.csv; Input files updated by another job: workdir/Error/Muller2008_1er.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:32 2025]
+Finished job 119.
+149 of 190 steps (78%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:32 2025]
+rule first_Evaluation:
+    input: workdir/Error/Murphy2016_1er.txt
+    output: workdir/Evaluation/first/Murphy2016_1eval.csv
+    jobid: 120
+    reason: Missing output files: workdir/Evaluation/first/Murphy2016_1eval.csv; Input files updated by another job: workdir/Error/Murphy2016_1er.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:34 2025]
+Finished job 120.
+150 of 190 steps (79%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:34 2025]
+rule parameter_comparison:
+    input: workdir/semantic_evaluation/Semantic_Outputs_generated.csv, workdir/semantic_evaluation/Semantic_Outputs_original.csv
+    output: workdir/all_semantic_comparison.csv
+    jobid: 162
+    reason: Missing output files: workdir/all_semantic_comparison.csv; Input files updated by another job: workdir/semantic_evaluation/Semantic_Outputs_original.csv, workdir/semantic_evaluation/Semantic_Outputs_generated.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:36 2025]
+Finished job 162.
+151 of 190 steps (79%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:36 2025]
+rule first_Evaluation:
+    input: workdir/Error/Aguda1999_1er.txt
+    output: workdir/Evaluation/first/Aguda1999_1eval.csv
+    jobid: 112
+    reason: Missing output files: workdir/Evaluation/first/Aguda1999_1eval.csv; Input files updated by another job: workdir/Error/Aguda1999_1er.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:38 2025]
+Finished job 112.
+152 of 190 steps (80%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:38 2025]
+rule first_Evaluation:
+    input: workdir/Error/Khajanchi2015_1er.txt
+    output: workdir/Evaluation/first/Khajanchi2015_1eval.csv
+    jobid: 116
+    reason: Missing output files: workdir/Evaluation/first/Khajanchi2015_1eval.csv; Input files updated by another job: workdir/Error/Khajanchi2015_1er.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:39 2025]
+Finished job 116.
+153 of 190 steps (81%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:39 2025]
+rule first_Evaluation:
+    input: workdir/Error/Moore2004_1er.txt
+    output: workdir/Evaluation/first/Moore2004_1eval.csv
+    jobid: 118
+    reason: Missing output files: workdir/Evaluation/first/Moore2004_1eval.csv; Input files updated by another job: workdir/Error/Moore2004_1er.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:41 2025]
+Finished job 118.
+154 of 190 steps (81%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:41 2025]
+rule first_Evaluation:
+    input: workdir/Error/Diedrichs2018_1er.txt
+    output: workdir/Evaluation/first/Diedrichs2018_1eval.csv
+    jobid: 113
+    reason: Missing output files: workdir/Evaluation/first/Diedrichs2018_1eval.csv; Input files updated by another job: workdir/Error/Diedrichs2018_1er.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:43 2025]
+Finished job 113.
+155 of 190 steps (82%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:43 2025]
+rule first_Evaluation:
+    input: workdir/Error/Wodarz2007_1er.txt
+    output: workdir/Evaluation/first/Wodarz2007_1eval.csv
+    jobid: 122
+    reason: Missing output files: workdir/Evaluation/first/Wodarz2007_1eval.csv; Input files updated by another job: workdir/Error/Wodarz2007_1er.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:45 2025]
+Finished job 122.
+156 of 190 steps (82%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:45 2025]
+rule first_Evaluation:
+    input: workdir/Error/Admon2017_1er.txt
+    output: workdir/Evaluation/first/Admon2017_1eval.csv
+    jobid: 111
+    reason: Missing output files: workdir/Evaluation/first/Admon2017_1eval.csv; Input files updated by another job: workdir/Error/Admon2017_1er.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:46 2025]
+Finished job 111.
+157 of 190 steps (83%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:46 2025]
+rule fourth_aggregation:
+    input: workdir/Evaluation/AAFE/genAdmon2017_vs_orAdmon2017_aafe_eval.csv, workdir/Evaluation/AAFE/genAguda1999_vs_orAguda1999_aafe_eval.csv, workdir/Evaluation/AAFE/genDiedrichs2018_vs_orDiedrichs2018_aafe_eval.csv, workdir/Evaluation/AAFE/genHeldt2018_vs_orHeldt2018_aafe_eval.csv, workdir/Evaluation/AAFE/genJiao2018_vs_orJiao2018_aafe_eval.csv, workdir/Evaluation/AAFE/genKhajanchi2015_vs_orKhajanchi2015_aafe_eval.csv, workdir/Evaluation/AAFE/genLockwood2006_vs_orLockwood2006_aafe_eval.csv, workdir/Evaluation/AAFE/genMoore2004_vs_orMoore2004_aafe_eval.csv, workdir/Evaluation/AAFE/genMuller2008_vs_orMuller2008_aafe_eval.csv, workdir/Evaluation/AAFE/genMurphy2016_vs_orMurphy2016_aafe_eval.csv, workdir/Evaluation/AAFE/genVargas2012_vs_orVargas2012_aafe_eval.csv, workdir/Evaluation/AAFE/genWodarz2007_vs_orWodarz2007_aafe_eval.csv
+    output: workdir/CSV/AAFE_evaluation.csv
+    jobid: 149
+    reason: Missing output files: workdir/CSV/AAFE_evaluation.csv; Input files updated by another job: workdir/Evaluation/AAFE/genLockwood2006_vs_orLockwood2006_aafe_eval.csv, workdir/Evaluation/AAFE/genMurphy2016_vs_orMurphy2016_aafe_eval.csv, workdir/Evaluation/AAFE/genHeldt2018_vs_orHeldt2018_aafe_eval.csv, workdir/Evaluation/AAFE/genWodarz2007_vs_orWodarz2007_aafe_eval.csv, workdir/Evaluation/AAFE/genMoore2004_vs_orMoore2004_aafe_eval.csv, workdir/Evaluation/AAFE/genDiedrichs2018_vs_orDiedrichs2018_aafe_eval.csv, workdir/Evaluation/AAFE/genMuller2008_vs_orMuller2008_aafe_eval.csv, workdir/Evaluation/AAFE/genVargas2012_vs_orVargas2012_aafe_eval.csv, workdir/Evaluation/AAFE/genAdmon2017_vs_orAdmon2017_aafe_eval.csv, workdir/Evaluation/AAFE/genJiao2018_vs_orJiao2018_aafe_eval.csv, workdir/Evaluation/AAFE/genKhajanchi2015_vs_orKhajanchi2015_aafe_eval.csv, workdir/Evaluation/AAFE/genAguda1999_vs_orAguda1999_aafe_eval.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:46 2025]
+Finished job 149.
+158 of 190 steps (83%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:46 2025]
+rule second_Evaluation:
+    input: workdir/Error/Murphy2016_2er.txt
+    output: workdir/Evaluation/second/Murphy2016_2eval.csv
+    jobid: 133
+    reason: Missing output files: workdir/Evaluation/second/Murphy2016_2eval.csv; Input files updated by another job: workdir/Error/Murphy2016_2er.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:48 2025]
+Finished job 133.
+159 of 190 steps (84%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:48 2025]
+rule third_Evaluation:
+    input: workdir/Error/Vargas2012_3er.txt
+    output: workdir/Evaluation/third/Vargas2012_3eval.csv
+    jobid: 147
+    reason: Missing output files: workdir/Evaluation/third/Vargas2012_3eval.csv; Input files updated by another job: workdir/Error/Vargas2012_3er.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:50 2025]
+Finished job 147.
+160 of 190 steps (84%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:50 2025]
+rule third_Evaluation:
+    input: workdir/Error/Jiao2018_3er.txt
+    output: workdir/Evaluation/third/Jiao2018_3eval.csv
+    jobid: 141
+    reason: Missing output files: workdir/Evaluation/third/Jiao2018_3eval.csv; Input files updated by another job: workdir/Error/Jiao2018_3er.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:52 2025]
+Finished job 141.
+161 of 190 steps (85%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:52 2025]
+rule second_Evaluation:
+    input: workdir/Error/Heldt2018_2er.txt
+    output: workdir/Evaluation/second/Heldt2018_2eval.csv
+    jobid: 127
+    reason: Missing output files: workdir/Evaluation/second/Heldt2018_2eval.csv; Input files updated by another job: workdir/Error/Heldt2018_2er.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:53 2025]
+Finished job 127.
+162 of 190 steps (85%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:53 2025]
+rule second_Evaluation:
+    input: workdir/Error/Vargas2012_2er.txt
+    output: workdir/Evaluation/second/Vargas2012_2eval.csv
+    jobid: 134
+    reason: Missing output files: workdir/Evaluation/second/Vargas2012_2eval.csv; Input files updated by another job: workdir/Error/Vargas2012_2er.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:55 2025]
+Finished job 134.
+163 of 190 steps (86%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:55 2025]
+rule third_Evaluation:
+    input: workdir/Error/Wodarz2007_3er.txt
+    output: workdir/Evaluation/third/Wodarz2007_3eval.csv
+    jobid: 148
+    reason: Missing output files: workdir/Evaluation/third/Wodarz2007_3eval.csv; Input files updated by another job: workdir/Error/Wodarz2007_3er.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:57 2025]
+Finished job 148.
+164 of 190 steps (86%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:57 2025]
+rule second_Evaluation:
+    input: workdir/Error/Diedrichs2018_2er.txt
+    output: workdir/Evaluation/second/Diedrichs2018_2eval.csv
+    jobid: 126
+    reason: Missing output files: workdir/Evaluation/second/Diedrichs2018_2eval.csv; Input files updated by another job: workdir/Error/Diedrichs2018_2er.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:11:59 2025]
+Finished job 126.
+165 of 190 steps (87%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:11:59 2025]
+rule second_Evaluation:
+    input: workdir/Error/Jiao2018_2er.txt
+    output: workdir/Evaluation/second/Jiao2018_2eval.csv
+    jobid: 128
+    reason: Missing output files: workdir/Evaluation/second/Jiao2018_2eval.csv; Input files updated by another job: workdir/Error/Jiao2018_2er.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:01 2025]
+Finished job 128.
+166 of 190 steps (87%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:01 2025]
+rule third_Evaluation:
+    input: workdir/Error/Moore2004_3er.txt
+    output: workdir/Evaluation/third/Moore2004_3eval.csv
+    jobid: 144
+    reason: Missing output files: workdir/Evaluation/third/Moore2004_3eval.csv; Input files updated by another job: workdir/Error/Moore2004_3er.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:02 2025]
+Finished job 144.
+167 of 190 steps (88%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:02 2025]
+rule second_Evaluation:
+    input: workdir/Error/Muller2008_2er.txt
+    output: workdir/Evaluation/second/Muller2008_2eval.csv
+    jobid: 132
+    reason: Missing output files: workdir/Evaluation/second/Muller2008_2eval.csv; Input files updated by another job: workdir/Error/Muller2008_2er.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:04 2025]
+Finished job 132.
+168 of 190 steps (88%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:04 2025]
+rule third_Evaluation:
+    input: workdir/Error/Murphy2016_3er.txt
+    output: workdir/Evaluation/third/Murphy2016_3eval.csv
+    jobid: 146
+    reason: Missing output files: workdir/Evaluation/third/Murphy2016_3eval.csv; Input files updated by another job: workdir/Error/Murphy2016_3er.txt
+    wildcards: sample=Murphy2016
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:06 2025]
+Finished job 146.
+169 of 190 steps (89%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:06 2025]
+rule second_Evaluation:
+    input: workdir/Error/Wodarz2007_2er.txt
+    output: workdir/Evaluation/second/Wodarz2007_2eval.csv
+    jobid: 135
+    reason: Missing output files: workdir/Evaluation/second/Wodarz2007_2eval.csv; Input files updated by another job: workdir/Error/Wodarz2007_2er.txt
+    wildcards: sample=Wodarz2007
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:08 2025]
+Finished job 135.
+170 of 190 steps (89%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:08 2025]
+rule first_Evaluation:
+    input: workdir/Error/Vargas2012_1er.txt
+    output: workdir/Evaluation/first/Vargas2012_1eval.csv
+    jobid: 121
+    reason: Missing output files: workdir/Evaluation/first/Vargas2012_1eval.csv; Input files updated by another job: workdir/Error/Vargas2012_1er.txt
+    wildcards: sample=Vargas2012
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:10 2025]
+Finished job 121.
+171 of 190 steps (90%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:10 2025]
+rule third_Evaluation:
+    input: workdir/Error/Admon2017_3er.txt
+    output: workdir/Evaluation/third/Admon2017_3eval.csv
+    jobid: 137
+    reason: Missing output files: workdir/Evaluation/third/Admon2017_3eval.csv; Input files updated by another job: workdir/Error/Admon2017_3er.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:12 2025]
+Finished job 137.
+172 of 190 steps (91%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:12 2025]
+rule second_Evaluation:
+    input: workdir/Error/Aguda1999_2er.txt
+    output: workdir/Evaluation/second/Aguda1999_2eval.csv
+    jobid: 125
+    reason: Missing output files: workdir/Evaluation/second/Aguda1999_2eval.csv; Input files updated by another job: workdir/Error/Aguda1999_2er.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:13 2025]
+Finished job 125.
+173 of 190 steps (91%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:13 2025]
+rule third_Evaluation:
+    input: workdir/Error/Diedrichs2018_3er.txt
+    output: workdir/Evaluation/third/Diedrichs2018_3eval.csv
+    jobid: 139
+    reason: Missing output files: workdir/Evaluation/third/Diedrichs2018_3eval.csv; Input files updated by another job: workdir/Error/Diedrichs2018_3er.txt
+    wildcards: sample=Diedrichs2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:15 2025]
+Finished job 139.
+174 of 190 steps (92%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:15 2025]
+rule first_Evaluation:
+    input: workdir/Error/Jiao2018_1er.txt
+    output: workdir/Evaluation/first/Jiao2018_1eval.csv
+    jobid: 115
+    reason: Missing output files: workdir/Evaluation/first/Jiao2018_1eval.csv; Input files updated by another job: workdir/Error/Jiao2018_1er.txt
+    wildcards: sample=Jiao2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:17 2025]
+Finished job 115.
+175 of 190 steps (92%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:17 2025]
+rule third_Evaluation:
+    input: workdir/Error/Lockwood2006_3er.txt
+    output: workdir/Evaluation/third/Lockwood2006_3eval.csv
+    jobid: 143
+    reason: Missing output files: workdir/Evaluation/third/Lockwood2006_3eval.csv; Input files updated by another job: workdir/Error/Lockwood2006_3er.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:19 2025]
+Finished job 143.
+176 of 190 steps (93%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:19 2025]
+rule third_Evaluation:
+    input: workdir/Error/Muller2008_3er.txt
+    output: workdir/Evaluation/third/Muller2008_3eval.csv
+    jobid: 145
+    reason: Missing output files: workdir/Evaluation/third/Muller2008_3eval.csv; Input files updated by another job: workdir/Error/Muller2008_3er.txt
+    wildcards: sample=Muller2008
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:20 2025]
+Finished job 145.
+177 of 190 steps (93%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:20 2025]
+rule second_Evaluation:
+    input: workdir/Error/Moore2004_2er.txt
+    output: workdir/Evaluation/second/Moore2004_2eval.csv
+    jobid: 131
+    reason: Missing output files: workdir/Evaluation/second/Moore2004_2eval.csv; Input files updated by another job: workdir/Error/Moore2004_2er.txt
+    wildcards: sample=Moore2004
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:22 2025]
+Finished job 131.
+178 of 190 steps (94%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:22 2025]
+rule second_Evaluation:
+    input: workdir/Error/Admon2017_2er.txt
+    output: workdir/Evaluation/second/Admon2017_2eval.csv
+    jobid: 124
+    reason: Missing output files: workdir/Evaluation/second/Admon2017_2eval.csv; Input files updated by another job: workdir/Error/Admon2017_2er.txt
+    wildcards: sample=Admon2017
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:24 2025]
+Finished job 124.
+179 of 190 steps (94%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:24 2025]
+rule third_Evaluation:
+    input: workdir/Error/Khajanchi2015_3er.txt
+    output: workdir/Evaluation/third/Khajanchi2015_3eval.csv
+    jobid: 142
+    reason: Missing output files: workdir/Evaluation/third/Khajanchi2015_3eval.csv; Input files updated by another job: workdir/Error/Khajanchi2015_3er.txt
+    wildcards: sample=Khajanchi2015
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:26 2025]
+Finished job 142.
+180 of 190 steps (95%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:26 2025]
+rule third_Evaluation:
+    input: workdir/Error/Aguda1999_3er.txt
+    output: workdir/Evaluation/third/Aguda1999_3eval.csv
+    jobid: 138
+    reason: Missing output files: workdir/Evaluation/third/Aguda1999_3eval.csv; Input files updated by another job: workdir/Error/Aguda1999_3er.txt
+    wildcards: sample=Aguda1999
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:27 2025]
+Finished job 138.
+181 of 190 steps (95%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:27 2025]
+rule third_Evaluation:
+    input: workdir/Error/Heldt2018_3er.txt
+    output: workdir/Evaluation/third/Heldt2018_3eval.csv
+    jobid: 140
+    reason: Missing output files: workdir/Evaluation/third/Heldt2018_3eval.csv; Input files updated by another job: workdir/Error/Heldt2018_3er.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:29 2025]
+Finished job 140.
+182 of 190 steps (96%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:29 2025]
+rule third_aggregation:
+    input: workdir/Evaluation/third/Admon2017_3eval.csv, workdir/Evaluation/third/Aguda1999_3eval.csv, workdir/Evaluation/third/Diedrichs2018_3eval.csv, workdir/Evaluation/third/Heldt2018_3eval.csv, workdir/Evaluation/third/Jiao2018_3eval.csv, workdir/Evaluation/third/Khajanchi2015_3eval.csv, workdir/Evaluation/third/Lockwood2006_3eval.csv, workdir/Evaluation/third/Moore2004_3eval.csv, workdir/Evaluation/third/Muller2008_3eval.csv, workdir/Evaluation/third/Murphy2016_3eval.csv, workdir/Evaluation/third/Vargas2012_3eval.csv, workdir/Evaluation/third/Wodarz2007_3eval.csv
+    output: workdir/CSV/third_evaluation.csv
+    jobid: 136
+    reason: Missing output files: workdir/CSV/third_evaluation.csv; Input files updated by another job: workdir/Evaluation/third/Jiao2018_3eval.csv, workdir/Evaluation/third/Moore2004_3eval.csv, workdir/Evaluation/third/Lockwood2006_3eval.csv, workdir/Evaluation/third/Murphy2016_3eval.csv, workdir/Evaluation/third/Aguda1999_3eval.csv, workdir/Evaluation/third/Vargas2012_3eval.csv, workdir/Evaluation/third/Khajanchi2015_3eval.csv, workdir/Evaluation/third/Wodarz2007_3eval.csv, workdir/Evaluation/third/Heldt2018_3eval.csv, workdir/Evaluation/third/Muller2008_3eval.csv, workdir/Evaluation/third/Admon2017_3eval.csv, workdir/Evaluation/third/Diedrichs2018_3eval.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:29 2025]
+Finished job 136.
+183 of 190 steps (96%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:29 2025]
+rule first_Evaluation:
+    input: workdir/Error/Heldt2018_1er.txt
+    output: workdir/Evaluation/first/Heldt2018_1eval.csv
+    jobid: 114
+    reason: Missing output files: workdir/Evaluation/first/Heldt2018_1eval.csv; Input files updated by another job: workdir/Error/Heldt2018_1er.txt
+    wildcards: sample=Heldt2018
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:31 2025]
+Finished job 114.
+184 of 190 steps (97%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:31 2025]
+rule first_aggregation:
+    input: workdir/Evaluation/first/Admon2017_1eval.csv, workdir/Evaluation/first/Aguda1999_1eval.csv, workdir/Evaluation/first/Diedrichs2018_1eval.csv, workdir/Evaluation/first/Heldt2018_1eval.csv, workdir/Evaluation/first/Jiao2018_1eval.csv, workdir/Evaluation/first/Khajanchi2015_1eval.csv, workdir/Evaluation/first/Lockwood2006_1eval.csv, workdir/Evaluation/first/Moore2004_1eval.csv, workdir/Evaluation/first/Muller2008_1eval.csv, workdir/Evaluation/first/Murphy2016_1eval.csv, workdir/Evaluation/first/Vargas2012_1eval.csv, workdir/Evaluation/first/Wodarz2007_1eval.csv
+    output: workdir/CSV/first_evaluation.csv
+    jobid: 110
+    reason: Missing output files: workdir/CSV/first_evaluation.csv; Input files updated by another job: workdir/Evaluation/first/Wodarz2007_1eval.csv, workdir/Evaluation/first/Aguda1999_1eval.csv, workdir/Evaluation/first/Jiao2018_1eval.csv, workdir/Evaluation/first/Admon2017_1eval.csv, workdir/Evaluation/first/Murphy2016_1eval.csv, workdir/Evaluation/first/Muller2008_1eval.csv, workdir/Evaluation/first/Moore2004_1eval.csv, workdir/Evaluation/first/Lockwood2006_1eval.csv, workdir/Evaluation/first/Vargas2012_1eval.csv, workdir/Evaluation/first/Diedrichs2018_1eval.csv, workdir/Evaluation/first/Heldt2018_1eval.csv, workdir/Evaluation/first/Khajanchi2015_1eval.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:31 2025]
+Finished job 110.
+185 of 190 steps (97%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:31 2025]
+rule second_Evaluation:
+    input: workdir/Error/Lockwood2006_2er.txt
+    output: workdir/Evaluation/second/Lockwood2006_2eval.csv
+    jobid: 130
+    reason: Missing output files: workdir/Evaluation/second/Lockwood2006_2eval.csv; Input files updated by another job: workdir/Error/Lockwood2006_2er.txt
+    wildcards: sample=Lockwood2006
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:33 2025]
+Finished job 130.
+186 of 190 steps (98%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:33 2025]
+rule second_aggregation:
+    input: workdir/Evaluation/second/Admon2017_2eval.csv, workdir/Evaluation/second/Aguda1999_2eval.csv, workdir/Evaluation/second/Diedrichs2018_2eval.csv, workdir/Evaluation/second/Heldt2018_2eval.csv, workdir/Evaluation/second/Jiao2018_2eval.csv, workdir/Evaluation/second/Khajanchi2015_2eval.csv, workdir/Evaluation/second/Lockwood2006_2eval.csv, workdir/Evaluation/second/Moore2004_2eval.csv, workdir/Evaluation/second/Muller2008_2eval.csv, workdir/Evaluation/second/Murphy2016_2eval.csv, workdir/Evaluation/second/Vargas2012_2eval.csv, workdir/Evaluation/second/Wodarz2007_2eval.csv
+    output: workdir/CSV/second_evaluation.csv
+    jobid: 123
+    reason: Missing output files: workdir/CSV/second_evaluation.csv; Input files updated by another job: workdir/Evaluation/second/Diedrichs2018_2eval.csv, workdir/Evaluation/second/Lockwood2006_2eval.csv, workdir/Evaluation/second/Admon2017_2eval.csv, workdir/Evaluation/second/Aguda1999_2eval.csv, workdir/Evaluation/second/Wodarz2007_2eval.csv, workdir/Evaluation/second/Murphy2016_2eval.csv, workdir/Evaluation/second/Khajanchi2015_2eval.csv, workdir/Evaluation/second/Heldt2018_2eval.csv, workdir/Evaluation/second/Moore2004_2eval.csv, workdir/Evaluation/second/Muller2008_2eval.csv, workdir/Evaluation/second/Vargas2012_2eval.csv, workdir/Evaluation/second/Jiao2018_2eval.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:33 2025]
+Finished job 123.
+187 of 190 steps (98%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:33 2025]
+rule aggregate_all:
+    input: workdir/CSV/first_evaluation.csv, workdir/CSV/second_evaluation.csv, workdir/CSV/third_evaluation.csv, workdir/CSV/AAFE_evaluation.csv
+    output: workdir/all_simulations.csv
+    jobid: 109
+    reason: Missing output files: workdir/all_simulations.csv; Input files updated by another job: workdir/CSV/AAFE_evaluation.csv, workdir/CSV/first_evaluation.csv, workdir/CSV/third_evaluation.csv, workdir/CSV/second_evaluation.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:12:33 2025]
+Finished job 109.
+188 of 190 steps (99%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:12:33 2025]
+rule evaluation_table:
+    input: workdir/all_simulations.csv, workdir/all_semantic_comparison.csv
+    output: workdir/test_table_6e1be56.csv
+    jobid: 189
+    reason: Missing output files: workdir/test_table_6e1be56.csv; Input files updated by another job: workdir/all_simulations.csv, workdir/all_semantic_comparison.csv
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:13:35 2025]
+Finished job 189.
+189 of 190 steps (99%) done
+Select jobs to execute...
+
+[Wed Dec 10 14:13:35 2025]
+localrule all:
+    input: workdir/fabric_output/Admon2017.txt, workdir/fabric_output/Aguda1999.txt, workdir/fabric_output/Diedrichs2018.txt, workdir/fabric_output/Heldt2018.txt, workdir/fabric_output/Jiao2018.txt, workdir/fabric_output/Khajanchi2015.txt, workdir/fabric_output/Lockwood2006.txt, workdir/fabric_output/Moore2004.txt, workdir/fabric_output/Muller2008.txt, workdir/fabric_output/Murphy2016.txt, workdir/fabric_output/Vargas2012.txt, workdir/fabric_output/Wodarz2007.txt, workdir/expected_output_R/orAdmon2017.txt, workdir/expected_output_R/orAguda1999.txt, workdir/expected_output_R/orDiedrichs2018.txt, workdir/expected_output_R/orHeldt2018.txt, workdir/expected_output_R/orJiao2018.txt, workdir/expected_output_R/orKhajanchi2015.txt, workdir/expected_output_R/orLockwood2006.txt, workdir/expected_output_R/orMoore2004.txt, workdir/expected_output_R/orMuller2008.txt, workdir/expected_output_R/orMurphy2016.txt, workdir/expected_output_R/orVargas2012.txt, workdir/expected_output_R/orWodarz2007.txt, workdir/final_models/Admon2017_tested.txt, workdir/final_models/Aguda1999_tested.txt, workdir/final_models/Diedrichs2018_tested.txt, workdir/final_models/Heldt2018_tested.txt, workdir/final_models/Jiao2018_tested.txt, workdir/final_models/Khajanchi2015_tested.txt, workdir/final_models/Lockwood2006_tested.txt, workdir/final_models/Moore2004_tested.txt, workdir/final_models/Muller2008_tested.txt, workdir/final_models/Murphy2016_tested.txt, workdir/final_models/Vargas2012_tested.txt, workdir/final_models/Wodarz2007_tested.txt, workdir/all_simulations.csv, workdir/all_semantic_comparison.csv, workdir/test_table_6e1be56.csv
+    jobid: 0
+    reason: Input files updated by another job: workdir/final_models/Heldt2018_tested.txt, workdir/all_semantic_comparison.csv, workdir/fabric_output/Heldt2018.txt, workdir/fabric_output/Diedrichs2018.txt, workdir/final_models/Jiao2018_tested.txt, workdir/fabric_output/Wodarz2007.txt, workdir/fabric_output/Admon2017.txt, workdir/fabric_output/Murphy2016.txt, workdir/final_models/Diedrichs2018_tested.txt, workdir/all_simulations.csv, workdir/fabric_output/Vargas2012.txt, workdir/final_models/Muller2008_tested.txt, workdir/final_models/Moore2004_tested.txt, workdir/fabric_output/Muller2008.txt, workdir/fabric_output/Jiao2018.txt, workdir/final_models/Murphy2016_tested.txt, workdir/final_models/Lockwood2006_tested.txt, workdir/final_models/Vargas2012_tested.txt, workdir/test_table_6e1be56.csv, workdir/fabric_output/Aguda1999.txt, workdir/final_models/Admon2017_tested.txt, workdir/final_models/Khajanchi2015_tested.txt, workdir/fabric_output/Moore2004.txt, workdir/fabric_output/Khajanchi2015.txt, workdir/final_models/Aguda1999_tested.txt, workdir/final_models/Wodarz2007_tested.txt, workdir/fabric_output/Lockwood2006.txt
+    resources: tmpdir=C:\Users\marco\AppData\Local\Temp
+
+[Wed Dec 10 14:13:35 2025]
+Finished job 0.
+190 of 190 steps (100%) done
+Complete log: .snakemake\log\2025-12-10T122838.165324.snakemake.log

@@ -1,0 +1,161 @@
+model *Aguda1999_G2DDC()
+
+  //// Compartments and Species:
+  compartment nucleus;
+  species Chk1 in nucleus, Chk1P in nucleus, Rad3 in nucleus, p53 in nucleus;
+  species preMPF in nucleus, MPF in nucleus, p21 in nucleus, p21_MPF in nucleus;
+  species iCdc25 in nucleus, iCdc25Ps216 in nucleus, iCdc25Ps216_14_3_3 in nucleus, aCdc25 in nucleus, aCdc25Ps216 in nucleus, Fourteen_3_3 in nucleus;
+  species Wee1 in nucleus, Wee1P in nucleus;
+
+  //// Assignment Rules:
+  // No assignment rules needed; all species are floating.
+
+  //// Rate Rules:
+  // All dynamics are defined via reactions.
+
+  //// Reactions:
+  // Signal transduction
+  R1: Chk1 -> Chk1P; nucleus*(k1*Chk1*Rad3);  # v1
+  Rminus1: Chk1P -> Chk1; nucleus*(km1*Chk1P);  # v-1
+  R4:  -> Rad3; nucleus*k4;  # v4
+  R5: Rad3 -> ; nucleus*k5*Rad3;  # v5
+  R10: -> p53; nucleus*k10;  # v10
+  R11: p53 -> ; nucleus*k11*p53;  # v11
+
+  // MPF subsystem
+  R14: -> preMPF; nucleus*(k14/(1 + k14p*p53));  # v14
+  R9: preMPF -> MPF; nucleus*(k9*(aCdc25 + aCdc25Ps216)*preMPF + k9p*preMPF);  # v9
+  Rminus9: MPF -> preMPF; nucleus*(km9*MPF*Wee1);  # v-9
+  R15: MPF -> ; nucleus*k15*MPF*MPF;  # v15
+  R20: -> p21; nucleus*k20*p53;  # v20
+  R21: -> p21; nucleus*k21;  # v21
+  R22: p21 -> ; nucleus*k22*p21;  # v22
+  R23: MPF + p21 -> p21_MPF; nucleus*k23*MPF*p21;  # v23
+  Rminus23: p21_MPF -> MPF + p21; nucleus*km23*p21_MPF;  # v-23
+
+  // Cdc25 subsystem
+  R7: iCdc25 -> aCdc25; nucleus*(k7*MPF*iCdc25 + kPlk1*iCdc25);  # v7
+  Rminus7: aCdc25 -> iCdc25; nucleus*km7*aCdc25;  # v-7
+  R2: aCdc25 -> aCdc25Ps216; nucleus*(k2*Chk1P*aCdc25 + kctak1*aCdc25);  # v2
+  Rminus2: aCdc25Ps216 -> aCdc25; nucleus*km2*aCdc25Ps216;  # v-2
+  R2p: iCdc25 -> iCdc25Ps216; nucleus*(k2p*Chk1P*iCdc25 + kctak1p*iCdc25);  # v2'
+  Rminus2p: iCdc25Ps216 -> iCdc25; nucleus*km2p*iCdc25Ps216;  # v-2'
+  R18: iCdc25Ps216 -> aCdc25Ps216; nucleus*(k18*MPF*iCdc25Ps216 + kPlk1p*iCdc25Ps216);  # v18
+  Rminus18: aCdc25Ps216 -> iCdc25Ps216; nucleus*km18*aCdc25Ps216;  # v-18
+  R3p: iCdc25Ps216 + Fourteen_3_3 -> iCdc25Ps216_14_3_3; nucleus*k3p*iCdc25Ps216*Fourteen_3_3;  # v3'
+  Rminus3p: iCdc25Ps216_14_3_3 -> iCdc25Ps216 + Fourteen_3_3; nucleus*km3p*iCdc25Ps216_14_3_3;  # v-3'
+  R6: -> Fourteen_3_3; nucleus*k6*p53;  # v6
+  R13: -> Fourteen_3_3; nucleus*k13;  # v13
+  R12: Fourteen_3_3 -> ; nucleus*k12*Fourteen_3_3;  # v12
+  // Import and export
+  Rin: -> iCdc25; nucleus*kin;  # vin
+  Rex: iCdc25Ps216_14_3_3 -> ; nucleus*kex*iCdc25Ps216_14_3_3;  # vex
+
+  // Wee1 subsystem
+  R16: -> Wee1; nucleus*k16;  # v16
+  R8: Wee1 -> Wee1P; nucleus*(k8*MPF*Wee1 + k8p*Wee1);  # v8
+  Rminus8: Wee1P -> Wee1; nucleus*km8*Wee1P;  # v-8
+  R17: Wee1P -> ; nucleus*k17*Wee1P;  # v17
+
+  //// Events:
+  // No events defined in the source.
+
+  //// Species initializations:
+  Chk1 = 0.999;
+  Chk1P = 0.001;
+  Rad3 = 0;
+  p53 = 0;
+  preMPF = 0.001;
+  MPF = 1e-6;
+  p21 = 0;
+  p21_MPF = 0;
+  iCdc25 = 0.001;
+  iCdc25Ps216 = 0.002;
+  iCdc25Ps216_14_3_3 = 0.03;
+  aCdc25 = 0.001;
+  aCdc25Ps216 = 0;
+  Fourteen_3_3 = 2;
+  Wee1 = 0.001;
+  Wee1P = 0;
+
+  //// Compartment initializations:
+  nucleus = 1;
+
+  //// Variable initializations:
+  // Signal transduction
+  k1 = 1;
+  km1 = 1;
+  k4 = 1;
+  k5 = 1;
+  k10 = 1;
+  k11 = 1;
+  // Cdc25 subsystem
+  k2 = 1;
+  km2 = 1;
+  k2p = 1;
+  km2p = 1;
+  k3p = 1;
+  km3p = 1;
+  k6 = 1;
+  k12 = 1;
+  k13 = 1;
+  k7 = 1;
+  km7 = 1;
+  k18 = 1;
+  km18 = 1;
+  kPlk1 = 0;
+  kctak1 = 0;
+  kctak1p = 0;
+  kPlk1p = 0;
+  // MPF subsystem
+  k9 = 1;
+  k9p = 0;
+  km9 = 1;
+  k14 = 1;
+  k14p = 10;
+  k15 = 1;
+  k20 = 1;
+  k21 = 1;
+  k22 = 1;
+  k23 = 1;
+  km23 = 1;
+  // Wee1 subsystem
+  k8 = 1;
+  k8p = 0;
+  km8 = 1;
+  k16 = 1;
+  k17 = 1;
+  // Import/export
+  kex = 1;
+  kin = 0.001;
+
+  //// Other declarations:
+  // All parameters are constant except those that could be varied (none here).
+  const k1, km1, k4, k5, k10, k11, k2, km2, k2p, km2p, k3p, km3p, k6, k12, k13, k7, km7, k18, km18, kPlk1, kctak1, kctak1p, kPlk1p, k9, k9p, km9, k14, k14p, k15, k20, k21, k22, k23, km23, k8, k8p, km8, k16, k17, kex, kin;
+
+  //// Unit definitions:
+  // The model uses dimensionless units as per the original publication.
+  unit volume = 1 dimensionless;
+  unit time_unit = 1 dimensionless;
+  unit substance = 1 dimensionless;
+
+  //// Display Names:
+  nucleus is "Nucleus";
+  Chk1 is "Chk1 (unphosphorylated)";
+  Chk1P is "Phosphorylated Chk1";
+  Rad3 is "Rad3/ATM";
+  p53 is "p53";
+  preMPF is "Inactive MPF (preMPF)";
+  MPF is "Active MPF";
+  p21 is "p21";
+  p21_MPF is "p21/MPF complex";
+  iCdc25 is "Inactive Cdc25";
+  iCdc25Ps216 is "Inactive Cdc25 phosphorylated at Ser216";
+  iCdc25Ps216_14_3_3 is "Cdc25-14-3-3 complex";
+  aCdc25 is "Active Cdc25";
+  aCdc25Ps216 is "Active Cdc25 phosphorylated at Ser216";
+  Fourteen_3_3 is "14-3-3 protein";
+  Wee1 is "Wee1";
+  Wee1P is "Phosphorylated Wee1";
+
+end

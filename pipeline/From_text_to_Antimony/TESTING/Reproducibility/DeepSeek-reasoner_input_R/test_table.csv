@@ -1,0 +1,2 @@
+,N° paper,Day:time-slot,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),AAFE evaluation (N°correct/N°paper),N° Boundary sp.(query/original),N° Floating sp.(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original)
+DeepSeek-reasoner,12,Wed:12.15-2.15,0.25,0.9166666666666666,1.0,0.4166666666666667,inf,inf,inf,1.08,1.12

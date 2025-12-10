@@ -1,0 +1,3 @@
+,N° paper,day: time-slot,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),AAFE evaluation (N°correct/N°paper),N° Boundary sp.(query/original),N° Floating sp.(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original),Commit_code,Input_folder,patterns
+gpt-5,12,Tue: 6:00pm - 12 pm,0.4166666666666667,1.0,1.0,0.3333333333333333,inf,inf,inf,1.08,1.23,6e1be56,input_R,Converter + Editor
+deepseek-reasoner,12,Wed:12.15am - 2.15pm,0.25,0.9166666666666666,1.0,0.4166666666666667,inf,inf,inf,1.08,1.12,6e1be56,input_R,Converter + Editor
