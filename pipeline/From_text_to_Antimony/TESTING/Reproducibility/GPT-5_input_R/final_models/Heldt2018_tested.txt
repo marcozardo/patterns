@@ -1,0 +1,140 @@
+model *Heldt2018_RP_G1S_p21()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Rb in cell, pRb in cell, E2F in cell, CycE_Cdk2 in cell, CycA_Cdk2 in cell;
+  species Emi1 in cell, Cdh1_act in cell, aRC in cell, S_phase in cell, p53 in cell, p21 in cell;
+  species $GF in cell, $Damage in cell, $Skp2 in cell, $Cdt2 in cell;
+
+  //// Reactions:
+  R_Rb_phosph: Rb => pRb; cell*(k_Rb_phos*GF*(CycE_Cdk2 + CycA_Cdk2 + k_Rb_phos_basal)*Rb);
+  R_Rb_dephosph: pRb => Rb; cell*(k_Rb_dephos*pRb);
+
+  R_E2F_prod:  => E2F; cell*(k_E2F_basal + k_E2F_pRb*pRb + k_E2F_cdk*(CycE_Cdk2 + CycA_Cdk2) + k_E2F_auto*E2F + k_E2F_GF*GF);
+  R_E2F_deg: E2F => ; cell*(k_E2F_deg*E2F + k_E2F_Rb*Rb*E2F);
+
+  R_CycE_prod:  => CycE_Cdk2; cell*(k_CycE_syn*E2F);
+  R_CycE_deg: CycE_Cdk2 => ; cell*(k_CycE_deg*CycE_Cdk2 + k_CycE_p21*p21*CycE_Cdk2);
+
+  R_CycA_prod:  => CycA_Cdk2; cell*(k_CycA_syn*E2F);
+  R_CycA_deg: CycA_Cdk2 => ; cell*(k_CycA_deg*CycA_Cdk2 + k_CycA_Cdh1*Cdh1_act*CycA_Cdk2 + k_CycA_p21*p21*CycA_Cdk2);
+
+  R_Emi1_prod:  => Emi1; cell*(k_Emi1_syn*(CycE_Cdk2 + CycA_Cdk2));
+  R_Emi1_deg: Emi1 => ; cell*(k_Emi1_deg*Emi1);
+
+  R_Cdh1_activate:  => Cdh1_act; cell*(k_Cdh1_act_baseline);
+  R_Cdh1_inactivate: Cdh1_act => ; cell*((k_Cdh1_inact_by_Emi1*Emi1 + k_Cdh1_inact_by_Cdk*(CycE_Cdk2 + CycA_Cdk2) + k_Cdh1_deg)*Cdh1_act);
+
+  R_aRC_prod:  => aRC; cell*(k_aRC_syn*(CycE_Cdk2 + CycA_Cdk2));
+  R_aRC_deg: aRC => ; cell*((k_aRC_deg + k_aRC_p21*p21)*aRC);
+
+  R_Sphase_on:  => S_phase; cell*(k_S_on*aRC);
+  R_Sphase_off: S_phase => ; cell*(k_S_off*S_phase);
+
+  R_p53_prod:  => p53; cell*(k_p53_basal + k_p53_damage*Damage);
+  R_p53_deg: p53 => ; cell*(k_p53_deg*p53);
+
+  R_p21_prod:  => p21; cell*(k_p21_basal + k_p21_p53*p53);
+  R_p21_deg_basal: p21 => ; cell*(k_p21_deg_basal*p21);
+  R_p21_deg_Skp2: p21 => ; cell*(k_p21_deg_skp2*Skp2*(CycE_Cdk2 + CycA_Cdk2)*p21);
+  R_p21_deg_Cdt2: p21 => ; cell*(k_p21_deg_cdt2*Cdt2*aRC*p21);
+
+  //// Species initializations:
+  Rb = 1;
+  pRb = 0;
+  E2F = 0.1;
+  CycE_Cdk2 = 0.05;
+  CycA_Cdk2 = 0;
+  Emi1 = 0;
+  Cdh1_act = 1;
+  aRC = 0;
+  S_phase = 0;
+  p53 = 0;
+  p21 = 0.2;
+  GF = 0.5;
+  Damage = 0;
+  Skp2 = 1;
+  Cdt2 = 1;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_Rb_phos = 0.5;
+  k_Rb_phos_basal = 0.01;
+  k_Rb_dephos = 0.2;
+
+  k_E2F_basal = 0.01;
+  k_E2F_pRb = 0.3;
+  k_E2F_cdk = 0.1;
+  k_E2F_auto = 0.05;
+  k_E2F_GF = 0.1;
+  k_E2F_deg = 0.2;
+  k_E2F_Rb = 0.3;
+
+  k_CycE_syn = 0.5;
+  k_CycE_deg = 0.2;
+  k_CycE_p21 = 0.5;
+
+  k_CycA_syn = 0.3;
+  k_CycA_deg = 0.1;
+  k_CycA_Cdh1 = 0.8;
+  k_CycA_p21 = 0.5;
+
+  k_Emi1_syn = 0.2;
+  k_Emi1_deg = 0.1;
+
+  k_Cdh1_act_baseline = 0.05;
+  k_Cdh1_inact_by_Emi1 = 0.5;
+  k_Cdh1_inact_by_Cdk = 0.3;
+  k_Cdh1_deg = 0.01;
+
+  k_aRC_syn = 0.4;
+  k_aRC_deg = 0.2;
+  k_aRC_p21 = 0.6;
+
+  k_S_on = 0.5;
+  k_S_off = 0.1;
+
+  k_p53_basal = 0.01;
+  k_p53_damage = 1;
+  k_p53_deg = 0.2;
+
+  k_p21_basal = 0.01;
+  k_p21_p53 = 0.8;
+  k_p21_deg_basal = 0.05;
+  k_p21_deg_skp2 = 0.2;
+  k_p21_deg_cdt2 = 0.5;
+
+  //// Other declarations:
+  const cell;
+  const k_Rb_phos, k_Rb_phos_basal, k_Rb_dephos;
+  const k_E2F_basal, k_E2F_pRb, k_E2F_cdk, k_E2F_auto, k_E2F_GF, k_E2F_deg, k_E2F_Rb;
+  const k_CycE_syn, k_CycE_deg, k_CycE_p21;
+  const k_CycA_syn, k_CycA_deg, k_CycA_Cdh1, k_CycA_p21;
+  const k_Emi1_syn, k_Emi1_deg;
+  const k_Cdh1_act_baseline, k_Cdh1_inact_by_Emi1, k_Cdh1_inact_by_Cdk, k_Cdh1_deg;
+  const k_aRC_syn, k_aRC_deg, k_aRC_p21;
+  const k_S_on, k_S_off;
+  const k_p53_basal, k_p53_damage, k_p53_deg;
+  const k_p21_basal, k_p21_p53, k_p21_deg_basal, k_p21_deg_skp2, k_p21_deg_cdt2;
+
+  //// Display Names:
+  cell is "Intracellular space";
+  Rb is "Rb (hypophosphorylated, active)";
+  pRb is "Rb (hyperphosphorylated, inactive)";
+  E2F is "Active E2F transcription factor";
+  CycE_Cdk2 is "Cyclin E:Cdk2 activity";
+  CycA_Cdk2 is "Cyclin A:Cdk2 activity";
+  Emi1 is "Emi1 (APC/C^Cdh1 inhibitor)";
+  Cdh1_act is "Active Cdh1 (APC/C^Cdh1)";
+  aRC is "Activated replication complexes (PCNA-bound)";
+  S_phase is "S-phase state marker";
+  p53 is "p53 transcription factor";
+  p21 is "p21 (Cip1/Waf1)";
+  GF is "Growth factor signal (mitogens)";
+  Damage is "DNA damage signal";
+  Skp2 is "Skp2 (SCF^Skp2 activity)";
+  Cdt2 is "Cdt2 (CRL4^Cdt2 activity)";
+
+end

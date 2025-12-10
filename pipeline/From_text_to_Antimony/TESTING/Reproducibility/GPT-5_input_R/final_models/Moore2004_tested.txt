@@ -1,0 +1,73 @@
+model *Moore2004_CML_Tcell_Interaction()
+
+  //// Compartments and Species:
+  compartment blood;
+  species T_n in blood, T_e in blood, C in blood;
+
+  //// Reactions:
+  Source_Tn: => T_n; blood*s_n;
+  Death_Tn: T_n => ; blood*d_n*T_n;
+  Activation_Anergy_Tn: T_n => ; blood*k_n*T_n*(C/(C + theta));
+  Activation_to_Te: => T_e; blood*alpha_n*k_n*T_n*(C/(C + theta));
+  Recruitment_Te: => T_e; blood*alpha_e*T_e*(C/(C + theta));
+  Death_Te_natural: T_e => ; blood*d_e*T_e;
+  Death_Te_by_C: T_e => ; blood*gamma_e*C*T_e;
+  Gompertz_C_growth: => C; blood*r_c*C*ln(C_max/C);
+  Death_C_natural: C => ; blood*d_c*C;
+  Death_C_by_Te: C => ; blood*gamma_c*C*T_e;
+
+  //// Species initializations:
+  T_n = 1510;
+  T_e = 20;
+  C = 10000;
+
+  //// Compartment initializations:
+  blood = 1;
+
+  //// Variable initializations:
+  s_n = 0.073;
+  d_n = 0.040;
+  d_e = 0.06;
+  d_c = 0.2;
+  k_n = 0.001;
+  theta = 100;
+  alpha_n = 0.41;
+  alpha_e = 0.2;
+  C_max = 300000;
+  r_c = 0.03;
+  gamma_e = 0.005;
+  gamma_c = 0.005;
+
+  //// Other declarations:
+  const blood, s_n, d_n, d_e, d_c, k_n, theta, alpha_n, alpha_e, C_max, r_c, gamma_e, gamma_c;
+
+  //// Display Names:
+  blood is "Circulatory blood (compartment)";
+  T_n is "Naive T cells (cells per ?l)";
+  T_e is "Effector T cells (cells per ?l)";
+  C is "CML cancer cells (cells per ?l)";
+  Source_Tn is "Source of naive T cells";
+  Death_Tn is "Natural death of naive T cells";
+  Activation_Anergy_Tn is "Activation/anergy encounters of naive T cells in lymph";
+  Activation_to_Te is "Production of effector T cells from activated naive T cells";
+  Recruitment_Te is "Recruitment/proliferation of effector T cells by CML antigen";
+  Death_Te_natural is "Natural death of effector T cells";
+  Death_Te_by_C is "Loss of effector T cells from contact with CML cells";
+  Gompertz_C_growth is "Gompertz growth of CML cells";
+  Death_C_natural is "Natural death of CML cells";
+  Death_C_by_Te is "Killing of CML cells by effector T cells";
+
+end
+
+/* Notes and mappings from the source text:
+- Domain: physiological/clinical immuno-oncology (blood-borne cell populations).
+- Parameter name mappings used:
+  theta := Michaelis?Menten half-saturation constant (denoted ??? in text), value 100 cells/?l.
+  alpha_n := ?_n (effector yield from activated naive T cells), value 0.41.
+  alpha_e := ?_e (recruitment/proliferation of effector T cells), value 0.2.
+  gamma_e := ?_e (loss rate of T_e due to contact with C), value 0.005 (day^-1 per (cells/?l)).
+  gamma_c := ?_c (killing rate of C by T_e), value 0.005 (day^-1 per (cells/?l)).
+  C_max := maximum CML level; set to 3e5 cells/?l per text.
+  r_c := Gompertz growth rate of C, value 0.03 day^-1.
+- Gompertz growth implemented with natural logarithm ln(C_max/C), as described.
+- Units: populations are concentrations (cells per ?l); time is in days; the compartment volume is set to 1 to preserve units of the original ODEs. */

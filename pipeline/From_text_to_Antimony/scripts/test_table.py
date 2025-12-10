@@ -13,7 +13,7 @@ df3 = pd.read_csv(in_csv2)
 
 data = {
     "N° paper": 10,
-    "Attempt": 1,
+    "Day:time-slot": True,
     "First simulation (ratio)": True,
     "Second simulation (ratio)":True,
     "Third simulation (ratio)":True,
@@ -42,7 +42,7 @@ second_column = pd.Series.to_list(second_column)
 third_column = pd.Series(df2["third Simulation"])
 third_column = pd.Series.to_list(third_column)
 
-fourth_column = pd.Series(df2["AAFE Evaluation"])
+fourth_column = pd.Series(df2["AAFE evaluation"])
 fourth_column = pd.Series.to_list(fourth_column)
 
 total = len(first_column)
@@ -58,8 +58,8 @@ ratio_2 = (second_success/total)
 ratio_3 =  (third_success/total)
 ratio_4 = (fourth_success/total)
 
-print("number of times have been used this LLM model:")
-df["Attempt"] = input()
+print("day and time slot in which you have been used this LLM model:")
+df["Day:time-slot"] = input()
 print("number of tested papers:")
 df["N° paper"] = input()
 df["First simulation (ratio)"] = ratio_1

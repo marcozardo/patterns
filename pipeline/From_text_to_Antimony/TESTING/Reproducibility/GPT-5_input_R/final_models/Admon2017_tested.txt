@@ -1,0 +1,72 @@
+model *Admon2017_TumorImmuneDrug()
+
+  //// Compartments and Species:
+  compartment system;
+  species TI in system, TM in system, I in system, u in system;
+
+  //// Reactions:
+  Mitosis: TM => 2 TI; a4*TM;
+  Interphase_to_Mitosis: TI => TM; a1*TI;
+  Interphase_Death: TI => ; d2*TI;
+  Mitosis_Death: TM => ; d3*TM;
+  Immune_Basal_Source:  => I; k;
+  Immune_Stimulated_Expansion:  => I; rho*I*(TI + TM)^n/(alpha + (TI + TM)^n);
+  Immune_Natural_Death: I => ; d1*I;
+  Immune_Kills_TI: TI + I => I; c1*I*TI;
+  Immune_Kills_TM: TM + I => I; c3*I*TM;
+  Drug_Kills_TM: TM => ; k1*(1 - exp(-k2*u))*TM;
+  Drug_Kills_I: I => ; k3*(1 - exp(-k4*u))*I;
+  Drug_Decay: u => ; gamma_*u;
+
+  //// Species initializations:
+  TI = 1.3;
+  TM = 1.2;
+  I = 0.9;
+  u = 0.15;
+
+  //// Compartment initializations:
+  system = 1;
+
+  //// Variable initializations:
+  a1 = 0.98;
+  a4 = 0.8;
+  d1 = 0.29;
+  d2 = 0.11;
+  d3 = 0.4;
+  c1 = 0.9;
+  c2 = 0.085;
+  c3 = 0.9;
+  c4 = 0.085;
+  k = 0.029;
+  k1 = 0.47;
+  k2 = 0.57;
+  k3 = 0.49;
+  k4 = 0.061;
+  rho = 0.2;
+  alpha = 0.1;
+  n = 3;
+  gamma_ = 0.85;
+
+  //// Other declarations:
+  const system, a1, a4, d1, d2, d3, c1, c2, c3, c4, k, k1, k2, k3, k4, rho, alpha, n, gamma_;
+
+  //// Display Names:
+  system is "Well-mixed physiological system";
+  TI is "Tumor cells in interphase (G1+S+G2)";
+  TM is "Tumor cells in mitosis (M)";
+  I is "Cytotoxic T lymphocytes (immune effector)";
+  u is "Cycle-phase?specific drug";
+  Mitosis is "M-phase division producing 2 interphase cells";
+  Interphase_to_Mitosis is "Cell cycle progression TI -> TM";
+  Interphase_Death is "Natural death of interphase tumor";
+  Mitosis_Death is "Natural death of mitotic tumor";
+  Immune_Basal_Source is "Basal immune influx";
+  Immune_Stimulated_Expansion is "Antigen-driven immune expansion (saturating)";
+  Immune_Natural_Death is "Immune natural decay";
+  Immune_Kills_TI is "Immune killing of interphase tumor";
+  Immune_Kills_TM is "Immune killing of mitotic tumor";
+  Drug_Kills_TM is "Drug-induced killing of mitotic tumor";
+  Drug_Kills_I is "Drug-induced killing of immune cells";
+  Drug_Decay is "First-order drug elimination";
+
+end

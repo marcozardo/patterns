@@ -1,0 +1,126 @@
+model *Lockwood2006_AD_PKPD_LATIN4x4()
+
+  //// Compartments and Species:
+  compartment gut, central, peripheral;
+  species Agut in gut, Ac in central, Ap in peripheral;
+
+  //// Assignment Rules:
+  ln2 := 0.6931471805599453;
+  C := Ac/central;
+  Cper := Ap/peripheral;
+  Rin := F * dose_mg * dosing_per_day/24;
+  CL := CL_pop*exp(-0.0135*(age - 40))*smk;
+  ke0a := ln2/(t12eqa*24);
+  Keq_p := ln2/(t12eqp*24);
+  Kel_p := ln2/(t12elp*24);
+  ADAS_p := beta_p*Keq_p/(Keq_p - Kel_p)*(exp(-Kel_p*time) - exp(-Keq_p*time));
+  Ce_ng := CeA*1000;
+  CeA_U_ng := CeAU*1000;
+  CI_U_ng := CIU*1000;
+  PD_linear := slope_A*Ce_ng;
+  PD_Emax := Emax_h*Ce_ng/(EC50 + Ce_ng);
+  PD_Smax := Emax_s*(Ce_ng^N_s)/((EC50^N_s) + (Ce_ng^N_s));
+  PD_Ushape := Emax_U*((CeA_U_ng^N_u)/((EC50_U^N_u) + (CeA_U_ng^N_u)) - (CI_U_ng^N_u)/((IC50U^N_u) + (CI_U_ng^N_u)));
+  PD_total := piecewise(0, ModelType == 0, PD_linear, ModelType == 1, PD_Emax, ModelType == 2, PD_Smax, ModelType == 3, PD_Ushape, ModelType == 4, PD_Emax);
+  S_total := S0 + gamma_h*time + ADAS_p + PD_total;
+  S_v := exp(-hazard_per_h*time);
+
+  //// Rate Rules:
+  CeA' = ke0a*(C - CeA);
+  CeAU' = ke0a*(C - CeAU);
+  CIU' = ke0a*(C - CIU);
+
+  //// Reactions:
+  R_in:  => Agut; Rin;
+  R_abs: Agut => Ac; ka*Agut;
+  R_elim: Ac => ; (CL/central)*Ac;
+  R_cp: Ac => Ap; (Q/central)*Ac;
+  R_pc: Ap => Ac; (Q/peripheral)*Ap;
+
+  //// Events:
+  _set_period1: at (time >= 0): dose_mg = 0;
+  _set_period2: at (time >= 672): dose_mg = 2;
+  _set_period3: at (time >= 1344): dose_mg = 10;
+  _set_period4: at (time >= 2016): dose_mg = 25;
+
+  //// Species initializations:
+  Agut = 0;
+  Ac = 0;
+  Ap = 0;
+
+  //// Compartment initializations:
+  gut = 1;
+  central = 172;
+  peripheral = 222;
+
+  //// Variable initializations:
+  S0 = 30;
+  gamma_h = 0.0164/24;
+  t12eqp = 6;
+  t12elp = 7;
+  beta_p = -3;
+  t12eqa = 16;
+  slope_A = -0.047;
+  Emax_h = -4;
+  Emax_s = -3;
+  Emax_U = -6;
+  EC50 = 21;
+  EC50_U = 18;
+  IC50U = 38;
+  N_s = 4;
+  N_u = 3;
+  ModelType = 2;
+  CL_pop = 94.5;
+  Q = 31.8;
+  ka = 4.81;
+  F = 1;
+  age = 65;
+  smk = 1;
+  dosing_per_day = 3;
+  dose_mg = 0;
+  CeA = 0;
+  CeAU = 0;
+  CIU = 0;
+  hazard_per_h = 0.00145/24;
+
+  //// Other declarations:
+  var C, Cper, Rin, CL, ke0a, Keq_p, Kel_p, CeA, CeAU, CIU, Ce_ng, CeA_U_ng, CI_U_ng, ln2;
+  var PD_linear, PD_Emax, PD_Smax, PD_Ushape, PD_total, ADAS_p, S_total, S_v, dose_mg;
+  const gut, central, peripheral, S0, gamma_h, t12eqp, t12elp, beta_p, t12eqa, slope_A, Emax_h, Emax_s, Emax_U, EC50, EC50_U, IC50U, N_s, N_u, ModelType, CL_pop, Q, ka, F, age, smk, dosing_per_day, hazard_per_h;
+
+  //// Unit definitions:
+  unit substance = 1e-3 mole;
+  unit volume = liter;
+  unit time_unit = hour;
+  unit mass = milligram;
+  unit conc_mg_per_L = milligram/liter;
+  unit conc_ng_per_mL = nanogram/milliliter;
+
+  //// Display Names:
+  gut is "GI depot (oral)";
+  central is "Plasma/central compartment volume (L)";
+  peripheral is "Peripheral compartment volume (L)";
+  Agut is "Amount in gut (mg)";
+  Ac is "Amount in central (mg)";
+  Ap is "Amount in peripheral (mg)";
+  C is "Plasma concentration (mg/L)";
+  Cper is "Peripheral concentration (mg/L)";
+  Rin is "Zero-order input rate to gut (mg/h)";
+  CL is "Clearance (L/h, age/smoking adjusted)";
+  Q is "Intercompartmental clearance (L/h)";
+  ka is "First-order absorption rate (1/h)";
+  CeA is "Effect-site concentration (mg/L) for monotonic models";
+  CeAU is "Effect-site concentration (mg/L) agonist (U-shape)";
+  CIU is "Effect-site concentration (mg/L) antagonist (U-shape)";
+  PD_linear is "Linear drug effect (ADAS-Cog)";
+  PD_Emax is "Hyperbolic Emax drug effect (ADAS-Cog)";
+  PD_Smax is "Sigmoidal drug effect (ADAS-Cog)";
+  PD_Ushape is "U-shaped (agonist - antagonist) effect (ADAS-Cog)";
+  PD_total is "Selected drug effect (ADAS-Cog)";
+  ADAS_p is "Placebo response (ADAS-Cog)";
+  S_total is "Total ADAS-Cog prediction";
+  S_v is "Dropout survival probability";
+  dose_mg is "Per-dose amount (mg), set by period events";
+  ModelType is "Drug-effect model selector (0 inactive,1 linear,2 Emax,3 sigmoidal,4 U)";
+
+end

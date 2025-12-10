@@ -1,0 +1,120 @@
+model *Murphy2016_TumorGrowth_SevenLaws()
+
+  /*
+  Domain: Tumor growth kinetics (physiological/clinical scale)
+  Seven classic ODE tumor growth laws with a simple chemotherapy term (?C0*V), as described in:
+  Murphy et al., BMC Cancer (2016) 16:163.
+  V denotes tumor volume for each law. Chemotherapy is modeled as a constant kill term C0*V.
+  Parameterization below uses the "truncated data set" fits reported in Fig. 1 of the paper.
+  Set C0 = 0 to simulate growth without chemotherapy; increase C0 to simulate treatment.
+  */
+
+  //// Compartments and Species:
+  compartment tumor;
+  species V_exp in tumor, V_mend in tumor, V_log in tumor, V_lin in tumor, V_surf in tumor;
+  species $V_gomp in tumor, V_bert in tumor;
+
+  //// Rate Rules:
+  # Gompertz (cannot be cleanly split into nonnegative production/consumption reactions over all V)
+  V_gomp' = a_gomp*V_gomp*ln(b_gomp/(V_gomp + c_gomp)) - C0*V_gomp;
+
+  //// Reactions:
+  # Exponential: dV/dt = a*V - C0*V
+  Exp_growth:       => V_exp; a_exp*V_exp;
+  Exp_chemo_kill: V_exp =>    ; C0*V_exp;
+
+  # Mendelsohn: dV/dt = a*V^b - C0*V
+  Mend_growth:       => V_mend; a_mend*V_mend^b_mend;
+  Mend_chemo_kill: V_mend =>    ; C0*V_mend;
+
+  # Logistic: dV/dt = a*V - (a/b)*V^2 - C0*V  (split into nonnegative fluxes)
+  Log_growth:             => V_log; a_log*V_log;
+  Log_self_limitation: V_log =>     ; (a_log/b_log)*V_log^2;
+  Log_chemo_kill:     V_log =>      ; C0*V_log;
+
+  # Linear: dV/dt = a*V/(V+b) - C0*V
+  Lin_growth:        => V_lin; a_lin*V_lin/(V_lin + b_lin);
+  Lin_chemo_kill: V_lin =>    ; C0*V_lin;
+
+  # Surface: dV/dt = a*V/(V+b)^3 - C0*V
+  Surf_growth:        => V_surf; a_surf*V_surf/(V_surf + b_surf)^3;
+  Surf_chemo_kill: V_surf =>    ; C0*V_surf;
+
+  # von Bertalanffy: dV/dt = a*V^(2/3) - b*V - C0*V  (split into nonnegative fluxes)
+  Bert_growth:         => V_bert; a_bert*V_bert^(2.0/3.0);
+  Bert_natural_loss: V_bert =>    ; b_bert*V_bert;
+  Bert_chemo_kill:   V_bert =>    ; C0*V_bert;
+
+  //// Species initializations:
+  V_exp  = V0;
+  V_mend = V0;
+  V_log  = V0;
+  V_lin  = V0;
+  V_surf = V0;
+  V_gomp = V0;
+  V_bert = V0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Common initial volume and chemotherapy level
+  V0 = 1;     # initial tumor volume (arbitrary units)
+  C0 = 0;     # chemotherapy kill coefficient (per time); set >0 to activate treatment
+
+  # Exponential (truncated-data fit)
+  a_exp = 0.0262;
+
+  # Mendelsohn (truncated-data fit)
+  a_mend = 0.286;
+  b_mend = 0.616;
+
+  # Logistic (truncated-data fit)
+  a_log = 0.0370;
+  b_log = 2000;
+
+  # Linear (truncated-data fit)
+  a_lin = 58.7;
+  b_lin = 1690;
+
+  # Surface (truncated-data fit)
+  a_surf = 0.265;
+  b_surf = 506;
+
+  # Gompertz (truncated-data fit)
+  a_gomp = 0.279;
+  b_gomp = 13900;
+  c_gomp = 12000;
+
+  # von Bertalanffy (truncated-data fit)
+  a_bert = 0.306;
+  b_bert = 0.0119;
+
+  //// Other declarations:
+  const tumor, V0, C0, a_exp, a_mend, b_mend, a_log, b_log, a_lin, b_lin, a_surf, b_surf, a_gomp, b_gomp, c_gomp, a_bert, b_bert;
+
+  //// Display Names:
+  tumor is "Tumor compartment (volume = 1 arbitrary)";
+  V_exp is "Tumor volume (Exponential growth law)";
+  V_mend is "Tumor volume (Mendelsohn growth law)";
+  V_log is "Tumor volume (Logistic growth law)";
+  V_lin is "Tumor volume (Linear-limited growth law)";
+  V_surf is "Tumor volume (Surface growth law)";
+  V_gomp is "Tumor volume (Gompertz growth law)";
+  V_bert is "Tumor volume (von Bertalanffy growth law)";
+  Exp_growth is "Exponential: baseline proliferation";
+  Exp_chemo_kill is "Exponential: chemotherapy kill";
+  Mend_growth is "Mendelsohn: baseline proliferation";
+  Mend_chemo_kill is "Mendelsohn: chemotherapy kill";
+  Log_growth is "Logistic: baseline proliferation";
+  Log_self_limitation is "Logistic: self-limiting crowding";
+  Log_chemo_kill is "Logistic: chemotherapy kill";
+  Lin_growth is "Linear: saturation-limited growth";
+  Lin_chemo_kill is "Linear: chemotherapy kill";
+  Surf_growth is "Surface: surface-limited proliferation";
+  Surf_chemo_kill is "Surface: chemotherapy kill";
+  Bert_growth is "Bertalanffy: surface-area-driven growth";
+  Bert_natural_loss is "Bertalanffy: natural loss";
+  Bert_chemo_kill is "Bertalanffy: chemotherapy kill";
+
+end

@@ -1,0 +1,213 @@
+model *Aguda1999_G2_DNA_Damage_Checkpoint()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Chk1 in cell, Chk1P in cell, Rad3 in cell, p53 in cell;
+  species preMPF in cell, MPF in cell;
+  species p21 in cell, p21_MPF in cell;
+  species iCdc25 in cell, aCdc25 in cell, iCdc25Ps216 in cell, aCdc25Ps216 in cell, iCdc25Ps216_p14_3_3 in cell;
+  species Wee1 in cell, Wee1P in cell;
+  species p14_3_3 in cell;
+
+  //// Reactions:
+  # Signal transduction (Rad3/Chk1 and p53)
+  R1_Chk1_activation: Chk1 + Rad3 -> Chk1P + Rad3; k1*Chk1*Rad3;
+  Rm1_Chk1_dephos: Chk1P -> Chk1; k_1*Chk1P;
+
+  R4_Rad3_activation:  => Rad3; k4;
+  R5_Rad3_decay: Rad3 => ; k5*Rad3;
+
+  R10_p53_activation:  => p53; k10;
+  R11_p53_decay: p53 => ; k11*p53;
+
+  # Cdc25 subsystem (activation/inactivation, Ser216 phosphorylation, 14-3-3 binding)
+  R7_iCdc25_to_aCdc25: iCdc25 => aCdc25; k7*MPF*iCdc25 + kPlk1*iCdc25;
+  Rm7_aCdc25_to_iCdc25: aCdc25 => iCdc25; k_7*aCdc25;
+
+  R2_aCdc25_S216_phos: aCdc25 => aCdc25Ps216; k2*Chk1P*aCdc25 + kctak2*aCdc25;
+  Rm2_aCdc25_S216_dephos: aCdc25Ps216 => aCdc25; k_2*aCdc25Ps216;
+
+  R2p_iCdc25_S216_phos: iCdc25 => iCdc25Ps216; k2p*Chk1P*iCdc25 + kctak2p*iCdc25;
+  Rm2p_iCdc25_S216_dephos: iCdc25Ps216 => iCdc25; k_2p*iCdc25Ps216;
+
+  R18_iCdc25Ps216_to_aCdc25Ps216: iCdc25Ps216 => aCdc25Ps216; k18*MPF*iCdc25Ps216 + kPlk1p*iCdc25Ps216;
+  Rm18_aCdc25Ps216_to_iCdc25Ps216: aCdc25Ps216 => iCdc25Ps216; k_18*aCdc25Ps216;
+
+  R3p_bind_14_3_3: iCdc25Ps216 + p14_3_3 => iCdc25Ps216_p14_3_3; k3p*iCdc25Ps216*p14_3_3;
+  Rm3p_unbind_14_3_3: iCdc25Ps216_p14_3_3 => iCdc25Ps216 + p14_3_3; k_3p*iCdc25Ps216_p14_3_3;
+
+  R6_14_3_3_induction_by_p53:  => p14_3_3; k6*p53;
+  R13_14_3_3_basal_expression:  => p14_3_3; k13;
+  R12_14_3_3_degradation: p14_3_3 => ; k12*p14_3_3;
+
+  # Wee1 subsystem (activation/inactivation, expression/degradation)
+  R8_Wee1_phos: Wee1 => Wee1P; k8*MPF*Wee1 + k8p*Wee1;
+  Rm8_Wee1P_dephos: Wee1P => Wee1; k_8*Wee1P;
+
+  R16_Wee1_expression:  => Wee1; k16;
+  R17_Wee1P_degradation: Wee1P => ; k17*Wee1P;
+
+  # MPF subsystem (activation/deactivation, synthesis/degradation; p53 inhibition of synthesis)
+  R9_preMPF_to_MPF: preMPF => MPF; k9*(aCdc25 + aCdc25Ps216)*preMPF + k9p*preMPF;
+  Rm9_MPF_to_preMPF: MPF => preMPF; k_9*MPF*Wee1;
+
+  R14_preMPF_synthesis:  => preMPF; k14/(1 + k14p*p53);
+  R15_MPF_degradation: MPF => ; k15*MPF*MPF;
+
+  # p21 subsystem (expression/degradation and binding to MPF)
+  R20_p21_expression_p53_dep:  => p21; k20*p53;
+  R21_p21_expression_p53_indep:  => p21; k21;
+  R22_p21_degradation: p21 => ; k22*p21;
+
+  R23_p21_bind_MPF: MPF + p21 => p21_MPF; k23*MPF*p21;
+  Rm23_p21_unbind_MPF: p21_MPF => MPF + p21; k_23*p21_MPF;
+
+  //// Species initializations:
+  Chk1 = 1;
+  Chk1P = 0;
+  Rad3 = 0;
+  p53 = 0;
+
+  preMPF = 0.01;
+  MPF = 0;
+
+  p21 = 0;
+  p21_MPF = 0;
+
+  iCdc25 = 0.01;
+  aCdc25 = 0;
+  iCdc25Ps216 = 0;
+  aCdc25Ps216 = 0;
+  iCdc25Ps216_p14_3_3 = 0;
+
+  Wee1 = 0.01;
+  Wee1P = 0;
+
+  p14_3_3 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # Signal transduction
+  k1 = 1;
+  k_1 = 0.5;
+  k4 = 0.01;
+  k5 = 0.1;
+  k10 = 0.01;
+  k11 = 0.1;
+
+  # Cdc25 subsystem
+  k7 = 1;
+  kPlk1 = 0;     # Plk1 contribution ignored in whole-system simulations per text
+  k_7 = 0.1;
+
+  k2 = 1;
+  kctak2 = 0;    # CTAK1 contribution ignored in whole-system simulations per text
+  k_2 = 0.1;
+
+  k2p = 1;
+  kctak2p = 0;   # CTAK1 contribution ignored
+  k_2p = 0.1;
+
+  k18 = 1;
+  kPlk1p = 0;    # Plk1 contribution ignored
+  k_18 = 0.1;
+
+  k3p = 1;
+  k_3p = 0.1;
+
+  k6 = 0.1;
+  k13 = 0.001;
+  k12 = 0.1;
+
+  # Wee1 subsystem
+  k8 = 1;
+  k8p = 0.1;
+  k_8 = 0.1;
+
+  k16 = 0.01;
+  k17 = 0.1;
+
+  # MPF subsystem
+  k9 = 1;
+  k9p = 0.01;
+  k_9 = 1;
+
+  k14 = 0.01;
+  k14p = 1;
+
+  k15 = 0.001;
+
+  # p21 subsystem
+  k20 = 0.1;
+  k21 = 0.001;
+  k22 = 0.1;
+
+  k23 = 1;
+  k_23 = 0.1;
+
+  //// Other declarations:
+  const cell, k1, k_1, k4, k5, k10, k11, k7, kPlk1, k_7, k2, kctak2, k_2, k2p, kctak2p, k_2p, k18, kPlk1p, k_18, k3p, k_3p, k6, k13, k12, k8, k8p, k_8, k16, k17, k9, k9p, k_9, k14, k14p, k15, k20, k21, k22, k23, k_23;
+
+  //// Display Names:
+  cell is "Cell compartment";
+  Chk1 is "Checkpoint kinase 1 (unphosphorylated)";
+  Chk1P is "Checkpoint kinase 1 (phosphorylated/active)";
+  Rad3 is "Rad3/ATM activity";
+  p53 is "p53";
+  preMPF is "Inactive Cdc2/Cyclin B (preMPF)";
+  MPF is "Active Cdc2/Cyclin B (MPF)";
+  p21 is "CDK inhibitor p21";
+  p21_MPF is "p21 bound to MPF";
+  iCdc25 is "Cdc25 inactive (hypophosphorylated)";
+  aCdc25 is "Cdc25 active";
+  iCdc25Ps216 is "Cdc25 inactive phosphorylated at Ser-216";
+  aCdc25Ps216 is "Cdc25 active phosphorylated at Ser-216";
+  iCdc25Ps216_p14_3_3 is "Cdc25 Ser-216-P inactive bound to 14-3-3";
+  Wee1 is "Wee1 kinase";
+  Wee1P is "Wee1 hyperphosphorylated";
+  p14_3_3 is "14-3-3 protein";
+  R1_Chk1_activation is "Rad3/ATM-mediated Chk1 activation";
+  Rm1_Chk1_dephos is "Chk1P dephosphorylation";
+  R4_Rad3_activation is "DNA-damage-driven Rad3 activation (effective source)";
+  R5_Rad3_decay is "Rad3 decay";
+  R10_p53_activation is "DNA-damage-driven p53 activation (effective source)";
+  R11_p53_decay is "p53 decay/inactivation";
+  R7_iCdc25_to_aCdc25 is "Activation of Cdc25 by MPF/Plk1";
+  Rm7_aCdc25_to_iCdc25 is "Inactivation of Cdc25";
+  R2_aCdc25_S216_phos is "Ser-216 phosphorylation of active Cdc25 by Chk1/CTAK1";
+  Rm2_aCdc25_S216_dephos is "Ser-216 dephosphorylation of aCdc25Ps216";
+  R2p_iCdc25_S216_phos is "Ser-216 phosphorylation of inactive Cdc25 by Chk1/CTAK1";
+  Rm2p_iCdc25_S216_dephos is "Ser-216 dephosphorylation of iCdc25Ps216";
+  R18_iCdc25Ps216_to_aCdc25Ps216 is "Activation of Ser-216-P Cdc25 by MPF/Plk1";
+  Rm18_aCdc25Ps216_to_iCdc25Ps216 is "Inactivation of aCdc25Ps216";
+  R3p_bind_14_3_3 is "Binding of 14-3-3 to iCdc25Ps216";
+  Rm3p_unbind_14_3_3 is "Release of 14-3-3 from iCdc25Ps216 complex";
+  R6_14_3_3_induction_by_p53 is "p53-dependent induction of 14-3-3";
+  R13_14_3_3_basal_expression is "Basal expression of 14-3-3";
+  R12_14_3_3_degradation is "Degradation of 14-3-3";
+  R8_Wee1_phos is "Phosphorylation of Wee1 (MPF-dependent and independent)";
+  Rm8_Wee1P_dephos is "Dephosphorylation of Wee1P";
+  R16_Wee1_expression is "Wee1 expression (source)";
+  R17_Wee1P_degradation is "Degradation of Wee1P";
+  R9_preMPF_to_MPF is "Activation of MPF by Cdc25 and Cdc25-independent path";
+  Rm9_MPF_to_preMPF is "Inactivation of MPF by Wee1";
+  R14_preMPF_synthesis is "preMPF (cyclin B/Cdc2) synthesis (p53-inhibited)";
+  R15_MPF_degradation is "Degradation of MPF (autostimulated)";
+  R20_p21_expression_p53_dep is "p53-dependent p21 expression";
+  R21_p21_expression_p53_indep is "p53-independent p21 expression";
+  R22_p21_degradation is "p21 degradation";
+  R23_p21_bind_MPF is "p21 binding to MPF";
+  Rm23_p21_unbind_MPF is "p21/MPF complex dissociation";
+
+end
+
+/* Notes and unmapped/assumed data:
+- Scientific domain: molecular/cellular checkpoint signaling and cell-cycle regulation.
+- The kinetic forms follow Table 1 and the ODE structure in Table 2 of Aguda (1999), mapping each Vi to an explicit reaction with the corresponding rate law.
+- CTAK1 and Plk1 contributions are included as parameters (kctak2, kctak2p, kPlk1, kPlk1p) but initialized to 0 to reflect the statement that their effects can be ignored in the whole-system simulations.
+- The effective ?DNA damage? stimulus is represented implicitly via constant-source activations of Rad3 (k4) and p53 (k10), consistent with v4 and v10 being fixed-rate activations.
+- Initial conditions and many parameter values are not explicitly quantified in the provided text; placeholder dimensionless values are assigned to ensure the model loads and runs. Replace these with experimentally based values as needed.
+- The nuclear transport processes (vin, vex) mentioned in the text and Fig. 8 were not included due to incomplete expressions in the provided excerpt.
+*/

@@ -1,0 +1,2 @@
+,N° paper,Attempt,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),AAFE evaluation (N°correct/N°paper),N° Boundary sp.(query/original),N° Floating sp.(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original)
+gpt-5,12,1,0.4166666666666667,1.0,1.0,0.3333333333333333,inf,inf,inf,1.08,1.23

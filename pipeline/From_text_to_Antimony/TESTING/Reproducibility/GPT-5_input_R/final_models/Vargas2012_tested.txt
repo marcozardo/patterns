@@ -1,0 +1,104 @@
+model *HernandezVargas2012_InnateIFN_NK()
+
+  //// Compartments and Species:
+  compartment lung;
+  species U_H in lung, U_E in lung, U_I in lung, U_R in lung, V in lung;
+  species IFN in lung, K in lung;
+
+  //// Assignment Rules:
+  SH := UH0*delta_H;        # Healthy epithelial cell influx (steady-state source)
+  SK := K0*delta_K;         # NK basal production (steady-state source)
+
+  //// Reactions:
+  source_UH:         => U_H;                lung*SH;
+  infection:         U_H => U_E;            lung*(k_I*U_H*V);             # virus acts catalytically via kinetic law
+  IFN_protection:    U_H => U_R;            lung*(k_R*U_H*IFN);
+  UH_death:          U_H => ;               lung*(delta_H*U_H);
+
+  eclipse_progress:  U_E => U_I;            lung*(k_E*U_E);
+  NK_clear_E:        U_E => ;               lung*(q_K*U_E*K);
+
+  UI_clearance:      U_I => ;               lung*(delta_I*U_I);
+  NK_clear_I:        U_I => ;               lung*(q_K*U_I*K);
+
+  virus_production:  => V;                  lung*(rho_V*U_I);
+  virus_clearance:   V => ;                 lung*(delta_V*V);
+
+  IFN_production:    => IFN;                lung*(a_I*U_I);
+  IFN_decay:         IFN => ;               lung*(delta_IFN*IFN);
+
+  NK_basal_prod:     => K;                  lung*(SK);
+  NK_recruitment:    => K;                  lung*(Phi_K*U_I);
+  NK_death:          K => ;                 lung*(delta_K*K);
+
+  UR_death:          U_R => ;               lung*(delta_R*U_R);
+
+  //// Species initializations:
+  U_H = 5e8;     # initial healthy epithelial cells
+  U_E = 0;       # eclipse-phase cells
+  U_I = 0;       # productively infected epithelial cells
+  U_R = 0;       # IFN-induced resistant epithelial cells
+  V   = 1e-3;    # initial viral load (copies/ml)
+  IFN = 0;       # interferon-I (fold-change, dimensionless proxy)
+  K   = 8e5;     # natural killer cells in lung
+
+  //// Compartment initializations:
+  lung = 1;      # volume unit (e.g., mL)
+
+  //// Variable initializations:
+  UH0 = 5e8;         # baseline epithelial cells used for SH steady source
+  K0  = 8e5;         # baseline NK used for SK steady source
+
+  k_I = 3e-3;        # mL/day
+  k_R = 7;           # 1/day
+  k_E = 0.5;         # 1/day
+  q_K = 3e-6;        # 1/(cell*day)
+  rho_V = 1e-2;      # (TCID50/ml)/(cell*day)
+  a_I = 3e-6;        # (fold change)/(cell*day)
+  Phi_K = 1e-3;      # 1/day
+  delta_H = 0.01;    # 1/day
+  delta_I = 0.01;    # 1/day
+  delta_R = 0.01;    # 1/day
+  delta_IFN = 4;     # 1/day
+  delta_V = 5.2;     # 1/day
+  delta_K = 0.04;    # 1/day
+
+  //// Other declarations:
+  var SH, SK;
+  const lung, UH0, K0, k_I, k_R, k_E, q_K, rho_V, a_I, Phi_K, delta_H, delta_I, delta_R, delta_IFN, delta_V, delta_K;
+
+  //// Display Names:
+  lung is "Lung compartment";
+  U_H is "Healthy epithelial cells";
+  U_E is "Eclipse-phase epithelial cells";
+  U_I is "Productively infected epithelial cells";
+  U_R is "IFN-induced resistant epithelial cells";
+  V is "Virus (e.g., TCID50/ml)";
+  IFN is "Type-I interferon (fold-change proxy)";
+  K is "Natural killer cells";
+  SH is "Healthy cell source (steady state)";
+  SK is "NK basal source (steady state)";
+  infection is "Infection of healthy cells by virus";
+  IFN_protection is "IFN-mediated protection to resistant state";
+  eclipse_progress is "Progression from eclipse to productively infected";
+  NK_clear_E is "NK killing of eclipse-phase cells";
+  NK_clear_I is "NK killing of infected cells";
+  virus_production is "Virus production by infected cells";
+  virus_clearance is "Virus clearance";
+  IFN_production is "IFN-I production by infected/APC compartment";
+  IFN_decay is "IFN-I degradation";
+  NK_basal_prod is "Basal NK production";
+  NK_recruitment is "NK recruitment driven by infected cells";
+  NK_death is "NK death";
+  UH_death is "Natural death of healthy cells";
+  UI_clearance is "Clearance of infected cells";
+  UR_death is "Natural death of resistant cells";
+end
+
+/* Notes and mapping decisions:
+- The ODE system (1) from the paper is encoded as reactions with mass-action-like kinetics, using V and IFN as catalysts in kinetic laws where appropriate (not consumed).
+- SH and SK are defined per Table 1 as steady-state sources: SH = UH0*delta_H and SK = K0*delta_K. UH0 and K0 are constants set to the initial values of U_H and K, respectively.
+- Parameter symbols from the text were unified to valid identifiers: k_I (infection), k_R (IFN protection), k_E (eclipse exit), q_K (NK killing), rho_V (virus production), a_I (IFN production), Phi_K (NK recruitment), and deltas for deaths/clearance.
+- Units in text (e.g., mL/day, 1/day) are provided in comments; the model uses lung = 1 so scaling by the compartment does not alter magnitudes.
+- Initial conditions follow Section 3: U_H = 5e8 cells; V = 1e-3 copies/ml; U_E = U_I = U_R = IFN = 0; K = 8e5 cells.
+*/

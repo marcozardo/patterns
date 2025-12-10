@@ -1,0 +1,139 @@
+model *Muller2008_MAPK_bifan_reduced()
+
+  //// Compartments and Species:
+  compartment cytosol;
+  species CRAF_i in cytosol, CRAF_a in cytosol, BRAF_i in cytosol, BRAF_a in cytosol, MAPK_i in cytosol, MAPK_a in cytosol, MKP1 in cytosol;
+  species $FGFR_act in cytosol, $MC1R_act in cytosol, $PKA_act in cytosol;
+
+  //// Assignment Rules:
+  PKA_act := k_PKA_gain*MC1R_act*(1 - inh_PKA);  # MC1R(cAMP)->PKA; H89 inhibition via inh_PKA
+
+  //// Rate Rules:
+
+  //// Reactions:
+  # FGFR- and MAPK-feedback-driven activation of C-Raf
+  R1_CRAF_activation: CRAF_i => CRAF_a; cytosol*(k_FGFR_CRAF*FGFR_act*CRAF_i + k_MAPK_feedback*MAPK_a*CRAF_i);
+  # PKA-driven and basal deactivation of C-Raf
+  R2_CRAF_deactivation: CRAF_a => CRAF_i; cytosol*(k_PKA_CRAF*PKA_act*CRAF_a + k_CRAF_off*CRAF_a);
+
+  # FGFR- and MC1R-driven activation of B-Raf
+  R3_BRAF_activation: BRAF_i => BRAF_a; cytosol*(k_FGFR_BRAF*FGFR_act*BRAF_i + k_MC1R_BRAF*MC1R_act*BRAF_i);
+  # Basal deactivation of B-Raf
+  R4_BRAF_deactivation: BRAF_a => BRAF_i; cytosol*(k_BRAF_off*BRAF_a);
+
+  # MAPK activation by active Raf isoforms
+  R5_MAPK_activation: MAPK_i => MAPK_a; cytosol*(k_RAF_MAPK*(CRAF_a + BRAF_a)*MAPK_i);
+  # MAPK deactivation via MKP1 and basal off-rate
+  R6_MAPK_deactivation: MAPK_a => MAPK_i; cytosol*(k_MKP1_MAPK*MKP1*MAPK_a + k_MAPK_off*MAPK_a);
+
+  # MKP1 induction by MAPK and degradation
+  R7_MKP1_synthesis:  => MKP1; cytosol*(k_syn_MKP1*MAPK_a);
+  R8_MKP1_degradation: MKP1 => ; cytosol*(k_deg_MKP1*MKP1);
+
+  //// Events:
+  # 5-min MSH pulse followed by 5-min FGF pulse (gating experiment)
+  _E0: at time >= ton_MSH: MC1R_act = MSH_pulse_level;
+  _E1: at time >= toff_MSH: MC1R_act = 0;
+  _E2: at time >= ton_FGF: FGFR_act = FGF_pulse_level;
+  _E3: at time >= toff_FGF: FGFR_act = 0;
+
+  //// Species initializations:
+  CRAF_i = CRAF_tot;
+  CRAF_a = 0;
+  BRAF_i = BRAF_tot;
+  BRAF_a = 0;
+  MAPK_i = MAPK_tot;
+  MAPK_a = 0;
+  MKP1 = MKP1_0;
+  FGFR_act = 0;
+  MC1R_act = 0;
+  # PKA_act is defined by assignment rule (no numeric initialization)
+
+  //// Compartment initializations:
+  cytosol = 1;
+
+  //// Variable initializations:
+  # C-Raf regulation
+  k_FGFR_CRAF = 1;
+  k_MAPK_feedback = 1;
+  k_PKA_CRAF = 1;
+  k_CRAF_off = 0.05;
+
+  # B-Raf regulation
+  k_FGFR_BRAF = 0.6;
+  k_MC1R_BRAF = 0.8;
+  k_BRAF_off = 0.1;
+
+  # MAPK and MKP1 dynamics
+  k_RAF_MAPK = 1;
+  k_MKP1_MAPK = 0.5;
+  k_MAPK_off = 0.05;
+  k_syn_MKP1 = 0.1;
+  k_deg_MKP1 = 0.05;
+
+  # MC1R->PKA mapping and its pharmacological inhibition flag
+  k_PKA_gain = 1;
+  inh_PKA = 0;  # set to 1 to mimic PKA inhibition (e.g., H89 pretreatment)
+
+  # Stimulus protocol (times in arbitrary time units; here minutes)
+  ton_MSH = 0;
+  toff_MSH = 5;
+  ton_FGF = 5;
+  toff_FGF = 10;
+
+  # Stimulus amplitudes
+  MSH_pulse_level = 1;
+  FGF_pulse_level = 1;
+
+  # Pools/totals
+  CRAF_tot = 1;
+  BRAF_tot = 1;
+  MAPK_tot = 1;
+  MKP1_0 = 0.1;
+
+  //// Other declarations:
+  const cytosol;
+  var inh_PKA;
+  const k_FGFR_CRAF, k_MAPK_feedback, k_PKA_CRAF, k_CRAF_off;
+  const k_FGFR_BRAF, k_MC1R_BRAF, k_BRAF_off;
+  const k_RAF_MAPK, k_MKP1_MAPK, k_MAPK_off, k_syn_MKP1, k_deg_MKP1;
+  const k_PKA_gain, ton_MSH, toff_MSH, ton_FGF, toff_FGF, MSH_pulse_level, FGF_pulse_level;
+  const CRAF_tot, BRAF_tot, MAPK_tot, MKP1_0;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  cytosol is "Cellular space";
+  CRAF_i is "C-Raf (inactive)";
+  CRAF_a is "C-Raf (active)";
+  BRAF_i is "B-Raf (inactive)";
+  BRAF_a is "B-Raf (active)";
+  MAPK_i is "ERK1/2 (inactive)";
+  MAPK_a is "ERK1/2 (active)";
+  MKP1 is "MAPK phosphatase (MKP1)";
+  FGFR_act is "FGFR input (pulse)";
+  MC1R_act is "MC1R input (pulse)";
+  PKA_act is "PKA activity (from MC1R/cAMP)";
+  R1_CRAF_activation is "C-Raf activation by FGFR and MAPK feedback";
+  R2_CRAF_deactivation is "C-Raf deactivation by PKA and basal off";
+  R3_BRAF_activation is "B-Raf activation by FGFR and MC1R";
+  R4_BRAF_deactivation is "B-Raf basal deactivation";
+  R5_MAPK_activation is "MAPK activation by active Rafs";
+  R6_MAPK_deactivation is "MAPK deactivation via MKP1 and basal off";
+  R7_MKP1_synthesis is "MKP1 induction by MAPK";
+  R8_MKP1_degradation is "MKP1 degradation";
+end
+
+/* 
+Scientific domain: molecular/cellular signal transduction (RAF-MEK-ERK MAPK network in melanoma).
+
+Unmapped/assumed details:
+- Numerical parameter values and pool sizes were not provided in the text; placeholder values are assigned to yield qualitative behaviors (transient vs sustained).
+- Time units are arbitrary (interpreted as minutes to match experiments); adjust as needed.
+- Reduced motif encodes the partially incoherent bifan: FGFR positively regulates B-Raf and C-Raf; MC1R positively regulates B-Raf and inhibits C-Raf via PKA. Positive feedback from MAPK to C-Raf and negative feedback via MKP1 are included per text.
+- To simulate specific protocols:
+  * MSH-only: set ton_FGF and toff_FGF beyond simulation window or set FGF_pulse_level = 0.
+  * FGF-only: set MSH_pulse_level = 0 or move MSH pulse outside window.
+  * PKA inhibition (H89): set inh_PKA = 1 before starting simulation (or add an event at time >= 0 setting inh_PKA = 1).
+- Additional loops (e.g., MAPK->B-Raf negative feedback, PKC-mediated feed-forward to AC) were discussed but removed/uncertain in the constrained model; hence not included.
+*/

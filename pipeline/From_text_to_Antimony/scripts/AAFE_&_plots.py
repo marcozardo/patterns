@@ -79,21 +79,36 @@ def AAFE(ground, gen):
 
         return 10 ** (sum(terms) / len(terms))
 
-
 def partial_reproducibility(obs_matrix, gen_matrix):
-    num_vars = len(obs_matrix[0]) - 1   # -1 since ignore time column
-    
-    # var_idx parte da 1, cioè dalla prima variabile
-    for var_idx in range(1, num_vars + 1):
+    obs_cols = len(obs_matrix[0]) - 1
+    gen_cols = len(gen_matrix[0]) - 1  # -1 since ignore time column
+
+    shared_vars = min(obs_cols, gen_cols) 
+
+    for var_idx in range(1, shared_vars + 1):
         obs_series = [row[var_idx] for row in obs_matrix]
         gen_series = [row[var_idx] for row in gen_matrix]
         
         aafe = AAFE(obs_series, gen_series)
-        
         if aafe is not None and aafe <= 2:
-            return 0   # at least one riproducible plot
+            return 0
 
-    return 1           # no reproducible plot
+    return 1
+
+#def partial_reproducibility(obs_matrix, gen_matrix):
+#    num_vars = len(obs_matrix[0]) - 1   # -1 since ignore time column
+    
+    # var_idx begin from 1, first variable
+#    for var_idx in range(1, num_vars + 1):
+#        obs_series = [row[var_idx] for row in obs_matrix]
+#        gen_series = [row[var_idx] for row in gen_matrix]
+        
+#        aafe = AAFE(obs_series, gen_series)
+        
+#        if aafe is not None and aafe <= 2:
+#            return 0   # at least one riproducible plot
+
+#    return 1           # no reproducible plot
 
 # Plots:
 
@@ -126,13 +141,39 @@ def make_single_plot(ts_ground, outfile):
 def make_plots(ts_ground, ts_gen, outfile):
      # --- get column indices ---
     time_col = ts_ground.colnames.index("time")
+    
+    # species in ground
+    species_ground = [c for c in ts_ground.colnames if c != "time"]
+    species_gen = [c for c in ts_gen.colnames if c != "time"]
+    
     # all species = all columns except "time"
-    species = [c for c in ts_ground.colnames if c != "time"]
+    #species = [c for c in ts_ground.colnames if c != "time"]
+
+    N_ground = len(species_ground)
+    N_gen = len(species_gen)
+
+    #final number of species to compare
+
+    N = min(N_ground, N_gen)
+
+    # first species
+    species_ground = species_ground[:N]
+    species_gen = species_gen[:N]
 
     # extract time (1D array)
     time = ts_ground[:, time_col]
 
-    n = len(species)
+    #n = len(species)
+
+    n = N
+    
+    # no variable/species to plot
+    if n == 0:
+        plt.figure()
+        plt.text(0.5,0.5, "No variables to plot", ha="center", va="center")
+        plt.savefig(outfile, dpi=300)
+        plt.close()
+        return
 
     # --- compute subplot grid: 2 columns ---
     ncols = 2
@@ -147,19 +188,23 @@ def make_plots(ts_ground, ts_gen, outfile):
     # axes might be 2D -> flatten for easy iteration
     axes = axes.flatten()
 
-    for ax, sp in zip(axes, species):
-        sp_col = ts_ground.colnames.index(sp)
-        # ground-truth (solid)
-        ax.plot(time, ts_ground[:, sp_col], label="Ground-truth", linewidth=2)
-        # generated (dashed)
-        ax.plot(time, ts_gen[:, sp_col], '--', label="Generated", linewidth=2)
-        ax.set_ylabel(sp)
-        ax.legend()
+    for ax, sp_ground, sp_gen in zip(axes, species_ground, species_gen):
+        #sp_col = ts_ground.colnames.index(sp)
+        sp_col_ground = ts_ground.colnames.index(sp_ground)
+        sp_col_gen = ts_gen.colnames.index(sp_gen)
 
-    axes[-1].set_xlabel("Time")
+        # ground-truth (solid)
+        ax.plot(time, ts_ground[:, sp_col_ground], label="Ground-truth", linewidth=2)
+        # generated (dashed)
+        ax.plot(time, ts_gen[:, sp_col_gen], '--', label="Generated", linewidth=2)
+        ax.set_ylabel(sp_ground)
+        ax.legend()
+    
+    if n>0:
+        axes[-1].set_xlabel("Time")
 
     # turn off any unused axes (if species count is odd)
-    for empty_ax in axes[len(species):]:
+    for empty_ax in axes[n:]:
         empty_ax.axis("off")
 
     fig.suptitle("Ground-truth vs Generated Simulation", y=0.995)

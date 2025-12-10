@@ -1,0 +1,69 @@
+model *Jiao2018_AML_feedback()
+
+  //// Compartments and Species:
+  compartment bone_marrow;
+  species $S in bone_marrow, $A in bone_marrow, $D in bone_marrow, $L in bone_marrow, $T in bone_marrow;
+
+  //// Assignment Rules:
+  Z1 := S;                     // niche occupancy for stem-cell compartment
+  Z2 := A + L;                 // niche occupancy for progenitor/leukemia compartment
+  p1 := P10/(1 + g1*D^n);      // self-renewal probability for S under feedback from D
+  p2 := P20/(1 + g2*D^m);      // self-renewal probability for A under feedback from D (uses Hill exponent m)
+  v1 := V10/(1 + h1*D^n);      // division rate for S under feedback from D
+  v2 := V20/(1 + h2*D^n);      // division rate for A under feedback from D
+  p30 := P30;
+  v30 := V30;
+
+  //// Rate Rules:
+  S' = (p1*(K1 - Z1) - (1 - p1))*v1*S;
+  A' = 2*(1 - p1)*v1*S + (p2*(K2 - Z2) - (1 - p2))*v2*A;
+  D' = 2*(1 - p2)*v2*A - d1*D;
+  L' = (p30*(K2 - Z2) - (1 - p30))*v30*L;
+  T' = 2*(1 - p30)*v30*L - d2*T;
+
+  //// Species initializations:
+  S = 10;   // initial hematopoietic stem cells (example from Fig. 5)
+  A = 0;    // initial progenitor cells
+  D = 0;    // initial differentiated healthy cells
+  L = 10;   // initial leukemia stem cells (example from Fig. 5)
+  T = 0;    // initial terminal leukemia cells
+
+  //// Compartment initializations:
+  bone_marrow = 1;
+
+  //// Variable initializations:
+  P10 = 0.65;
+  P20 = 0.68;
+  P30 = 0.80;
+  V10 = 0.50;
+  V20 = 0.72;
+  V30 = 0.70;
+  d1 = 0.275;
+  d2 = 0.30;
+  g1 = 0.03;
+  g2 = 0.025;
+  h1 = 0.2;
+  h2 = 0.11;
+  m = 1;
+  n = 1;
+  K1 = 1;
+  K2 = 1;
+
+  //// Other declarations:
+  var Z1, Z2, p1, p2, p30, v1, v2, v30;
+  const bone_marrow, P10, P20, P30, V10, V20, V30, d1, d2, g1, g2, h1, h2, m, n, K1, K2;
+
+  //// Display Names:
+  bone_marrow is "Bone marrow compartment";
+  S is "Haematopoietic stem cells";
+  A is "Haematopoietic progenitor cells";
+  D is "Terminally differentiated healthy cells";
+  L is "Leukaemia stem cells";
+  T is "Terminal leukaemia cells";
+  Z1 is "Niche occupancy (S)";
+  Z2 is "Niche occupancy (A+L)";
+  p1 is "Self-renewal probability of S (feedback)";
+  p2 is "Self-renewal probability of A (feedback)";
+  v1 is "Division rate of S (feedback)";
+  v2 is "Division rate of A (feedback)";
+end

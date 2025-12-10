@@ -1,0 +1,13 @@
+Unnamed: 0,N° Boundary sp.,N° Floating sp.,N° Reactions,N° Compartments,N° Glob.Parameters
+Admon2017_tested.txt,0,4,12,1,18
+Aguda1999_tested.txt,0,16,32,1,39
+Diedrichs2018_tested.txt,12,0,0,1,76
+Heldt2018_tested.txt,4,11,22,1,36
+Jiao2018_tested.txt,5,0,0,1,24
+Khajanchi2015_tested.txt,0,2,8,1,12
+Lockwood2006_tested.txt,0,3,5,2,51
+Moore2004_tested.txt,0,3,10,1,12
+Muller2008_tested.txt,3,7,9,1,25
+Murphy2016_tested.txt,1,6,14,1,16
+Vargas2012_tested.txt,0,7,16,1,17
+Wodarz2007_tested.txt,0,17,27,1,20

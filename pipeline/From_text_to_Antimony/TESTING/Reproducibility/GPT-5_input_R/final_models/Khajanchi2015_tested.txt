@@ -1,0 +1,77 @@
+model *Khajanchi2015_TumorImmune()
+
+  //// Compartments and Species:
+  compartment tumor_site;
+  species E in tumor_site, T in tumor_site;
+
+  //// Assignment Rules:
+  // not present
+
+  //// Rate Rules:
+  // not present
+
+  //// Reactions:
+  Source_IL2:            => E; tumor_site*s*epsilon1;
+  Recruitment_to_E:      => E; tumor_site*(p*E*T/(g + T));
+  EC_inactivation_by_TC: E  -> ; tumor_site*(m*E*T);
+  EC_natural_death:      E  -> ; tumor_site*(d*E);
+
+  Tumor_growth:                 => T; tumor_site*(a*T);
+  Carrying_capacity_limitation: T  -> ; tumor_site*(a*b*T^2);
+  Tumor_killing_by_E:           T  -> ; tumor_site*(n*E*T);
+  ACI_kill:                     T  -> ; tumor_site*(epsilon2*T);
+
+  //// Events:
+  // not present
+
+  //// Species initializations:
+  E = 1.60811e6;   # effector cells (cells)
+  T = 8.28638e6;   # tumor cells (cells)
+
+  //// Compartment initializations:
+  tumor_site = 1;
+
+  //// Variable initializations:
+  s = 1.3e4;       # cells/day, constant source of effector cells (baseline)
+  p = 0.1245;      # 1/day, maximal EC proliferation rate
+  g = 2.019e7;     # cells, half-saturation constant
+  m = 3.422e-10;   # 1/(cell*day), EC inactivation by tumor
+  d = 0.0412;      # 1/day, EC natural death
+  a = 0.18;        # 1/day, tumor maximal growth rate
+  b = 2.0e-9;      # 1/cell, inverse carrying capacity
+  n = 1.101e-7;    # 1/(cell*day), tumor inactivation by ECs
+
+  # Control/effectiveness variables (can be time-varying via events/rules if desired):
+  epsilon1 = 1;    # dimensionless, IL-2 effectiveness scaling the EC source term; "no treatment" baseline per text
+  epsilon2 = 0;    # 1/day (effective), ACI-mediated tumor kill coefficient (0 = absent)
+
+  //// Other declarations:
+  const tumor_site, s, p, g, m, d, a, b, n;
+  var epsilon1, epsilon2;
+
+  //// Unit definitions:
+  // omitted
+
+  //// Display Names:
+  tumor_site is "Tumor site compartment";
+  E is "Immune effector cells";
+  T is "Tumor cells";
+  Source_IL2 is "Baseline EC source scaled by IL-2 control (epsilon1)";
+  Recruitment_to_E is "Recruitment/proliferation of ECs by tumor (saturating)";
+  EC_inactivation_by_TC is "Effector-cell inactivation by tumor";
+  EC_natural_death is "Effector-cell natural death";
+  Tumor_growth is "Tumor logistic growth (linear part)";
+  Carrying_capacity_limitation is "Tumor logistic limitation (nonlinear loss)";
+  Tumor_killing_by_E is "Tumor killing by effector cells";
+  ACI_kill is "Tumor killing due to Adoptive Cellular Immunotherapy (epsilon2)";
+
+end
+
+/* Unmapped or auxiliary information from the source (not encoded to keep the model executable and self-contained):
+- Optimal control problem and adjoint (co-state) equations used to compute time-varying optimal controls epsilon1(t), epsilon2(t).
+- Bounds and weights for controls: a1, a2, b1, b2 (0 <= ai <= epsilon_i <= bi <= 1), and B1, B2 used in the objective functional.
+- Terminal/initial conditions for adjoints and the finite treatment horizon t_f.
+Notes:
+- To emulate specific therapy schedules, define time-dependent epsilon1(t), epsilon2(t) using Events or Rules, consistent with the paper?s scenarios.
+- Without treatment per the text: epsilon1 = 1, epsilon2 = 0 (baseline EC source present; no ACI-mediated kill).
+*/
