@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import os
 from pathlib import Path
 import tellurium as te
@@ -186,7 +187,7 @@ def make_plots(ts_ground, ts_gen, outfile):
         axes = [axes]
 
     # axes might be 2D -> flatten for easy iteration
-    axes = axes.flatten()
+    axes = np.array(axes).flatten()
 
     for ax, sp_ground, sp_gen in zip(axes, species_ground, species_gen):
         #sp_col = ts_ground.colnames.index(sp)
