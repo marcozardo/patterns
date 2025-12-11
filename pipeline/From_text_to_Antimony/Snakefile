@@ -301,7 +301,7 @@ rule evaluation_table:
         "workdir/all_semantic_comparison.csv"
     
     output:
-        "workdir/test_table_6e1be56.csv"
+        "workdir/test_table.csv"
     
     script:
         "scripts/test_table.py"

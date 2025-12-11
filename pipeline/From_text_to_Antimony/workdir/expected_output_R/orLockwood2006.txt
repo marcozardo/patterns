@@ -3,11 +3,12 @@ model *Lockwood2006___AlzheimersDisease_PBPK_model()
 
   // Compartments and Species:
   compartment Compartment;
-
+  species $ADAS_COG_P in Compartment, $PD_CeA in Compartment, $PD_CeP in Compartment;
+  species $Model_Inactive in Compartment, $Model_active_Linear in Compartment; 
+  species $Model_active_Hyperbolic in Compartment, $Model_active_Sigmoidal in Compartment;
+  species $Model_active_U_Shaped in Compartment;
+  
   // Assignment Rules:
-  PD_CeP := ADAS_COG_P;
-  ADAS_COG_P := (Beta_P*Keq_P/(Keq_P - Kel_P))*(exp(-1*Kel_P*MODEL_TIME) - exp(-1*Keq_P*MODEL_TIME));
-  PD_CeA := piecewise(Model_Inactive, MODEL_TYPE == 0, piecewise(Model_active_Linear, MODEL_TYPE == 1, piecewise(Model_active_Hyperbolic, MODEL_TYPE == 2, piecewise(Model_active_Sigmoidal, MODEL_TYPE == 3, piecewise(Model_active_U_Shaped, MODEL_TYPE == 4, 0)))));
   Model_Inactive := 0*CeA;
   Model_active_Linear := Beta_A*CeA;
   Model_active_Hyperbolic := Emax*CeA/(ECeA_50 + CeA);
@@ -21,6 +22,17 @@ model *Lockwood2006___AlzheimersDisease_PBPK_model()
   CeA_U := piecewise(piecewise(0*CeA, ANT_AGONIST_COMBINATION == 0, piecewise(0*CeA, ANT_AGONIST_COMBINATION == 2, 0)), MODEL_TYPE == 4, 0);
   ICea_U := piecewise(piecewise(0*CeA, ANT_AGONIST_COMBINATION == 1, piecewise(0*CeA, ANT_AGONIST_COMBINATION == 2, 0)), MODEL_TYPE == 4, 0);
 
+  // Rate Rules:
+  ADAS_COG_P' = (Beta_P*Keq_P/(Keq_P - Kel_P))*(exp(-1*Kel_P*MODEL_TIME) - exp(-1*Keq_P*MODEL_TIME));
+  PD_CeA' = piecewise(Model_Inactive, MODEL_TYPE == 0, piecewise(Model_active_Linear, MODEL_TYPE == 1, piecewise(Model_active_Hyperbolic, MODEL_TYPE == 2, piecewise(Model_active_Sigmoidal, MODEL_TYPE == 3, piecewise(Model_active_U_Shaped, MODEL_TYPE == 4, 0)))));
+  PD_CeP' = ADAS_COG_P;
+
+	
+  // Species initializations:
+  ADAS_COG_P = 0;
+  PD_CeA = 0;
+  PD_CeP = 0
+  
   // Compartment initializations:
   Compartment = 1;
 
@@ -41,12 +53,11 @@ model *Lockwood2006___AlzheimersDisease_PBPK_model()
   ICea_U50 = 38;
 
   // Other declarations:
-  var PD_CeP, ADAS_COG_P, PD_CeA, Model_Inactive, Model_active_Linear, Model_active_Hyperbolic;
-  var Model_active_Sigmoidal, Model_active_U_Shaped, S, Keq_P, Kel_P, Emax;
-  var n, CeA_U, ICea_U;
+  var S, Keq_P, Kel_P, Emax, n, CeA_U, ICea_U;    	
   const Compartment, S0, alpha, MODEL_TIME, MODEL_TYPE, epsilon, Beta_P, t_half_eq;
   const t_half_el, Beta_A, CeA, ECeA_50, ANT_AGONIST_COMBINATION, ECea_U50;
   const ICea_U50;
+ 
 
   // Unit definitions:
   unit volume = 1e-3 litre;

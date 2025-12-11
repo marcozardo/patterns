@@ -81,19 +81,40 @@ def AAFE(ground, gen):
         return 10 ** (sum(terms) / len(terms))
 
 def partial_reproducibility(obs_matrix, gen_matrix):
-    obs_cols = len(obs_matrix[0]) - 1
-    gen_cols = len(gen_matrix[0]) - 1  # -1 since ignore time column
+    """
+    obs_matrix and gen_matrix are RoadRunner NamedArray objects
+    returned by simulate(). Columns are named in .colnames.
+    """
 
-    shared_vars = min(obs_cols, gen_cols) 
+    # Get column names
+    obs_cols = list(obs_matrix.colnames)
+    gen_cols = list(gen_matrix.colnames)
 
-    for var_idx in range(1, shared_vars + 1):
-        obs_series = [row[var_idx] for row in obs_matrix]
-        gen_series = [row[var_idx] for row in gen_matrix]
+    # Ignore time column, only use species/variables
+    obs_vars = [c for c in obs_cols if c != "time"]
+    gen_vars = [c for c in gen_cols if c != "time"]
+
+    # Variables present in both simulations
+    shared_vars = set(obs_vars).intersection(gen_vars)
+
+    # If there are no shared variables, consider it non-reproducible
+    if not shared_vars:
+        return 1
+    
+    for var_name in shared_vars:
+        obs_idx = obs_cols.index(var_name)
+        gen_idx = gen_cols.index(var_name)
+
+        # Extract the time-series for this variable
+        obs_series = obs_matrix[:, obs_idx]
+        gen_series = gen_matrix[:, gen_idx]
         
         aafe = AAFE(obs_series, gen_series)
+        
+        # If any shared variable is "close enough", return 0
         if aafe is not None and aafe <= 2:
             return 0
-
+    # None of the shared variables reached the threshold
     return 1
 
 #def partial_reproducibility(obs_matrix, gen_matrix):
@@ -114,21 +135,30 @@ def partial_reproducibility(obs_matrix, gen_matrix):
 # Plots:
 
 def make_single_plot(ts_ground, outfile):
-
+    # get time
     time_col = ts_ground.colnames.index("time")
     time = ts_ground[:,time_col]
 
+    # all non-time species
     species = [c for c in ts_ground.colnames if c != "time"]
     n = len(species)
 
+    if n == 0:
+        plt.figure()
+        plt.text(0.5, 0.5, "No variables to plot", ha="center", va="center")
+        plt.savefig(outfile, dpi=300)
+        plt.close()
+        return
+
     fig, axes = plt.subplots(n,1, figsize=(10, 4*n), sharex=True)
 
+    # if only one subplot, axes is a single Axes
     if n == 1:
          axes = [axes]
     
     for ax, sp in zip(axes, species):
         sp_col = ts_ground.colnames.index(sp)
-        # ground-truth (solid)
+        # ground-truth 
         ax.plot(time, ts_ground[:, sp_col], label="Ground-truth", linewidth=2)
         ax.set_ylabel(sp)
         ax.legend()
@@ -140,34 +170,21 @@ def make_single_plot(ts_ground, outfile):
     plt.close()
 
 def make_plots(ts_ground, ts_gen, outfile):
-     # --- get column indices ---
+
+     # --- get time column from ground truth ---
     time_col = ts_ground.colnames.index("time")
+    time = ts_ground[:, time_col]
     
-    # species in ground
+    # species (non-time) in each
     species_ground = [c for c in ts_ground.colnames if c != "time"]
     species_gen = [c for c in ts_gen.colnames if c != "time"]
-    
-    # all species = all columns except "time"
-    #species = [c for c in ts_ground.colnames if c != "time"]
 
-    N_ground = len(species_ground)
-    N_gen = len(species_gen)
+    # shared species names (preserve ground-truth ordering)    
+    gen_set = set(species_gen)
+    shared_species = [c for c in species_ground if c in gen_set]
 
-    #final number of species to compare
-
-    N = min(N_ground, N_gen)
-
-    # first species
-    species_ground = species_ground[:N]
-    species_gen = species_gen[:N]
-
-    # extract time (1D array)
-    time = ts_ground[:, time_col]
-
-    #n = len(species)
-
-    n = N
-    
+    n = len(shared_species)
+   
     # no variable/species to plot
     if n == 0:
         plt.figure()
@@ -176,33 +193,29 @@ def make_plots(ts_ground, ts_gen, outfile):
         plt.close()
         return
 
-    # --- compute subplot grid: 2 columns ---
-    ncols = 2
+    # --- compute subplot grid: 2 columns (or 1 if only 1 species) ---
+    ncols = 2 if n > 1 else 1
     nrows = math.ceil(n / ncols)
 
     fig, axes = plt.subplots(nrows, ncols, figsize=(10, 4*nrows), sharex=True)
 
-    # if only one species, make axes iterable
-    if n == 1:
-        axes = [axes]
+    # always work with a flat ndarray of axes
+    axes = np.array(axes).reshape(-1)
 
-    # axes might be 2D -> flatten for easy iteration
-    axes = np.array(axes).flatten()
-
-    for ax, sp_ground, sp_gen in zip(axes, species_ground, species_gen):
-        #sp_col = ts_ground.colnames.index(sp)
-        sp_col_ground = ts_ground.colnames.index(sp_ground)
-        sp_col_gen = ts_gen.colnames.index(sp_gen)
+    for ax, sp in zip(axes, shared_species):
+        sp_col_ground = ts_ground.colnames.index(sp)
+        sp_col_gen = ts_gen.colnames.index(sp)
 
         # ground-truth (solid)
         ax.plot(time, ts_ground[:, sp_col_ground], label="Ground-truth", linewidth=2)
         # generated (dashed)
         ax.plot(time, ts_gen[:, sp_col_gen], '--', label="Generated", linewidth=2)
-        ax.set_ylabel(sp_ground)
+        
+        ax.set_ylabel(sp)
         ax.legend()
-    
-    if n>0:
-        axes[-1].set_xlabel("Time")
+
+    # label x-axis on the last *used* axis
+    axes[n-1].set_xlabel("Time")
 
     # turn off any unused axes (if species count is odd)
     for empty_ax in axes[n:]:
