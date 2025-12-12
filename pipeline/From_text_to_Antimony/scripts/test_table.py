@@ -19,9 +19,9 @@ data = {
     "Third simulation (ratio)":True,
     "AAFE evaluation (N°correct/N°paper)":True,
     "N° Species B&F(query/original)":round(df3.iloc[0, 0], 2),
-    "N° Reactions(query/original)":round(df3.iloc[0, 2], 2),
-    "N° Compartments(query/original)":round(df3.iloc[0, 3], 2),
-    "N° Glob.Parameters(query/original)":round(df3.iloc[0, 4], 2)
+    "N° Reactions(query/original)":round(df3.iloc[0, 1], 2),
+    "N° Compartments(query/original)":round(df3.iloc[0, 2], 2),
+    "N° Glob.Parameters(query/original)":round(df3.iloc[0, 3], 2)
 }
 
 #"N° Floating sp.(query/original)":round(df3.iloc[0, 1], 2),
