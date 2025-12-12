@@ -30,6 +30,8 @@ Comps = re.findall(reCompart, text)
 all_init = reparams.findall(text)
 var_par = revarparams.findall(text)
 
+Total_species = int(len(Floatsp)) + int(len(Boundsp))
+
 # Extraction of indexes to obtain the variable parameters
 if "// Variable" in all_init:
      value1 = all_init.index("// Variable")
@@ -74,8 +76,7 @@ with open(in_file) as f:
 # table creation: => antimony_model | num Boundary sp. | num Floating sp | num reactions | num Compartments |
 
 data= {
-     "N° Boundary sp.": len(Boundsp),
-     "N° Floating sp.": len(Floatsp),
+     "N° Species (Bound&Float)": Total_species,
      "N° Reactions": len(reactions),
      "N° Compartments":len(Comps),
      "N° Glob.Parameters": len(final_param),
