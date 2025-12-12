@@ -1,0 +1,76 @@
+model *Admon2017_TumorImmuneDrug()
+
+  //// Compartments and Species:
+  compartment tumor_system;
+  species TI in tumor_system, TM in tumor_system, I in tumor_system, u in tumor_system;
+
+  //// Reactions:
+  Mphase_to_Interphase: TM => 2 TI; a4*TM;
+  Interphase_to_Mphase: TI => TM; a1*TI;
+  TI_natural_death: TI => ; d2*TI;
+  TI_killed_by_immune: TI => ; c1*I*TI;
+  TM_natural_death: TM => ; d3*TM;
+  TM_killed_by_immune: TM => ; c3*I*TM;
+  TM_killed_by_drug: TM => ; k1*(1 - exp(-k2*u))*TM;
+  Immune_basal_source:  => I; k;
+  Immune_stimulation:  => I; rho*I*((TI + TM)^n)/(alpha + (TI + TM)^n);
+  Immune_loss_T_I_encounter: I => ; c2*I*TI;
+  Immune_loss_T_M_encounter: I => ; c4*I*TM;
+  Immune_natural_death: I => ; d1*I;
+  Immune_killed_by_drug: I => ; k3*(1 - exp(-k4*u))*I;
+  Drug_elimination: u => ; gamma_*u;
+
+  //// Species initializations:
+  TI = 1.3;
+  TM = 1.2;
+  I = 0.9;
+  u = 0.15;
+
+  //// Compartment initializations:
+  tumor_system = 1;
+
+  //// Variable initializations:
+  a1 = 0.98;
+  a4 = 0.8;
+  d1 = 0.29;
+  d2 = 0.11;
+  d3 = 0.4;
+  c1 = 0.9;
+  c2 = 0.085;
+  c3 = 0.9;
+  c4 = 0.085;
+  k = 0.029;
+  rho = 0.85;
+  alpha = 0.1;
+  n = 3;
+  k1 = 0.47;
+  k2 = 0.57;
+  k3 = 0.49;
+  k4 = 0.061;
+  gamma_ = 0.2;
+
+  //// Other declarations:
+  const tumor_system, a1, a4, d1, d2, d3, c1, c2, c3, c4, k, rho, alpha, n, k1, k2, k3, k4, gamma_;
+
+  //// Display Names:
+  tumor_system is "Well-mixed host compartment";
+  TI is "Tumor cells in interphase (G1+S+G2)";
+  TM is "Tumor cells in mitosis (M-phase)";
+  I is "Immune effector cells (CTL)";
+  u is "Cytotoxic drug level (single-dose, decays)";
+  Mphase_to_Interphase is "Mitosis produces two interphase daughters";
+  Interphase_to_Mphase is "Cell-cycle progression into mitosis";
+  TI_natural_death is "Interphase tumor natural death";
+  TI_killed_by_immune is "Immune killing of interphase tumor";
+  TM_natural_death is "M-phase tumor natural death";
+  TM_killed_by_immune is "Immune killing of M-phase tumor";
+  TM_killed_by_drug is "Drug-mediated tumor kill (M-phase specific)";
+  Immune_basal_source is "Basal immune influx";
+  Immune_stimulation is "Immune activation by tumor burden (Hill form)";
+  Immune_loss_T_I_encounter is "Immune loss upon encounter with interphase tumor";
+  Immune_loss_T_M_encounter is "Immune loss upon encounter with M-phase tumor";
+  Immune_natural_death is "Immune natural death";
+  Immune_killed_by_drug is "Drug-mediated immune toxicity";
+  Drug_elimination is "Drug elimination (first order)";
+
+end

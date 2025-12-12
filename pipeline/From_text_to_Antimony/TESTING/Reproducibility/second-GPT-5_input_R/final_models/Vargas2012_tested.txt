@@ -1,0 +1,69 @@
+model *HernandezVargas2012_Innate_Influenza()
+
+  //// Compartments and Species:
+  compartment Lung;
+  species U_H in Lung, U_E in Lung, U_I in Lung, U_R in Lung, V in Lung, IFN in Lung, K in Lung;
+
+  //// Assignment Rules:
+  S_H := U_H0*delta_H;          # Healthy epithelial cell influx at baseline (steady-state production)
+  S_K := K0*delta_K;            # NK baseline influx at steady state
+  R0 := (S_H*k_I*k_E*rho_V)/((k_E + q_K*K)*(delta_H + k_R*IFN)*(delta_I + q_K*K)*delta_V);  # instantaneous effective reproduction number
+
+  //// Reactions:
+  source_UH:        => U_H; Lung*(S_H);
+  infection:        U_H => U_E; Lung*(k_I*U_H*V);
+  IFN_protection:   U_H => U_R; Lung*(k_R*U_H*IFN);
+  death_UH:         U_H => ;    Lung*(delta_H*U_H);
+
+  eclipse_exit:     U_E => U_I; Lung*(k_E*U_E);
+  NK_clear_UE:      U_E => ;    Lung*(q_K*U_E*K);
+
+  death_UI:         U_I => ;    Lung*(delta_I*U_I);
+  NK_clear_UI:      U_I => ;    Lung*(q_K*U_I*K);
+
+  death_UR:         U_R => ;    Lung*(delta_R*U_R);
+
+  virion_prod:      => V;       Lung*(rho_V*U_I);
+  virion_clear:     V  => ;     Lung*(delta_V*V);
+
+  IFN_prod:         => IFN;     Lung*(a_I*U_I);
+  IFN_decay:        IFN => ;    Lung*(delta_IFN*IFN);
+
+  NK_baseline_in:   => K;       Lung*(S_K);
+  NK_recruit:       => K;       Lung*(Phi_K*U_I);
+  NK_death:         K  => ;     Lung*(delta_K*K);
+
+  //// Species initializations:
+  U_H = 5e8;      # epithelial cells (initial uninfected)
+  U_E = 0;        # eclipse (partially infected) cells
+  U_I = 0;        # productively infected cells
+  U_R = 0;        # IFN-induced resistant cells
+  V   = 1e-3;     # initial viral load (copies/ml, as used in the paper)
+  IFN = 0;        # interferon-I
+  K   = 8e5;      # natural killer cells in lung
+
+  //// Compartment initializations:
+  Lung = 1;
+
+  //// Variable initializations:
+  k_I      = 3e-3;
+  k_R      = 7;
+  k_E      = 0.5;
+  q_K      = 3e-6;
+  Phi_K    = 1e-3;
+  a_I      = 3e-6;
+  rho_V    = 1e-2;
+  delta_H  = 0.01;
+  delta_I  = 0.01;
+  delta_R  = 0.01;
+  delta_IFN= 4;
+  delta_K  = 0.04;
+  delta_V  = 5.2;
+  U_H0     = 5e8;   # baseline healthy epithelial cells for SH computation
+  K0       = 8e5;   # baseline NK for SK computation
+
+  //// Other declarations:
+  var S_H, S_K, R0;
+  const Lung, k_I, k_R, k_E, q_K, Phi_K, a_I, rho_V, delta_H, delta_I, delta_R, delta_IFN, delta_K, delta_V, U_H0, K0;
+
+end

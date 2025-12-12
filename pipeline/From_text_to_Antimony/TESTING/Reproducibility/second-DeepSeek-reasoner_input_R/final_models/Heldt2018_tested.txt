@@ -1,0 +1,119 @@
+model *Heldt2018_Proliferation_Quiescence()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $GF in cell, $Damage in cell;
+  species Rb in cell, E2F in cell, CycE in cell, CycA in cell, p21 in cell, p53 in cell, Emi1 in cell, Cdh1 in cell, aRC in cell;
+
+  //// Assignment Rules:
+
+  //// Rate Rules:
+  p53' = k_damage*Damage - k_p53_degradation*p53;
+  p21' = k_p21_synthesis*p53 - (k_skp2*Skp2 + k_cdt2*Cdt2)*p21 - k_p21_degradation*p21;
+  E2F' = k_e2f_synthesis*GF/(1 + K_e2f_rb*Rb) - k_e2f_degradation*E2F;
+  Rb' = k_rb_synthesis - k_rb_phosphorylation*(CycE_Cdk2 + CycA_Cdk2)*Rb/(K_rb_phos + Rb) - k_rb_degradation*Rb;
+  CycE' = k_cyce_synthesis*E2F - k_cyce_degradation*CycE - k_assoc_cyce*CycE*Cdk2 + k_dissoc_cyce*CycE_Cdk2;
+  CycA' = k_cyca_synthesis*E2F - k_cyca_degradation*Cdh1*CycA - k_assoc_cyca*CycA*Cdk2 + k_dissoc_cyca*CycA_Cdk2;
+  Emi1' = k_emi1_synthesis*E2F - k_emi1_degradation*Emi1;
+  Cdh1' = k_cdh1_synthesis - k_cdh1_inhibition*Emi1*Cdh1 - k_cdh1_degradation*Cdh1;
+  aRC' = k_arc_activation*(CycE_Cdk2 + CycA_Cdk2)*(1 - aRC)/(K_arc + (1 - aRC)) - k_arc_degradation*aRC;
+  CycE_Cdk2' = k_assoc_cyce*CycE*Cdk2 - k_dissoc_cyce*CycE_Cdk2 - k_cycecdk2_degradation*CycE_Cdk2 - k_p21_inhibition*p21*CycE_Cdk2;
+  CycA_Cdk2' = k_assoc_cyca*CycA*Cdk2 - k_dissoc_cyca*CycA_Cdk2 - k_cycacdk2_degradation*CycA_Cdk2 - k_p21_inhibition*p21*CycA_Cdk2;
+  Cdk2' = -k_assoc_cyce*CycE*Cdk2 + k_dissoc_cyce*CycE_Cdk2 - k_assoc_cyca*CycA*Cdk2 + k_dissoc_cyca*CycA_Cdk2;
+  Skp2' = k_skp2_synthesis*E2F - k_skp2_degradation*Skp2;
+  Cdt2' = k_cdt2_synthesis*aRC - k_cdt2_degradation*Cdt2;
+
+  //// Reactions:
+
+  //// Events:
+
+  //// Species initializations:
+  Rb = 1;
+  E2F = 0;
+  CycE = 0;
+  CycA = 0;
+  p21 = 0;
+  p53 = 0;
+  Emi1 = 0;
+  Cdh1 = 1;
+  aRC = 0;
+  CycE_Cdk2 = 0;
+  CycA_Cdk2 = 0;
+  Cdk2 = 10;
+  Skp2 = 0;
+  Cdt2 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_damage = 0.1;
+  k_p53_degradation = 0.1;
+  k_p21_synthesis = 0.1;
+  k_skp2 = 0.01;
+  k_cdt2 = 0.01;
+  k_p21_degradation = 0.01;
+  k_e2f_synthesis = 1;
+  K_e2f_rb = 1;
+  k_e2f_degradation = 0.1;
+  k_rb_synthesis = 0.5;
+  k_rb_phosphorylation = 1;
+  K_rb_phos = 0.1;
+  k_rb_degradation = 0.1;
+  k_cyce_synthesis = 0.5;
+  k_cyce_degradation = 0.1;
+  k_assoc_cyce = 1;
+  k_dissoc_cyce = 0.1;
+  k_cyca_synthesis = 0.5;
+  k_cyca_degradation = 0.1;
+  k_assoc_cyca = 1;
+  k_dissoc_cyca = 0.1;
+  k_emi1_synthesis = 0.5;
+  k_emi1_degradation = 0.1;
+  k_cdh1_synthesis = 0.5;
+  k_cdh1_inhibition = 1;
+  k_cdh1_degradation = 0.1;
+  k_arc_activation = 1;
+  K_arc = 0.1;
+  k_arc_degradation = 0.1;
+  k_cycecdk2_degradation = 0.1;
+  k_cycacdk2_degradation = 0.1;
+  k_p21_inhibition = 1;
+  k_skp2_synthesis = 0.1;
+  k_skp2_degradation = 0.1;
+  k_cdt2_synthesis = 0.1;
+  k_cdt2_degradation = 0.1;
+  GF = 1;
+  Damage = 0;
+
+  //// Other declarations:
+  const k_damage, k_p53_degradation, k_p21_synthesis, k_skp2, k_cdt2, k_p21_degradation, k_e2f_synthesis, K_e2f_rb, k_e2f_degradation, k_rb_synthesis, k_rb_phosphorylation, K_rb_phos, k_rb_degradation, k_cyce_synthesis, k_cyce_degradation, k_assoc_cyce, k_dissoc_cyce, k_cyca_synthesis, k_cyca_degradation, k_assoc_cyca, k_dissoc_cyca, k_emi1_synthesis, k_emi1_degradation, k_cdh1_synthesis, k_cdh1_inhibition, k_cdh1_degradation, k_arc_activation, K_arc, k_arc_degradation, k_cycecdk2_degradation, k_cycacdk2_degradation, k_p21_inhibition, k_skp2_synthesis, k_skp2_degradation, k_cdt2_synthesis, k_cdt2_degradation;
+
+  //// Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  //// Display Names:
+  cell is "Cell";
+  GF is "Growth factor";
+  Damage is "DNA damage";
+  Rb is "Retinoblastoma protein (active)";
+  E2F is "E2F transcription factor";
+  CycE is "Cyclin E";
+  CycA is "Cyclin A";
+  p21 is "p21 (Cip1/Waf1)";
+  p53 is "p53";
+  Emi1 is "Emi1";
+  Cdh1 is "APC/Cdh1 (active)";
+  aRC is "Activated replication complexes";
+  CycE_Cdk2 is "Cyclin E:Cdk2 complex";
+  CycA_Cdk2 is "Cyclin A:Cdk2 complex";
+  Cdk2 is "Cdk2";
+  Skp2 is "Skp2";
+  Cdt2 is "Cdt2";
+
+end
+
+/* 
+Note: The model presented in the article (Heldt et al., 2018) is a detailed, mechanistic ODE model available in BioModels (MODEL1703030000) and at www.cellcycle.org.uk/publication. This Antimony version is a simplified representation that captures the core components and interactions described in the text, but it does not replicate the exact published equations. For the full model with precise kinetics and parameters, refer to the original BioModels entry.
+*/

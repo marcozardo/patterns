@@ -1,0 +1,299 @@
+model *Murphy2016_Exponential()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := ln(2)/a;
+  C0_min := a;
+
+  //// Reactions:
+  J_growth: => V; a*V;
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 0.0246;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "exponential growth";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end
+
+model *Murphy2016_Mendelsohn()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := ln(2)/a;
+  C0_min := a;
+
+  //// Reactions:
+  J_growth: => V; a*V^b;
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 0.105;
+  b = 0.785;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, b, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "Mendelsohn growth";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate constant";
+  b is "growth exponent";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end
+
+model *Murphy2016_Logistic()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := ln(2)/a;
+  C0_min := a;
+
+  //// Reactions:
+  J_growth: => V; a*V;
+  J_density: V => ; (a/b)*V^2;
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 0.0295;
+  b = 6920;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, b, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "logistic growth";
+  J_density is "density-limited death";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate";
+  b is "carrying capacity";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end
+
+model *Murphy2016_Linear()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := b*ln(2)/a;
+  C0_min := a/b;
+
+  //// Reactions:
+  J_growth: => V; a*V/(V+b);
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 132;
+  b = 4300;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, b, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "linear growth";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate constant";
+  b is "half-saturation volume";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end
+
+model *Murphy2016_Surface()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := b^3*ln(2)/a;
+  C0_min := a/b^3;
+
+  //// Reactions:
+  J_growth: => V; a*V/(V+b)^3;
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 0.291;
+  b = 708;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, b, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "surface growth";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate constant";
+  b is "saturation volume";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end
+
+model *Murphy2016_Gompertz()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := ln(2)/(a*ln(b/c));
+  C0_min := a*ln(b/c);
+
+  //// Reactions:
+  J_growth: => V; a*V*ln(b);
+  J_death: V => ; a*V*ln(V/c);
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 0.0919;
+  b = 15500;
+  c = 10700;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, b, c, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "Gompertz growth";
+  J_death is "Gompertz death";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate constant";
+  b is "carrying capacity parameter";
+  c is "offset parameter";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end
+
+model *Murphy2016_Bertalanffy()
+
+  //// Compartments and Species:
+  compartment body;
+  species V in body;
+
+  //// Assignment Rules:
+  DT := ln(2)/(a - b);
+  C0_min := a - b;
+
+  //// Reactions:
+  J_growth: => V; a*V^(2/3);
+  J_death: V => ; b*V;
+  J_chemo: V => ; C0*V;
+
+  //// Species initializations:
+  V = 250;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a = 0.234;
+  b = 3.46e-5;
+  C0 = 0;
+
+  //// Other declarations:
+  var a, b, C0;
+  const body;
+
+  //// Display Names:
+  body is "tumor site";
+  V is "tumor volume";
+  J_growth is "Bertalanffy surface growth";
+  J_death is "Bertalanffy intrinsic death";
+  J_chemo is "chemotherapy killing";
+  a is "growth rate constant";
+  b is "death rate constant";
+  C0 is "chemotherapy concentration";
+  DT is "doubling time";
+  C0_min is "minimum chemotherapy to cure";
+
+end

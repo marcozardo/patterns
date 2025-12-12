@@ -1,0 +1,113 @@
+model *Muller2008_MAPK_Bifan_Reduced()
+
+  //// Compartments and Species:
+  compartment cell;
+  species CRaf in cell, CRaf_act in cell, BRaf in cell, BRaf_act in cell, MAPK in cell, MAPK_act in cell;
+  species $FGFR_act in cell, $MC1R_act in cell;
+
+  //// Reactions:
+  Act_CRAF_FGFR:        CRaf     => CRaf_act; cell*(k_fC*FGFR_act*CRaf);
+  Act_CRAF_MAPK:        CRaf     => CRaf_act; cell*(k_mC*MAPK_act*CRaf);
+  Act_CRAF_by_BRAF:     CRaf     => CRaf_act; cell*(k_BC*BRaf_act*CRaf);
+  Deact_CRAF_basal:     CRaf_act => CRaf;     cell*(k_offC*CRaf_act);
+  Deact_CRAF_PKA:       CRaf_act => CRaf;     cell*(k_pkaC*PKA_effect*MC1R_act*CRaf_act);
+
+  Act_BRAF_FGFR:        BRaf     => BRaf_act; cell*(k_fB*FGFR_act*BRaf);
+  Act_BRAF_MAPK:        BRaf     => BRaf_act; cell*(k_mB*MAPK_act*BRaf);
+  Act_BRAF_by_CRAF:     BRaf     => BRaf_act; cell*(k_CB*CRaf_act*BRaf);
+  Inhibit_BRAF_by_CRAF: BRaf_act => BRaf;     cell*(k_CinhibB*CRaf_act*BRaf_act);
+  Deact_BRAF_basal:     BRaf_act => BRaf;     cell*(k_offB*BRaf_act);
+  Deact_BRAF_PKA:       BRaf_act => BRaf;     cell*(k_pkaB*PKA_effect*MC1R_act*BRaf_act);
+
+  Act_MAPK_by_RAFs:     MAPK     => MAPK_act; cell*(k_M*(aC*CRaf_act + aB*BRaf_act)*MAPK);
+  Deact_MAPK:           MAPK_act => MAPK;     cell*(k_Moff*MAPK_act);
+
+  //// Events:
+  E0_MSH_on:  at (time >= t_MSH_on):  MC1R_act = MSH_amp;
+  E1_MSH_off: at (time >= t_MSH_off): MC1R_act = 0;
+  E2_FGF_on:  at (time >= t_FGF_on):  FGFR_act = FGF_amp;
+  E3_FGF_off: at (time >= t_FGF_off): FGFR_act = 0;
+
+  //// Species initializations:
+  CRaf = 1;
+  CRaf_act = 0;
+  BRaf = 1;
+  BRaf_act = 0;
+  MAPK = 1;
+  MAPK_act = 0;
+  FGFR_act = 0;
+  MC1R_act = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_fC = 1.0;
+  k_mC = 0.4;
+  k_BC = 0.2;
+  k_offC = 0.05;
+  k_pkaC = 0.5;
+
+  k_fB = 0.6;
+  k_mB = 0.2;
+  k_CB = 0.2;
+  k_CinhibB = 0.3;
+  k_offB = 0.1;
+  k_pkaB = 0.3;
+
+  k_M = 1.0;
+  aC = 1.0;
+  aB = 0.5;
+  k_Moff = 0.1;
+
+  PKA_effect = 1;
+
+  t_MSH_on = 0;
+  t_MSH_off = 5;
+  t_FGF_on = 5;
+  t_FGF_off = 10;
+
+  MSH_amp = 1;
+  FGF_amp = 1;
+
+  //// Other declarations:
+  const cell, k_fC, k_mC, k_BC, k_offC, k_pkaC, k_fB, k_mB, k_CB, k_CinhibB, k_offB, k_pkaB, k_M, aC, aB, k_Moff, PKA_effect, t_MSH_on, t_MSH_off, t_FGF_on, t_FGF_off, MSH_amp, FGF_amp;
+
+  //// Unit definitions:
+
+  //// Display Names:
+  cell is "SB2 melanoma cell (single well-mixed compartment)";
+  CRaf is "C-Raf (inactive)";
+  CRaf_act is "C-Raf (active)";
+  BRaf is "B-Raf (inactive)";
+  BRaf_act is "B-Raf (active)";
+  MAPK is "MAPK1,2 (inactive ERK1/2)";
+  MAPK_act is "MAPK1,2 (active ERK1/2)";
+  FGFR_act is "FGFR activity (stimulus pulse)";
+  MC1R_act is "MC1R/PKA pathway activity (stimulus pulse proxy)";
+  Act_CRAF_FGFR is "FGFR-mediated activation of C-Raf";
+  Act_CRAF_MAPK is "Positive feedback: MAPK->C-Raf";
+  Act_CRAF_by_BRAF is "C-Raf activation by active B-Raf (heterodimerization)";
+  Deact_CRAF_basal is "Basal C-Raf deactivation";
+  Deact_CRAF_PKA is "PKA-mediated inhibition of C-Raf (via MC1R)";
+  Act_BRAF_FGFR is "FGFR-mediated activation of B-Raf";
+  Act_BRAF_MAPK is "Positive feedback: MAPK->B-Raf";
+  Act_BRAF_by_CRAF is "B-Raf activation by active C-Raf (heterodimerization)";
+  Inhibit_BRAF_by_CRAF is "C-Raf-mediated inhibition of B-Raf";
+  Deact_BRAF_basal is "Basal B-Raf deactivation";
+  Deact_BRAF_PKA is "PKA-mediated inhibition of B-Raf (via MC1R)";
+  Act_MAPK_by_RAFs is "MAPK1,2 activation by active Raf isoforms";
+  Deact_MAPK is "Basal inactivation of MAPK1,2";
+  E0_MSH_on is "MSH pulse ON (0-5 min)";
+  E1_MSH_off is "MSH pulse OFF";
+  E2_FGF_on is "FGF pulse ON (5-10 min)";
+  E3_FGF_off is "FGF pulse OFF";
+
+end
+
+/* Notes:
+- Scientific domain: molecular/cellular signal transduction (mammalian melanoma MAPK1,2 network).
+- This executable reduced model encodes the partially incoherent bifan (FGFR?{B-Raf,C-Raf} positive; MC1R/PKA ? {B-Raf,C-Raf}) and the positive feedback from MAPK1,2 back to both Raf isoforms. It also includes Raf cross-activation and C-Raf inhibition of B-Raf, consistent with Fig. 2B.
+- Pulses: default events implement an MSH pre-pulse (0?5 min) followed by an FGF pulse (5?10 min), as in gating experiments (Fig. 4). To simulate single-ligand cases (e.g., FGF-only or MSH-only), set the corresponding *_amp to 0 or adjust on/off times accordingly.
+- Pharmacology: PKA_effect scales MC1R-dependent inhibition. Setting PKA_effect = 0 mimics H89 (PKA inhibition), switching MSH responses from transient to sustained (Fig. 5).
+- Parameters are phenomenological scalings (dimensionless/min). They can be tuned to match specific quantitative datasets (Model B in the paper). */

@@ -1,0 +1,52 @@
+model *Wodarz2007_HIV_CD4Specific_Model3()
+
+  //// Compartments and Species:
+  compartment host;
+  species T in host, I in host;
+  species x in host, y in host, v in host;
+
+  //// Reactions:
+  T_source:  => T; lambda;
+  T_death:   T => ; delta*T;
+  T_infection: T => I; gamma_*T*v;
+
+  I_death:   I => ; alpha*I;
+
+  x_proliferation: x => 2 x; r*x*v*(1 - (x + y)/k);
+  x_death:   x => ; d*x;
+  x_infection: x => y; beta*x*v;
+
+  y_proliferation: y => 2 y; r*y*v*(1 - (x + y)/k);
+  y_death:   y => ; a*y;
+
+  v_prod_from_y:  => v; eta*y;
+  v_prod_from_I:  => v; eta*I;
+  v_clearance: v => ; u*v;
+
+  //// Species initializations:
+  T = lambda/delta;
+  I = 0.0001;
+  x = 0.1;   # choose low initial number scenario described in Fig. 2
+  y = 0;
+  v = eta*I/u;
+
+  //// Compartment initializations:
+  host = 1;
+
+  //// Variable initializations:
+  lambda = 1;
+  r = 1;
+  gamma_ = 0.01;
+  beta = 0.2;
+  alpha = 0.005;
+  delta = 0.3;
+  d = 0.001;
+  a = 0.2;
+  k = 10;
+  eta = 1;
+  u = 1;
+
+  //// Other declarations:
+  const host, lambda, r, gamma_, beta, alpha, delta, d, a, k, eta, u;
+
+end

@@ -1,0 +1,156 @@
+model *Aguda1999_G2_DNA_damage_checkpoint()
+
+  //// Compartments and Species:
+  compartment cell;
+  species Rad3 in cell, Chk1P in cell, p53 in cell;
+  species preMPF in cell, MPF in cell, p21 in cell, p21_MPF in cell;
+  species iCdc25 in cell, aCdc25 in cell, iCdc25Ps216 in cell, aCdc25Ps216 in cell;
+  species iCdc25Ps216_14_3_3 in cell, prot14_3_3 in cell;
+  species Wee1 in cell, Wee1P in cell;
+
+  //// Assignment Rules:
+  Chk1 := totalChk1 - Chk1P;  # total Chk1 assumed constant; only Chk1P is a state
+
+  //// Reactions:
+  # DNA-damage signaling (Rad3/ATM and Chk1 cycle)
+  V4__Rad3_activation:  => Rad3; k4;
+  V5__Rad3_inactivation: Rad3 => ; k5*Rad3;
+  V1__Chk1_phospho:  => Chk1P; k1*Chk1*Rad3;
+  V_1__Chk1P_dephospho: Chk1P => ; k_1*Chk1P;
+
+  # p53 activation/inactivation
+  V10__p53_activation:  => p53; k10;
+  V11__p53_inactivation: p53 => ; k11*p53;
+
+  # Cdc25 subsystem
+  # iCdc25 <-> aCdc25 (activation by MPF and Plk1; deactivation)
+  V7__iCdc25_to_aCdc25: iCdc25 => aCdc25; (k7*MPF + kPlk1)*iCdc25;
+  V_7__aCdc25_to_iCdc25: aCdc25 => iCdc25; k_7*aCdc25;
+
+  # Ser-216 phosphorylation/dephosphorylation
+  V2__aCdc25_to_aCdc25Ps216: aCdc25 => aCdc25Ps216; (k2*Chk1P + kctak1)*aCdc25;
+  V_2__aCdc25Ps216_to_aCdc25: aCdc25Ps216 => aCdc25; k_2*aCdc25Ps216;
+  V2p__iCdc25_to_iCdc25Ps216: iCdc25 => iCdc25Ps216; (k2p*Chk1P + kctak1p)*iCdc25;
+
+  # 14-3-3 binding and release (with dephosphorylation)
+  V3p__bind_14_3_3: iCdc25Ps216 + prot14_3_3 => iCdc25Ps216_14_3_3; k3p*iCdc25Ps216*prot14_3_3;
+  V_3p__release_14_3_3: iCdc25Ps216_14_3_3 => iCdc25 + prot14_3_3; k_3p*iCdc25Ps216_14_3_3;
+
+  # Activation/deactivation within Ser-216-phosphorylated branch
+  V18__iCdc25Ps216_to_aCdc25Ps216: iCdc25Ps216 => aCdc25Ps216; (k18*MPF + kPlk1p)*iCdc25Ps216;
+  V_18__aCdc25Ps216_to_iCdc25Ps216: aCdc25Ps216 => iCdc25Ps216; k_18*aCdc25Ps216;
+
+  # 14-3-3 expression and degradation
+  V6__1433_from_p53_and_V13_const:  => prot14_3_3; k6*p53 + k13;
+  V12__1433_degradation: prot14_3_3 => ; k12*prot14_3_3;
+
+  # Wee1 subsystem
+  V16__Wee1_expression:  => Wee1; k16;
+  V8__Wee1_to_Wee1P: Wee1 => Wee1P; (k8*MPF + k8p)*Wee1;
+  V_8__Wee1P_to_Wee1: Wee1P => Wee1; k_8*Wee1P;
+  V17__Wee1P_degradation: Wee1P => ; k17*Wee1P;
+
+  # MPF subsystem
+  V14__preMPF_formation:  => preMPF; k14/(1 + k14p*p53);
+  V9__preMPF_to_MPF: preMPF => MPF; k9*(aCdc25 + aCdc25Ps216)*preMPF + k9p*preMPF;
+  V_9__MPF_to_preMPF: MPF => preMPF; k_9*MPF*Wee1;
+  V15__MPF_degradation: MPF => ; k15*MPF*MPF;
+
+  # p21 subsystem (expression, degradation, binding to MPF)
+  V20_and_V21__p21_expression:  => p21; k20*p53 + k21;
+  V22__p21_degradation: p21 => ; k22*p21;
+  V23__p21_bind_MPF: p21 + MPF => p21_MPF; k23*p21*MPF;
+  V_23__p21_MPF_dissociation: p21_MPF => p21 + MPF; k_23*p21_MPF;
+
+  //// Species initializations:
+  Rad3 = 0;
+  Chk1P = 0;
+  p53 = 0;
+  preMPF = 0;
+  MPF = 0;
+  p21 = 0;
+  p21_MPF = 0;
+  iCdc25 = 0;
+  aCdc25 = 0;
+  iCdc25Ps216 = 0;
+  aCdc25Ps216 = 0;
+  iCdc25Ps216_14_3_3 = 0.03;  # per text (dimensionless)
+  prot14_3_3 = 2;             # per text (dimensionless)
+  Wee1 = 0;
+  Wee1P = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  totalChk1 = 1;  # per text
+  # Kinetic constants (dimensionless placeholders; adjust per experiment)
+  k1 = 0;     # Chk1 phosphorylation by Rad3
+  k_1 = 0;    # Chk1P dephosphorylation
+  k4 = 0;     # Rad3 activation
+  k5 = 0;     # Rad3 inactivation
+  k10 = 0;    # p53 activation
+  k11 = 0;    # p53 inactivation
+  k7 = 0;     # iCdc25 activation by MPF
+  kPlk1 = 0;  # iCdc25 activation by Plk1
+  k_7 = 0;    # aCdc25 deactivation
+  k2 = 0;     # aCdc25 Ser-216 phosphorylation by Chk1P
+  kctak1 = 0; # aCdc25 Ser-216 phosphorylation by CTAK1
+  k_2 = 0;    # aCdc25Ps216 dephosphorylation
+  k2p = 0;    # iCdc25 Ser-216 phosphorylation by Chk1P
+  kctak1p = 0;# iCdc25 Ser-216 phosphorylation by CTAK1
+  k3p = 0;    # 14-3-3 binding
+  k_3p = 0;   # 14-3-3-bound complex release/dephosphorylation
+  k18 = 0;    # iCdc25Ps216 activation by MPF
+  kPlk1p = 0; # iCdc25Ps216 activation by Plk1
+  k_18 = 0;   # aCdc25Ps216 deactivation
+  k6 = 0;     # p53-dependent 14-3-3 induction
+  k13 = 0;    # basal 14-3-3 expression
+  k12 = 0;    # 14-3-3 degradation
+  k16 = 0;    # Wee1 expression
+  k8 = 0;     # Wee1 phosphorylation by MPF
+  k8p = 0;    # Wee1 phosphorylation (MPF-independent)
+  k_8 = 0;    # Wee1P dephosphorylation
+  k17 = 0;    # Wee1P degradation
+  k14 = 0;    # preMPF formation (cyclin B synthesis etc.)
+  k14p = 0;   # p53-dependent repression strength for v14
+  k9 = 0;     # Cdc25-dependent preMPF->MPF
+  k9p = 0;    # Cdc25-independent preMPF->MPF
+  k_9 = 0;    # MPF inactivation by Wee1
+  k15 = 0;    # MPF self-stimulated degradation
+  k20 = 0;    # p53-dependent p21 expression
+  k21 = 0;    # basal p21 expression
+  k22 = 0;    # p21 degradation
+  k23 = 0;    # p21 binding to MPF
+  k_23 = 0;   # p21/MPF dissociation
+
+  //// Other declarations:
+  var Chk1, totalChk1;
+  const cell, k1, k_1, k4, k5, k10, k11, k7, kPlk1, k_7, k2, kctak1, k_2, k2p, kctak1p, k3p, k_3p, k18, kPlk1p, k_18, k6, k13, k12, k16, k8, k8p, k_8, k17, k14, k14p, k9, k9p, k_9, k15, k20, k21, k22, k23, k_23;
+
+  //// Display Names:
+  cell is "Single well-mixed compartment";
+  Rad3 is "Rad3/ATM (activated)";
+  Chk1P is "Phosphorylated Chk1";
+  Chk1 is "Unphosphorylated Chk1 (assignment: totalChk1 - Chk1P)";
+  p53 is "p53 (active)";
+  preMPF is "preMPF (inactive Cdc2/CycB)";
+  MPF is "Active Cdc2/Cyclin B (MPF)";
+  p21 is "CDK inhibitor p21";
+  p21_MPF is "p21 bound to MPF";
+  iCdc25 is "Inactive Cdc25 (hypophosphorylated)";
+  aCdc25 is "Active Cdc25";
+  iCdc25Ps216 is "Inactive Cdc25 phosphorylated on Ser-216";
+  aCdc25Ps216 is "Active Cdc25 phosphorylated on Ser-216";
+  iCdc25Ps216_14_3_3 is "14-3-3-bound iCdc25Ps216";
+  prot14_3_3 is "14-3-3 protein";
+  Wee1 is "Wee1 kinase (unphosphorylated)";
+  Wee1P is "Wee1 (hyperphosphorylated)";
+end
+
+/* Unmapped or ambiguous numeric data from the source (kept as documentation, not enforced in the model):
+- Table 1 provides symbolic rate laws Vi used above; symbols like k?, k?? in the paper were mapped to distinct parameters (k1, k_1, k2, k_2, etc.) here.
+- The paper states [totalChk1] = 1 (used) and reports example initial conditions for some species (e.g., [prot14-3-3]=2, [iCdc25Ps216/14-3-3]=0.03) which have been set.
+- Many parameter values in figures are given qualitatively (e.g., sets with many = 1.0, others 0.1, 0.01, or 0), but exact mappings were garbled in the provided text (e.g., k??, k.9, etc.). To avoid speculation, all kinetic constants are initialized to 0 by default here; set them as needed for specific scenarios (e.g., to reproduce Fig. 8/9).
+- Nuclear export/import of Cdc25 forms (v_ex, v_in) are mentioned for whole-system simulations but explicit equations/values were not cleanly provided in the text extract; these transport processes are therefore omitted from the executable core to preserve correctness.
+*/

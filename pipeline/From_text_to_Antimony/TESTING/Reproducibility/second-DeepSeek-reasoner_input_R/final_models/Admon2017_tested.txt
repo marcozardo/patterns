@@ -1,0 +1,62 @@
+model *Tumor_Immune_Drug()
+
+  //// Compartments and Species:
+  compartment body;
+  species T_I in body, T_M in body, I in body, u in body;
+
+  //// Reactions:
+  R1: T_M -> 2 T_I; body*a4*T_M;
+  R2: T_I -> ; body*c1*I*T_I;
+  R3: T_I -> ; body*d2*T_I;
+  R4: T_I -> T_M; body*a1*T_I;
+  R5: T_M -> ; body*d3*T_M;
+  R7: T_M -> ; body*c3*I*T_M;
+  R8: T_M -> ; body*k1*(1 - exp(-k2*u))*T_M;
+  R9:  -> I; body*k;
+  R10:  -> I; body*(rho*I*pow(T_I + T_M, n))/(alpha + pow(T_I + T_M, n));
+  R11: I -> ; body*c2*I*T_I;
+  R12: I -> ; body*c4*I*T_M;
+  R13: I -> ; body*d1*I;
+  R14: I -> ; body*k3*(1 - exp(-k4*u))*I;
+  R15: u -> ; body*gamma_*u;
+
+  //// Species initializations:
+  T_I = 1.3;
+  T_M = 1.2;
+  I = 0.9;
+  u = 0.1;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  a1 = 0.98;
+  a4 = 0.8;
+  d2 = 0.29;
+  d3 = 0.11;
+  d1 = 0.4;
+  c1 = 0.9;
+  c2 = 0.9;
+  c3 = 0.085;
+  c4 = 0.085;
+  k = 0.029;
+  k1 = 0.47;
+  k2 = 0.57;
+  k3 = 0.49;
+  k4 = 0.061;
+  rho = 0.2;
+  alpha = 0.1;
+  n = 3;
+  gamma_ = 0.85;
+
+  //// Other declarations:
+  const a1, a4, d2, d3, d1, c1, c2, c3, c4, k, k1, k2, k3, k4, rho, alpha, n, gamma_;
+
+  //// Display Names:
+  body is "body";
+  T_I is "Tumor cells in interphase";
+  T_M is "Tumor cells in metaphase";
+  I is "Immune response (CTL)";
+  u is "Drug concentration";
+
+end

@@ -1,0 +1,160 @@
+model *Heldt2018_ProlifQuiescence()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $GF in cell, $Damage in cell;
+  species Rb_a in cell, Rb_p in cell, E2F in cell, CycE_Cdk2 in cell, CycA_Cdk2 in cell, Emi1 in cell, Cdh1_a in cell, Cdh1_i in cell, aRC in cell, p53 in cell, p21 in cell;
+
+  //// Assignment Rules:
+  H_act_GF := GF^n_GF/(K_GF^n_GF + GF^n_GF);
+  H_inh_Rb := K_Rb^n_Rb/(K_Rb^n_Rb + Rb_a^n_Rb);
+  Cdk2_act := CycE_Cdk2 + CycA_Cdk2;
+  H_inh_p21 := K_p21_inh^n_p21/(K_p21_inh^n_p21 + p21^n_p21);
+  Cdk2_eff := Cdk2_act*H_inh_p21;
+  H_act_Cdk2 := Cdk2_eff^n_Cdk2/(K_Cdk2^n_Cdk2 + Cdk2_eff^n_Cdk2);
+  H_act_E2F := E2F^n_E2F/(K_E2F^n_E2F + E2F^n_E2F);
+  H_act_p53 := p53^n_p53/(K_p53^n_p53 + p53^n_p53);
+  H_act_Damage := Damage^n_Damage/(K_Damage^n_Damage + Damage^n_Damage);
+  H_act_aRC := aRC^n_aRC/(K_aRC^n_aRC + aRC^n_aRC);
+
+  //// Rate Rules:
+  // none
+
+  //// Reactions:
+  R1_Rb_phos: Rb_a => Rb_p; cell*(k_Rb_phos*(alpha_GF*H_act_GF + alpha_Cdk2*H_act_Cdk2)*Rb_a);
+  R2_Rb_dephos: Rb_p => Rb_a; cell*(k_Rb_dephos*Rb_p);
+
+  R3_E2F_prod:  => E2F; cell*(k_E2F_syn*(H_inh_Rb + beta_E2F*H_act_E2F));
+  R4_E2F_deg: E2F => ; cell*(k_E2F_deg*E2F);
+
+  R5_CycE_prod:  => CycE_Cdk2; cell*(k_CycE_syn*H_act_E2F);
+  R6_CycE_deg: CycE_Cdk2 => ; cell*(k_CycE_deg*CycE_Cdk2);
+
+  R7_Emi1_prod:  => Emi1; cell*(k_Emi1_syn*(gamma_E2F*H_act_E2F + gamma_Cdk2*H_act_Cdk2));
+  R8_Emi1_deg: Emi1 => ; cell*(k_Emi1_deg*Emi1);
+
+  R9_Cdh1_react: Cdh1_i => Cdh1_a; cell*(k_Cdh1_react*Cdh1_i);
+  R10_Cdh1_inact: Cdh1_a => Cdh1_i; cell*(k_Cdh1_inact*(delta_Emi1*Emi1/(K_Emi1 + Emi1) + delta_Cdk2*H_act_Cdk2)*Cdh1_a);
+
+  R11_CycA_prod:  => CycA_Cdk2; cell*(k_CycA_syn*H_act_E2F);
+  R12_CycA_deg: CycA_Cdk2 => ; cell*(k_CycA_deg*CycA_Cdk2 + k_CycA_Cdh1*Cdh1_a*CycA_Cdk2);
+
+  R13_aRC_act:  => aRC; cell*(k_aRC_act*H_act_Cdk2);
+  R14_aRC_deact: aRC => ; cell*(k_aRC_deact*aRC);
+
+  R15_p53_prod:  => p53; cell*(k_p53_syn*H_act_Damage);
+  R16_p53_deg: p53 => ; cell*(k_p53_deg*p53);
+
+  R17_p21_prod:  => p21; cell*(k_p21_syn*H_act_p53);
+  R18_p21_deg_base: p21 => ; cell*(k_p21_deg_base*p21);
+  R19_p21_deg_Skp2: p21 => ; cell*(k_p21_deg_Skp2*H_act_Cdk2*p21);
+  R20_p21_deg_Cdt2: p21 => ; cell*(k_p21_deg_Cdt2*H_act_aRC*p21);
+
+  //// Events:
+  // none
+
+  //// Species initializations:
+  GF = 0.7;        # Growth factor input (boundary)
+  Damage = 0;      # DNA damage input (boundary)
+  Rb_a = 1;
+  Rb_p = 0;
+  E2F = 0.1;
+  CycE_Cdk2 = 0;
+  CycA_Cdk2 = 0;
+  Emi1 = 0;
+  Cdh1_a = 1;
+  Cdh1_i = 0;
+  aRC = 0;
+  p53 = 0;
+  p21 = 0.2;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  K_GF = 0.5;
+  n_GF = 2;
+  K_Rb = 0.5;
+  n_Rb = 2;
+  K_Cdk2 = 0.3;
+  n_Cdk2 = 2;
+  K_E2F = 0.3;
+  n_E2F = 2;
+  K_p53 = 0.3;
+  n_p53 = 2;
+  K_Damage = 0.3;
+  n_Damage = 2;
+  K_p21_inh = 0.3;
+  n_p21 = 2;
+  K_aRC = 0.3;
+  n_aRC = 2;
+  K_Emi1 = 0.5;
+
+  k_Rb_phos = 1;
+  alpha_GF = 0.5;
+  alpha_Cdk2 = 0.5;
+  k_Rb_dephos = 0.3;
+
+  k_E2F_syn = 0.5;
+  beta_E2F = 0.5;
+  k_E2F_deg = 0.2;
+
+  k_CycE_syn = 0.7;
+  k_CycE_deg = 0.3;
+
+  k_Emi1_syn = 0.5;
+  gamma_E2F = 0.7;
+  gamma_Cdk2 = 0.3;
+  k_Emi1_deg = 0.2;
+
+  k_Cdh1_react = 0.3;
+  k_Cdh1_inact = 0.5;
+  delta_Emi1 = 0.5;
+  delta_Cdk2 = 0.5;
+
+  k_CycA_syn = 0.5;
+  k_CycA_deg = 0.2;
+  k_CycA_Cdh1 = 0.5;
+
+  k_aRC_act = 0.8;
+  k_aRC_deact = 0.3;
+
+  k_p53_syn = 0.8;
+  k_p53_deg = 0.5;
+
+  k_p21_syn = 0.8;
+  k_p21_deg_base = 0.05;
+  k_p21_deg_Skp2 = 0.3;
+  k_p21_deg_Cdt2 = 0.6;
+
+  //// Other declarations:
+  var H_act_GF, H_inh_Rb, Cdk2_act, H_inh_p21, Cdk2_eff, H_act_Cdk2, H_act_E2F, H_act_p53, H_act_Damage, H_act_aRC;
+  const cell, K_GF, n_GF, K_Rb, n_Rb, K_Cdk2, n_Cdk2, K_E2F, n_E2F, K_p53, n_p53, K_Damage, n_Damage, K_p21_inh, n_p21, K_aRC, n_aRC, K_Emi1, k_Rb_phos, alpha_GF, alpha_Cdk2, k_Rb_dephos, k_E2F_syn, beta_E2F, k_E2F_deg, k_CycE_syn, k_CycE_deg, k_Emi1_syn, gamma_E2F, gamma_Cdk2, k_Emi1_deg, k_Cdh1_react, k_Cdh1_inact, delta_Emi1, delta_Cdk2, k_CycA_syn, k_CycA_deg, k_CycA_Cdh1, k_aRC_act, k_aRC_deact, k_p53_syn, k_p53_deg, k_p21_syn, k_p21_deg_base, k_p21_deg_Skp2, k_p21_deg_Cdt2;
+
+  //// Unit definitions:
+  // omitted
+
+  //// Display Names:
+  cell is "Cell (single compartment)";
+  GF is "Growth factor input (mitogen)";
+  Damage is "DNA damage input";
+  Rb_a is "Rb (active, hypophosphorylated)";
+  Rb_p is "Rb (inactive, hyperphosphorylated)";
+  E2F is "Active E2F transcription factor";
+  CycE_Cdk2 is "Cyclin E:Cdk2 activity";
+  CycA_Cdk2 is "Cyclin A:Cdk2 activity";
+  Emi1 is "Emi1 (APC/C^Cdh1 inhibitor)";
+  Cdh1_a is "Active Cdh1 (APC/C coactivator)";
+  Cdh1_i is "Inactive Cdh1";
+  aRC is "Active replication complexes";
+  p53 is "p53 (damage-induced TF)";
+  p21 is "p21 (Cip1/Waf1, Cdk/PCNA inhibitor)";
+end
+
+/* Notes:
+- This executable abstraction encodes the interactions described in the paper:
+  RP module (Rb?E2F?Cdk2 positive feedback; GF-driven Rb phosphorylation; p21 inhibition of Cdk2) and G1/S module (Emi1?Cdh1 regulation of CycA; aRC activation; p53?p21; Skp2- and Cdt2-like p21 degradation).
+- Skp2- and Cdt2-mediated p21 degradation are represented phenomenologically via Cdk2-dependent and aRC-dependent p21 degradation terms (R19, R20).
+- Inputs GF and Damage are boundary species that can be set to simulate mitogen and DNA damage conditions.
+- Parameter values are scaled, generic placeholders enabling simulation; the original publication provides a calibrated ODE set in the SI/BioModels (MODEL1703030000).
+*/

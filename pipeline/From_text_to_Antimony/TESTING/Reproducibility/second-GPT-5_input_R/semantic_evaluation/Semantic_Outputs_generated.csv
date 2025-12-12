@@ -1,0 +1,13 @@
+Unnamed: 0,N° Species (Bound&Float),N° Reactions,N° Compartments,N° Glob.Parameters
+Admon2017_tested.txt,4,14,1,18
+Aguda1999_tested.txt,15,30,1,41
+Diedrichs2018_tested.txt,11,0,1,76
+Heldt2018_tested.txt,13,20,1,55
+Jiao2018_tested.txt,5,8,1,22
+Khajanchi2015_tested.txt,2,8,1,10
+Lockwood2006_tested.txt,1,0,1,32
+Moore2004_tested.txt,3,10,1,12
+Muller2008_tested.txt,9,13,1,22
+Murphy2016_tested.txt,7,0,1,16
+Vargas2012_tested.txt,7,16,1,17
+Wodarz2007_tested.txt,5,12,1,11

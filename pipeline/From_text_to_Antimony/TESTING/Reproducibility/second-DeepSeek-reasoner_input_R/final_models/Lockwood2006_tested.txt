@@ -1,0 +1,92 @@
+model *Lockwood2006_CI1017_Alzheimers_PKPD()
+
+  //// Compartments and Species:
+  compartment Gut, Central, Peripheral, Effect;
+  species A_gut in Gut, A_cent in Central, A_per in Peripheral, $CeA in Effect;
+  species $ADAScog, $Disease, $Placebo, $DrugEffect;
+
+  //// Assignment Rules:
+  Disease := alpha*time;
+  Placebo := (beta_p * Keqp / (Keqp - Kelp)) * (exp(-Kelp*time) - exp(-Keqp*time));
+  DrugEffect := Emax * CeA / (ECeA50 + CeA);
+  ADAScog := S0 + Disease + Placebo + DrugEffect;
+
+  //// Rate Rules:
+  A_gut' = -ka * A_gut;
+  A_cent' = ka * A_gut - (CL/Vc) * A_cent - (Q/Vc) * A_cent + (Q/Vp) * A_per;
+  A_per' = (Q/Vc) * A_cent - (Q/Vp) * A_per;
+  CeA' = ke0 * (A_cent/Vc - CeA);
+
+  //// Reactions:
+
+  //// Events:
+  E1: at time == 0: A_gut = A_gut + Dose;
+
+  //// Species initializations:
+  A_gut = 0;
+  A_cent = 0;
+  A_per = 0;
+  CeA = 0;
+
+  //// Compartment initializations:
+  Gut = 1;
+  Central = 172;
+  Peripheral = 222;
+  Effect = 1;
+
+  //// Variable initializations:
+  CL = 94.5 * 24;
+  Vc = 172;
+  Q = 31.8 * 24;
+  Vp = 222;
+  ka = 4.81 * 24;
+  ke0 = ln(2)/16;
+  Dose = 25;
+  S0 = 30;
+  alpha = 0.0164;
+  beta_p = -3;
+  Keqp = ln(2)/6;
+  Kelp = ln(2)/7;
+  Emax = -4;
+  ECeA50 = 21;
+
+  //// Other declarations:
+  const Gut, Central, Peripheral, Effect, S0, alpha, beta_p, Keqp, Kelp, Emax, ECeA50, CL, Vc, Q, Vp, ka, ke0, Dose;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+  unit volume = 1 liter;
+  unit amount = 1 mg;
+  unit concentration = 1 mg/liter;
+
+  //// Display Names:
+  time_unit is "day";
+  Gut is "Gastrointestinal compartment";
+  Central is "Central compartment (plasma)";
+  Peripheral is "Peripheral compartment";
+  Effect is "Effect compartment";
+  A_gut is "Amount of drug in gut";
+  A_cent is "Amount of drug in central compartment";
+  A_per is "Amount of drug in peripheral compartment";
+  CeA is "Effect site concentration";
+  ADAScog is "ADAS-Cognitive score";
+  Disease is "Disease progression component";
+  Placebo is "Placebo effect";
+  DrugEffect is "Drug effect (Emax model)";
+  CL is "Clearance";
+  Vc is "Volume of central compartment";
+  Q is "Inter-compartmental clearance";
+  Vp is "Volume of peripheral compartment";
+  ka is "Absorption rate constant";
+  ke0 is "Effect compartment equilibration rate constant";
+  Dose is "Oral dose";
+  S0 is "Baseline ADAS-Cog score";
+  alpha is "Disease progression rate";
+  beta_p is "Placebo effect magnitude";
+  Keqp is "Placebo effect onset rate";
+  Kelp is "Placebo effect offset rate";
+  Emax is "Maximum drug effect";
+  ECeA50 is "Concentration for 50% of max effect";
+  E1 is "Single oral dose administration";
+
+end

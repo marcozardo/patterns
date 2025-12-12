@@ -1,0 +1,93 @@
+model *Lockwood2006_AD_POC_PKPD_Placebo_Disease()
+
+  //// Compartments and Species:
+  compartment Subject;
+  species CeA_ngml in Subject;
+
+  //// Assignment Rules:
+  ln2 := ln(2);
+  Keq_p := ln2/t12eqp;
+  Kel_p := ln2/t12elp;
+  ke0 := ln2/t12eqa;
+  ADAS_Placebo := beta_p * Keq_p/(Keq_p - Kel_p) * (exp(-Kel_p*time) - exp(-Keq_p*time));
+  Cplasma_ss := Kdose2Css * dose_mg;
+  PD_linear := alpha_A * CeA_ngml;
+  PD_Emax   := EmaxH   * CeA_ngml/(EC50 + CeA_ngml);
+  PD_Smax   := EmaxSig * (CeA_ngml^NSig)/(EC50^NSig + CeA_ngml^NSig);
+  PD_Ushape := EmaxU   * ( (CeA_ngml^NU)/(EC50U^NU + CeA_ngml^NU) - (CeA_ngml^NU)/(IC50U^NU + CeA_ngml^NU) );
+  PD_drug := piecewise(PD_linear, model_select == 1, PD_Emax, model_select == 2, PD_Smax, model_select == 3, PD_Ushape, model_select == 4, 0);
+  S_v := exp(-hazard * time);
+  ADAS_Score := S0 + gamma_*time + ADAS_Placebo + PD_drug;
+
+  //// Rate Rules:
+  CeA_ngml' = ke0 * (Cplasma_ss - CeA_ngml);
+
+  //// Reactions:
+
+  //// Species initializations:
+  CeA_ngml = 0;
+
+  //// Compartment initializations:
+  Subject = 1;
+
+  //// Variable initializations:
+  S0 = 30;
+  gamma_ = 0.0164;
+  t12eqp = 6;
+  t12elp = 7;
+  beta_p = -3;
+  t12eqa = 16;
+  Kdose2Css = 2.5;
+  dose_mg = 25;
+  alpha_A = -0.047;
+  EmaxH = -4;
+  EmaxSig = -3;
+  EmaxU = -6;
+  EC50 = 21;
+  EC50U = 18;
+  IC50U = 38;
+  NSig = 4;
+  NU = 3;
+  model_select = 3;
+  hazard = 0.00145;
+
+  //// Other declarations:
+  var ln2, Keq_p, Kel_p, ke0, ADAS_Placebo, Cplasma_ss, PD_linear, PD_Emax, PD_Smax, PD_Ushape, PD_drug, S_v, ADAS_Score;
+  const Subject, S0, gamma_, t12eqp, t12elp, beta_p, t12eqa, Kdose2Css, dose_mg, alpha_A, EmaxH, EC50, EmaxSig, NSig, EmaxU, EC50U, IC50U, NU, model_select, hazard;
+
+  //// Unit definitions:
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  Subject is "Virtual patient";
+  CeA_ngml is "Effect-site concentration (ng/mL)";
+  ADAS_Score is "ADAS-Cog total score";
+  ADAS_Placebo is "Placebo effect on ADAS-Cog";
+  PD_drug is "Drug effect on ADAS-Cog (selected model)";
+  PD_linear is "Drug effect (linear model)";
+  PD_Emax is "Drug effect (hyperbolic Emax)";
+  PD_Smax is "Drug effect (sigmoidal, Hill)";
+  PD_Ushape is "Drug effect (U-shaped: agonist - antagonist)";
+  S0 is "Baseline ADAS-Cog";
+  gamma_ is "Disease progression rate (per day)";
+  t12eqp is "Placebo onset half-life (days)";
+  t12elp is "Placebo offset half-life (days)";
+  beta_p is "Placebo magnitude (ADAS-Cog units)";
+  t12eqa is "Effect-compartment half-life (days)";
+  Cplasma_ss is "Avg steady-state plasma concentration (ng/mL)";
+  Kdose2Css is "Mapping: dose (mg) -> Css (ng/mL per mg)";
+  dose_mg is "Oral TID dose (mg)";
+  alpha_A is "Linear potency (ADAS-Cog*mL/ng)";
+  EmaxH is "Max effect (hyperbolic Emax)";
+  EmaxSig is "Max effect (sigmoidal)";
+  EmaxU is "U-shaped model amplitude";
+  EC50 is "Half-max concentration (ng/mL) for Emax/Smax";
+  EC50U is "Half-max (agonist) in U-shaped (ng/mL)";
+  IC50U is "Half-max (antagonist) in U-shaped (ng/mL)";
+  NSig is "Hill coefficient (sigmoidal)";
+  NU is "Hill coefficient (U-shaped)";
+  model_select is "PD model selector (0=inactive,1=linear,2=Emax,3=Smax,4=U-shaped)";
+  hazard is "Daily dropout hazard";
+  S_v is "Trial survival (retention) function";
+
+end

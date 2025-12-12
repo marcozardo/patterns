@@ -1,0 +1,62 @@
+model *Muller2008_MAPK_network()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $F in cell, $MC in cell;
+  species C in cell, B in cell, M in cell;
+
+  //// Assignment Rules:
+  F := FGF_stimulus * piecewise(1, time < 5, 0);
+  MC := MSH_stimulus * piecewise(1, time < 5, 0);
+
+  //// Rate Rules:
+  C' = k1*F + k2*B + k3*M - k4*MC*C - k5*C;
+  B' = k6*F + k7*C + k8*M - k9*MC*B - k10*C*B - k11*B;
+  M' = k12*C + k13*B - k14*M;
+
+  //// Species initializations:
+  C = 0;
+  B = 0;
+  M = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  FGF_stimulus = 0;
+  MSH_stimulus = 0;
+  k1 = 0.5;
+  k2 = 0.1;
+  k3 = 0.1;
+  k4 = 0.5;
+  k5 = 0.1;
+  k6 = 0.5;
+  k7 = 0.1;
+  k8 = 0.1;
+  k9 = 0.5;
+  k10 = 0.1;
+  k11 = 0.1;
+  k12 = 0.5;
+  k13 = 0.5;
+  k14 = 0.2;
+
+  //// Other declarations:
+  var F, MC;
+  var C, B, M;
+  const cell, FGF_stimulus, MSH_stimulus, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit conc_unit = 1e-9 mole / liter;
+
+  //// Display Names:
+  cell is "Cell";
+  F is "Active FGFR";
+  MC is "Active MC1R";
+  C is "Active C-Raf";
+  B is "Active B-Raf";
+  M is "Active MAPK1,2";
+  FGF_stimulus is "FGF stimulus flag";
+  MSH_stimulus is "MSH stimulus flag";
+
+end

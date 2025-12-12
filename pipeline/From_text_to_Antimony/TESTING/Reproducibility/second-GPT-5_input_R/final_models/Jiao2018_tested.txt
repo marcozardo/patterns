@@ -1,0 +1,99 @@
+model *Jiao2018_AML_feedback()
+
+  //// Compartments and Species:
+  compartment bone_marrow;
+  species S in bone_marrow, A in bone_marrow, D in bone_marrow, L in bone_marrow, T in bone_marrow;
+
+  //// Assignment Rules:
+  Z1 := S;                          # Total niche occupancy for S-compartment
+  Z2 := A + L;                      # Total niche occupancy for A/L-compartment
+  p1 := P10/(1 + g1*D^n);           # Self-renewal probability of S with feedback from D
+  v1 := V10/(1 + h1*D^n);           # Division rate of S with feedback from D
+  p2 := P20/(1 + g2*D^m);           # Self-renewal probability of A with feedback from D
+  v2 := V20/(1 + h2*D^m);           # Division rate of A with feedback from D
+
+  //// Rate Rules:
+  // not present
+
+  //// Reactions:
+  S_self_renewal: S => 2 S; bone_marrow*(v1*p1*S*(K1 - Z1));
+  S_to_A_diff:    S => 2 A; bone_marrow*(v1*(1 - p1)*S);
+  A_self_renewal: A => 2 A; bone_marrow*(v2*p2*A*(K2 - Z2));
+  A_to_D_diff:    A => 2 D; bone_marrow*(v2*(1 - p2)*A);
+  D_clearance:    D => ;     bone_marrow*(d1*D);
+  L_self_renewal: L => 2 L; bone_marrow*(V30*P30*L*(K2 - Z2));
+  L_to_T_diff:    L => 2 T; bone_marrow*(V30*(1 - P30)*L);
+  T_clearance:    T => ;     bone_marrow*(d2*T);
+
+  //// Events:
+  // not present
+
+  //// Species initializations:
+  S = 10;   # Example initial condition used in Fig. 5 of the paper
+  A = 0;
+  D = 0;
+  L = 10;
+  T = 0;
+
+  //// Compartment initializations:
+  bone_marrow = 1;
+
+  //// Variable initializations:
+  P10 = 0.65;
+  P20 = 0.68;
+  P30 = 0.80;
+  V10 = 0.50;
+  V20 = 0.72;
+  V30 = 0.70;
+  d1  = 0.275;
+  d2  = 0.30;
+  g1  = 0.03;
+  g2  = 0.025;
+  h1  = 0.2;
+  h2  = 0.11;
+  m   = 1;
+  n   = 1;
+  K1  = 1;
+  K2  = 1;
+
+  //// Other declarations:
+  var p1, v1, p2, v2, Z1, Z2;
+  const bone_marrow, P10, P20, P30, V10, V20, V30, d1, d2, g1, g2, h1, h2, m, n, K1, K2;
+
+  //// Unit definitions:
+  // omitted
+
+  //// Display Names:
+  bone_marrow is "Bone marrow compartment";
+  S is "Haematopoietic stem cells";
+  A is "Haematopoietic progenitor (amplifying) cells";
+  D is "Terminally differentiated healthy cells";
+  L is "Leukaemia stem cells";
+  T is "Terminally differentiated leukaemic cells";
+  Z1 is "Niche occupancy for S (Z1 = S)";
+  Z2 is "Niche occupancy for A and L (Z2 = A + L)";
+  S_self_renewal is "Self-renewal of S with end-product inhibition";
+  S_to_A_diff is "Differentiation of S to A (produces 2 A)";
+  A_self_renewal is "Self-renewal of A with end-product inhibition";
+  A_to_D_diff is "Differentiation of A to D (produces 2 D)";
+  D_clearance is "Exit/death of D to bloodstream";
+  L_self_renewal is "Self-renewal of L with crowding limitation";
+  L_to_T_diff is "Differentiation of L to T (produces 2 T)";
+  T_clearance is "Exit/death of T to bloodstream";
+
+end
+
+/* Notes:
+- Model domain: physiological/clinical hematopoiesis with AML (stem/progenitor dynamics).
+- Equations implemented exactly as reactions to reproduce:
+  dS/dt = [p1(D)*(K1 - Z1) - (1 - p1(D))] * v1(D) * S
+  dA/dt = 2*(1 - p1(D))*v1(D)*S + [p2(D)*(K2 - Z2) - (1 - p2(D))] * v2(D) * A
+  dD/dt = 2*(1 - p2(D))*v2(D)*A - d1*D
+  dL/dt = [P30*(K2 - Z2) - (1 - P30)] * V30 * L
+  dT/dt = 2*(1 - P30)*V30*L - d2*T
+- Feedback functions:
+  p1 = P10/(1 + g1*D^n), v1 = V10/(1 + h1*D^n);
+  p2 = P20/(1 + g2*D^m), v2 = V20/(1 + h2*D^m).
+- K1 = K2 = 1 as per scaling in the paper; Z1 = S, Z2 = A + L.
+- Initial conditions here mirror one published scenario (Fig. 5); users may change them as needed.
+*/

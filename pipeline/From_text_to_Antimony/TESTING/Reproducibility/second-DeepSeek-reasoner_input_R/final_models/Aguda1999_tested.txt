@@ -1,0 +1,200 @@
+model *Aguda1999_G2_DNA_damage_checkpoint()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $Chk1 in cell;  // boundary species defined by assignment rule
+  species Chk1P in cell, Rad3 in cell, p53 in cell, preMPF in cell, MPF in cell, p21 in cell, p21_MPF in cell;
+  species iCdc25 in cell, iCdc25Ps216 in cell, iCdc25Ps216_14_3_3 in cell, aCdc25 in cell, aCdc25Ps216 in cell;
+  species Wee1 in cell, Wee1P in cell;
+  species X14_3_3 in cell;  // 14-3-3 protein
+
+  //// Assignment Rules:
+  Chk1 := Chk1_total - Chk1P;
+
+  //// Rate Rules:
+  // none ? all dynamics are captured by reactions
+
+  //// Reactions:
+  R1: Chk1 -> Chk1P; k1*Chk1*Rad3;
+  Rminus1: Chk1P -> Chk1; km1*Chk1P;
+
+  R2: aCdc25 -> aCdc25Ps216; (k2*Chk1P + kctak2)*aCdc25;
+  Rminus2: aCdc25Ps216 -> aCdc25; km2*aCdc25Ps216;
+
+  R2prime: iCdc25 -> iCdc25Ps216; (k2prime*Chk1P + kctak2prime)*iCdc25;
+
+  R3prime: iCdc25Ps216 + X14_3_3 -> iCdc25Ps216_14_3_3; k3prime*iCdc25Ps216*X14_3_3;
+  Rminus3prime: iCdc25Ps216_14_3_3 -> iCdc25Ps216 + X14_3_3; km3prime*iCdc25Ps216_14_3_3;
+
+  R4:  -> Rad3; k4;
+  R5: Rad3 -> ; k5*Rad3;
+
+  R6:  -> X14_3_3; k6*p53;
+  R7: iCdc25 -> aCdc25; (k7*MPF + kPlk1)*iCdc25;
+  Rminus7: aCdc25 -> iCdc25; km7*aCdc25;
+
+  R8: Wee1 -> Wee1P; (k8*MPF + k8prime)*Wee1;
+  Rminus8: Wee1P -> Wee1; km8*Wee1P;
+
+  R9: preMPF -> MPF; (k9*(aCdc25 + aCdc25Ps216) + k9prime)*preMPF;
+  Rminus9: MPF -> preMPF; km9*MPF*Wee1;
+
+  R10:  -> p53; k10;
+  R11: p53 -> ; k11*p53;
+
+  R12: X14_3_3 -> ; k12*X14_3_3;
+  R13:  -> X14_3_3; k13;
+
+  R14:  -> preMPF; k14/(1 + k14prime*p53);
+  R15: MPF -> ; k15*MPF*MPF;
+
+  R16:  -> Wee1; k16;
+  R17: Wee1P -> ; k17*Wee1P;
+
+  R18: iCdc25Ps216 -> aCdc25Ps216; (k18*MPF + kPlk1prime)*iCdc25Ps216;
+  Rminus18: aCdc25Ps216 -> iCdc25Ps216; km18*aCdc25Ps216;
+
+  R20:  -> p21; k20*p53;
+  R21:  -> p21; k21;
+  R22: p21 -> ; k22*p21;
+
+  R23: MPF + p21 -> p21_MPF; k23*MPF*p21;
+  Rminus23: p21_MPF -> MPF + p21; km23*p21_MPF;
+
+  Export: iCdc25Ps216_14_3_3 -> ; kex*iCdc25Ps216_14_3_3;
+  Import:  -> iCdc25; kin;
+
+  //// Events:
+  // none
+
+  //// Species initializations:
+  Chk1P = 1e-3;
+  Rad3 = 0;
+  p53 = 0;
+  preMPF = 1e-3;
+  MPF = 1e-4;
+  p21 = 0;
+  p21_MPF = 0;
+  iCdc25 = 1e-3;
+  iCdc25Ps216 = 2e-3;
+  iCdc25Ps216_14_3_3 = 0.03;
+  aCdc25 = 1e-3;
+  aCdc25Ps216 = 0;
+  Wee1 = 1e-2;
+  Wee1P = 0;
+  X14_3_3 = 2;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  // Rate constants (dimensionless)
+  k1 = 1.0;
+  km1 = 0.1;
+  k2 = 0.1;
+  kctak2 = 0;
+  km2 = 0.1;
+  k2prime = 0;        // set to zero as per Fig.8 legend
+  kctak2prime = 0;
+  k3prime = 0.1;
+  km3prime = 0.1;
+  k4 = 0;             // no DNA damage in default simulation
+  k5 = 1.0;
+  k6 = 0.1;
+  k7 = 1.0;
+  kPlk1 = 0;
+  km7 = 1.0;
+  k8 = 1.0;
+  k8prime = 0.01;
+  km8 = 1.0;
+  k9 = 1.0;
+  k9prime = 0.01;
+  km9 = 1.0;
+  k10 = 0;            // no DNA damage in default simulation
+  k11 = 1.0;
+  k12 = 0.1;
+  k13 = 1.0;
+  k14 = 0.1;
+  k14prime = 0.01;
+  k15 = 0.1;
+  k16 = 1.0;
+  k17 = 1.0;
+  k18 = 1.0;
+  kPlk1prime = 0;
+  km18 = 1.0;
+  k20 = 1.0;
+  k21 = 1.0;
+  k22 = 0.1;
+  k23 = 1.0;
+  km23 = 1.0;
+  kex = 1.0;
+  kin = 1e-3;
+  Chk1_total = 1.0;
+
+  //// Other declarations:
+  const k1, km1, k2, kctak2, km2, k2prime, kctak2prime, k3prime, km3prime, k4, k5, k6, k7, kPlk1, km7, k8, k8prime, km8, k9, k9prime, km9, k10, k11, k12, k13, k14, k14prime, k15, k16, k17, k18, kPlk1prime, km18, k20, k21, k22, k23, km23, kex, kin, Chk1_total;
+
+  //// Unit definitions:
+  // All quantities are dimensionless; no units defined.
+
+  //// Display Names:
+  cell is "cell";
+  Chk1 is "Chk1 (inactive)";
+  Chk1P is "phosphorylated Chk1";
+  Rad3 is "Rad3/ATM";
+  p53 is "p53";
+  preMPF is "inactive MPF (preMPF)";
+  MPF is "active MPF";
+  p21 is "p21";
+  p21_MPF is "p21-MPF complex";
+  iCdc25 is "inactive Cdc25";
+  iCdc25Ps216 is "inactive Cdc25 phosphorylated at Ser216";
+  iCdc25Ps216_14_3_3 is "iCdc25Ps216 bound to 14-3-3";
+  aCdc25 is "active Cdc25";
+  aCdc25Ps216 is "active Cdc25 phosphorylated at Ser216";
+  Wee1 is "Wee1";
+  Wee1P is "phosphorylated Wee1";
+  X14_3_3 is "14-3-3 protein";
+  k1 is "rate constant for Chk1 phosphorylation";
+  km1 is "rate constant for Chk1 dephosphorylation";
+  k2 is "rate constant for aCdc25 phosphorylation at Ser216 by Chk1P";
+  kctak2 is "rate constant for aCdc25 phosphorylation by CTAK1";
+  km2 is "rate constant for aCdc25Ps216 dephosphorylation";
+  k2prime is "rate constant for iCdc25 phosphorylation at Ser216 by Chk1P";
+  kctak2prime is "rate constant for iCdc25 phosphorylation by CTAK1";
+  k3prime is "rate constant for 14-3-3 binding to iCdc25Ps216";
+  km3prime is "rate constant for dissociation of iCdc25Ps216/14-3-3";
+  k4 is "activation rate of Rad3 due to DNA damage";
+  k5 is "degradation rate of Rad3";
+  k6 is "p53-dependent expression rate of 14-3-3";
+  k7 is "rate constant for iCdc25 activation by MPF";
+  kPlk1 is "rate constant for iCdc25 activation by Plk1";
+  km7 is "rate constant for aCdc25 deactivation";
+  k8 is "rate constant for Wee1 phosphorylation by MPF";
+  k8prime is "MPF-independent phosphorylation rate of Wee1";
+  km8 is "rate constant for Wee1P dephosphorylation";
+  k9 is "rate constant for preMPF activation by active Cdc25";
+  k9prime is "Cdc25-independent activation rate of preMPF";
+  km9 is "rate constant for MPF inactivation by Wee1";
+  k10 is "activation rate of p53 due to DNA damage";
+  k11 is "degradation rate of p53";
+  k12 is "degradation rate of 14-3-3";
+  k13 is "p53-independent expression rate of 14-3-3";
+  k14 is "basal rate of preMPF synthesis";
+  k14prime is "inhibition constant of preMPF synthesis by p53";
+  k15 is "rate constant for MPF degradation (self-stimulated)";
+  k16 is "synthesis rate of Wee1";
+  k17 is "degradation rate of Wee1P";
+  k18 is "rate constant for iCdc25Ps216 activation by MPF";
+  kPlk1prime is "rate constant for iCdc25Ps216 activation by Plk1";
+  km18 is "rate constant for aCdc25Ps216 deactivation";
+  k20 is "p53-dependent expression rate of p21";
+  k21 is "p53-independent expression rate of p21";
+  k22 is "degradation rate of p21";
+  k23 is "rate constant for p21 binding to MPF";
+  km23 is "rate constant for dissociation of p21-MPF complex";
+  kex is "nuclear export rate of iCdc25Ps216/14-3-3";
+  kin is "nuclear import rate of iCdc25";
+  Chk1_total is "total Chk1 concentration";
+
+end

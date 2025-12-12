@@ -1,0 +1,46 @@
+model *Moore2004_CML_Tcell()
+
+  //// Compartments and Species:
+  compartment blood;
+  species T_n in blood, T_e in blood, C in blood;
+
+  //// Reactions:
+  Tn_source:         => T_n; blood*sn;
+  Tn_natural_death:  T_n => ; blood*dn*T_n;
+  Tn_activation_loss: T_n => ; blood*kn*T_n*(C/(C + theta));
+
+  Te_gain_from_activation: => T_e; blood*alpha_n*kn*T_n*(C/(C + theta));
+  Te_recruitment:          => T_e; blood*alpha_e*T_e*(C/(C + theta));
+  Te_natural_death:        T_e => ; blood*de*T_e;
+  Te_loss_due_to_C:        T_e => ; blood*gamma_e*C*T_e;
+
+  C_gompertz_growth: => C; blood*(rc*C*ln(Cmax/C));
+  C_natural_death:   C => ; blood*dc*C;
+  C_killed_by_Te:    C => ; blood*gamma_c*C*T_e;
+
+  //// Species initializations:
+  T_n = 1510;
+  T_e = 20;
+  C   = 10000;
+
+  //// Compartment initializations:
+  blood = 1;
+
+  //// Variable initializations:
+  sn       = 0.073;
+  dn       = 0.040;
+  de       = 0.06;
+  dc       = 0.2;
+  kn       = 0.001;
+  theta    = 100;
+  alpha_n  = 0.41;
+  alpha_e  = 0.2;
+  Cmax     = 3e5;
+  rc       = 0.03;
+  gamma_e  = 0.005;
+  gamma_c  = 0.005;
+
+  //// Other declarations:
+  const blood, sn, dn, de, dc, kn, theta, alpha_n, alpha_e, Cmax, rc, gamma_e, gamma_c;
+
+end

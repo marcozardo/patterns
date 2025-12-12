@@ -1,0 +1,88 @@
+model *Hernandez2012_InnateImmuneInfluenza()
+
+  //// Compartments and Species:
+  compartment lung;
+  species U_H in lung, U_E in lung, U_I in lung, U_R in lung, K in lung;
+  species V in lung, IFN in lung;
+
+  //// Reactions:
+  R_prod_UH:  => U_H; S_H;
+  R_death_UH: U_H => ; delta_H*U_H;
+  R_infection: U_H => U_E; k_I*U_H*V;
+  R_conversion: U_E => U_I; k_E*U_E;
+  R_kill_E: U_E => ; q_K*U_E*K;
+  R_death_UI: U_I => ; delta_I*U_I;
+  R_kill_I: U_I => ; q_K*U_I*K;
+  R_resistance: U_H => U_R; k_R*U_H*IFN;
+  R_death_UR: U_R => ; delta_R*U_R;
+  R_virus_prod:  => V; rho_V*U_I;
+  R_virus_decay: V => ; delta_V*V;
+  R_ifn_prod:  => IFN; a_I*U_I;
+  R_ifn_decay: IFN => ; delta_IFN*IFN;
+  R_NK_prod:  => K; S_K;
+  R_NK_recruit:  => K; Phi_K*U_I;
+  R_NK_death: K => ; delta_K*K;
+
+  //// Species initializations:
+  U_H = 5e8;
+  U_E = 0;
+  U_I = 0;
+  U_R = 0;
+  V = 1e-3;
+  IFN = 0;
+  K = 8e5;
+
+  //// Compartment initializations:
+  lung = 1;
+
+  //// Variable initializations:
+  k_I = 3e-3;
+  k_R = 7;
+  k_E = 0.5;
+  q_K = 3e-6;
+  Phi_K = 1e-3;
+  a_I = 3e-6;
+  rho_V = 1e-2;
+  delta_H = 0.01;
+  delta_I = 0.01;
+  delta_R = 0.01;
+  delta_IFN = 4;
+  delta_K = 0.04;
+  delta_V = 5.2;
+  S_H = 5e8 * 0.01;
+  S_K = 8e5 * 0.04;
+
+  //// Other declarations:
+  const k_I, k_R, k_E, q_K, Phi_K, a_I, rho_V, delta_H, delta_I, delta_R, delta_IFN, delta_K, delta_V, S_H, S_K;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = 1 item;
+  unit fold_change = 1 dimensionless;
+
+  //// Display Names:
+  lung is "Lung compartment (1 mL)";
+  U_H is "Healthy epithelial cells";
+  U_E is "Eclipse-phase epithelial cells";
+  U_I is "Infected epithelial cells";
+  U_R is "Resistant epithelial cells";
+  K is "Natural killer cells (NK)";
+  V is "Influenza virus (copies per mL)";
+  IFN is "Interferon-I (fold change)";
+  k_I is "Infection rate constant";
+  k_R is "IFN-induced resistance rate constant";
+  k_E is "Eclipse to infected conversion rate";
+  q_K is "NK killing rate constant";
+  Phi_K is "NK recruitment rate by infected cells";
+  a_I is "IFN production rate by infected cells";
+  rho_V is "Virus production rate";
+  delta_H is "Healthy cell death rate";
+  delta_I is "Infected cell death rate";
+  delta_R is "Resistant cell death rate";
+  delta_IFN is "IFN degradation rate";
+  delta_K is "NK death rate";
+  delta_V is "Virus clearance rate";
+  S_H is "Healthy cell production rate";
+  S_K is "NK production rate";
+
+end

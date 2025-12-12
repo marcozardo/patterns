@@ -1,0 +1,80 @@
+model *Murphy2016_TumorGrowth_ODEs()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species V_exp in tumor, V_mend in tumor, V_log in tumor, V_lin in tumor, V_surf in tumor, V_gomp in tumor, V_bert in tumor;
+
+  //// Rate Rules:
+  V_exp'  = a_exp*V_exp - C0*V_exp;
+  V_mend' = a_mend*V_mend^b_mend - C0*V_mend;
+  V_log'  = a_log*V_log*(1 - V_log/b_log) - C0*V_log;
+  V_lin'  = a_lin*V_lin/(V_lin + b_lin) - C0*V_lin;
+  V_surf' = a_surf*V_surf/((V_surf + b_surf)^3) - C0*V_surf;
+  V_gomp' = a_gomp*V_gomp*ln(b_gomp/(V_gomp + c_gomp)) - C0*V_gomp;
+  V_bert' = a_bert*(V_bert^0.6666666667) - b_bert*V_bert - C0*V_bert;
+
+  //// Species initializations:
+  V_exp = V0;
+  V_mend = V0;
+  V_log = V0;
+  V_lin = V0;
+  V_surf = V0;
+  V_gomp = V0;
+  V_bert = V0;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  # Default initial tumor volume (same for all models)
+  V0 = 1;
+
+  # Chemotherapy kill coefficient (per day); set C0 > 0 to include constant chemotherapy, else 0 for no chemo
+  C0 = 0;
+
+  # Parameter set (fits to truncated Worschech dataset; Murphy et al. 2016, Fig. 1)
+  a_exp = 0.0262;           # 1/day
+
+  a_mend = 0.286;           # 1/day
+  b_mend = 0.616;           # dimensionless exponent
+
+  a_log = 0.0370;           # 1/day
+  b_log = 2000;             # volume units (e.g., mm^3)
+
+  a_lin = 58.7;             # volume/day
+  b_lin = 1690;             # volume
+
+  a_surf = 0.265;           # volume/day (see article; used with (V + b)^3 denominator)
+  b_surf = 506;             # volume
+
+  a_gomp = 0.279;           # 1/day
+  b_gomp = 13900;           # volume
+  c_gomp = 12000;           # volume
+
+  a_bert = 0.306;           # volume/day coefficient
+  b_bert = 0.0119;          # 1/day (death term)
+
+  //// Other declarations:
+  const tumor, V0, C0, a_exp, a_mend, b_mend, a_log, b_log, a_lin, b_lin, a_surf, b_surf, a_gomp, b_gomp, c_gomp, a_bert, b_bert;
+
+  //// Display Names:
+  tumor is "Tumor compartment (unit volume)";
+  V_exp is "Tumor volume (Exponential growth model)";
+  V_mend is "Tumor volume (Mendelsohn growth model)";
+  V_log is "Tumor volume (Logistic growth model)";
+  V_lin is "Tumor volume (Linear/saturating growth model)";
+  V_surf is "Tumor volume (Surface-limited growth model)";
+  V_gomp is "Tumor volume (Gompertz growth model)";
+  V_bert is "Tumor volume (von Bertalanffy growth model)";
+  C0 is "Constant chemotherapy kill coefficient (per day)";
+end
+
+/* Notes:
+- Domain: physiological/clinical tumor growth modeling (single-compartment tumor volume dynamics).
+- ODE forms implemented as rate rules (V' = ...), matching Table 1 in Murphy et al. 2016.
+- Chemotherapy is included uniformly as a subtraction term -C0*V for each model, per the article's Methods.
+- Parameter values initialized from the truncated data fit in Fig. 1 of the article to keep a consistent set across all models.
+- Units in the paper are reported as per day for rates and mm^3 for volumes; no explicit unit system is enforced here.
+- To simulate growth without chemotherapy, leave C0 = 0; to include constant chemotherapy, set C0 > 0 (1/day).
+- All models are simulated in parallel here as separate species (V_exp, V_mend, ...), enabling direct comparison under identical initial conditions.
+*/

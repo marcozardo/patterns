@@ -1,0 +1,49 @@
+model *Khajanchi2015_OptimalControl_CancerImmunotherapy()
+
+  //// Compartments and Species:
+  compartment tumor_site;
+  species $E in tumor_site, $T in tumor_site;
+
+  //// Rate Rules:
+  E' = s*epsilon1 + (p*E*T)/(g + T) - m*E*T - d*E;
+  T' = a*T*(1 - b*T) - n*E*T - epsilon2*T;
+
+  //// Species initializations:
+  E = 1.70811e6;
+  T = 8.28638e6;
+
+  //// Compartment initializations:
+  tumor_site = 1;
+
+  //// Variable initializations:
+  s = 1.3e4;
+  p = 0.1245;
+  g = 2.019e7;
+  m = 3.422e-10;
+  d = 0.0412;
+  a = 0.18;
+  b = 2.0e-9;
+  n = 1.101e-7;
+  epsilon1 = 1;
+  epsilon2 = 0;
+
+  //// Other declarations:
+  const tumor_site, s, p, g, m, d, a, b, n;
+  var epsilon1, epsilon2;
+
+  //// Display Names:
+  tumor_site is "Tumor site";
+  E is "Effector cells";
+  T is "Tumor cells";
+  s is "Constant source rate of effector cells";
+  p is "Maximum proliferation rate of effector cells";
+  g is "Half-saturation constant";
+  m is "Inactivation rate of effector cells by tumor";
+  d is "Death rate of effector cells";
+  a is "Maximal growth rate of tumor cells";
+  b is "Inverse carrying capacity of tumor";
+  n is "Killing rate of tumor cells by effector cells";
+  epsilon1 is "IL-2 therapy control (external source)";
+  epsilon2 is "ACI therapy control (tumor killing)";
+
+end

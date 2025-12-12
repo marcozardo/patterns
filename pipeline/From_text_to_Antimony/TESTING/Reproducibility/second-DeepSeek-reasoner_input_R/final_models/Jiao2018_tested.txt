@@ -1,0 +1,80 @@
+model *Jiao2018_Feedback_regulation_in_stem_cell_model_with_AML()
+
+  //// Compartments and Species:
+  compartment bone_marrow;
+  species S in bone_marrow, A in bone_marrow, D in bone_marrow, L in bone_marrow, T in bone_marrow;
+
+  //// Assignment Rules:
+  Z1 := S;
+  Z2 := A + L;
+  p1 := p10 / (1 + g1 * D);
+  p2 := p20 / (1 + g2 * D);
+  v1 := v10 / (1 + h1 * D);
+  v2 := v20 / (1 + h2 * D);
+
+  //// Rate Rules:
+  S' = (p1 * (K1 - Z1) - (1 - p1)) * v1 * S;
+  A' = 2 * (1 - p1) * v1 * S + (p2 * (K2 - Z2) - (1 - p2)) * v2 * A;
+  D' = 2 * (1 - p2) * v2 * A - d1 * D;
+  L' = (p30 * (K2 - Z2) - (1 - p30)) * v30 * L;
+  T' = 2 * (1 - p30) * v30 * L - d2 * T;
+
+  //// Species initializations:
+  S = 10;
+  A = 0;
+  D = 0;
+  L = 10;
+  T = 0;
+
+  //// Compartment initializations:
+  bone_marrow = 1;
+
+  //// Variable initializations:
+  p10 = 0.65;
+  p20 = 0.68;
+  p30 = 0.80;
+  v10 = 0.50;
+  v20 = 0.72;
+  v30 = 0.70;
+  d1 = 0.275;
+  d2 = 0.30;
+  g1 = 0.03;
+  g2 = 0.025;
+  h1 = 0.2;
+  h2 = 0.11;
+  K1 = 1;
+  K2 = 1;
+
+  //// Other declarations:
+  var p1, p2, v1, v2, Z1, Z2;
+  const p10, p20, p30, v10, v20, v30, d1, d2, g1, g2, h1, h2, K1, K2;
+
+  //// Display Names:
+  bone_marrow is "Bone marrow microenvironment";
+  S is "Haematopoietic stem cells (S)";
+  A is "Progenitor cells (A)";
+  D is "Terminally differentiated cells of S (D)";
+  L is "Leukaemia stem cells (L)";
+  T is "Terminally differentiated cells of L (T)";
+  p1 is "Self-renewal probability of S";
+  p2 is "Self-renewal probability of A";
+  v1 is "Division rate of S";
+  v2 is "Division rate of A";
+  Z1 is "Total stem cell niche (S)";
+  Z2 is "Total progenitor niche (A+L)";
+  p10 is "Maximal differentiation probability of S";
+  p20 is "Maximal differentiation probability of A";
+  p30 is "Maximal differentiation probability of L";
+  v10 is "Maximal division rate of S";
+  v20 is "Maximal division rate of A";
+  v30 is "Division rate of L";
+  d1 is "Death rate of D";
+  d2 is "Death rate of T";
+  g1 is "Feedback coefficient of S from D (probability)";
+  g2 is "Feedback coefficient of A from D (probability)";
+  h1 is "Feedback coefficient of S from D (rate)";
+  h2 is "Feedback coefficient of A from D (rate)";
+  K1 is "Carrying capacity of stem cell niche";
+  K2 is "Carrying capacity of progenitor niche";
+
+end

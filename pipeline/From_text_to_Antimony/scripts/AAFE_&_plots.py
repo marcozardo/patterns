@@ -67,7 +67,7 @@ def simulate_and_check(file1, file2):
 """
 
 def AAFE(ground, gen):
-        if not ground or not gen or len(ground) != len(gen):
+        if not ground.all() or not gen.all() or len(ground) != len(gen):
                 return None
         terms = []
         for o, p in zip(ground, gen):

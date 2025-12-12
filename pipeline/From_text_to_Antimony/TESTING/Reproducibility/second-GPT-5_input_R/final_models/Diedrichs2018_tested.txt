@@ -1,0 +1,153 @@
+model *Diedrichs2018_UPR_core()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $U in cell, $E_p in cell, $x in cell, $A6 in cell, $A4 in cell, $b in cell, $Btot in cell, $c in cell, $C in cell, $g in cell, $G in cell;
+
+  //// Assignment Rules:
+  B := Btot/(1 + U/K_BU);
+  P_p := (1/f) * ( U / ( K_UP + (K_UP/K_BP)*B + U ) );
+  I_p := (1/f_i) * ( U / ( K_UI + (K_UI/K_BI)*B + U ) );
+
+  //// Rate Rules:
+  U' = k_s_U/(1 + K_UII*(I_p - Ip_star)) + S - delta * ( U/(1 + K_II*(I_p - Ip_star)) ) * B * ( 1/(1 + E_p/K_E + (U/K_UU)^4) );
+  E_p' = (k_ph*P_p*(E_tot - E_p))/(K_ph + (E_tot - E_p)) - ( (k_deph1 + k_deph2*(G - G_star)) * E_p )/(K_deph + E_p);
+  x' = (k_sp*I_p*(x_tot - x))/(K_X + (x_tot - x)) - k_d_x*x;
+  A6' = k_cl*(U - U_star) * (A6_tot - A6)/(1 + B/K_BA6) - k_d_A6*(A6 - A6_star);
+  A4' = gamma_*(U - U_star)*E_p - k_d_A4*(A4 - A4_star);
+  b' = alpha_A6*(1 + K_b6*A4)*((A6 - A6_star)^2)/((A6 - A6_star)^2 + (K_A6^2)*(1 + K_th6*A4^n)) + alpha_A4*(1 + K_b4*A6)*((A4 - A4_star)^2)/((A4 - A4_star)^2 + (K_A4*(1 + K_th4*A6))^2) + alpha_X*(x - x_star)/(K_Xb + (x - x_star)) - k_d_b*((1 + alpha_I*(I_p - Ip_star))/(1 + beta_I*(I_p - Ip_star)))*(b - b_star);
+  Btot' = k_t_B*b - k_d_B*Btot;
+  c' = alpha_c_A4*(1 + K_c4*A6) * ((A4 - A4_star)^2)/((A4 - A4_star)^2 + (K_A4c*(1 + K_th4c*A6))^2) - k_d_c*(c - c_star);
+  C' = (k_t0_c + k_t_c*(E_p - E_p_star))*c - k_d_C*C;
+  g' = alpha_C * ( (A4 - A4_star) + K_A4g*(A4 - A4_star)*(C - C_star) ) / ( (A4 - A4_star) + K_th4g*(A4 - A4_star)*(C - C_star) + K_C ) - k_d_g*(g - g_star);
+  G' = (k_t0_G + k_t_G*(E_p - E_p_star))*g - k_d_G*G;
+
+  //// Reactions:
+  // No mass-action reactions; dynamics are defined by Rate Rules.
+
+  //// Events:
+  // None specified.
+
+  //// Species initializations:
+  U = 1;
+  E_p = 1;
+  x = 1;
+  A6 = 1;
+  A4 = 1;
+  b = 1;
+  Btot = 1;
+  c = 1;
+  C = 1;
+  g = 1;
+  G = 1;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  U_star = 1;
+  Ip_star = 1;
+  E_p_star = 1;
+  A6_star = 1;
+  A4_star = 1;
+  b_star = 1;
+  x_star = 1;
+  c_star = 1;
+  C_star = 1;
+  g_star = 1;
+  G_star = 1;
+  S = 2;
+  K_BU = 0.8;
+  f = 0.02;
+  K_UP = 49;
+  K_BP = 0.01;
+  f_i = 0.01;
+  K_UI = 99;
+  K_BI = 0.01;
+  k_s_U = 0.89;
+  delta = 1.5;
+  K_II = 1;
+  K_UII = 1;
+  K_E = 3;
+  K_UU = 6;
+  k_ph = 0.00651;
+  K_ph = 14;
+  E_tot = 20;
+  k_deph1 = 0.03;
+  k_deph2 = 0.08;
+  K_deph = 7;
+  k_sp = 0.00785;
+  x_tot = 16;
+  K_X = 3;
+  k_d_x = 0.006546;
+  k_cl = 4;
+  A6_tot = 15;
+  K_BA6 = 0.000016;
+  k_d_A6 = 0.00384;
+  gamma_ = 0.001;
+  k_d_A4 = 0.00384;
+  alpha_A6 = 0.012;
+  K_b6 = 0.56;
+  K_A6 = 3;
+  K_th6 = 0.00001;
+  n = 7;
+  alpha_A4 = 0.007;
+  K_b4 = 0.5;
+  K_A4 = 3;
+  K_th4 = 0.167;
+  alpha_X = 0.2;
+  K_Xb = 8;
+  alpha_I = 0.1;
+  beta_I = 0.1;
+  k_d_b = 0.001284;
+  k_d_B = 0.0002514;
+  k_t_B = 0.0002514;
+  alpha_c_A4 = 0.1;
+  K_c4 = 2;
+  K_A4c = 0.56;
+  K_th4c = 0.25;
+  k_d_c = 0.00393;
+  k_d_C = 0.005478;
+  k_t_c = 0.0001;
+  k_t0_c = 0.005478;
+  alpha_C = 0.012;
+  K_A4g = 0.75;
+  K_th4g = 0.1;
+  K_C = 5;
+  k_d_g = 0.003468;
+  k_d_G = 0.003852;
+  k_t_G = 0.0015;
+  k_t0_G = 0.003852;
+
+  //// Other declarations:
+  var B, P_p, I_p;
+  const cell, U_star, Ip_star, E_p_star, A6_star, A4_star, b_star, x_star, c_star, C_star, g_star, G_star;
+  const S, K_BU, f, K_UP, K_BP, f_i, K_UI, K_BI, k_s_U, delta, K_II, K_UII, K_E, K_UU;
+  const k_ph, K_ph, E_tot, k_deph1, k_deph2, K_deph, k_sp, x_tot, K_X, k_d_x;
+  const k_cl, A6_tot, K_BA6, k_d_A6, gamma_, k_d_A4;
+  const alpha_A6, K_b6, K_A6, K_th6, n, alpha_A4, K_b4, K_A4, K_th4, alpha_X, K_Xb, alpha_I, beta_I, k_d_b;
+  const k_d_B, k_t_B, alpha_c_A4, K_c4, K_A4c, K_th4c, k_d_c, k_d_C, k_t_c, k_t0_c;
+  const alpha_C, K_A4g, K_th4g, K_C, k_d_g, k_d_G, k_t_G, k_t0_G;
+
+  //// Unit definitions:
+  // Omitted
+
+  //// Display Names:
+  cell is "Cell (single compartment)";
+  U is "Unfolded proteins (normalized)";
+  B is "Free BiP (computed)";
+  Btot is "Total BiP protein (normalized)";
+  b is "Bip mRNA (normalized)";
+  P_p is "Phosphorylated PERK (computed)";
+  I_p is "Phosphorylated IRE1 (computed)";
+  E_p is "Phosphorylated eIF2? (normalized)";
+  x is "Spliced Xbp1 mRNA (normalized)";
+  A6 is "Cleaved ATF6 (normalized)";
+  A4 is "ATF4 protein (normalized)";
+  c is "Chop mRNA (normalized)";
+  C is "CHOP protein (normalized)";
+  g is "Gadd34 mRNA (normalized)";
+  G is "GADD34 protein (normalized)";
+  S is "Stress input rate (proxy for TG dose)";
+
+end

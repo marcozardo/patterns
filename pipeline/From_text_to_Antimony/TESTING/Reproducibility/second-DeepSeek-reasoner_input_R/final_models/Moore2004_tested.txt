@@ -1,0 +1,66 @@
+model *Moore2004_CML_Tcell()
+
+//// Compartments and Species:
+compartment blood;
+species T_n in blood, T_e in blood, C in blood;
+
+//// Assignment Rules:
+
+//// Rate Rules:
+T_n' = s_n - d_n*T_n - k_n*T_n*(C/(C + theta));
+T_e' = alpha_n*k_n*T_n*(C/(C + theta)) + alpha_e*T_e*(C/(C + theta)) - d_e*T_e - gamma_e*C*T_e;
+C' = r_c*C*log(C_max/C) - d_c*C - gamma_c*C*T_e;
+
+//// Reactions:
+
+//// Events:
+
+//// Species initializations:
+T_n = 1510;
+T_e = 20;
+C = 10000;
+
+//// Compartment initializations:
+blood = 1;
+
+//// Variable initializations:
+s_n = 0.073;
+d_n = 0.04;
+d_e = 0.06;
+d_c = 0.2;
+k_n = 0.001;
+theta = 100;
+alpha_n = 0.41;
+alpha_e = 0.2;
+C_max = 300000;
+r_c = 0.03;
+gamma_e = 0.005;
+gamma_c = 0.005;
+
+//// Other declarations:
+var T_n, T_e, C;
+const blood, s_n, d_n, d_e, d_c, k_n, theta, alpha_n, alpha_e, C_max, r_c, gamma_e, gamma_c;
+
+//// Unit definitions:
+unit concentration = 1e-6 liter^-1;
+unit time_unit = 86400 second;
+
+//// Display Names:
+blood is "Blood (circulatory system)";
+T_n is "Naive T cells";
+T_e is "Effector T cells specific to CML";
+C is "CML cancer cells";
+s_n is "Source rate of naive T cells";
+d_n is "Death rate of naive T cells";
+d_e is "Death rate of effector T cells";
+d_c is "Natural death rate of CML cells";
+k_n is "Rate constant for naive T cell differentiation";
+theta is "Michaelis-Menten half-saturation constant";
+alpha_n is "Activation/proliferation factor for effector T cells from naive T cells";
+alpha_e is "Recruitment rate constant for effector T cells";
+C_max is "Maximum possible CML concentration";
+r_c is "Growth rate constant of CML (Gompertz)";
+gamma_e is "Rate constant for effector T cell loss due to CML encounters";
+gamma_c is "Rate constant for CML loss due to effector T cell encounters";
+
+end

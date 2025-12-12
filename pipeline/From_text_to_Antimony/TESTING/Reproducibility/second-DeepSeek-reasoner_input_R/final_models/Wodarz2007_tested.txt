@@ -1,0 +1,140 @@
+model *Wodarz2007_HIV_CD4_dynamics()
+
+  //// Compartments and Species:
+  compartment body;
+  species T in body, I in body, x in body, y in body, v in body;
+  species m0 in body, m1 in body, m2 in body, m3 in body, m4 in body, m5 in body, m6 in body, m7 in body, m8 in body, m9 in body;
+  species w in body, z in body;
+
+  //// Assignment Rules:
+  /* No assignment rules */
+
+  //// Rate Rules:
+  /* No rate rules; all dynamics expressed as reactions */
+
+  //// Reactions:
+  R_Tprod: => T; lambda;
+  R_Tdeath: T => ; delta*T;
+  R_Tinf: T => I; gamma_*T*v;
+  R_Ideath: I => ; alpha*I;
+  R_Ikill: I => ; p*I*(z+w);
+  R_xprolif: x => 2 x; r*x*v;
+  R_xdens: x => ; r*x*v*(x+y)/k;
+  R_xdeath: x => ; d*x;
+  R_xinf: x => y; beta*x*v;
+  R_yprolif: y => 2 y; r*y*v;
+  R_ydens: y => ; r*y*v*(x+y)/k;
+  R_ydeath: y => ; a*y;
+  R_ykill: y => ; p*y*(z+w);
+  R_vprod_y: => v; eta*y;
+  R_vprod_I: => v; eta*I;
+  R_vdecay: v => ; u*v;
+  R_m0: m0 => 2 m1; rho*m0;
+  R_m1: m1 => 2 m2; rho*m1;
+  R_m2: m2 => 2 m3; rho*m2;
+  R_m3: m3 => 2 m4; rho*m3;
+  R_m4: m4 => 2 m5; rho*m4;
+  R_m5: m5 => 2 m6; rho*m5;
+  R_m6: m6 => 2 m7; rho*m6;
+  R_m7: m7 => 2 m8; rho*m7;
+  R_m8: m8 => 2 m9; rho*m8;
+  R_m9: m9 => 2 w; rho*m9;
+  R_wdeath: w => ; xi*w;
+  R_wdiff: w => z; phi*w;
+  R_zprolif: z => 2 z; (c*x*(y+I)/(epsilon*x+1))*z;
+  R_zdeath: z => ; b*z;
+
+  //// Events:
+  /* Therapy event: at time t_start, set infection rates to zero (?=0, ?=0) */
+  E_therapy: at (time >= t_start): gamma_ = 0, beta = 0;
+
+  //// Species initializations:
+  T = 5;           # ?/? = 1/0.2 = 5
+  I = 0.0001;
+  x = 0.1;         # low initial HIV-specific CD4 T cells (alternative: 10 for high)
+  y = 0;
+  v = 0.0001;      # ?*I/u = 1*0.0001/1 = 0.0001
+  m0 = 0.1;
+  m1 = 0;
+  m2 = 0;
+  m3 = 0;
+  m4 = 0;
+  m5 = 0;
+  m6 = 0;
+  m7 = 0;
+  m8 = 0;
+  m9 = 0;
+  w = 0;
+  z = 0;
+
+  //// Compartment initializations:
+  body = 1;
+
+  //// Variable initializations:
+  lambda = 1;
+  delta = 0.2;
+  gamma_ = 0.01;
+  alpha = 0.3;
+  r = 1;
+  k = 10;
+  d = 0.001;
+  beta = 0.01;
+  a = 0.2;
+  p = 45;
+  eta = 1;
+  u = 1;
+  c = 1;
+  epsilon = 1.5;
+  b = 0.1;
+  phi = 0.01;
+  xi = 1;          # assumed, not explicitly given in caption
+  rho = 1;
+  t_start = 1e9;   # therapy start time (set far in future; change to e.g., 300 for Figure?4 scenario)
+
+  //// Other declarations:
+  var gamma_, beta;               # changed by event
+  const lambda, delta, alpha, r, k, d, a, p, eta, u, c, epsilon, b, phi, xi, rho, t_start;
+
+  //// Unit definitions:
+  /* Units are arbitrary; time in arbitrary units, concentrations in arbitrary units */
+
+  //// Display Names:
+  body is "Body (single compartment)";
+  T is "Non?specific susceptible target cells";
+  I is "Infected non?specific target cells";
+  x is "Uninfected HIV?specific CD4 T cells";
+  y is "Infected HIV?specific CD4 T cells";
+  v is "Free virus";
+  m0 is "Activated naive CTL (division 0)";
+  m1 is "CTL division 1";
+  m2 is "CTL division 2";
+  m3 is "CTL division 3";
+  m4 is "CTL division 4";
+  m5 is "CTL division 5";
+  m6 is "CTL division 6";
+  m7 is "CTL division 7";
+  m8 is "CTL division 8";
+  m9 is "CTL division 9";
+  w is "Effector CTL (acute)";
+  z is "Effector memory CTL (chronic)";
+  lambda is "Production rate of non?specific target cells";
+  delta is "Death rate of non?specific target cells";
+  gamma_ is "Infection rate of non?specific target cells";
+  alpha is "Death rate of infected non?specific cells";
+  r is "Proliferation rate of specific CD4 T cells";
+  k is "Carrying capacity of specific CD4 T cells";
+  d is "Death rate of uninfected specific CD4 T cells";
+  beta is "Infection rate of specific CD4 T cells";
+  a is "Death rate of infected specific CD4 T cells";
+  p is "CTL killing rate";
+  eta is "Virus production rate per infected cell";
+  u is "Virus decay rate";
+  c is "CTL activation rate";
+  epsilon is "Saturation constant for help";
+  b is "Death rate of chronic CTL";
+  phi is "Differentiation rate of effectors to memory";
+  xi is "Death rate of acute effectors";
+  rho is "CTL division rate";
+  t_start is "Time of therapy initiation";
+
+end

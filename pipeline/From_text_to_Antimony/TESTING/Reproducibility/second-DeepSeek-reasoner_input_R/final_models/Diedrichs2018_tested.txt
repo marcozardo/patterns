@@ -1,0 +1,106 @@
+model *Diedrichs2018_UPR_model()
+
+  //// Compartments and Species:
+  compartment cell;
+  species U in cell, E_p in cell, x in cell, A6 in cell, A4 in cell, b in cell, B_tot in cell, c in cell, C in cell, g in cell, G in cell;
+  species $B in cell, $P_p in cell, $I_p in cell;
+
+  //// Assignment Rules:
+  B := B_tot / (1 + U/K_BU);
+  P_p := (1/f) * U / (K_UP + (K_UP/K_BP)*B + U);
+  I_p := (1/f_i) * U / (K_UI + (K_UI/K_BI)*B + U);
+
+  //// Rate Rules:
+  U' = k_s_U / (1 + K_UI_U*(I_p - 1)) + S - delta * U * B / (1 + E_p/K_E + (U/K_UU)^4);
+  E_p' = k_ph * P_p * (E_tot - E_p) / (K_ph + (E_tot - E_p)) - (k_deph1 + k_deph2*(G - 1)) * E_p / (K_deph + E_p);
+  x' = k_sp * I_p * (x_tot - x) / (K_X + (x_tot - x)) - k_d_x * x;
+  A6' = k_cl * (U - 1) * (A6_tot - A6) / (1 + B/K_BA6) - k_d_A6 * (A6 - 1);
+  A4' = gamma_ * (U - 1) * E_p - k_d_A4 * (A4 - 1);
+  b' = alpha_A6*(1 + K_b6*A4) * (A6 - 1)^2 / ((A6 - 1)^2 + K_A6^2*(1 + K_th6*A4^n)) + alpha_A4*(1 + K_b4*A6) * (A4 - 1)^2 / ((A4 - 1)^2 + (K_A4*(1 + K_th4*A6))^2) + alpha_X * (x - 1) / (K_Xb + (x - 1)) - k_d_b * (1 + alpha_I*(I_p - 1)) / (1 + beta_I*(I_p - 1)) * (b - 1);
+  B_tot' = k_t_B * b - k_d_B * B_tot;
+  c' = alpha_A4c*(1 + K_c4*A6) * (A4 - 1)^2 / ((A4 - 1)^2 + (K_A4c*(1 + K_th4c*A6))^2) - k_d_c*(c - 1);
+  C' = (k_t0_c + k_t_c*(E_p - 1)) * c - k_d_C * C;
+  g' = alpha_C * ( (A4 - 1) + K_A4g*(A4 - 1)*(C - 1) ) / ( (A4 - 1) + K_th4g*(A4 - 1)*(C - 1) + K_C ) - k_d_g*(g - 1);
+  G' = (k_t0_G + k_t_G*(E_p - 1)) * g - k_d_G * G;
+
+  //// Species initializations:
+  U = 1;
+  E_p = 1;
+  x = 1;
+  A6 = 1;
+  A4 = 1;
+  b = 1;
+  B_tot = 1;
+  c = 1;
+  C = 1;
+  g = 1;
+  G = 1;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  K_BU = 0.8;
+  f = 0.02;
+  K_BP = 0.01;
+  K_UP = 1.07824;
+  f_i = 0.01;
+  K_BI = 0.01;
+  K_UI = 2.17848;
+  k_s_U = 0.89;
+  K_UI_U = 0.01;
+  K_II = 3;
+  K_UU = 6;
+  delta = 1.5;
+  K_E = 0.01;
+  k_ph = 0.00651;
+  K_ph = 14;
+  E_tot = 20;
+  k_deph1 = 0.03;
+  k_deph2 = 0.08;
+  K_deph = 7;
+  k_d_x = 0.006546;
+  x_tot = 16;
+  k_sp = 0.00785;
+  K_X = 3;
+  k_cl = 4;
+  K_BA6 = 0.000016;
+  A6_tot = 15;
+  k_d_A6 = 0.00384;
+  gamma_ = 0.001;
+  k_d_A4 = 0.00384;
+  k_d_b = 0.001284;
+  alpha_A6 = 0.012;
+  K_b6 = 0.56;
+  K_A6 = 3;
+  K_th6 = 0.00001;
+  n = 7;
+  alpha_A4 = 0.007;
+  K_b4 = 0.5;
+  K_A4 = 3;
+  K_th4 = 0.167;
+  alpha_X = 0.002;
+  K_Xb = 8;
+  alpha_I = 0.2;
+  beta_I = 0.1;
+  k_d_B = 0.0002514;
+  k_t_B = 0.0002514;
+  alpha_A4c = 0.1;
+  k_d_c = 0.00393;
+  K_c4 = 0.56;
+  K_A4c = 2;
+  K_th4c = 0.25;
+  k_d_C = 0.005478;
+  k_t_c = 0.0001;
+  k_t0_c = 0.005478;
+  alpha_C = 0.012;
+  K_A4g = 0.75;
+  K_th4g = 0.1;
+  K_C = 5;
+  k_d_g = 0.003468;
+  k_d_G = 0.003852;
+  k_t_G = 0.0015;
+  k_t0_G = 0.003852;
+  S = 2;
+
+end
