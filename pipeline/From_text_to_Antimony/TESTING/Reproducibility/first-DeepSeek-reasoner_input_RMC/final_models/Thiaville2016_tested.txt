@@ -1,0 +1,111 @@
+model *Thiaville2016_FolateCleavage()
+
+  //// Compartments and Species:
+  compartment cytoplasm;
+  species H2_HMPt in cytoplasm, H2_HMPt_PP in cytoplasm, H2_Pteroate in cytoplasm, DHF in cytoplasm, THF in cytoplasm, CH2_THF in cytoplasm, pABA_Glu in cytoplasm;
+  species $ATP in cytoplasm, $AMP in cytoplasm, $ADP in cytoplasm, $Pi in cytoplasm, $PPi in cytoplasm, $Ser in cytoplasm, $Gly in cytoplasm, $Glu in cytoplasm, $NADPH in cytoplasm, $NADP in cytoplasm, $pABA in cytoplasm;
+
+  //// Assignment Rules:
+  v_net1 := v_net1_wt * (1 + upregulate_factor);
+  v_net2 := v_net2_wt * (1 + upregulate_factor);
+  k_panB := k_panB_wt * (1 + overexpression_factor);
+
+  //// Rate Rules:
+
+  //// Reactions:
+  exchange_H2_HMPt: -> H2_HMPt; v_net1;
+  exchange_pABA: -> $pABA; v_net2;
+  FolK: H2_HMPt + $ATP => H2_HMPt_PP + $AMP; k1*H2_HMPt*$ATP;
+  FolP: H2_HMPt_PP + $pABA => H2_Pteroate + $PPi; k2*H2_HMPt_PP*$pABA;
+  FolC: H2_Pteroate + $Glu + $ATP => DHF + $ADP + $Pi; k3*H2_Pteroate*$Glu*$ATP;
+  FolA: DHF + $NADPH => THF + $NADP; k4*DHF*$NADPH;
+  GlyA: THF + $Ser -> CH2_THF + $Gly; k5*THF*$Ser - k6*CH2_THF*$Gly;
+  PanB_side: CH2_THF => H2_HMPt + pABA_Glu; k_panB*CH2_THF;
+  drain_THF: THF => ; Vm_drain_THF*THF/(Km_drain_THF + THF);
+  drain_CH2_THF: CH2_THF => ; Vm_drain_CH2_THF*CH2_THF/(Km_drain_CH2_THF + CH2_THF);
+
+  //// Events:
+  at (time >= 1000): overexpression_factor = 10;
+  at (time >= 2000): upregulate_factor = 1;
+
+  //// Species initializations:
+  H2_HMPt = 0;
+  H2_HMPt_PP = 0;
+  H2_Pteroate = 0;
+  DHF = 0;
+  THF = 0;
+  CH2_THF = 0;
+  pABA_Glu = 0;
+  $ATP = 5.0;
+  $AMP = 1.0;
+  $ADP = 1.0;
+  $Pi = 5.0;
+  $PPi = 1.0;
+  $Ser = 1.0;
+  $Gly = 1.0;
+  $Glu = 10.0;
+  $NADPH = 0.1;
+  $NADP = 0.1;
+  $pABA = 0.1;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+
+  //// Variable initializations:
+  v_net1_wt = 1.66e-7;
+  v_net2_wt = 1.66e-7;
+  k_panB_wt = 1.0e-3;
+  k1 = 1.0;
+  k2 = 1.0;
+  k3 = 1.0;
+  k4 = 1.0;
+  k5 = 1.0;
+  k6 = 1.0;
+  Vm_drain_THF = 1.66e-7;
+  Km_drain_THF = 1.0e-3;
+  Vm_drain_CH2_THF = 1.66e-7;
+  Km_drain_CH2_THF = 1.0e-3;
+  overexpression_factor = 0;
+  upregulate_factor = 0;
+
+  //// Other declarations:
+  var v_net1, v_net2, k_panB, overexpression_factor, upregulate_factor;
+  const cytoplasm, v_net1_wt, v_net2_wt, k_panB_wt, k1, k2, k3, k4, k5, k6, Vm_drain_THF, Km_drain_THF, Vm_drain_CH2_THF, Km_drain_CH2_THF;
+
+  //// Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 1 second;
+  unit volume = 1e-3 liter;
+
+  //// Display Names:
+  cytoplasm is "Cytoplasm";
+  H2_HMPt is "6-Hydroxymethyldihydropterin";
+  H2_HMPt_PP is "6-Hydroxymethyldihydropterin pyrophosphate";
+  H2_Pteroate is "Dihydropteroate";
+  DHF is "Dihydrofolate";
+  THF is "Tetrahydrofolate";
+  CH2_THF is "5,10-Methylenetetrahydrofolate";
+  pABA_Glu is "p-Aminobenzoylglutamate";
+  $ATP is "Adenosine triphosphate";
+  $AMP is "Adenosine monophosphate";
+  $ADP is "Adenosine diphosphate";
+  $Pi is "Inorganic phosphate";
+  $PPi is "Pyrophosphate";
+  $Ser is "Serine";
+  $Gly is "Glycine";
+  $Glu is "Glutamate";
+  $NADPH is "Nicotinamide adenine dinucleotide phosphate (reduced)";
+  $NADP is "Nicotinamide adenine dinucleotide phosphate (oxidized)";
+  $pABA is "p-Aminobenzoate";
+  exchange_H2_HMPt is "H2-HMPt exchange (production)";
+  exchange_pABA is "pABA exchange (production)";
+  FolK is "6-Hydroxymethyl-7,8-dihydropterin pyrophosphokinase";
+  FolP is "Dihydropteroate synthase";
+  FolC is "Dihydrofolate synthase";
+  FolA is "Dihydrofolate reductase";
+  GlyA is "Serine hydroxymethyltransferase";
+  PanB_side is "PanB folate-cleaving side reaction";
+  drain_THF is "THF consumption (dilution)";
+  drain_CH2_THF is "CH2-THF consumption (dilution)";
+
+end

@@ -1,0 +1,13 @@
+Unnamed: 0,N° Species (Bound&Float),N° Reactions,N° Compartments,N° Glob.Parameters
+Al_Husari2013_tested.txt,4,0,2,13
+Anderson2015_tested.txt,3,9,1,12
+Bose2011_tested.txt,3,0,1,12
+DiCamillo2016_tested.txt,36,31,1,39
+FelixGarza2017_tested.txt,0,0,1,86
+Hoffman2017_tested.txt,6,4,1,13
+Koenders2015_tested.txt,4,9,1,17
+Malinzi2019_tested.txt,4,9,1,13
+Thiaville2016_tested.txt,16,12,1,11
+Wang2008_tested.txt,1,0,1,27
+Waugh2006_tested.txt,3,12,1,16
+Wodarz2003_tested.txt,10,24,1,13

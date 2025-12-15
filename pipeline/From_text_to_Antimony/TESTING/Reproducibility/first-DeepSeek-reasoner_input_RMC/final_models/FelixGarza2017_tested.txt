@@ -1,0 +1,170 @@
+model *BLISS_blue_light_psoriasis()
+
+  //// Compartments and Species:
+  compartment epidermis;
+  species P_sch in epidermis, P_tah in epidermis, P_gah in epidermis, P_sph in epidermis, P_gch in epidermis, P_cch in epidermis;
+  species P_scd in epidermis, P_tad in epidermis, P_gad in epidermis, P_spd in epidermis, P_gcd in epidermis, P_ccd in epidermis;
+
+  //// Assignment Rules:
+  # Day index for treatment schedule
+  day := floor(time);
+  # Treatment fluence F (J/cm?): 0 on no-treatment days, 90 on treatment days
+  # Schedule: daily for first 28 days, then 3x/week (Mon, Wed, Fri) for next 56 days (total 84 days)
+  F := piecewise(90, day < 28, 90, (day >= 28) && (day < 84) && (mod(day,7) == 0), 90, (day >= 28) && (day < 84) && (mod(day,7) == 2), 90, (day >= 28) && (day < 84) && (mod(day,7) == 4), 0);
+  # Blue light factor for proliferation (Equation 14)
+  theta_BLy := a_gamma * exp(b_gamma * F);
+  # Blue light factor for differentiation (Equation 15) ? set to 1 as per chosen case (Case 1)
+  theta_BLk := 1;
+  # Blue light factor for apoptosis (only for F > 500 J/cm?)
+  theta_BLbeta := piecewise(0.039, (F > 500) && (F <= 750), 0.05, F > 750, 0);
+
+  # Regulation of healthy stem cell rates by transit amplifying cells (Equation 13)
+  # Note: P_ta_hom is homeostatic density of transit amplifying cells (from Table 1, not explicitly given, but we use the value from Zhang et al., 2015: 77 cells/mm?)
+  P_ta_hom := 77;
+  omega := 100;
+  n := 3;
+  regulation_factor := omega / (1 + (omega - 1) * ((P_tah + P_tad) / P_ta_hom)^n);
+  gamma1h := gamma_1hom * regulation_factor;
+  k1ah := k1a_hom * regulation_factor;
+  k1sh := k1s_hom * regulation_factor;
+
+  # Apoptosis rates for healthy cells (Equation 16)
+  beta1h := (AIh * k1sh) / (1 - AIh) + theta_BLbeta;
+  beta2h := (AIh * k2sh) / (1 - AIh) + theta_BLbeta;
+  beta3h := (AIh * k3h) / (1 - AIh) + theta_BLbeta;
+  beta4h := (AIh * k4h) / (1 - AIh) + theta_BLbeta;
+  beta5h := (AIh * k5h) / (1 - AIh) + theta_BLbeta;
+
+  # Apoptosis rates for diseased cells (Equation 17)
+  beta1d := (AId * k1sd) / (1 - AId) + theta_BLbeta;
+  beta2d := (AId * k2sd) / (1 - AId) + theta_BLbeta;
+  beta3d := (AId * k3d) / (1 - AId) + theta_BLbeta;
+  beta4d := (AId * k4d) / (1 - AId) + theta_BLbeta;
+  beta5d := (AId * k5d) / (1 - AId) + theta_BLbeta;
+
+  # Diseased rate constants (from Table 1, calculated from healthy rates and fold changes)
+  gamma1d := gamma_1hom * rho_sc;
+  k1sd := k1s_hom * rho_sc;
+  k1ad := k1a_hom * rho_sc;
+  gamma2d := gamma2h * rho_ta;
+  k2sd := k2sh * rho_ta;
+  k2ad := k2ah * rho_ta;
+  k3d := k3h * rho_tr;
+  k4d := k4h * rho_tr;
+  k5d := k5h * rho_tr;
+  ad := ah * rho_de;
+
+  # Immune response term (from Equation 7)
+  immune_response := Kp * P_scd^2 / (Ka^2 + P_scd^2);
+
+  //// Rate Rules:
+  # Healthy stem cells (Equation 1, corrected as per text interpretation)
+  P_sch' = (gamma1h * theta_BLy * (1 - (P_sch + P_scd) / (lambda * P_sc_max)) - k1sh * theta_BLk - beta1h) * P_sch + k_minus1h * P_tah;
+  # Healthy transit amplifying cells (Equation 2)
+  P_tah' = (gamma2h * theta_BLy - k2sh * theta_BLk - beta2h - k_minus1h) * P_tah - (k1ah + 2*k1sh) * theta_BLk * P_sch + k_minus2h * P_gah;
+  # Healthy growth arrested cells (Equation 3)
+  P_gah' = (k2ah + k2sh) * theta_BLk * P_tah - (k_minus2h + k3h * theta_BLk + beta3h) * P_gah;
+  # Healthy spinous cells (Equation 4)
+  P_sph' = k3h * theta_BLk * P_gah - (k4h * theta_BLk + beta4h) * P_sph;
+  # Healthy granular cells (Equation 5)
+  P_gch' = k4h * theta_BLk * P_sph - (k5h * theta_BLk + beta5h) * P_gch;
+  # Healthy corneocytes (Equation 6)
+  P_cch' = k5h * theta_BLk * P_gch - ah * P_cch;
+
+  # Diseased stem cells (Equation 7)
+  P_scd' = (gamma1d * theta_BLy * (1 - (P_sch + P_scd) / (lambda * P_sc_max)) - k1sd * theta_BLk - beta1d) * P_scd - immune_response + k_minus1d * P_tad;
+  # Diseased transit amplifying cells (Equation 8)
+  P_tad' = (gamma2d * theta_BLy - k2sd * theta_BLk - beta2d - k_minus1d) * P_tad - (k1ad + 2*k1sd) * theta_BLk * P_scd + k_minus2d * P_gad;
+  # Diseased growth arrested cells (Equation 9)
+  P_gad' = (k2ad + k2sd) * theta_BLk * P_tad - (k_minus2d + k3d * theta_BLk + beta3d) * P_gad;
+  # Diseased spinous cells (Equation 10)
+  P_spd' = k3d * theta_BLk * P_gad - (k4d * theta_BLk + beta4d) * P_spd;
+  # Diseased granular cells (Equation 11) ? note: equation equals 0, but we set rate to 0 (cells are lost)
+  P_gcd' = 0;
+  # Diseased corneocytes (Equation 12)
+  P_ccd' = k5d * theta_BLk * P_gcd - ad * P_ccd;
+
+  //// Species initializations:
+  # From Table 3: initial cell densities (cells/mm?)
+  P_sch = 362;
+  P_tah = 77;
+  P_gah = 61;
+  P_sph = 238;
+  P_gch = 119;
+  P_cch = 185;
+  P_scd = 6459;
+  P_tad = 32098;
+  P_gad = 20536;
+  P_spd = 79788;
+  P_gcd = 0;
+  P_ccd = 77633;
+
+  //// Compartment initializations:
+  epidermis = 1;
+
+  //// Variable initializations:
+  # Parameters from Table 1 (values and units as given; note: time unit is day)
+  P_sc_max = 4500;           # cells/mm?
+  gamma_1hom = 3.30e-3;      # d??
+  k1s_hom = 1.64e-3;         # d??
+  k1a_hom = 1.31e-2;         # d??
+  gamma2h = 1.40e-2;         # d??
+  k2sh = 1.73e-2;            # d??
+  k2ah = 1.38e-1;            # d??
+  k3h = 2.16e-1;             # d??
+  k4h = 5.56e-2;             # d??
+  k5h = 1.11e-1;             # d??
+  k_minus1h = 1.00e-6;       # d??
+  k_minus2h = 1.00e-6;       # d??
+  # omega and n are defined in assignment rules
+  # omega = 100; n = 3;
+  AIh = 0.0012;              # dimensionless (0.12%)
+  ah = 7.14e-2;              # d??
+  rho_sc = 4;                # dimensionless
+  rho_ta = 4;                # dimensionless
+  rho_tr = 5;                # dimensionless
+  rho_de = 4;                # dimensionless
+  lambda = 3.5;              # dimensionless
+  Kp = 6;                    # d??? (units not explicitly given, but from Zhang et al., 2015)
+  Ka = 380;                  # cells/mm?
+  AId = 0.00035;             # dimensionless (0.035%)
+  k_minus1d = 1.00e-6;       # d?? (assumed same as healthy, not explicitly given)
+  k_minus2d = 1.00e-6;       # d?? (assumed same as healthy, not explicitly given)
+  a_gamma = 1;               # dimensionless
+  b_gamma = -3.40e-3;        # cm?/J
+  # theta_BLk parameters (not used in Case 1, but listed for completeness)
+  a_k = 2.46;                # dimensionless
+  b_k = 1.94e-2;             # cm?/J
+  c_k = 3.46;                # dimensionless
+  # Note: P_ta_hom is defined in assignment rules (77 cells/mm?)
+
+  //// Other declarations:
+  # Constants: all parameters are fixed during simulation (no rules change them except F, which is set by assignment rule)
+  const P_sc_max, gamma_1hom, k1s_hom, k1a_hom, gamma2h, k2sh, k2ah, k3h, k4h, k5h, k_minus1h, k_minus2h, omega, n, AIh, ah, rho_sc, rho_ta, rho_tr, rho_de, lambda, Kp, Ka, AId, k_minus1d, k_minus2d, a_gamma, b_gamma, a_k, b_k, c_k;
+  var F, day, theta_BLy, theta_BLk, theta_BLbeta, regulation_factor, gamma1h, k1ah, k1sh, beta1h, beta2h, beta3h, beta4h, beta5h, beta1d, beta2d, beta3d, beta4d, beta5d, gamma1d, k1sd, k1ad, gamma2d, k2sd, k2ad, k3d, k4d, k5d, ad, immune_response;
+
+  //// Unit definitions:
+  unit volume = 1 mm^2;      # area (since cell densities are per mm?, and compartment is 2D)
+  unit time_unit = 1 day;
+  unit substance = 1 cell;
+
+  //// Display Names:
+  epidermis is "Epidermis (1 mm?)";
+  P_sch is "Healthy stem cells";
+  P_tah is "Healthy transit amplifying cells";
+  P_gah is "Healthy growth arrested cells";
+  P_sph is "Healthy spinous cells";
+  P_gch is "Healthy granular cells";
+  P_cch is "Healthy corneocytes";
+  P_scd is "Diseased stem cells";
+  P_tad is "Diseased transit amplifying cells";
+  P_gad is "Diseased growth arrested cells";
+  P_spd is "Diseased spinous cells";
+  P_gcd is "Diseased granular cells";
+  P_ccd is "Diseased corneocytes";
+  F is "Fluence (J/cm?)";
+  theta_BLy is "Blue light factor (proliferation)";
+  theta_BLk is "Blue light factor (differentiation)";
+  theta_BLbeta is "Blue light factor (apoptosis)";
+
+end

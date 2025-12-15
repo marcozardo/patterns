@@ -1,0 +1,87 @@
+model *Wang2008_Riluzole_BKCa_Na_HSkMC()
+
+  //// Compartments and Species:
+  compartment cell;  # single isopotential cell compartment
+
+  //// Assignment Rules:
+  # Pharmacology of riluzole on Na+ current (inhibition; Hill kinetics fit: IC50=2.3 ?M, nh=1.2, Emax=100%)
+  Inhib_Na := Emax_Na * (Ril^nH_Na) / (IC50_Na^nH_Na + Ril^nH_Na);        # fractional inhibition (0..1)
+  gNa_eff := gNa * (1 - Inhib_Na);                                          # effective Na conductance under riluzole
+
+  # Empirical activation of BKCa/IK(Ca) by riluzole (monotone Hill form; parameters chosen to approximate ~2x at 10 ?M, ~1.5x at 3 ?M)
+  Act_BK := 1 + Amax_BK * (Ril^nH_BK) / (EC50_BK^nH_BK + Ril^nH_BK);       # fold-activation (>=1)
+  gKCa_eff := gKCa * Act_BK;                                                # effective BKCa conductance under riluzole
+
+  # Ohmic currents
+  INa := gNa_eff * (V - VNa);
+  ICa := gCa * (V - VCa);
+  IK  := gK    * (V - VK);
+  IKCa := gKCa_eff * (V - VK);
+
+  Itot := INa + ICa + IK + IKCa;  # total outward current (ohmic convention)
+
+  //// Rate Rules:
+  # Membrane equation (units consistent with V[mV], g[nS], Cm[nF] => time in ms, current in pA)
+  V' = (Iapp - Itot) / Cm;
+
+  //// Species initializations:
+  # (no chemical species; model is electrophysiological with parameters and rate rules)
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  # State variable
+  V = -80;            # membrane potential (mV)
+
+  # Passive/effective parameters
+  Cm = 9.0;           # membrane capacitance (nF)
+
+  # Maximal conductances (baseline, before drug modulation)
+  gNa = 0.90;         # Na+ current conductance (nS)
+  gCa = 0.05;         # L-type Ca2+ current conductance (nS)
+  gK  = 0.42;         # delayed rectifier K+ current conductance (nS)
+  gKCa = 0.50;        # BKCa (Ca2+-activated K+) conductance (nS)
+
+  # Reversal potentials
+  VNa = 50;           # Na+ reversal (mV)
+  VCa = 50;           # Ca2+ reversal (mV)
+  VK  = -70;          # K+ reversal (mV)
+
+  # Applied current (outward-positive convention)
+  Iapp = 0;           # pA
+
+  # Riluzole bath concentration (?M)
+  Ril = 0;            # set to e.g. 3 or 10 to match reported experiments
+
+  # Na+ inhibition parameters (from fit)
+  IC50_Na = 2.3;      # ?M
+  nH_Na = 1.2;        # Hill coefficient
+  Emax_Na = 1;        # 100% maximal inhibition
+
+  # BKCa activation parameters (empirical; default approximates ~2x at 10 ?M, ~1.5x at 3 ?M)
+  EC50_BK = 6;        # ?M (tunable)
+  nH_BK = 1;          # Hill coefficient (tunable)
+  Amax_BK = 1.6;      # additional fold above baseline at saturating drug (so max fold = 1 + Amax_BK)
+
+  //// Other declarations:
+  var V, INa, ICa, IK, IKCa, Itot, gNa_eff, gKCa_eff, Inhib_Na, Act_BK;
+  const cell, Cm, gNa, gCa, gK, gKCa, VNa, VCa, VK, Iapp, Ril, IC50_Na, nH_Na, Emax_Na, EC50_BK, nH_BK, Amax_BK;
+
+  //// Display Names:
+  cell is "Skeletal muscle cell (isopotential)";
+  V is "Membrane potential (mV)";
+  INa is "Voltage-gated Na+ current (ohmic form)";
+  ICa is "L-type Ca2+ current (ohmic form)";
+  IK is "Delayed rectifier K+ current (ohmic form)";
+  IKCa is "BKCa-mediated K+ current (ohmic form)";
+  gNa is "Max Na+ conductance (baseline)";
+  gKCa is "Max BKCa conductance (baseline)";
+  gNa_eff is "Effective Na+ conductance under riluzole";
+  gKCa_eff is "Effective BKCa conductance under riluzole";
+  Inhib_Na is "Fractional Na+ block by riluzole";
+  Act_BK is "Fold activation of BKCa by riluzole";
+  Ril is "Riluzole concentration (?M)";
+  IC50_Na is "Half-maximal concentration for Na+ block";
+  EC50_BK is "Half-maximal concentration for BKCa activation";
+end

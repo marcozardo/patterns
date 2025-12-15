@@ -1,0 +1,88 @@
+/* Domain: Physiological cell-scale ion and metabolite transport (tumor pH regulation).
+   Model encodes the dimensionless full ODE system (Eqs. (5)?(8) in Al-Husari & Webb, J Theor Biol 2013),
+   capturing H+ and lactate dynamics across intracellular and extracellular compartments via:
+   - Passive H+ leakage (l_H),
+   - Na+/H+ antiporter (NHE; f1 with Heaviside on H_I - H_E),
+   - Lactate/H+ symporter (MCT; k3),
+   - Glycolytic production (Phi_G, active when V < Vstar),
+   - Background H+ source (d1),
+   - Lactate degradation (unit-rate in scaled system),
+   - Vascular removal in extracellular space (R1 = p1*V for H+, R2 = p2*V for lactate).
+   Base parameter set is the published dimensionless ?base? set; initial conditions correspond to normoxia steady values used in parameterization.
+*/
+
+model *AlHusari2013_pH_Lactate_Dimensionless()
+
+  //// Compartments and Species:
+  compartment intracellular;
+  compartment extracellular;
+  species $H_I in intracellular, $L_I in intracellular, $H_E in extracellular, $L_E in extracellular;
+
+  //// Assignment Rules:
+  Hgly := piecewise(1, (V < Vstar), 0);          # Heaviside(Vstar - V): glycolysis active if hypoxic (V < Vstar)
+  NHEon := piecewise(1, (H_I - H_E > 0), 0);     # Heaviside(H_I - H_E): NHE only allows H+ efflux (no influx)
+  R1 := p1*V;                                    # Extracellular H+ removal rate by vasculature
+  R2 := p2*V;                                    # Extracellular lactate removal rate by vasculature
+
+  //// Rate Rules:
+  H_I' = l_H*(H_E - H_I) - f1*NHEon*(H_I - H_E) - k3*(H_I*L_I - H_E*L_E) + 2*Phi_G*Hgly/(H_I + 1) + d1;
+  H_E' = -l_H*(H_E - H_I) + f1*NHEon*(H_I - H_E) + k3*(H_I*L_I - H_E*L_E) - R1*H_E;
+  L_I' = 2*Phi_G*Hgly/(H_I + 1) + 1 - L_I - k3*(H_I*L_I - H_E*L_E);
+  L_E' = k3*(H_I*L_I - H_E*L_E) - R2*L_E;
+
+  //// Reactions:
+  // None (all dynamics defined by Rate Rules per published ODEs)
+
+  //// Events:
+  // None reported
+
+  //// Species initializations:
+  H_I = 0.6310;   # Dimensionless intracellular H+ (normoxia reference)
+  H_E = 0.3981;   # Dimensionless extracellular H+ (normoxia reference)
+  L_I = 0.7143;   # Dimensionless intracellular lactate (normoxia reference)
+  L_E = 1;        # Dimensionless extracellular lactate (normoxia reference)
+
+  //// Compartment initializations:
+  intracellular = 1;
+  extracellular = 1;
+
+  //// Variable initializations:
+  l_H  = 1.7174e-2;
+  f1   = 1.7174e4;
+  k3   = 5.4316;
+  d1   = 7.9996e3;
+  p1   = 2.0095e4;
+  p2   = 0.2857;
+  Phi_G = 0.2823;
+  Vstar = 0.5;
+  V     = 1;      # Set V < Vstar (e.g., V=0.25) to simulate hypoxia; V >= Vstar (e.g., 1) for normoxia
+
+  //// Other declarations:
+  var Hgly, NHEon, R1, R2;
+  const intracellular, extracellular, l_H, f1, k3, d1, p1, p2, Phi_G, Vstar, V;
+
+  //// Unit definitions:
+  // Omitted (dimensionless model)
+
+  //// Display Names:
+  intracellular is "Intracellular space";
+  extracellular is "Extracellular space";
+  H_I is "Intracellular H+ (dimensionless)";
+  H_E is "Extracellular H+ (dimensionless)";
+  L_I is "Intracellular lactate (dimensionless)";
+  L_E is "Extracellular lactate (dimensionless)";
+  l_H is "H+ leakage rate constant";
+  f1 is "Na+/H+ antiporter (NHE) activity constant";
+  k3 is "Lactate/H+ symporter (MCT) activity constant";
+  d1 is "Background H+ source (dimensionless)";
+  p1 is "H+ vascular removal coefficient";
+  p2 is "Lactate vascular removal coefficient";
+  Phi_G is "Glycolysis strength (dimensionless)";
+  V is "Vasculature density (0=hypoxia, 1=well perfused)";
+  Vstar is "Vasculature threshold for glycolysis on";
+  Hgly is "Heaviside(Vstar - V)";
+  NHEon is "Heaviside(H_I - H_E)";
+  R1 is "Extracellular H+ removal rate";
+  R2 is "Extracellular lactate removal rate";
+
+end

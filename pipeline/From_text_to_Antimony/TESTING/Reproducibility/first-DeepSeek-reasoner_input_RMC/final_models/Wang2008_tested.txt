@@ -1,0 +1,71 @@
+model *Wang2008_Riluzole_dHSkMC()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $V in cell;
+
+  //// Assignment Rules:
+  gNa_eff := gNa * (1 - (C_ril^nh / (IC50_Na^nh + C_ril^nh)));
+  gKCa_eff := gKCa * (1 + (C_ril^nh_KCa / (EC50_KCa^nh_KCa + C_ril^nh_KCa)));
+  I_Na := gNa_eff * (V - V_Na);
+  I_Ca := gCa * (V - V_Ca);
+  I_K := gK * (V - V_K);
+  I_KCa := gKCa_eff * (V - V_K);
+
+  //// Rate Rules:
+  V' = (I_app - (I_Na + I_Ca + I_K + I_KCa)) / Cm;
+
+  //// Reactions:
+  // No chemical reactions are defined in the provided text.
+
+  //// Events:
+  // No events are explicitly described.
+
+  //// Species initializations:
+  V = -70;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  Cm = 9.0;                // nF
+  gNa = 0.90;              // nS
+  gCa = 0.05;              // nS
+  gK = 0.42;               // nS
+  gKCa = 0.50;             // nS
+  V_Na = 50;               // mV
+  V_Ca = 50;               // mV
+  V_K = -70;               // mV
+  I_app = 0;               // nA, no applied current unless specified
+  C_ril = 0;               // ?M, riluzole concentration
+  IC50_Na = 2.3;           // ?M, half-maximal inhibitory concentration for I_Na
+  EC50_KCa = 10;           // ?M, approximate half-maximal effective concentration for I_K(Ca) (estimated from Fig. 4)
+  nh = 1.2;                // Hill coefficient for I_Na inhibition
+  nh_KCa = 1;              // Hill coefficient for I_K(Ca) stimulation (assumed)
+
+  //// Other declarations:
+  var gNa_eff, gKCa_eff;
+  const Cm, gNa, gCa, gK, gKCa, V_Na, V_Ca, V_K, I_app, C_ril, IC50_Na, EC50_KCa, nh, nh_KCa;
+
+  //// Unit definitions:
+  unit voltage = 1 mV;
+  unit current = 1 nA;
+  unit conductance = 1 nS;
+  unit capacitance = 1 nF;
+  unit time_unit = 1 ms;
+  unit concentration = 1 uM;
+
+  //// Display Names:
+  cell is "Differentiated human skeletal muscle cell";
+  V is "Membrane potential";
+  gNa_eff is "Effective Na+ conductance (riluzole-modulated)";
+  gKCa_eff is "Effective Ca2+-activated K+ conductance (riluzole-modulated)";
+  I_Na is "Voltage-gated Na+ current";
+  I_Ca is "L-type Ca2+ current";
+  I_K is "Delayed rectifier K+ current";
+  I_KCa is "Ca2+-activated K+ current";
+  C_ril is "Riluzole concentration";
+  IC50_Na is "IC50 for I_Na inhibition";
+  EC50_KCa is "EC50 for I_K(Ca) stimulation";
+
+end

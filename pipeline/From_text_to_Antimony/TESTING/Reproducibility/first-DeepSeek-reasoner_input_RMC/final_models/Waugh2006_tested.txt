@@ -1,0 +1,59 @@
+model *Waugh2006_Macrophage_Dynamics()
+
+  //// Compartments and Species:
+  compartment wound_site;
+  species phi_I in wound_site, phi_R in wound_site, T in wound_site;
+
+  //// Assignment Rules:
+  K := tau1*T^3 + tau2*T^2 + tau3*T + tau4;
+
+  //// Rate Rules:
+  phi_I' = alpha*K + k1*k2*phi_I*(1 - k3*(phi_I + phi_R)) - d1*phi_I;
+  phi_R' = (1 - alpha)*K + k1*k2*phi_R*(1 - k3*(phi_I + phi_R)) - d1*phi_R;
+  T' = k4*phi_I - d2*T;
+
+  //// Species initializations:
+  phi_I = 200;
+  phi_R = 200;
+  T = 6;
+
+  //// Compartment initializations:
+  wound_site = 1;
+
+  //// Variable initializations:
+  alpha = 0.5;
+  k1 = 0.05;
+  k2 = 0.693;
+  k3 = 0.002;
+  k4 = 0.07;
+  d1 = 0.2;
+  d2 = 9.1;
+  tau1 = -2.47;
+  tau2 = 21.94;
+  tau3 = 6.41;
+  tau4 = 1.75;
+
+  //// Other declarations:
+  var alpha, K;
+  const k1, k2, k3, k4, d1, d2, tau1, tau2, tau3, tau4, wound_site;
+
+  //// Unit definitions:
+  unit cell_density = 1 "cells/mm^3";
+  unit tgfb_concentration = 1 "pg/mm^3";
+  unit time_unit = 1 day;
+
+  //// Display Names:
+  wound_site is "Wound Site";
+  phi_I is "Inflammatory Macrophage Density";
+  phi_R is "Repair Macrophage Density";
+  T is "TGF-beta Concentration";
+  K is "Monocyte Migration Rate";
+  alpha is "Fraction of Monocytes Becoming Inflammatory Macrophages";
+  k1 is "Fraction of Macrophages Undergoing Mitosis";
+  k2 is "Macrophage Growth Rate Constant";
+  k3 is "Macrophage Crowding Coefficient";
+  k4 is "TGF-beta Production Rate by Inflammatory Macrophages";
+  d1 is "Macrophage Removal Rate";
+  d2 is "TGF-beta Decay Rate";
+
+end

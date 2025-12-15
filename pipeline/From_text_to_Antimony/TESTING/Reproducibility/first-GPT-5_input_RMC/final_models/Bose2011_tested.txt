@@ -1,0 +1,79 @@
+model *Bose2011_TumorImmune_NoiseMeanField()
+
+  //// Compartments and Species:
+  compartment system;
+  species $x in system, $y in system, $z in system;
+
+  //// Assignment Rules:
+  gamma_x := 1 + R*(1 - Dx*tau) + 0.5*Dx*Dz*tau;
+  beta_zx := Dx*(1 + R*tau);
+  alpha_xz := R*(1 - Dx*tau) + Dx*Dz*tau;
+  mu_eff := mu - delta_mu_noise;
+
+  //// Rate Rules:
+  x' = gamma_x*x - x^2 - x*y + beta_zx*z;
+  y' = y*z - (rho - Dy)*y;
+  z' = alpha_xz*x - mu_eff*z;
+
+  //// Reactions:
+  # none (dynamics defined by rate rules)
+
+  //// Events:
+  # none
+
+  //// Species initializations:
+  x = 1e-6;
+  y = 1e-3;
+  z = 0;
+
+  //// Compartment initializations:
+  system = 1;
+
+  //// Variable initializations:
+  R = 1.0;
+  tau = 2.0;
+  Dx = 2.1;
+  Dy = 0.01;
+  Dz = 1.2;
+  rho = 0.06;
+  mu = 20;
+  delta_mu_noise = 0;
+
+  //// Other declarations:
+  var gamma_x, beta_zx, alpha_xz, mu_eff;
+  const system, R, tau, Dx, Dy, Dz, rho, mu, delta_mu_noise;
+
+  //// Unit definitions:
+  # omitted (model is in dimensionless variables per the paper's scaling)
+
+  //// Display Names:
+  system is "Well-mixed compartment (dimensionless volume)";
+  x is "Tumor cells (dimensionless density)";
+  y is "Effector cells (dimensionless density)";
+  z is "Tumor-detecting cells (dimensionless density)";
+  R is "Noise cross-correlation strength (tumor?detecting)";
+  tau is "Noise auto-correlation time (dimensionless)";
+  Dx is "Tumor noise strength";
+  Dy is "Effector noise strength";
+  Dz is "Detecting noise strength";
+  rho is "Effector decay baseline (rho = p_tilde / a)";
+  mu is "Detecting decay baseline (mu = mu_tilde / a)";
+  delta_mu_noise is "Noise-induced modification of detecting-cell decay (mu_eff = mu - delta_mu_noise)";
+end
+
+/* Notes:
+- Scientific domain: physiological/tumor-immune population dynamics with stochastic effects treated via a colored-noise expansion; this model encodes the deterministic mean-field ODEs for the expectation values <x>, <y>, <z> (Eq. 12 in the paper).
+
+- Mapping to Eq. (12):
+  <x>' = [1 + R(1 - Dx*tau) + 0.5*Dx*Dz*tau] <x> - <x>^2 - <x><y> + [Dx(1 + R*tau)] <z>
+  <y>' = <y><z> - (rho - Dy) <y>
+  <z>' = [R(1 - Dx*tau) + Dx*Dz*tau] <x> - (mu_eff) <z>
+
+- Ambiguity in z-decay term:
+  The published text presents the noise-modified z-decay term with OCR artifacts. Here, mu_eff is provided as an explicit symbol:
+    mu_eff := mu - delta_mu_noise
+  Set delta_mu_noise to encode the desired noise-induced correction to the TDC decay rate once the exact expression is specified. By default delta_mu_noise = 0 reproduces z' decay = -mu z.
+
+- Typical parameter values taken from the paper:
+  rho = 0.06, mu = 20, Dx = 2.1, Dy = 0.01, Dz = 1.2; R and tau are varied (e.g., tau ? [0,5], R ? [0,5]).
+*/

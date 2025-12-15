@@ -1,0 +1,63 @@
+model *Koenders2016_Myeloma_Bone_Disease()
+
+  //// Compartments and Species:
+  compartment BMU;
+  species C in BMU, B in BMU, T in BMU, J in BMU;
+
+  //// Reactions:
+  R_C_prod:  => C; BMU*(alpha_C*(1 + h_CT*T)*C^g_CC*B^g_CB);
+  R_C_decay: C => ; BMU*(beta_C*C);
+  R_B_prod:  => B; BMU*(alpha_B*(1 - h_BT*T)*C^g_BC*B^g_BB);
+  R_B_decay: B => ; BMU*(beta_B*B);
+  R_T_prod:  => T; BMU*(alpha_T*C^g_TC*T^g_TT);
+  R_T_decay: T => ; BMU*(beta_T*T);
+  R_fusion:  C + T => J; BMU*(alpha_J*C*T);        # osteoclast?myeloma fusion
+  R_J_decay: J => ; BMU*(beta_J*J);                # joint-cell loss (apoptosis + non-productive loss)
+  R_J_diss:  J => T; BMU*(kappa*J);                # joint-cell dissociation yielding a myeloma cell
+
+  //// Species initializations:
+  C = 2;        # osteoclasts per BMU (MGUS-scale; ~2)
+  B = 200;      # osteoblasts per BMU (~100? osteoclasts)
+  T = 10;       # myeloma cells per BMU (smouldering/MGUS scale)
+  J = 0.1;      # joint osteoclast?myeloma cells per BMU (small reservoir)
+
+  //// Compartment initializations:
+  BMU = 1;      # representative Basic Multicellular Unit (volume or scale factor)
+
+  //// Variable initializations:
+  # Healthy bone remodeling (Komarova et al.) core parameters
+  alpha_C = 3;          # day^-1
+  alpha_B = 4;          # day^-1
+  beta_C  = 0.2;        # day^-1
+  beta_B  = 0.02;       # day^-1
+  g_CC = 0.5;
+  g_BB = 0;
+  g_CB = -0.5;
+  g_BC = 1;
+
+  # Myeloma population dynamics
+  alpha_T = 1;          # day^-1 (alpha_T/beta_T ? 10 per text)
+  beta_T  = 0.1;        # day^-1
+  g_TT = 0.5;           # autocrine exponent
+  g_TC = 0.3;           # osteoclast-driven paracrine exponent (example stable case)
+
+  # Paracrine influence of myeloma on osteoclasts and osteoblasts
+  h_CT = 0.01;          # sensitizes osteoclast growth to T (h_CT*S_T ? 0.1 with S_T?10)
+  h_BT = 0.01;          # inhibits osteoblast growth via T  (h_BT*S_T ? 0.1 with S_T?10)
+
+  # Joint (hybrid) cell kinetics
+  alpha_J = 1e-4;       # BMU?day^-1 (fusion rate C+T?J; see note below)
+  beta_J  = 0.3;        # day^-1 (joint-cell loss)
+  kappa   = 0.2;        # day^-1 (joint-cell dissociation yielding T)
+
+  //// Other declarations:
+  const BMU, alpha_C, alpha_B, beta_C, beta_B, g_CC, g_BB, g_CB, g_BC;
+  const alpha_T, beta_T, g_TT, g_TC, h_CT, h_BT;
+  const alpha_J, beta_J, kappa;
+
+end
+
+/* Unmapped or ambiguous data from source (not guessed in equations):
+- The publication states alpha_J = 1 ? 10^? (exponent missing due to formatting). A placeholder value (1e-4 day^-1) is used here; adjust to match intended scale when known.
+- Figures discuss parameter combinations in terms of h_CT*S_T and h_BT*S_T (e.g., 0.1, 0.2, 0.35) with S_T ? 10; the model sets h_CT = h_BT = 0.01 as an illustrative small paracrine influence. 
+- Example choices for g_TC vary (e.g., 0.3 stable, 0.34 unstable in relapse scenarios). The model initializes g_TC = 0.3 but this should be varied for analysis as in the paper. */

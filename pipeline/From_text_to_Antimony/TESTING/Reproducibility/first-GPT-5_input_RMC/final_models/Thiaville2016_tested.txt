@@ -1,0 +1,126 @@
+/* Domain: molecular metabolic network (bacterial folate biosynthesis and PanB-mediated folate damage/recycling)
+Paper: Thiaville et al., Frontiers in Microbiology (2016) "Experimental and Metabolic Modeling Evidence for a Folate-Cleaving Side-Activity of Ketopantoate Hydroxymethyltransferase (PanB)"
+Scope captured here:
+- Last steps of classical THF biosynthesis: FolK, FolP, FolC, FolA
+- Near-equilibrium interconversion of THF and 5,10-methylene-THF via GlyA (serine hydroxymethyltransferase)
+- Proposed PanB folate-cleaving side-reaction that converts CH2-THF to a pterin moiety (modeled as H2-HMPt) plus pABA
+- Exchange/source reactions to supply H2-HMPt and pABA at a fixed rate (v_net), and dilution/consumption drains for THF and CH2-THF
+- Highly prevalent cofactors and metabolites (ATP/ADP/AMP, Pi/PPi, Ser/Gly, Glu) treated as fixed boundary species, as per Methods
+Notes:
+- Kinetics for Fol[K,P,C,A] and PanB set as irreversible mass-action (unsaturated), consistent with the modeling description.
+- THF and CH2-THF drains are modeled as saturating irreversible sinks (Michaelis?Menten form), as described.
+- PanB side-reaction products are represented as H2-HMPt and PABA (glutamate is treated as boundary and returned); the spontaneous redox steps between H4- and H2- forms are not modeled explicitly.
+- Numeric parameter values for most kinetic constants were not provided in the text; placeholders are supplied to enable simulation and should be fitted to the supplementary parameter sets (Tables S2?S3) when available.
+*/
+
+model *Thiaville2016_PanB_Folate_Model()
+
+  //// Compartments and Species:
+  compartment cytoplasm;
+
+  species H2_HMPt in cytoplasm, H2_HMPt_PP in cytoplasm, PABA in cytoplasm, H2_Pteroate in cytoplasm, DHF in cytoplasm;
+  species THF in cytoplasm, CH2_THF in cytoplasm;
+
+  species $ATP in cytoplasm, $ADP in cytoplasm, $AMP in cytoplasm, $Pi in cytoplasm, $PPi in cytoplasm;
+  species $Ser in cytoplasm, $Gly in cytoplasm, $Glu in cytoplasm;
+
+  //// Reactions:
+  source_H2HMPt:  => H2_HMPt; cytoplasm*v_net;
+  source_PABA:    => PABA;     cytoplasm*v_net;
+
+  FolK:  H2_HMPt + $ATP => H2_HMPt_PP + $AMP; cytoplasm*(k_FolK*H2_HMPt*ATP);
+  FolP:  H2_HMPt_PP + PABA => H2_Pteroate + $PPi; cytoplasm*(k_FolP*H2_HMPt_PP*PABA);
+  FolC:  H2_Pteroate + $ATP + $Glu => DHF + $ADP + $Pi; cytoplasm*(k_FolC*H2_Pteroate*ATP*Glu);
+  FolA:  DHF => THF; cytoplasm*(k_FolA*DHF);
+
+  GlyA_forward: THF + $Ser => CH2_THF + $Gly; cytoplasm*(k_GlyAf*THF*Ser);
+  GlyA_reverse: CH2_THF + $Gly => THF + $Ser; cytoplasm*(k_GlyAr*CH2_THF*Gly);
+
+  PanB_side: CH2_THF => H2_HMPt + PABA + $Glu; cytoplasm*(k_PanB*CH2_THF);
+
+  recycle_pp: H2_HMPt_PP => H2_HMPt + $PPi; cytoplasm*(k_recycle*H2_HMPt_PP);
+
+  sink_THF:    THF => ;     cytoplasm*(V_THF*THF/(K_THF + THF));
+  sink_CH2THF: CH2_THF => ; cytoplasm*(V_CH2*CH2_THF/(K_CH2 + CH2_THF));
+
+  //// Species initializations:
+  H2_HMPt = 0;
+  H2_HMPt_PP = 0;
+  PABA = 0;
+  H2_Pteroate = 0;
+  DHF = 0;
+  THF = 1e-6;
+  CH2_THF = 1e-6;
+
+  ATP = 1;
+  ADP = 0.2;
+  AMP = 0.2;
+  Pi  = 10;
+  PPi = 1;
+  Ser = 1;
+  Gly = 0.5;
+  Glu = 10;
+
+  //// Compartment initializations:
+  cytoplasm = 1;
+
+  //// Variable initializations:
+  v_net = 1.66e-7;              # Fixed production flux for H2_HMPt and PABA (mmol ml^-1 s^-1 scale)
+
+  k_FolK = 1;                   # Unsaturated mass-action constants (placeholders to be fitted)
+  k_FolP = 1;
+  k_FolC = 1;
+  k_FolA = 1;
+
+  k_GlyAf = 1;                  # Forward GlyA (near-equilibrium modeled via separate reverse step)
+  k_GlyAr = 1;                  # Reverse GlyA
+
+  k_PanB = 1e-3;                # PanB side-reaction kinetic constant (modifiable to simulate overexpression)
+  k_recycle = 0.1;              # Recycling from H2_HMPt_PP to H2_HMPt (generic phosphatase-like step)
+
+  V_THF = 1e-7; K_THF = 1e-6;   # THF drain (saturating sink) parameters
+  V_CH2 = 1e-7; K_CH2 = 1e-6;   # CH2-THF drain (saturating sink) parameters
+
+  //// Other declarations:
+  const cytoplasm, v_net, k_FolK, k_FolP, k_FolC, k_FolA, k_GlyAf, k_GlyAr, k_PanB, k_recycle, V_THF, K_THF, V_CH2, K_CH2;
+
+  //// Display Names:
+  cytoplasm is "Cytoplasm";
+  H2_HMPt is "6-hydroxymethyldihydropterin";
+  H2_HMPt_PP is "6-hydroxymethyldihydropterin pyrophosphate";
+  PABA is "p-aminobenzoate";
+  H2_Pteroate is "Dihydropteroate";
+  DHF is "Dihydrofolate";
+  THF is "Tetrahydrofolate";
+  CH2_THF is "5,10-methylenetetrahydrofolate";
+  ATP is "Adenosine triphosphate (fixed)";
+  ADP is "Adenosine diphosphate (fixed)";
+  AMP is "Adenosine monophosphate (fixed)";
+  Pi is "Phosphate (fixed)";
+  PPi is "Pyrophosphate (fixed)";
+  Ser is "Serine (fixed)";
+  Gly is "Glycine (fixed)";
+  Glu is "Glutamate (fixed)";
+  source_H2HMPt is "Exchange source of H2-HMPt (v_net)";
+  source_PABA is "Exchange source of PABA (v_net)";
+  FolK is "HPPK: H2-HMPt + ATP -> H2-HMPt-PP + AMP";
+  FolP is "DHPS: H2-HMPt-PP + PABA -> H2-Pteroate + PPi";
+  FolC is "DHFS: H2-Pteroate + ATP + Glu -> DHF + ADP + Pi";
+  FolA is "DHFR: DHF -> THF";
+  GlyA_forward is "SHMT forward: THF + Ser -> CH2-THF + Gly";
+  GlyA_reverse is "SHMT reverse: CH2-THF + Gly -> THF + Ser";
+  PanB_side is "PanB side-activity: CH2-THF -> H2-HMPt + PABA (+Glu)";
+  recycle_pp is "Recycling: H2-HMPt-PP -> H2-HMPt + PPi";
+  sink_THF is "THF consumption/dilution sink";
+  sink_CH2THF is "CH2-THF consumption/dilution sink";
+
+end
+
+/* Unmapped/assumed elements and notes:
+- Exact kinetic parameter values (k_FolK, k_FolP, k_FolC, k_FolA, k_GlyAf, k_GlyAr, k_PanB, k_recycle, drain Vmax/Km) were not specified in the provided text; placeholders are given to enable simulation and should be replaced with the fitted values from Supplementary Tables S2?S3 (BioModels MODEL1602280001-3).
+- The PanB side-reaction mechanistic paths (A/B) producing H4-HMPt and pABA-Glu are simplified to yield H2-HMPt and PABA directly; spontaneous redox (H4?H2) and pABA-Glu hydrolysis steps are not explicitly modeled (per article?s modeling scope).
+- The dotted ?recycling? from H2-HMPt-PP back to H2-HMPt is represented as an irreversible mass-action step (recycle_pp) without explicit enzyme identification; adjust or remove if not desired.
+- NADPH/NADP+ cofactors for FolA are omitted (FolA modeled as simple DHF -> THF), consistent with fixing prevalent metabolites outside scope.
+- Exchange sources for H2-HMPt and PABA are set to v_net = 1.66e-7 mmol ml^-1 s^-1 as described (per cell growth-associated dilution compensation). Units are not enforced here; scale consistently if adding units.
+- To simulate PanB overexpression, increase k_PanB; to simulate coordinated induction of upstream folate synthesis (as in Figure 7B), increase v_net concurrently (source_H2HMPt and source_PABA).
+*/

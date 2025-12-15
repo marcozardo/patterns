@@ -1,0 +1,96 @@
+model *Waugh2006_Macrophage_Dynamics()
+
+  //// Compartments and Species:
+  compartment wound;
+  species phi_I in wound, phi_R in wound, T in wound;
+
+  //// Assignment Rules:
+  K := kT3*T^3 + kT2*T^2 + kT1*T + kT0;                  # Monocyte migration as cubic in TGF-?
+  Kpos := piecewise(K, K > 0, 0);                         # Positive part of K(T)
+  Kneg := piecewise(-K, K < 0, 0);                        # Negative part of K(T)
+
+  //// Reactions:
+  # Inflammatory macrophages (phi_I)
+  J_I_migrate_in:  => phi_I; wound*(alpha*Kpos);
+  J_I_migrate_out: phi_I => ; wound*(alpha*Kneg);
+  J_I_growth:       => phi_I; wound*(k1*k2*phi_I);
+  J_I_crowding:    phi_I => ; wound*(k1*k2*k3*phi_I*(phi_I + phi_R));
+  J_I_removal:     phi_I => ; wound*(d1*phi_I);
+
+  # Repair macrophages (phi_R)
+  J_R_migrate_in:  => phi_R; wound*((1 - alpha)*Kpos);
+  J_R_migrate_out: phi_R => ; wound*((1 - alpha)*Kneg);
+  J_R_growth:       => phi_R; wound*(k1*k2*phi_R);
+  J_R_crowding:    phi_R => ; wound*(k1*k2*k3*phi_R*(phi_I + phi_R));
+  J_R_removal:     phi_R => ; wound*(d1*phi_R);
+
+  # TGF-? (T)
+  J_T_production:  => T; wound*(k4*phi_I);
+  J_T_decay:       T => ; wound*(d2*T);
+
+  //// Events:
+  # Therapy scenario (Fig. 4): reduce alpha at day 10 to promote healing
+  at(time >= 10): alpha = 0.2;
+
+  //// Species initializations:
+  phi_I = 200;    # cells per mm^3
+  phi_R = 200;    # cells per mm^3
+  T = 6;          # pg per mm^3
+
+  //// Compartment initializations:
+  wound = 1;
+
+  //// Variable initializations:
+  # Macrophage proliferation and crowding
+  k1 = 0.05;       # fraction dividing
+  k2 = 0.693;      # per day
+  k3 = 0.002;      # (cells per mm^3)^-1
+
+  # TGF-? production and decay
+  k4 = 0.07;       # pg per cell per day
+  d1 = 0.2;        # per day (macrophage removal)
+  d2 = 9.1;        # per day (TGF-? decay)
+
+  # Monocyte migration cubic K(T) = kT3*T^3 + kT2*T^2 + kT1*T + kT0 (from Fig. 1)
+  kT3 = -2.47;
+  kT2 = 21.94;
+  kT1 = 6.41;
+  kT0 = 1.75;
+
+  # Phenotype allocation (alpha): diabetic baseline; set to 0.5 for normal wound
+  alpha = 0.8;
+
+  //// Other declarations:
+  var K, Kpos, Kneg, alpha;
+  const wound, k1, k2, k3, k4, d1, d2, kT3, kT2, kT1, kT0;
+
+  //// Display Names:
+  wound is "Wound compartment (unit volume)";
+  phi_I is "Inflammatory macrophage density";
+  phi_R is "Repair macrophage density";
+  T is "TGF-beta concentration";
+  K is "Monocyte migration drive K(T)";
+  Kpos is "Positive component of K(T)";
+  Kneg is "Negative component of K(T)";
+  alpha is "Fraction of monocytes differentiating to inflammatory macrophages";
+  J_I_migrate_in is "Inflammatory macrophage influx from monocytes";
+  J_I_migrate_out is "Inflammatory macrophage efflux (negative migration)";
+  J_I_growth is "Inflammatory macrophage mitosis";
+  J_I_crowding is "Inflammatory macrophage crowding loss";
+  J_I_removal is "Inflammatory macrophage removal";
+  J_R_migrate_in is "Repair macrophage influx from monocytes";
+  J_R_migrate_out is "Repair macrophage efflux (negative migration)";
+  J_R_growth is "Repair macrophage mitosis";
+  J_R_crowding is "Repair macrophage crowding loss";
+  J_R_removal is "Repair macrophage removal";
+  J_T_production is "TGF-beta production by inflammatory macrophages";
+  J_T_decay is "TGF-beta decay";
+
+end
+
+/* Notes:
+- Domain: physiological/immunological (wound healing macrophage dynamics).
+- To simulate normal wound healing (Fig. 2 left), set alpha = 0.5 and remove/disable the therapy event.
+- Diabetic baseline (Fig. 2 right) uses alpha = 0.8; included event reproduces Fig. 4 (therapy at day 10 sets alpha to 0.2).
+- The migration term K(T) can be negative at high T; to ensure valid reaction rates, we split it into influx (Kpos) and efflux (Kneg).
+*/

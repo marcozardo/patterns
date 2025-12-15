@@ -1,0 +1,219 @@
+model *DiCamillo2016_ISP_minimalRBM_to_ODE()
+
+  //// Compartments and Species:
+  compartment cell;
+  species $Insulin in cell, $AminoAcids in cell;
+  species IR in cell, IR_p in cell;
+  species IRS1 in cell, IRS1_pY in cell, IRS1_pS in cell;
+  species PI3K in cell, IRS1_PI3K in cell;
+  species PIP2 in cell, PIP3 in cell;
+  species PDK1 in cell, mTORC2 in cell;
+  species Akt in cell, Akt_pT in cell, Akt_pS in cell, Akt_pp in cell;
+  species TSC1_2 in cell, TSC1_2_pS in cell, TSC1_2_pY in cell;
+  species mTORC1 in cell, mTORC1_p in cell;
+  species p70S6K in cell, p70S6K_pT389 in cell;
+  species GLUT4_cyt in cell, GLUT4_memb in cell;
+  species GRB2_SOS in cell, IRS1_GS_complex in cell;
+  species RasGDP in cell, RasGTP in cell;
+  species Raf in cell, Raf_p in cell;
+  species MEK in cell, MEK_pp in cell;
+  species ERK in cell, ERK_pp in cell;
+
+  //// Assignment Rules:
+  AMPK_pT172 := k_ampk_act*IRS1_pY;  # AMPK activation depends on IRS1 Tyr phosphorylation (text)
+
+  //// Reactions:
+  # Insulin receptor activation (membrane receptor phosphorylation by insulin)
+  R_IR_activation: IR + Insulin => IR_p; cell*k_IR*IR*Insulin;
+
+  # IRS1 Tyr phosphorylation by activated IR, and dephosphorylation
+  R_IRS1_pY: IRS1 => IRS1_pY; cell*k_IRS1Y*IR_p*IRS1;
+  R_IRS1_pY_dephos: IRS1_pY => IRS1; cell*k_dIRS1Y*IRS1_pY;
+
+  # IRS1 Ser phosphorylation by p70S6K (negative feedback) via Hill kinetics, and dephosphorylation
+  R_IRS1_pS: IRS1 => IRS1_pS; cell*V_p70*(p70S6K_pT389^n_p70/(Kd_p70^n_p70 + p70S6K_pT389^n_p70))*IRS1;
+  R_IRS1_pS_dephos: IRS1_pS => IRS1; cell*k_dIRS1S*IRS1_pS;
+
+  # Recruitment of PI3K by IRS1_pY (complex formation/dissociation)
+  R_IRS1_PI3K_bind: IRS1_pY + PI3K -> IRS1_PI3K; cell*(k8*IRS1_pY*PI3K - k_8*IRS1_PI3K);
+
+  # PI3K-dependent lipid conversion PI(4,5)P2 -> PI(3,4,5)P3 and reverse lipid phosphatases
+  R_PIP3_synthesis: PIP2 => PIP3; cell*k9a*IRS1_PI3K*PIP2;
+  R_PIP3_degradation: PIP3 => PIP2; cell*k9s*PIP3;
+
+  # PDK1/mTORC2 mediated Akt phosphorylation (Thr and Ser) and formation of doubly phosphorylated Akt
+  R_Akt_pT: Akt => Akt_pT; cell*k_Akt_T*PIP3*PDK1*Akt;
+  R_Akt_pS: Akt => Akt_pS; cell*k_Akt_S*mTORC2*Akt;
+  R_Akt_pp_from_pT: Akt_pT => Akt_pp; cell*k_Akt_S2*mTORC2*Akt_pT;
+  R_Akt_pp_from_pS: Akt_pS => Akt_pp; cell*k_Akt_T2*PIP3*PDK1*Akt_pS;
+
+  # AMPK-dependent TSC1/2 Ser phosphorylation (activation) and Akt-dependent Tyr phosphorylation (inhibition)
+  R_TSC_Ser_phos: TSC1_2 => TSC1_2_pS; cell*k_TSCSer*AMPK_pT172*TSC1_2;
+  R_TSC_Tyr_phos: TSC1_2 => TSC1_2_pY; cell*k_TSCY*(Akt_pT + Akt_pp)*TSC1_2;
+  R_TSC_Ser_dephos_by_Akt: TSC1_2_pS => TSC1_2; cell*k_TSCSer_dephos*(Akt_pT + Akt_pp)*TSC1_2_pS;
+
+  # mTORC1 activation by amino acids and inhibition by active TSC1/2; deactivation
+  R_mTORC1_activation: mTORC1 => mTORC1_p; cell*k_mTORC1_act*AminoAcids*(1/(1 + K_TSC*TSC1_2_pS))*mTORC1;
+  R_mTORC1_deactivation: mTORC1_p => mTORC1; cell*k_mTORC1_deact*mTORC1_p;
+
+  # p70S6K activation by mTORC1_p and deactivation
+  R_p70S6K_activation: p70S6K => p70S6K_pT389; cell*k_p70_act*mTORC1_p*p70S6K;
+  R_p70S6K_deactivation: p70S6K_pT389 => p70S6K; cell*k_p70_deact*p70S6K_pT389;
+
+  # GLUT4 translocation to membrane activated by Akt phosphorylation (Thr/Ser/both) and internalization
+  R_GLUT4_translocation: GLUT4_cyt => GLUT4_memb; cell*k_GLUT4_trans*(Akt_pT + Akt_pS + Akt_pp)*GLUT4_cyt;
+  R_GLUT4_internalization: GLUT4_memb -> GLUT4_cyt; cell*k_GLUT4_int*GLUT4_memb;
+
+  # RAS-MAPK pathway: adaptor binding, Ras activation, Raf/MEK/ERK cascade, and ERK->GRB2/SOS feedback
+  R_GS_bind: IRS1_pY + GRB2_SOS -> IRS1_GS_complex; cell*(k_gs_on*IRS1_pY*GRB2_SOS - k_gs_off*IRS1_GS_complex);
+  R_GS_feedback_dissoc: IRS1_GS_complex => IRS1_pY + GRB2_SOS; cell*(kfb_ERK*ERK_pp + k_gs_off2)*IRS1_GS_complex;
+
+  R_Ras_activation: RasGDP => RasGTP; cell*k_ras_act*IRS1_GS_complex*RasGDP;
+  R_Ras_deactivation: RasGTP => RasGDP; cell*k_ras_gap*RasGTP;
+
+  R_Raf_activation: Raf => Raf_p; cell*k_raf_act*RasGTP*Raf;
+  R_Raf_inactivation: Raf_p => Raf; cell*k_raf_inact*Raf_p;
+
+  R_MEK_activation: MEK => MEK_pp; cell*k_mek_act*Raf_p*MEK;
+  R_MEK_deactivation: MEK_pp => MEK; cell*k_mek_deact*MEK_pp;
+
+  R_ERK_activation: ERK => ERK_pp; cell*k_erk_act*MEK_pp*ERK;
+  R_ERK_deactivation: ERK_pp => ERK; cell*k_erk_deact*ERK_pp;
+
+  //// Species initializations:
+  Insulin = 1;
+  AminoAcids = 1;
+  IR = 1;
+  IR_p = 0;
+  IRS1 = 1;
+  IRS1_pY = 0;
+  IRS1_pS = 0;
+  PI3K = 1;
+  IRS1_PI3K = 0;
+  PIP2 = 1;
+  PIP3 = 0;
+  PDK1 = 1;
+  mTORC2 = 1;
+  Akt = 1;
+  Akt_pT = 0;
+  Akt_pS = 0;
+  Akt_pp = 0;
+  TSC1_2 = 1;
+  TSC1_2_pS = 0;
+  TSC1_2_pY = 0;
+  mTORC1 = 1;
+  mTORC1_p = 0;
+  p70S6K = 1;
+  p70S6K_pT389 = 0;
+  GLUT4_cyt = 1;
+  GLUT4_memb = 0;
+  GRB2_SOS = 1;
+  IRS1_GS_complex = 0;
+  RasGDP = 1;
+  RasGTP = 0;
+  Raf = 1;
+  Raf_p = 0;
+  MEK = 1;
+  MEK_pp = 0;
+  ERK = 1;
+  ERK_pp = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_IR = 1;
+  k_IRS1Y = 1;
+  k_dIRS1Y = 0.1;
+  V_p70 = 1;
+  n_p70 = 2;
+  Kd_p70 = 1;
+  k_dIRS1S = 0.1;
+  k8 = 1;
+  k_8 = 0.5;
+  k9a = 1;
+  k9s = 0.5;
+  k_Akt_T = 1;
+  k_Akt_S = 1;
+  k_Akt_S2 = 0.5;
+  k_Akt_T2 = 0.5;
+  k_TSCSer = 0.5;
+  k_TSCY = 0.5;
+  k_TSCSer_dephos = 0.2;
+  k_ampk_act = 0.5;
+  k_mTORC1_act = 1;
+  K_TSC = 1;
+  k_mTORC1_deact = 0.2;
+  k_p70_act = 1;
+  k_p70_deact = 0.2;
+  k_GLUT4_trans = 1;
+  k_GLUT4_int = 0.2;
+  k_gs_on = 1;
+  k_gs_off = 0.1;
+  k_gs_off2 = 0.0;
+  kfb_ERK = 0.5;
+  k_ras_act = 1;
+  k_ras_gap = 0.5;
+  k_raf_act = 1;
+  k_raf_inact = 0.2;
+  k_mek_act = 1;
+  k_mek_deact = 0.2;
+  k_erk_act = 1;
+  k_erk_deact = 0.5;
+
+  //// Other declarations:
+  var AMPK_pT172;
+  const cell, k_IR, k_IRS1Y, k_dIRS1Y, V_p70, n_p70, Kd_p70, k_dIRS1S, k8, k_8, k9a, k9s, k_Akt_T, k_Akt_S, k_Akt_S2, k_Akt_T2, k_TSCSer, k_TSCY, k_TSCSer_dephos, k_ampk_act, k_mTORC1_act, K_TSC, k_mTORC1_deact, k_p70_act, k_p70_deact, k_GLUT4_trans, k_GLUT4_int, k_gs_on, k_gs_off, k_gs_off2, kfb_ERK, k_ras_act, k_ras_gap, k_raf_act, k_raf_inact, k_mek_act, k_mek_deact, k_erk_act, k_erk_deact;
+
+  //// Display Names:
+  cell is "Single intracellular compartment";
+  Insulin is "Extracellular insulin (stimulus)";
+  AminoAcids is "Extracellular amino acids (stimulus)";
+  IR is "Insulin receptor";
+  IR_p is "Activated insulin receptor (phosphorylated)";
+  IRS1 is "Insulin receptor substrate 1";
+  IRS1_pY is "IRS1 Tyr-phosphorylated (active)";
+  IRS1_pS is "IRS1 Ser-phosphorylated (inhibited)";
+  PI3K is "Phosphatidylinositide 3-kinase";
+  IRS1_PI3K is "IRS1-PI3K complex";
+  PIP2 is "PI(4,5)P2";
+  PIP3 is "PI(3,4,5)P3";
+  PDK1 is "PDK1";
+  mTORC2 is "mTOR complex 2 (PDK2)";
+  Akt is "Akt/PKB";
+  Akt_pT is "Akt Thr-phosphorylated";
+  Akt_pS is "Akt Ser-phosphorylated";
+  Akt_pp is "Akt doubly phosphorylated";
+  TSC1_2 is "TSC1/2 complex";
+  TSC1_2_pS is "TSC1/2 Ser-phosphorylated (active)";
+  TSC1_2_pY is "TSC1/2 Tyr-phosphorylated (inhibited)";
+  mTORC1 is "mTOR complex 1";
+  mTORC1_p is "Activated mTORC1";
+  p70S6K is "p70 S6 kinase";
+  p70S6K_pT389 is "p70S6K Thr389-phosphorylated";
+  GLUT4_cyt is "GLUT4 in cytosol";
+  GLUT4_memb is "GLUT4 at membrane";
+  GRB2_SOS is "GRB2/SOS adaptor complex";
+  IRS1_GS_complex is "IRS1-GRB2/SOS complex";
+  RasGDP is "Ras-GDP (inactive)";
+  RasGTP is "Ras-GTP (active)";
+  Raf is "c-Raf (inactive)";
+  Raf_p is "c-Raf (active)";
+  MEK is "MEK1/2 (inactive)";
+  MEK_pp is "MEK1/2 (active)";
+  ERK is "ERK1/2 (inactive)";
+  ERK_pp is "ERK1/2 (dual phosphorylated)";
+end
+
+/* Scientific domain: molecular cell-signaling (insulin signaling pathway).
+Notes:
+- This is a compact ODE-style encoding of the qualitative rule-based mechanisms described by Di Camillo et al. (2016), integrating PI3K-Akt, TSC/mTOR, and Ras-MAPK subpathways, plus the two negative feedbacks (p70S6K->IRS1-Ser and ERK->GRB2/SOS).
+- Kinetic forms follow the paper narrative: mass-action for complex formation and cascades; Hill form for p70S6K-mediated IRS1 Ser phosphorylation; amino-acid-dependent mTORC1 activation with TSC inhibition; ERK-dependent enhancement of IRS1-GS dissociation.
+- Parameter values are placeholders (unitless) to ensure the model loads and simulates; the article refers to detailed values in Additional file 1, which is not included here.
+- Boundary stimuli (Insulin, AminoAcids) are held constant, matching the experimental conditions (100 nM insulin; constant amino acids).
+Unmapped data due to lack of explicit values/equations in the provided excerpt:
+- Exact rate constants, stoichiometric details for lipid phosphatases (PTEN/SHIP) and PKC-mediated IRS1-Ser phosphorylation.
+- SRC-mediated full RAF activation steps and RASGAP/IR complex details.
+- Subcellular localization and trafficking steps (e.g., receptor internalization/recycling, GLUT4 compartmentalization) beyond the simplified translocation used here.
+- Detailed dual-site logic for TSC1/2 regulation beyond the qualitative assumptions implemented.
+*/

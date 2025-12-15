@@ -1,0 +1,89 @@
+model *AlHusari2013_pH_regulation()
+
+//// Compartments and Species:
+compartment intra, extra;
+species H_I in intra, H_E in extra, L_I in intra, L_E in extra;
+
+//// Assignment Rules:
+glycolysis_switch := piecewise(1, V < Vstar, 0);  # Heaviside H(V*-V)
+NHE_switch := piecewise(1, H_I > H_E, 0);        # Heaviside H(H_I-H_E)
+
+//// Reactions:
+J_leak: H_E -> H_I; intra*l_H*(H_E - H_I);
+J_NHE: H_I -> H_E; intra*f_1*NHE_switch*(H_I - H_E);
+J_MCT: H_I + L_I -> H_E + L_E; intra*k_3*(H_I*L_I - H_E*L_E);
+J_glycolysis_H: -> H_I; intra*(2*Phi_G*glycolysis_switch)/(H_I + b);
+J_glycolysis_L: -> L_I; intra*(2*Phi_G*glycolysis_switch)/(H_I + b);
+J_background_H: -> H_I; intra*d_1;
+J_background_L: -> L_I; intra*d_4;
+J_degradation_L: L_I -> ; intra*alpha_4*L_I;
+J_removal_H: H_E -> ; extra*rho_1*V*H_E;
+J_removal_L: L_E -> ; extra*rho_2*V*L_E;
+
+//// Species initializations:
+H_I = 0.631;   # dimensionless, corresponds to pH_i=7.2 for b=1e-7 M
+H_E = 0.398;   # dimensionless, corresponds to pH_e=7.4
+L_I = 0.7143;  # dimensionless, from Appendix B normoxia steady state
+L_E = 1.0;     # dimensionless, from Appendix B normoxia steady state
+
+//// Compartment initializations:
+intra = 1;
+extra = 1;
+
+//// Variable initializations:
+# Dimensionless parameters from Table 1 (base set)
+l_H = 1.7174e-2;
+f_1 = 1.7174e4;
+k_3 = 5.4316;
+d_1 = 7.9996e3;
+rho_1 = 2.0095e-1;
+rho_2 = 0.2857;
+Phi_G = 0.2823;
+alpha_4 = 1;    # dimensionless, due to scaling
+d_4 = 1;        # dimensionless, due to scaling
+b = 1;          # dimensionless, due to scaling
+V = 1;          # example: normoxia (V > V*)
+Vstar = 0.5;
+
+//// Other declarations:
+const intra, extra, l_H, f_1, k_3, d_1, rho_1, rho_2, Phi_G, alpha_4, d_4, b, V, Vstar;
+
+//// Unit definitions:
+# Dimensionless model: units are arbitrary. Define nominal units for clarity.
+unit volume = 1 dimensionless;
+unit time_unit = 1 dimensionless;
+unit substance = 1 dimensionless;
+
+//// Display Names:
+intra is "Intracellular compartment";
+extra is "Extracellular compartment";
+H_I is "Intracellular H+ (dimensionless)";
+H_E is "Extracellular H+ (dimensionless)";
+L_I is "Intracellular lactate (dimensionless)";
+L_E is "Extracellular lactate (dimensionless)";
+J_leak is "H+ leakage";
+J_NHE is "Na+/H+ antiporter (NHE)";
+J_MCT is "Lactate/H+ symporter (MCT)";
+J_glycolysis_H is "Glycolytic H+ production";
+J_glycolysis_L is "Glycolytic lactate production";
+J_background_H is "Background H+ production";
+J_background_L is "Background lactate production";
+J_degradation_L is "Lactate degradation";
+J_removal_H is "Vascular removal of H+";
+J_removal_L is "Vascular removal of lactate";
+l_H is "H+ leakage rate constant";
+f_1 is "NHE activity rate constant";
+k_3 is "MCT activity rate constant";
+d_1 is "Background H+ production rate";
+rho_1 is "H+ vascular removal coefficient";
+rho_2 is "Lactate vascular removal coefficient";
+Phi_G is "Maximal glycolytic rate";
+alpha_4 is "Lactate degradation rate constant";
+d_4 is "Background lactate production rate";
+b is "Half-saturation constant for glycolysis";
+V is "Vasculature density";
+Vstar is "Glycolysis threshold vasculature";
+glycolysis_switch is "Glycolysis switch (1 if V<V*)";
+NHE_switch is "NHE switch (1 if H_I>H_E)";
+
+end

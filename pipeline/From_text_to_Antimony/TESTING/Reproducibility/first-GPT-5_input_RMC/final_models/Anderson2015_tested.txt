@@ -1,0 +1,77 @@
+model *Anderson2015_Tumor_CD4_Cytokine_General()
+
+  /* Physiological/clinical immuno-oncology domain.
+     Three-population model (tumor x, CD4+ T cells y, cytokine z) with optional constant treatments I1 (CD4+) and I2 (cytokine).
+     Governing ODEs (Eq. (2) in the paper) are encoded as reaction fluxes:
+       x' = r*x*(1 - x/K) - delta*x*z/(m + x)
+       y' = beta*x*y/(k + x) - a*y + I1
+       z' = alpha*x*y/(b + x) - mu*z + I2
+     All processes occur in a single well-mixed compartment of fixed size 1 (arbitrary volume units). */
+
+  //// Compartments and Species:
+  compartment site;
+  species x in site, y in site, z in site;
+
+  //// Reactions:
+  # Tumor logistic growth (birth) and density-dependent limitation (death)
+  R_x_birth:  => x; site*(r*x);
+  R_x_carry:  x => ; site*((r/K)*x*x);
+
+  # Cytokine-mediated tumor killing
+  R_x_kill_by_z: x => ; site*(delta*x*z/(m + x));
+
+  # CD4+ T-cell dynamics: tumor-stimulated proliferation, natural death, and adoptive transfer (I1)
+  R_y_stim:  => y; site*(beta*x*y/(k + x));
+  R_y_death: y => ; site*(a*y);
+  R_y_treatment: => y; site*(I1);
+
+  # Cytokine dynamics: production by CD4+ interacting with tumor, natural loss, and exogenous cytokine (I2)
+  R_z_prod:  => z; site*(alpha*x*y/(b + x));
+  R_z_loss:  z => ; site*(mu*z);
+  R_z_treatment: => z; site*(I2);
+
+  //// Species initializations:
+  x = 0.5;    # initial tumor volume (e.g., cm^3)
+  y = 0.01;   # initial CD4+ volume-equivalent
+  z = 0;      # initial cytokine level
+
+  //// Compartment initializations:
+  site = 1;
+
+  //// Variable initializations:
+  r     = 0.027;  # intrinsic tumor growth rate
+  K     = 1000;   # tumor carrying capacity (volume units)
+  delta = 0.1;    # maximum tumor killing rate by cytokine
+  m     = 1;      # half-saturation for cytokine killing
+  beta  = 0.1;    # maximum CD4+ production rate (antigenicity)
+  k     = 10;     # half-saturation for CD4+ proliferation
+  a     = 0.02;   # CD4+ death rate
+  alpha = 0.1;    # maximum cytokine production rate
+  b     = 0.1;    # half-saturation for cytokine production
+  mu    = 50;     # cytokine loss rate
+  I1    = 0;      # CD4+ treatment input (per time)
+  I2    = 0;      # cytokine treatment input (per time)
+
+  //// Other declarations:
+  const site, r, K, delta, m, beta, k, a, alpha, b, mu, I1, I2;
+
+  //// Display Names:
+  site is "Tumor microenvironment";
+  x is "Tumor cells (volume)";
+  y is "CD4+ T cells (volume-equivalent)";
+  z is "Cytokine (e.g., IL-4)";
+  R_x_birth is "Tumor logistic birth (r*x)";
+  R_x_carry is "Tumor self-limitation (r/K*x^2)";
+  R_x_kill_by_z is "Tumor killing by cytokine";
+  R_y_stim is "CD4+ proliferation stimulated by tumor";
+  R_y_death is "CD4+ natural death";
+  R_y_treatment is "Adoptive transfer of CD4+ (I1)";
+  R_z_prod is "Cytokine production by CD4+-tumor interaction";
+  R_z_loss is "Cytokine loss";
+  R_z_treatment is "Cytokine therapy input (I2)";
+end
+
+/* Unmapped/notes:
+- Parameter ranges and units summarized in Table III of the paper; here we chose a coherent default set used in simulations (e.g., r=0.027 day^-1, a=0.02 day^-1, mu?50 day^-1). Adjust I1 and I2 to model CD4+ and cytokine therapies per Eq. (2), Sec. 3.1?3.2.
+- Time unit in simulations is days; volume units (e.g., cm^3). No explicit unit definitions included to avoid ambiguity.
+*/

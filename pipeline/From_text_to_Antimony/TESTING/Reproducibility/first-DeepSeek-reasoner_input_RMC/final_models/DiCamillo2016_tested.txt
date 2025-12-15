@@ -1,0 +1,121 @@
+model *DiCamillo2016_Insulin_Signaling_Pathway()
+
+  //// Compartments and Species:
+  compartment cell;
+  species IR_phos_memb in cell, IRS1_pY in cell, IRS1_pS636 in cell, IRS1_PI3K_complex in cell, PI3K_variant_p in cell;
+  species PI345 in cell, Akt_pT in cell, PKC_pT410 in cell, mTORC2_pS2481 in cell, Akt_pS in cell;
+  species GLUT4_memb in cell, AMPK_pT172 in cell, TSC1_TSC2_pS1387 in cell, mTORC1_pS2448 in cell, p70S6K_pT389 in cell;
+  species IR_RasGAP_complex in cell, IRS1_SHP2_complex in cell, aGS in cell, IRS1_GS_complex in cell, aSrc in cell;
+  species RasGTP in cell, aRaf in cell, aaRaf in cell, Mek_pS218_S222 in cell, Erk_ppY204_Y187 in cell;
+
+  //// Species initializations:
+  IR_phos_memb = 0;
+  IRS1_pY = 0;
+  IRS1_pS636 = 0;
+  IRS1_PI3K_complex = 0;
+  PI3K_variant_p = 0;
+  PI345 = 0;
+  Akt_pT = 0;
+  PKC_pT410 = 0;
+  mTORC2_pS2481 = 0;
+  Akt_pS = 0;
+  GLUT4_memb = 0;
+  AMPK_pT172 = 0;
+  TSC1_TSC2_pS1387 = 0;
+  mTORC1_pS2448 = 0;
+  p70S6K_pT389 = 0;
+  IR_RasGAP_complex = 0;
+  IRS1_SHP2_complex = 0;
+  aGS = 0;
+  IRS1_GS_complex = 0;
+  aSrc = 0;
+  RasGTP = 0;
+  aRaf = 0;
+  aaRaf = 0;
+  Mek_pS218_S222 = 0;
+  Erk_ppY204_Y187 = 0;
+
+  //// Compartment initializations:
+  cell = 1;
+
+  //// Variable initializations:
+  k_13 = 1;
+  k13p = 1;
+  k13 = 1;
+  n_p70 = 1;
+  k9a = 1;
+  k9s = 1;
+  k8 = 1;
+  k_8 = 1;
+  k_14 = 1;
+  k_7 = 1;
+  k7 = 1;
+  k_7p = 1;
+  k15 = 1;
+  Kd_p70 = 1;
+  Vmax = 1;
+  k4p = 1;
+  k_21 = 1;
+  k7p = 1;
+  k41 = 1;
+  kcat33 = 1;
+  kcat32 = 1;
+  kcat28 = 1;
+  kcat29 = 1;
+  kcat30 = 1;
+  kcat35 = 1;
+  kcat36 = 1;
+  kcat39 = 1;
+  n = 1;
+  k_39 = 1;
+  k_20 = 1;
+  kcat24 = 1;
+  kcat31 = 1;
+  alpha24 = 1;
+  k_4 = 1;
+  k_16 = 1;
+  Kd_pkc = 1;
+  k12 = 1;
+  k6 = 1;
+  k_2 = 1;
+
+  //// Other declarations:
+  const k_13, k13p, k13, n_p70, k9a, k9s, k8, k_8, k_14, k_7, k7, k_7p, k15, Kd_p70, Vmax, k4p, k_21, k7p, k41;
+  const kcat33, kcat32, kcat28, kcat29, kcat30, kcat35, kcat36, kcat39, n, k_39, k_20, kcat24, kcat31, alpha24;
+  const k_4, k_16, Kd_pkc, k12, k6, k_2;
+
+  //// Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1 molecule;
+
+  //// Display Names:
+  cell is "cell";
+  IR_phos_memb is "Phosphorylated insulin receptor at membrane";
+  IRS1_pY is "IRS1 phosphorylated at Tyr";
+  IRS1_pS636 is "IRS1 phosphorylated at Ser636";
+  IRS1_PI3K_complex is "IRS1-PI3K complex";
+  PI3K_variant_p is "Phosphorylated PI3K variant";
+  PI345 is "PI(3,4,5)P3";
+  Akt_pT is "AKT phosphorylated at Thr";
+  PKC_pT410 is "PKC phosphorylated at Thr410";
+  mTORC2_pS2481 is "mTORC2 phosphorylated at Ser2481";
+  Akt_pS is "AKT phosphorylated at Ser";
+  GLUT4_memb is "GLUT4 at membrane";
+  AMPK_pT172 is "AMPK phosphorylated at Thr172";
+  TSC1_TSC2_pS1387 is "TSC1/TSC2 phosphorylated at Ser1387";
+  mTORC1_pS2448 is "mTORC1 phosphorylated at Ser2448";
+  p70S6K_pT389 is "p70S6K phosphorylated at Thr389";
+  IR_RasGAP_complex is "IR-RasGAP complex";
+  IRS1_SHP2_complex is "IRS1-SHP2 complex";
+  aGS is "active GRB2/SOS complex";
+  IRS1_GS_complex is "IRS1-GRB2/SOS complex";
+  aSrc is "active Src";
+  RasGTP is "Ras-GTP";
+  aRaf is "active Raf";
+  aaRaf is "doubly active Raf";
+  Mek_pS218_S222 is "MEK phosphorylated at Ser218 and Ser222";
+  Erk_ppY204_Y187 is "ERK phosphorylated at Tyr204 and Thr187";
+  time_unit is "minute";
+  substance is "molecule";
+
+end

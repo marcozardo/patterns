@@ -1,0 +1,165 @@
+model *BLISS_BlueLight_Psoriasis()
+
+  //// Compartments and Species:
+  compartment epidermis;
+
+  //// Assignment Rules:
+  reg_h := w/(1 + (w - 1)*((P_tah + P_tad)/P_ta_hom)^n);
+  gamma1h := gamma1hom*reg_h;
+  k1ah := k1a_hom*reg_h;
+  k1sh := k1s_hom*reg_h;
+
+  F_eff := F*f_abs;                               # Effective fluence absorbed by epidermis
+  thetaBLy := ay*exp(by*F_eff);                  # Proliferation modulation (0..1)
+  thetaBLk := ck - ak*exp(bk*F_eff);             # Differentiation modulation (0..1)
+  thetaBLbeta := piecewise(0, F_eff < 500, 0.039, (F_eff >= 500) && (F_eff < 750), 0.05);
+
+  beta1h := (AIh*(k1sh*thetaBLk))/(1 - AIh) + thetaBLbeta;
+  beta2h := (AIh*(k2sh*thetaBLk))/(1 - AIh) + thetaBLbeta;
+  beta3h := (AIh*(k3h*thetaBLk))/(1 - AIh) + thetaBLbeta;
+  beta4h := (AIh*(k4h*thetaBLk))/(1 - AIh) + thetaBLbeta;
+  beta5h := (AIh*(k5h*thetaBLk))/(1 - AIh) + thetaBLbeta;
+
+  beta1d := (AId*(k1sd*thetaBLk))/(1 - AId) + thetaBLbeta;
+  beta2d := (AId*(k2sd*thetaBLk))/(1 - AId) + thetaBLbeta;
+  beta3d := (AId*(k3d*thetaBLk))/(1 - AId) + thetaBLbeta;
+  beta4d := (AId*(k4d*thetaBLk))/(1 - AId) + thetaBLbeta;
+  beta5d := (AId*(k5d*thetaBLk))/(1 - AId) + thetaBLbeta;
+
+  P_tot := P_sch + P_tah + P_gah + P_sph + P_gch + P_cch + P_scd + P_tad + P_gad + P_spd + P_gcd + P_ccd;
+  LPSI := LPSI0 - LPSI0*((P_tot - P_tot0)/P_tot0);
+
+  //// Rate Rules:
+  P_sch' = (gamma1h*thetaBLy*(1 - (P_sch + P_scd)/(P_sc_max)) - k1sh*thetaBLk - beta1h)*P_sch + km1h*P_tah;
+  P_tah' = (gamma2h*thetaBLy - k2sh*thetaBLk - beta2h - km1h)*P_tah - (k1ah + 2*k1sh)*thetaBLk*P_sch + km2h*P_gah;
+  P_gah' = (k2ah + k2sh)*thetaBLk*P_tah - (km2h + k3h*thetaBLk + beta3h)*P_gah;
+  P_sph' = k3h*thetaBLk*P_gah - (k4h*thetaBLk + beta4h)*P_sph;
+  P_gch' = k4h*thetaBLk*P_sph - (k5h*thetaBLk + beta5h)*P_gch;
+  P_cch' = k5h*thetaBLk*P_gch - ah*P_cch;
+
+  P_scd' = (gamma1d*thetaBLy*(1 - (P_sch + P_scd)/(lambda_*P_sc_max)) - k1sd*thetaBLk - beta1d)*P_scd - Kp*P_scd^2/(Ka^2 + P_scd^2) + km1d*P_tad;
+  P_tad' = (gamma2d*thetaBLy - k2sd*thetaBLk - beta2d - km1d)*P_tad - (k1ad + 2*k1sd)*thetaBLk*P_scd + km2d*P_gad;
+  P_gad' = (k2ad + k2sd)*thetaBLk*P_tad - (km2d + k3d*thetaBLk + beta3d)*P_gad;
+  P_spd' = k3d*thetaBLk*P_gad - (k4d*thetaBLk + beta4d)*P_spd;
+  P_gcd' = 0;
+  P_ccd' = k5d*thetaBLk*P_gcd - ad*P_ccd;
+
+  //// Compartment initializations:
+  epidermis = 1;
+
+  //// Variable initializations:
+  # Initial keratinocyte densities (cells per mm^2)
+  P_cch = 185;
+  P_gch = 119;
+  P_sph = 238;
+  P_gah = 61;
+  P_tah = 77;
+  P_sch = 362;
+
+  P_ccd = 77633;
+  P_gcd = 0;
+  P_spd = 79788;
+  P_gad = 20536;
+  P_tad = 32098;
+  P_scd = 6459;
+
+  # Light/treatment settings
+  F = 90;                # Fluence (J/cm^2)
+  f_abs = 0.579;         # Epidermal absorbance fraction (57.9%)
+
+  # Homeostatic regulation and capacities
+  P_sc_max = 4.5e3;      # Stem cell growth capacity (cells/mm^2)
+  lambda_ = 3.5;         # Fold change of stem cell capacity in psoriasis
+  w = 100;               # Max fold-increase in healthy stem proliferation
+  n = 3;                 # Regulation steepness
+  P_ta_hom = 77;         # Homeostatic TA density (assumed; see comment below)
+
+  # Healthy proliferation/division/differentiation/backconversion
+  gamma1hom = 3.30e-3;   # d^-1
+  k1s_hom = 1.64e-3;     # d^-1
+  k1a_hom = 1.31e-2;     # d^-1
+  gamma2h = 1.40e-2;     # d^-1
+  k2sh = 1.73e-2;        # d^-1
+  k2ah = 1.38e-1;        # d^-1
+  k3h = 2.16e-1;         # d^-1
+  k4h = 5.56e-2;         # d^-1
+  k5h = 1.11e-1;         # d^-1
+  km1h = 1.0e-6;         # k_-1h (TA->SC), d^-1
+  km2h = 1.0e-6;         # k_-2h (GA->TA), d^-1
+  ah = 7.14e-2;          # Healthy desquamation, d^-1
+
+  # Diseased proliferation/division/differentiation/backconversion
+  gamma1d = 1.16e-2;     # d^-1
+  k1sd = 5.70e-3;        # d^-1
+  k1ad = 4.59e-2;        # d^-1
+  gamma2d = 4.90e-2;     # d^-1
+  k2sd = 6.06e-2;        # d^-1
+  k2ad = 4.83e-1;        # d^-1
+  k3d = 9.72e-1;         # d^-1
+  k4d = 2.50e-1;         # d^-1
+  k5d = 3.89e-1;         # d^-1
+  km1d = 1.0e-6;         # k_-1d (TA->SC), d^-1 (assumed; see comment below)
+  km2d = 1.0e-6;         # k_-2d (GA->TA), d^-1 (assumed; see comment below)
+  ad = 2.50e-1;          # Diseased desquamation, d^-1
+
+  # Immune response
+  Kp = 6;                # Max immune killing rate
+  Ka = 380;              # Half-activation by psoriatic SC density
+
+  # Apoptotic indices
+  AIh = 0.0012;          # 0.12%
+  AId = 0.00035;         # 0.035%
+
+  # Blue light modulation parameters (453 nm)
+  ay = 1;
+  by = -3.40e-3;         # J^-1 cm^2
+  ak = 2.46;
+  bk = 1.94e-2;          # J^-1 cm^2
+  ck = 3.46;
+
+  # LPSI mapping (optional output)
+  LPSI0 = 5.17;          # Initial local severity index
+  P_tot0 = 217556;       # Total initial keratinocyte density (cells/mm^2)
+
+  //// Other declarations:
+  var P_sch, P_tah, P_gah, P_sph, P_gch, P_cch, P_scd, P_tad, P_gad, P_spd, P_gcd, P_ccd;
+  var reg_h, gamma1h, k1ah, k1sh, F_eff, thetaBLy, thetaBLk, thetaBLbeta;
+  var beta1h, beta2h, beta3h, beta4h, beta5h, beta1d, beta2d, beta3d, beta4d, beta5d;
+  var P_tot, LPSI;
+  const epidermis, F, f_abs, P_sc_max, lambda_, w, n, P_ta_hom;
+  const gamma1hom, k1s_hom, k1a_hom, gamma2h, k2sh, k2ah, k3h, k4h, k5h, km1h, km2h, ah;
+  const gamma1d, k1sd, k1ad, gamma2d, k2sd, k2ad, k3d, k4d, k5d, km1d, km2d, ad;
+  const Kp, Ka, AIh, AId, ay, by, ak, bk, ck, LPSI0, P_tot0;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;     # day
+  unit area = 1e-4 meter^2;          # cm^2
+  unit density = 1 item / (1e-6 meter^2);  # per mm^2
+
+  //// Display Names:
+  epidermis is "Epidermis (modeled area)";
+  P_sch is "Healthy stem cells";
+  P_tah is "Healthy transit amplifying cells";
+  P_gah is "Healthy growth arrested cells";
+  P_sph is "Healthy spinous cells";
+  P_gch is "Healthy granular cells";
+  P_cch is "Healthy corneocytes";
+  P_scd is "Psoriatic stem cells";
+  P_tad is "Psoriatic transit amplifying cells";
+  P_gad is "Psoriatic growth arrested cells";
+  P_spd is "Psoriatic spinous cells";
+  P_gcd is "Psoriatic granular cells";
+  P_ccd is "Psoriatic corneocytes";
+  thetaBLy is "Blue-light proliferation factor";
+  thetaBLk is "Blue-light differentiation factor";
+  thetaBLbeta is "Blue-light apoptosis increment";
+  LPSI is "Local Psoriasis Severity Index";
+end
+
+/* Unmapped or assumed data and notes:
+- Equation (1) in the source text appeared garbled; here it was implemented analogous to the diseased stem cell equation but without immune killing and with backconversion from TA (k_-1h).
+- Backconversion rates for diseased cells (k_-1d, k_-2d) were not explicitly provided; set to 1.0e-6 d^-1 by analogy to healthy backconversion (Zhang et al., 2015) to ensure model completeness.
+- Homeostatic TA density P_ta_hom was not explicitly given; initialized to 77 cells/mm^2, equal to the healthy TA initial density reported in Table 3.
+- If exact numerical values for k_-1d, k_-2d, and P_ta_hom are available from supplementary materials, they should replace the assumed values above.
+- Blue-light apoptosis increment ?BL? uses piecewise levels: 0 (F<500 J/cm^2), 0.039 (500?F<750), 0.05 (F?750) per Awakowicz et al., 2009.
+*/

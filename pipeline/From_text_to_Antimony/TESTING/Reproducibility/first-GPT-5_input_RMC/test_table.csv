@@ -1,0 +1,2 @@
+,N° paper,Day:time-slot,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),AAFE evaluation (N°correct/N°paper),N° Species B&F(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original)
+gpt-5,12,Sun:11.30am - 12.30am,0.75,0.9166666666666666,0.9166666666666666,0.0,inf,inf,1.04,0.9

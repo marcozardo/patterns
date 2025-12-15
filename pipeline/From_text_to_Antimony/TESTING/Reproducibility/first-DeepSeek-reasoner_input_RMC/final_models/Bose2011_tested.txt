@@ -1,0 +1,45 @@
+model *Bose2011_TumorImmuneNoise()
+
+  //// Compartments and Species:
+  compartment tumor_microenvironment;
+  species $x in tumor_microenvironment, $y in tumor_microenvironment, $z in tumor_microenvironment;
+
+  //// Rate Rules:
+  x' = (1 + R*(1 - Dx*tau) + 0.5*Dx*Dz*tau)*x - x^2 - x*y + Dx*(1 + R*tau)*z;
+  y' = y*z - (rho - Dy)*y;
+  z' = (R*(1 - Dx*tau) + Dx*Dz*tau)*x - (mu - (R*(1 + Dx*tau) + Dx*(1 + tau*Dz)))*z;
+
+  //// Species initializations:
+  x = 1e-3;
+  y = 1e-3;
+  z = 0;
+
+  //// Compartment initializations:
+  tumor_microenvironment = 1;
+
+  //// Variable initializations:
+  tau = 0.3;
+  R = 1.0;
+  Dx = 2.1;
+  Dy = 0.01;
+  Dz = 1.2;
+  rho = 0.06;
+  mu = 20;
+
+  //// Other declarations:
+  const tau, R, Dx, Dy, Dz, rho, mu;
+
+  //// Display Names:
+  tumor_microenvironment is "Tumor microenvironment";
+  x is "Tumor cells (x)";
+  y is "Effector cells (y)";
+  z is "Tumor-detecting cells (z)";
+  tau is "Auto-correlation time";
+  R is "Cross-correlation strength";
+  Dx is "Noise strength for tumor cells";
+  Dy is "Noise strength for effector cells";
+  Dz is "Noise strength for detecting cells";
+  rho is "Decay rate of effector cells";
+  mu is "Decay rate of detecting cells";
+
+end

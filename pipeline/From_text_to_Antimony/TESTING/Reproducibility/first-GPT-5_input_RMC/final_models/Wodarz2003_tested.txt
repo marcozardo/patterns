@@ -1,0 +1,109 @@
+/* Domain: Epidemiological (population-level SIRS with two pathogen species and environmental pathogen pools) */
+
+model *Wodarz2003_ImmunologicalMemory_Competition()
+
+  //// Compartments and Species:
+  compartment pop;
+  species S in pop, I1 in pop, I2 in pop, I12 in pop, I21 in pop, R1 in pop, R2 in pop, R12 in pop, P1 in pop, P2 in pop;
+
+  //// Reactions:
+  Births_to_S:  => S; pop*r*(S + I1 + I2 + I12 + I21 + R1 + R2 + R12);
+  S_death: S => ; pop*d*S;
+  R1_death: R1 => ; pop*d*R1;
+  R2_death: R2 => ; pop*d*R2;
+  R12_death: R12 => ; pop*d*R12;
+
+  I1_death: I1 => ; pop*a1*I1;
+  I2_death: I2 => ; pop*a2*I2;
+  I12_death: I12 => ; pop*a2*I12;
+  I21_death: I21 => ; pop*a1*I21;
+
+  S_to_I1: S => I1; pop*beta1*S*P1;
+  S_to_I2: S => I2; pop*beta2*S*P2;
+  R1_to_I12: R1 => I12; pop*beta2*R1*P2;
+  R2_to_I21: R2 => I21; pop*beta1*R2*P1;
+
+  I1_to_R1: I1 => R1; pop*gamma1*I1;
+  I2_to_R2: I2 => R2; pop*gamma2*I2;
+  I12_to_R12: I12 => R12; pop*gamma2*I12;
+  I21_to_R12: I21 => R12; pop*gamma1*I21;
+
+  R1_to_S: R1 => S; pop*g*R1;
+  R2_to_S: R2 => S; pop*g*R2;
+  R12_to_S: R12 => S; pop*g*R12;
+
+  I1_release_to_P1:  => P1; pop*k1*(I1 + I21);
+  I2_release_to_P2:  => P2; pop*k2*(I2 + I12);
+  P1_decay: P1 => ; pop*u1*P1;
+  P2_decay: P2 => ; pop*u2*P2;
+
+  //// Species initializations:
+  S = 100;
+  I1 = 0;
+  I2 = 0;
+  I12 = 0;
+  I21 = 0;
+  R1 = 0;
+  R2 = 0;
+  R12 = 0;
+  P1 = 0.1;
+  P2 = 0.1;
+
+  //// Compartment initializations:
+  pop = 1;
+
+  //// Variable initializations:
+  r = 0.5;
+  d = 0.01;
+  beta1 = 1;
+  beta2 = 1;
+  gamma1 = 0.1;
+  gamma2 = 0.1;
+  k1 = 1;
+  k2 = 1;
+  u1 = 0.5;
+  u2 = 0.5;
+  a1 = 0.03;
+  a2 = 1;
+  g = 0.01;  # long memory (G = 1/g)
+
+  //// Other declarations:
+  const pop, r, d, beta1, beta2, gamma1, gamma2, k1, k2, u1, u2, a1, a2, g;
+
+  //// Display Names:
+  pop is "Population compartment (unit volume)";
+  S is "Susceptible hosts";
+  I1 is "Infected with pathogen 1";
+  I2 is "Infected with pathogen 2";
+  I12 is "Recovered from 1, infected with 2";
+  I21 is "Recovered from 2, infected with 1";
+  R1 is "Recovered/immune to pathogen 1";
+  R2 is "Recovered/immune to pathogen 2";
+  R12 is "Recovered/immune to both pathogens";
+  P1 is "Environmental pathogen 1 pool";
+  P2 is "Environmental pathogen 2 pool";
+  Births_to_S is "Births from all host classes to susceptible";
+  S_to_I1 is "Infection of susceptibles by pathogen 1";
+  S_to_I2 is "Infection of susceptibles by pathogen 2";
+  R1_to_I12 is "Infection of R1 by pathogen 2";
+  R2_to_I21 is "Infection of R2 by pathogen 1";
+  I1_to_R1 is "Recovery from infection 1";
+  I2_to_R2 is "Recovery from infection 2";
+  I12_to_R12 is "Recovery to immunity to both (from infection 2)";
+  I21_to_R12 is "Recovery to immunity to both (from infection 1)";
+  R1_to_S is "Loss of immunity to 1 (memory waning)";
+  R2_to_S is "Loss of immunity to 2 (memory waning)";
+  R12_to_S is "Loss of immunity to both (memory waning)";
+  I1_release_to_P1 is "Pathogen 1 shedding to environment";
+  I2_release_to_P2 is "Pathogen 2 shedding to environment";
+  P1_decay is "Environmental decay of pathogen 1";
+  P2_decay is "Environmental decay of pathogen 2";
+end
+
+/* Unmapped or assumed details from the source:
+- The supplemental equations are not provided; infection was implemented as beta_i * S_like * P_i (environmental reservoir), consistent with Figure 1A text and parameter list (beta, k, u present).
+- Infected host mortality modeled as a1 or a2 only (no additional baseline d), following Figure 1A which shows 'a' from I and 'd' from S/R.
+- Immunity waning from R12 was modeled as a single step to S at rate g; the article does not specify whether dual immunity wanes independently (e.g., to R1 or R2).
+- Recovery rates were set equal for both pathogens (gamma1 = gamma2 = 0.1) per Figure 2 parameter set (? = 0.1).
+- Memory-loss rate g set to 0.01 (long memory) as one coherent parameterization from Figure 2; alternative "short memory" scenario uses g = 10.
+- Initial conditions are not specified in the article and were chosen to permit simulation (seed environmental pathogen pools). */

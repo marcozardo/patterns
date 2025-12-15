@@ -1,0 +1,86 @@
+model *Malinzi2019_Chemovirotherapy()
+
+  //// Compartments and Species:
+  compartment tumor;
+  species U in tumor, I in tumor, V in tumor, C in tumor;
+
+  //// Assignment Rules:
+  g := piecewise(q, infusion_method==0, q*exp(-a*time), infusion_method==1, q*sin(a*time)^2, 0);
+
+  //// Reactions:
+  R1: -> U; tumor*(alpha*U);
+  R2: U + U -> U; tumor*((alpha/K)*U*U);
+  R3: U + I -> I; tumor*((alpha/K)*U*I);
+  R4: U + V -> I; tumor*(beta*U*V);
+  R5: U -> ; tumor*(delta0*U*C);
+  R6: I -> ; tumor*(delta*I);
+  R7: I -> ; tumor*(delta1*I*C);
+  R8: I -> I + V; tumor*(b*delta*I);
+  R9: V -> ; tumor*(gamma_*V);
+  R10: -> C; tumor*g;
+  R11: C -> ; tumor*(lambda*C);
+
+  //// Species initializations:
+  U = 8e5;
+  I = 0;
+  V = 1e5;
+  C = 0.1;
+
+  //// Compartment initializations:
+  tumor = 1;
+
+  //// Variable initializations:
+  K = 1e6;
+  alpha = 0.206;
+  beta = 0.001;
+  delta = 0.001;
+  gamma_ = 0.5115;
+  b = 10;
+  q = 5;
+  lambda = 4.16;
+  delta0 = 0.005;
+  delta1 = 0.006;
+  a = 0.1;
+  infusion_method = 0;
+
+  //// Other declarations:
+  var g;
+  const K, alpha, beta, delta, gamma_, b, q, lambda, delta0, delta1, a, infusion_method;
+
+  //// Unit definitions:
+  unit volume = 1 liter;
+  unit time_unit = 1 day;
+  unit cell = 1 item;
+  unit virus = 1 item;
+  unit drug = 1 mmol;
+
+  //// Display Names:
+  tumor is "Tumor site";
+  U is "Uninfected tumor cells";
+  I is "Infected tumor cells";
+  V is "Free virus";
+  C is "Chemotherapeutic drug";
+  alpha is "Tumor growth rate";
+  beta is "Virus infection rate";
+  delta is "Infected cell death rate";
+  gamma_ is "Virus decay rate";
+  b is "Virus burst size";
+  q is "Drug infusion rate";
+  lambda is "Drug decay rate";
+  delta0 is "Drug killing rate of uninfected cells";
+  delta1 is "Drug killing rate of infected cells";
+  a is "Infusion shape parameter";
+  infusion_method is "Infusion method (0: constant, 1: exponential, 2: sinusoidal)";
+  R1 is "Logistic growth production";
+  R2 is "Logistic self-limitation";
+  R3 is "Logistic competition";
+  R4 is "Virus infection";
+  R5 is "Drug killing of uninfected cells";
+  R6 is "Natural death of infected cells";
+  R7 is "Drug killing of infected cells";
+  R8 is "Virus production";
+  R9 is "Virus decay";
+  R10 is "Drug infusion";
+  R11 is "Drug decay";
+
+end

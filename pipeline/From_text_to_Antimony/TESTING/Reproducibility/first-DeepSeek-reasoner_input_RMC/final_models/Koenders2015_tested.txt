@@ -1,0 +1,95 @@
+model *Koenders2016_MMBD()
+
+  //// Compartments and Species:
+  compartment BMU;
+  species C in BMU, B in BMU, T in BMU, J in BMU;
+
+  //// Reactions:
+  Prod_C:  => C; BMU*(alpha_C * (C^g_CC) * (B^g_CB) * (1 + h_CT * T));
+  Deg_C: C => ; BMU*beta_C * C;
+  Prod_B:  => B; BMU*(alpha_B * (C^g_BC) * (B^g_BB) * (1 - h_BT * T));
+  Deg_B: B => ; BMU*beta_B * B;
+  Prod_T:  => T; BMU*(alpha_T * (C^g_TC) * (T^g_TT));
+  Deg_T: T => ; BMU*beta_T * T;
+  Form_J: C + T => J; BMU*alpha_J * C * T;
+  Diss_J: J => T; BMU*kappa * J;
+  Deg_J: J => ; BMU*beta_J * J;
+
+  //// Species initializations:
+  C = 1.06;     # Healthy osteoclast count in BMU (from equilibrium without myeloma)
+  B = 212;      # Healthy osteoblast count in BMU (from equilibrium without myeloma)
+  T = 0;        # Initial myeloma cell count (eradicated state for relapse scenario)
+  J = 0.14;     # Initial joint cell count (small reservoir for relapse)
+
+  //// Compartment initializations:
+  BMU = 1;      # Basic Multicellular Unit volume (dimensionless, cell counts)
+
+  //// Variable initializations:
+  # Osteoclast and osteoblast parameters (from Komarova et al. 2003)
+  alpha_C = 3;      # cells per day
+  beta_C = 0.2;     # per day
+  g_CC = 0.5;
+  g_CB = -0.5;
+  
+  alpha_B = 4;      # cells per day
+  beta_B = 0.02;    # per day
+  g_BC = 1;
+  g_BB = 0;
+  
+  # Myeloma cell parameters (smouldering myeloma)
+  alpha_T = 0.3;    # cells per day (Fig.1 caption)
+  beta_T = 0.1;     # per day
+  g_TT = 0.5;
+  g_TC = 0;         # baseline (can be varied)
+  
+  # Paracrine interaction strengths
+  h_CT = 0;         # baseline (can be varied)
+  h_BT = 0;         # baseline (can be varied)
+  
+  # Joint cell parameters (extended model)
+  alpha_J = 1e-3;   # per cell per day (formation rate constant)
+  beta_J = 0.3;     # per day (apoptosis rate of joint cells)
+  kappa = 0.2;      # per day (dissociation rate of joint cells)
+
+  //// Other declarations:
+  const BMU, alpha_C, beta_C, g_CC, g_CB, alpha_B, beta_B, g_BC, g_BB;
+  const alpha_T, beta_T, g_TT, g_TC, h_CT, h_BT, alpha_J, beta_J, kappa;
+
+  //// Unit definitions:
+  unit time_unit = 86400 second;  # 1 day in seconds
+  unit cell = dimensionless;      # cell count (dimensionless)
+
+  //// Display Names:
+  BMU is "Basic Multicellular Unit";
+  C is "Osteoclasts";
+  B is "Osteoblasts";
+  T is "Myeloma cells";
+  J is "Joint osteoclast-myeloma cells";
+  Prod_C is "Osteoclast production";
+  Deg_C is "Osteoclast apoptosis";
+  Prod_B is "Osteoblast production";
+  Deg_B is "Osteoblast apoptosis";
+  Prod_T is "Myeloma cell proliferation";
+  Deg_T is "Myeloma cell apoptosis";
+  Form_J is "Formation of joint cells";
+  Diss_J is "Dissociation of joint cells";
+  Deg_J is "Joint cell apoptosis";
+  alpha_C is "Osteoclast proliferation rate";
+  beta_C is "Osteoclast apoptosis rate";
+  g_CC is "Osteoclast autocrine exponent";
+  g_CB is "Osteoblast inhibition on osteoclasts exponent";
+  alpha_B is "Osteoblast proliferation rate";
+  beta_B is "Osteoblast apoptosis rate";
+  g_BC is "Osteoclast stimulation on osteoblasts exponent";
+  g_BB is "Osteoblast autocrine exponent";
+  alpha_T is "Myeloma cell proliferation rate";
+  beta_T is "Myeloma cell apoptosis rate";
+  g_TT is "Myeloma cell autocrine exponent";
+  g_TC is "Osteoclast stimulation on myeloma cells exponent";
+  h_CT is "Myeloma stimulation on osteoclasts";
+  h_BT is "Myeloma inhibition on osteoblasts";
+  alpha_J is "Joint cell formation rate constant";
+  beta_J is "Joint cell apoptosis rate";
+  kappa is "Joint cell dissociation rate";
+
+end

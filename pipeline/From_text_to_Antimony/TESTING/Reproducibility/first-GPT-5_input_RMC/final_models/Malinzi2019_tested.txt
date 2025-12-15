@@ -1,0 +1,66 @@
+/* Domain: Physiological oncology (chemovirotherapy at tumor site)
+Model encodes the nondelayed ODE system (Eq. 5 in the paper) for:
+- Uninfected tumor cells (U)
+- Infected tumor cells (I)
+- Free virus (V)
+- Chemotherapeutic drug (C)
+Drug infusion g(t) implemented via an assignment xi(time) with selectable modes:
+  m_const=1 -> constant:      xi = phi
+  m_exp=1   -> single bolus:  xi = phi*exp(-a*time)
+  m_sin=1   -> periodic:      xi = phi*sin(a*time)^2
+Set exactly one of m_const, m_exp, m_sin to 1 (others 0). Default is constant. */
+
+model *Malinzi2019_Chemovirotherapy_ODE()
+
+  //// Compartments and Species:
+  compartment tumor_site;
+  species U in tumor_site, I in tumor_site, V in tumor_site, C in tumor_site;
+
+  //// Assignment Rules:
+  xi := m_const*phi + m_exp*phi*exp(-a*time) + m_sin*phi*(sin(a*time))^2;
+
+  //// Reactions:
+  U_logistic_growth:  => U; tumor_site*(alpha*U*(1 - U - I));
+  Infection: U + V => I; tumor_site*(beta*U*V);
+  I_natural_death: I => ; tumor_site*(I);
+  V_from_I_lysis:  => V; tumor_site*(b*I);
+  U_drug_lysis: U => ; tumor_site*(delta0*U*C);
+  I_drug_lysis: I => ; tumor_site*(delta1*I*C);
+  V_clearance: V => ; tumor_site*(gamma_*V);
+  Drug_infusion:  => C; tumor_site*(xi);
+  Drug_decay: C => ; tumor_site*(psi*C);
+
+  //// Species initializations:
+  U = 1;     // nondimensional fraction of tumor at t=0
+  I = 0;     // nondimensional infected fraction at t=0
+  V = 0.1;   // nondimensional free virus at t=0
+  C = 0.1;   // nondimensional drug at t=0
+
+  //// Compartment initializations:
+  tumor_site = 1;
+
+  //// Variable initializations:
+  alpha  = 0.206;   // tumor intrinsic growth rate
+  beta   = 0.001;   // virus-tumor infection/replication rate
+  delta0 = 0.005;   // drug-induced lysis rate on uninfected tumor
+  delta1 = 0.006;   // drug-induced lysis rate on infected tumor
+  b      = 10;      // virus burst size
+  gamma_ = 0.5115;  // virus clearance/deactivation rate
+  psi    = 0.001;   // drug decay rate
+  phi    = 5;       // drug infusion scale
+  a      = 4.16;    // infusion time-scale/frequency parameter
+  m_const = 1;      // choose infusion mode: constant
+  m_exp   = 0;      // single bolus (exponential)
+  m_sin   = 0;      // periodic (sinusoidal)
+
+  //// Other declarations:
+  var xi;
+  const tumor_site, alpha, beta, delta0, delta1, b, gamma_, psi, phi, a, m_const, m_exp, m_sin;
+
+end
+
+/* Notes and assumptions:
+- This implementation uses the nondimensional ODE system (Eq. 5). Reported parameter values (Table 1) are used directly as a consistent working set; the paper?s rescaling formulas relate dimensional to nondimensional quantities.
+- Natural death of infected cells occurs at unit rate in Eq. (5); implemented as I_natural_death (rate = I). Virus production from infected lysis is modeled by a separate source reaction V_from_I_lysis with rate b*I, ensuring V' = b*I - beta*U*V - gamma*V.
+- Drug-mediated killing terms delta0*U*C and delta1*I*C modulate U and I removal rates without consuming C (as per Eq. (5)).
+- To simulate a specific infusion protocol, set exactly one of m_const, m_exp, m_sin to 1 (others 0). Default is constant infusion. */

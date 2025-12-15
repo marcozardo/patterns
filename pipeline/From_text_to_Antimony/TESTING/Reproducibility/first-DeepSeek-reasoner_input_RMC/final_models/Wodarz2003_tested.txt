@@ -1,0 +1,136 @@
+model *Wodarz2003_two_pathogen()
+
+  //// Compartments and Species:
+  compartment env;
+  species S in env, I1 in env, I2 in env, R1 in env, R2 in env, I12 in env, I21 in env, R12 in env, P1 in env, P2 in env;
+
+  //// Assignment Rules:
+  /* None explicitly defined in the source. */
+
+  //// Rate Rules:
+  /* The source describes ODEs for host and pathogen populations. These are implemented as reactions below. */
+
+  //// Reactions:
+  // Host reproduction: all host types contribute to the susceptible pool
+  birth: => S; env * r * (S + I1 + I2 + R1 + R2 + I12 + I21 + R12);
+  // Death processes
+  death_S: S => ; env * d * S;
+  death_I1: I1 => ; env * (d + a1) * I1;
+  death_I2: I2 => ; env * (d + a2) * I2;
+  death_R1: R1 => ; env * d * R1;
+  death_R2: R2 => ; env * d * R2;
+  death_I12: I12 => ; env * (d + a2) * I12;
+  death_I21: I21 => ; env * (d + a1) * I21;
+  death_R12: R12 => ; env * d * R12;
+  // Primary infections
+  inf_S_by_P1: S => I1; env * beta * S * P1;
+  inf_S_by_P2: S => I2; env * beta * S * P2;
+  // Secondary infections (hosts immune to one pathogen become infected by the other)
+  inf_R1_by_P2: R1 => I12; env * beta * R1 * P2;
+  inf_R2_by_P1: R2 => I21; env * beta * R2 * P1;
+  // Recovery from primary infections
+  rec_I1: I1 => R1; env * gamma_ * I1;
+  rec_I2: I2 => R2; env * gamma_ * I2;
+  // Recovery from secondary infections (leads to immunity to both pathogens)
+  rec_I12: I12 => R12; env * gamma_ * I12;
+  rec_I21: I21 => R12; env * gamma_ * I21;
+  // Loss of immunity (waning)
+  loss_imm_R1: R1 => S; env * g * R1;
+  loss_imm_R2: R2 => S; env * g * R2;
+  loss_imm_R12_to_R2: R12 => R2; env * g * R12;  # losing immunity to pathogen 1
+  loss_imm_R12_to_R1: R12 => R1; env * g * R12;  # losing immunity to pathogen 2
+  // Pathogen dynamics (production from infected hosts and decay)
+  prod_P1_from_I1: => P1; env * k * I1;
+  prod_P1_from_I21: => P1; env * k * I21;
+  decay_P1: P1 => ; env * u * P1;
+  prod_P2_from_I2: => P2; env * k * I2;
+  prod_P2_from_I12: => P2; env * k * I12;
+  decay_P2: P2 => ; env * u * P2;
+
+  //// Events:
+  /* None explicitly defined in the source. */
+
+  //// Species initializations:
+  S = 100;   # initial susceptible hosts (arbitrary)
+  I1 = 1;    # initial infected with pathogen 1
+  I2 = 1;    # initial infected with pathogen 2
+  R1 = 0;
+  R2 = 0;
+  I12 = 0;
+  I21 = 0;
+  R12 = 0;
+  P1 = 0;
+  P2 = 0;
+
+  //// Compartment initializations:
+  env = 1;   # arbitrary unit volume
+
+  //// Variable initializations:
+  r = 0.5;      # host reproduction rate
+  d = 0.01;     # natural host death rate
+  beta = 1;     # infection rate constant
+  gamma_ = 0.1;  # recovery rate constant
+  a1 = 0.03;    # additional mortality due to pathogen 1
+  a2 = 1;       # additional mortality due to pathogen 2
+  k = 1;        # pathogen release rate from infected hosts
+  u = 0.5;      # pathogen decay rate in environment
+  g = 0.01;     # rate of immunity loss (1/g = duration of memory). For short memory, set g=10.
+
+  //// Other declarations:
+  const env, r, d, beta, gamma_, a1, a2, k, u, g;
+
+  //// Unit definitions:
+  unit host_population = 1 item;
+  unit pathogen_population = 1 item;
+  unit time_unit = 1 arbitrary_time;
+
+  //// Display Names:
+  env is "environment";
+  S is "Susceptible hosts";
+  I1 is "Hosts infected with pathogen 1";
+  I2 is "Hosts infected with pathogen 2";
+  R1 is "Hosts recovered and immune to pathogen 1";
+  R2 is "Hosts recovered and immune to pathogen 2";
+  I12 is "Hosts immune to 1, infected with 2";
+  I21 is "Hosts immune to 2, infected with 1";
+  R12 is "Hosts immune to both pathogens";
+  P1 is "Pathogen 1 population";
+  P2 is "Pathogen 2 population";
+  r is "host reproduction rate";
+  d is "natural host death rate";
+  beta is "infection rate constant";
+  gamma_ is "recovery rate constant";
+  a1 is "virulence of pathogen 1";
+  a2 is "virulence of pathogen 2";
+  k is "pathogen release rate";
+  u is "pathogen decay rate";
+  g is "immunity loss rate";
+  birth is "host reproduction";
+  death_S is "death of susceptibles";
+  death_I1 is "death of I1 hosts";
+  death_I2 is "death of I2 hosts";
+  death_R1 is "death of R1 hosts";
+  death_R2 is "death of R2 hosts";
+  death_I12 is "death of I12 hosts";
+  death_I21 is "death of I21 hosts";
+  death_R12 is "death of R12 hosts";
+  inf_S_by_P1 is "infection of S by pathogen 1";
+  inf_S_by_P2 is "infection of S by pathogen 2";
+  inf_R1_by_P2 is "infection of R1 by pathogen 2";
+  inf_R2_by_P1 is "infection of R2 by pathogen 1";
+  rec_I1 is "recovery from pathogen 1";
+  rec_I2 is "recovery from pathogen 2";
+  rec_I12 is "recovery from secondary infection (to R12)";
+  rec_I21 is "recovery from secondary infection (to R12)";
+  loss_imm_R1 is "waning of immunity to pathogen 1";
+  loss_imm_R2 is "waning of immunity to pathogen 2";
+  loss_imm_R12_to_R2 is "R12 loses immunity to pathogen 1";
+  loss_imm_R12_to_R1 is "R12 loses immunity to pathogen 2";
+  prod_P1_from_I1 is "pathogen 1 production from I1";
+  prod_P1_from_I21 is "pathogen 1 production from I21";
+  decay_P1 is "pathogen 1 decay";
+  prod_P2_from_I2 is "pathogen 2 production from I2";
+  prod_P2_from_I12 is "pathogen 2 production from I12";
+  decay_P2 is "pathogen 2 decay";
+
+end

@@ -1,0 +1,67 @@
+model *Hoffman2018_ADCC_model()
+
+  //// Compartments and Species:
+  compartment assay_well;
+  species $A in assay_well, $R in assay_well, $S in assay_well, $C in assay_well;
+
+  //// Assignment Rules:
+  kill_rate := f_K * R / (R + R_K);
+
+  //// Rate Rules:
+  A' = -alpha1*(1 - R)*A*S + alpha2*gamma_*R*S;
+  R' = (alpha1/gamma_)*(1 - R)*A - alpha2*R;
+  S' = -kill_rate*C;
+  C' = nu1*(mu - C)*(S - C) - nu2*C - kill_rate*C;
+
+  //// Reactions:
+
+  //// Events:
+
+  //// Species initializations:
+  A = 1;
+  R = 0;
+  S = 1;
+  C = 0;
+
+  //// Compartment initializations:
+  assay_well = 1;
+
+  //// Variable initializations:
+  alpha1 = 1e-3;
+  alpha2 = 1.44;
+  gamma_ = 1;
+  nu1 = 120;
+  nu2 = 14.4;
+  mu = 20;
+  f_K = 1;
+  R_K = 0.5;
+
+  //// Other declarations:
+  var kill_rate;
+  const alpha1, alpha2, gamma_, nu1, nu2, mu, f_K, R_K;
+
+  //// Unit definitions:
+  unit time_unit = 14400 second;
+  unit antibody_unit = 6.67e-8 mole/liter;
+  unit cell_concentration_unit = 4.15e-11 mole/liter;
+
+  //// Display Names:
+  assay_well is "in vitro assay well";
+  A is "dimensionless antibody concentration";
+  R is "dimensionless bound receptors per cancer cell";
+  S is "dimensionless total cancer cell concentration";
+  C is "dimensionless NK?cancer cell complex concentration";
+  kill_rate is "dimensionless kill rate function";
+  alpha1 is "dimensionless antibody binding rate";
+  alpha2 is "dimensionless antibody dissociation rate";
+  gamma_ is "initial receptor?to?antibody ratio";
+  nu1 is "dimensionless NK?cell binding rate";
+  nu2 is "dimensionless NK?cell dissociation rate";
+  mu is "initial NK?to?tumour cell ratio";
+  f_K is "maximum dimensionless kill rate";
+  R_K is "half?saturation constant for kill rate";
+  time_unit is "experimental time scale (4 hours)";
+  antibody_unit is "reference antibody concentration";
+  cell_concentration_unit is "reference cell concentration";
+
+end

@@ -1,0 +1,58 @@
+model *Anderson2015_Tumor_CD4_Cytokine()
+
+//// Compartments and Species:
+compartment tumor_site;
+species x in tumor_site, y in tumor_site, z in tumor_site;
+
+//// Reactions:
+R_growth: x -> 2 x; r*x;
+R_crowding: x -> ; (r/K)*x^2;
+R_killing: x -> ; (alpha*x*z)/(m+x);
+R_CD4_proliferation: y -> 2 y; (delta*x*y)/(k+x);
+R_CD4_death: y -> ; a*y;
+R_CD4_source: -> y; I1;
+R_cytokine_production: -> z; (gamma_*x*y)/(b+x);
+R_cytokine_decay: z -> ; mu*z;
+R_cytokine_source: -> z; I2;
+
+//// Species initializations:
+x = 0.5;
+y = 0.01;
+z = 0;
+
+//// Compartment initializations:
+tumor_site = 1;
+
+//// Variable initializations:
+r = 0.027;
+K = 1000;
+alpha = 0.1;
+m = 1;
+delta = 0.02;
+k = 10;
+a = 0.02;
+gamma_ = 0.1;
+b = 0.1;
+mu = 50;
+I1 = 0;
+I2 = 0;
+
+//// Other declarations:
+const r, K, alpha, m, delta, k, a, gamma_, b, mu, I1, I2;
+
+//// Display Names:
+tumor_site is "Tumor site (volume)";
+x is "Tumor cells volume";
+y is "CD4+ T cells volume";
+z is "Cytokine volume";
+R_growth is "Tumor exponential growth";
+R_crowding is "Tumor density-dependent death (logistic)";
+R_killing is "Tumor killing by cytokine";
+R_CD4_proliferation is "CD4+ proliferation stimulated by tumor";
+R_CD4_death is "CD4+ natural death";
+R_CD4_source is "Exogenous CD4+ input (treatment)";
+R_cytokine_production is "Cytokine production by CD4+ and tumor";
+R_cytokine_decay is "Cytokine decay";
+R_cytokine_source is "Exogenous cytokine input (treatment)";
+
+end

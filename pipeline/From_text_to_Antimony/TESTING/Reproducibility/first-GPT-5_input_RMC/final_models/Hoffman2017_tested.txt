@@ -1,0 +1,68 @@
+model *Hoffman2018_ADCC()
+
+  //// Compartments and Species:
+  compartment well;
+  species A in well, Tu in well, Tb in well, N in well, T in well, C in well;
+
+  //// Assignment Rules:
+  R := piecewise(0, T + C <= 0, Tb/(T + C));                  # antibody-receptor complexes per cancer cell
+  frac_Tu := piecewise(0, T + C <= 0, Tu/(T + C));            # fraction of unbound receptors per cancer cell
+  frac_Tb := piecewise(0, T + C <= 0, Tb/(T + C));            # fraction of bound receptors per cancer cell
+  f_rate := fK*R/(R + RK);                                    # NK kill-rate function f(R)
+
+  //// Reactions:
+  Ab_bind:  A + Tu -> Tb; k_on*A*Tu - k_off*Tb;               # Antibody binds/unbinds target receptors
+  NK_conjugation:  N + T -> C; beta_on*N*T - beta_off*C;      # NK and tumor cell association/dissociation
+  Killing_and_release:  C => N; f_rate*C;                     # NK releases after target kill; complex removed
+  Tu_removal_on_kill:  Tu => ; f_rate*frac_Tu*C;              # Unbound receptors removed when target is killed
+  Tb_removal_on_kill:  Tb => ; f_rate*frac_Tb*C;              # Bound receptors removed when target is killed
+
+  //// Species initializations:
+  A  = A0;                # initial antibody concentration
+  Tu = rho_T*T0;          # initial unbound receptors
+  Tb = 0;                 # no bound receptors initially
+  N  = mu*T0;             # initial NK concentration (ratio mu:NK per tumor)
+  T  = T0;                # initial free tumor cells
+  C  = 0;                 # no NK-tumor conjugates initially
+
+  //// Compartment initializations:
+  well = 1;
+
+  //// Variable initializations:
+  k_on    = 1e5;
+  k_off   = 1e-4;
+  beta_on = 2e13;
+  beta_off= 1e-3;
+  fK      = 1.6e-3;
+  RK      = 0.5;
+  rho_T   = 1e5;
+  A0      = 6.67e-9;
+  T0      = 4.15e-10;
+  mu      = 10;
+
+  //// Other declarations:
+  var R, frac_Tu, frac_Tb, f_rate;
+  const well, k_on, k_off, beta_on, beta_off, fK, RK, rho_T, A0, T0, mu;
+
+  //// Display Names:
+  well is "Assay microwell";
+  A is "Free antibody";
+  Tu is "Unbound tumor receptors";
+  Tb is "Antibody?receptor complexes";
+  N is "Natural killer (NK) cells";
+  T is "Tumor cells (free)";
+  C is "NK?tumor conjugates";
+  R is "Receptor complexes per tumor cell";
+  f_rate is "NK kill rate f(R)";
+  Ab_bind is "Antibody-receptor binding";
+  NK_conjugation is "NK-tumor binding";
+  Killing_and_release is "Target killing and NK release";
+  Tu_removal_on_kill is "Removal of unbound receptors upon kill";
+  Tb_removal_on_kill is "Removal of bound receptors upon kill";
+end
+
+/* Unmapped/notes:
+- Model encodes the dimensional ODE system (Eqs. (1)-(6)) via reactions.
+- Kill-rate function chosen f(R) = fK*R/(R+RK) as per Eq. (7). Parameters fK and RK can be adjusted.
+- Default parameters selected within literature ranges (Tables 1?2); adjust A0 and mu to replicate specific assay conditions.
+- Piecewise guards prevent division by zero when T + C ? 0. */
