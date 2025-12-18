@@ -1,5 +1,6 @@
 
 import pandas as pd
+import numpy as np
 
 ##Snakemake inputs and Outputs##
 
@@ -27,6 +28,8 @@ df_ratio = pd.DataFrame(columns=df_fabric.columns, index=df_fabric.index)
 
 for col in df_fabric.columns:
     df_ratio[col] = df_fabric[col] / df_original[col].values
+
+df_ratio = df_ratio.replace([np.inf], np.nan)
 
 df_ratio.index = [idx.replace("_generated", "_ratio") for idx in df_fabric.index]
 
