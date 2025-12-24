@@ -11,12 +11,12 @@ shell.executable("powershell.exe")
 onstart:
     print("In rule 'evaluation table' remind to log:\nLLM utilized=\nday/time-slot where this LLM has been used so far=\nnumber of input papers=\n")
 
-Papers = glob_wildcards("workdir/input_RMC/{text}.md").text
+Papers = glob_wildcards("workdir/input_R/{text}.md").text
 
 rule all:
     input:
         expand("workdir/fabric_output/{sample}.txt", sample=Papers), 
-        expand("workdir/expected_output_RMC/or{sample}.txt", sample=Papers),
+        expand("workdir/expected_output_R/or{sample}.txt", sample=Papers),
         #expand("workdir/csv_output/{sample}_result.csv", sample=Papers),
         expand("workdir/final_models/{sample}_tested.txt", sample=Papers),
         "workdir/all_simulations.csv",
@@ -25,7 +25,7 @@ rule all:
 
 rule conversion:
     input:
-        "workdir/input_RMC/{sample}.md"
+        "workdir/input_R/{sample}.md"
 
     output:
         "workdir/fabric_output/{sample}.txt"
@@ -206,7 +206,7 @@ rule third_aggregation:
 rule AAFE_Evaluation:
     input:
         "workdir/final_models/{sample}_tested.txt",
-        "workdir/expected_output_RMC/or{sample}.txt"
+        "workdir/expected_output_R/or{sample}.txt"
     output:
         "workdir/Evaluation/AAFE/gen{sample}_vs_or{sample}_aafe_eval.csv",
         "workdir/Sim_plots/gen{sample}_vs_or{sample}.png"
@@ -251,7 +251,7 @@ rule semantic_evaluation_generated:
 
 rule semantic_evaluation_originals:
     input:
-        "workdir/expected_output_RMC/or{sample}.txt"
+        "workdir/expected_output_R/or{sample}.txt"
     
     output:
         "workdir/semantic_evaluation/original/{sample}_O_semantic.csv"
