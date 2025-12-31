@@ -541,3 +541,604 @@ This logo features the acronym "PNAS" in a dark blue, serif font, oriented verti
 <a id='cabc99be-2d3a-4d9a-92d7-bb0f1a890654'></a>
 
 SYSTEMS BIOLOGY
+
+# Supplementary materials
+
+<a id='9e0a19c9-eebe-4ade-9ec0-66cec5cde257'></a>
+
+# Supporting Information
+
+A comprehensive model for the proliferation-quiescence decision in response to endogenous DNA damage in human cells
+
+Frank S. Heldt, Alexis R. Barr, Sam Cooper, Chris Bakal, Béla Novák
+
+<a id='fb86f918-40ab-4584-adb2-8622fc27c628'></a>
+
+<table id="0-1">
+<tr><td id="0-2" colspan="2">Contents</td></tr>
+<tr><td id="0-3">Supporting figures ....................</td><td id="0-4">.2</td></tr>
+<tr><td id="0-5">Mathematical modelling....................................</td><td id="0-6">.6</td></tr>
+<tr><td id="0-7">Restriction point .....................................................................................................</td><td id="0-8">.6</td></tr>
+<tr><td id="0-9">Synthesis and degradation of cyclins and Emi1.....................................................</td><td id="0-a">.6</td></tr>
+<tr><td id="0-b">Inactivation of APC/C Cdh1</td><td id="0-c">.7</td></tr>
+<tr><td id="0-d">p21 dynamics and Cdk2 inhibition</td><td id="0-e">.7</td></tr>
+<tr><td id="0-f">Activation of DNA replication</td><td id="0-g">.8</td></tr>
+<tr><td id="0-h">PCNA dynamics</td><td id="0-i">.9</td></tr>
+<tr><td id="0-j">DNA damage and repair</td><td id="0-k">.9</td></tr>
+<tr><td id="0-l">Cdh1 activity reporter.........................................................................................................</td><td id="0-m">9</td></tr>
+<tr><td id="0-n">Computation .............................................................</td><td id="0-o">10</td></tr>
+<tr><td id="0-p">Model parameters...................................................................................................</td><td id="0-q">10</td></tr>
+<tr><td id="0-r">Supporting tables.................................................................................................</td><td id="0-s">12</td></tr>
+<tr><td id="0-t">Supporting references...........................................................................................</td><td id="0-u">14</td></tr>
+</table>
+
+<a id='63174f6c-b024-4835-936c-9754bb67fffc'></a>
+
+1
+
+<!-- PAGE BREAK -->
+
+<a id='3ff77f10-a3da-4db6-b7a2-f1fd6e3ba6c4'></a>
+
+Supporting figures
+
+A
+<::diagram
+: A diagram illustrating molecular interactions. "Damage" is shown impacting "p21". "p21" interacts with "Skp2" and "aRC". "Skp2" is also connected to "CycE Cdk2" and "CycA Cdk2". "CycE Cdk2" interacts with "Cdt2" and "aRC".
+::>
+
+B
+G1/S transition S/G2 transition
+<::chart
+: Two bifurcation diagrams. The left chart, titled "G1/S transition", plots p21 (AU) against cyclin:Cdk2 level (AU). It shows multiple green curves, some solid and some dotted, with an upward arrow indicating "increasing damage" and a downward arrow pointing to a region labeled "G1/S". The right chart, titled "S/G2 transition", plots p21 (AU) against aRC (AU). It also shows multiple green curves, some solid and some dotted.
+::>
+
+C
+<::chart
+: Three stacked line charts over time from cytokinesis (h) from 0 to 20. A shaded region from approximately 6 to 14 hours is labeled "S-phase" across all three charts.
+Top chart: Plots relative level (AU) from 0 to 1.5. Shows lines for "p21" (green), "CycA" (purple), "aRC" (brown), and "CycE" (light blue).
+Middle chart: Plots degradation rate (1/min) from 0 to 0.04. Shows a line for "Skp2-dependent" degradation.
+Bottom chart: Plots degradation rate (1/min) from 0 to 0.4. Shows a line for "Cdt2-dependent" degradation.
+::>
+
+D
+<::chart
+: A line chart plotting p21 level (AU) from 0 to 2 against cyclin:Cdk2 level (AU) from 0 to 2. It shows three distinct lines: "unperturbed" (green, solid then dotted), "-Skp2" (light blue, dotted), and "-Cdt2" (red, solid).
+::> 
+
+<a id='41bd93ff-c83b-47f4-9e35-7f1f46359087'></a>
+
+Fig. S1. A bistable switch controls p21 levels (related to Fig. 1). (A) Subnetwork of p21 regulation comprising three mutual inhibition motifs that involve Skp2- and Cdt2-dependent degradation pathways. (B) Stable (solid) and unstable (dashed) steady states of p21 during S-phase entry (left) and exit (right), calculated from the model using the subnetwork in A. Each line represents a different level of constant DNA damage. The G1/S transition is indicated for intermediate damage levels. Note the difference in y-axis scales. (C) Dynamics of cell cycle regulators (top), Skp2-dependent p21 degradation (middle) and Cdt2-dependent p21 degradation (bottom) in deterministic simulations. p21 degradation via Skp2 is linked to CycE- and CycA-associated Cdk2 activity, while Cdt2-dependent degradation depends on active replication complexes (aRC). Note the differences in y-axis scales between middle and bottom panels. (D) G1/S transition for low levels of DNA damage in a control simulation (unperturbed) and in the absence of Skp2 (-Skp2) and Cdt2 (-Cdt2). Note that the -Cdt2 curve overlaps with the control simulation for low cyclin:Cdk2 levels.
+
+<a id='4a544e06-dd5e-406c-bfc3-66ee8ae6afc0'></a>
+
+2
+
+<!-- PAGE BREAK -->
+
+<a id='2fefac96-3b57-4af5-96b5-fd8ff4895224'></a>
+
+<::chart: Fig. S2. p21 impairs RP passage (related to Fig. 2). The figure contains three subplots (A, B, C).
+
+(A) A bifurcation diagram showing active E2F (AU) on the y-axis (0 to 1) versus growth factors (AU) on the x-axis (0 to 1). Multiple curves represent different levels of total p21. A dotted curve is labeled "p21 = 0". Other curves, some solid and some dotted, are labeled "1", "1.25", and "1.5". This plot is the same as in Fig. 2C except that total p21 was set to the indicated level.
+
+(B) A time-series plot showing p21 (AU) on the y-axis (0 to 1.5) versus time from cytokinesis (h) on the x-axis (0 to 20). A shaded region labeled "S-phase" is present from approximately 6h to 12h. A black horizontal bar labeled "damage" is shown within the S-phase region. Multiple green curves, increasing from bottom to top, represent deterministic simulations of cells suffering increasing amounts of DNA damage during S-phase.
+
+(C) A plot showing final p21 level (AU) on the y-axis (0 to 4) versus damage (AU) on the x-axis (0 to 2). A green curve with circular markers shows the final p21 level of cells from subplot (B) over the strength of DNA damage. A dashed horizontal line labeled "quiescence threshold" is present at approximately p21 level 1.5. This dashed line indicates the p21 level that would cause quiescence in daughter cells assuming that p21 protein is inherited but the damage repaired.::>
+
+<a id='4169c401-ebfa-4865-a6b0-b0df27d54152'></a>
+
+3
+
+<!-- PAGE BREAK -->
+
+<a id='17e5673f-3503-4acf-867f-2e1bf106bee3'></a>
+
+<::chart: Fig. S3. p21 degradation controls reversibility of proliferation decision (related to Fig. 3). (A) Deterministic simulation of a cell that suffers DNA damage during G1-phase and enters quiescence (solid) using the full model in Fig. 1A. An undamaged cell is shown for comparison (dashed). The chart shows relative level (AU) on the y-axis and time from cytokinesis (h) on the x-axis. Two sets of lines are plotted: 'active Cdk2' (blue) and 'p21' (green). Solid lines represent a cell with damage, where 'damage' is indicated by a black horizontal bar from 2 to 4 hours. Dashed lines represent an undamaged cell. The 'active Cdk2' level starts around 0.5, increases to about 2.5 for the damaged cell and 1.5 for the undamaged cell, then decreases. The 'p21' level starts around 0.5, increases to about 1.5 for the damaged cell and stays low for the undamaged cell. (B) Percentage of unperturbed cells that enter S-phase or arrest after treatment with DMSO or CPT at the indicated time post-mitosis (n = 45, 59). Note that cells in this experiment were only imaged for 4 h prior to drug addition. The chart shows two bar graphs. The y-axis represents '% of cells' from 0 to 100. The x-axis represents 'time in G1 before drug addition (h)' from 0 to 4. The left graph is 'unper. + DMSO', showing that for all time points (0, 1, 2, 3, 4), the majority of cells (approx. 80-90%) enter 'S-phase' (light blue) and a small percentage (approx. 10-20%) 'arrest' (dark red). The right graph is 'unper. + CPT', showing that for time points 0, 1, 2, 3, 4, the majority of cells (approx. 80-90%) 'arrest' (dark red) and a small percentage (approx. 10-20%) enter 'S-phase' (light blue). (C, D) Percentage of control siRNA-treated (B; n = 292) and Skp2-depleted (C; n = 279) cells that enter S-phase (red to blue) in experiments after treatment with the indicated amount of CPT at the indicated time post-mitosis. Note that Fig. 3 and S3B show a different set of experiments, which were conducted at a single concentration of 1.25 µM CPT. (C) The heatmap is titled 'Ctrl'. The y-axis represents 'CPT level (µM)' with values 0, 0.3125, 0.625, 1.25, 2.5, 5. The x-axis represents 'time in G1 before drug addition (h)' from 0 to 5. The color bar ranges from 0 to 100. Dark red indicates a low percentage of S-phase cells, while light blue indicates a high percentage. For CPT level 0, all time points are light blue. For CPT levels 0.3125 to 5, the percentage of S-phase cells decreases (redder color) as CPT level increases and at earlier times in G1. (D) The heatmap is titled '-Skp2'. The y-axis represents 'CPT level (µM)' with values 0, 0.3125, 0.625, 1.25, 2.5, 5. The x-axis represents 'time in G1 before drug addition (h)' from 0 to 5. The color bar ranges from 0 to 100. The heatmap shows generally more light blue (higher S-phase entry) compared to (C), especially at higher CPT levels and earlier times in G1. (E) p21 levels from stochastic simulations of Cdt2-depleted cells in the absence of extrinsic DNA damage (n = 30). The line chart is titled 'Cdt2 depleted'. The y-axis represents 'p21 (AU)' from 0 to 2. The x-axis represents 'time from G1/S transition (h)' from -5 to 15. Multiple green lines represent individual cell simulations. A shaded pink region indicates 'S-phase' from approximately 0 to 5 hours. The p21 levels show fluctuating patterns, generally starting low and increasing, with some cells showing peaks during S-phase. (F, G) Experimental p21 levels in control-siRNA (F; n = 10) and Cdt2-depleted (G; n = 10) hTert-RPE1 cells that entered S-phase after being treated with CPT at the times indicated by black dots. (F) The line chart is titled 'Ctrl + CPT'. The y-axis represents 'p21 (AU)' (multiplied by 10^3) from 0 to 1.5. The x-axis represents 'time from G1/S transition (h)' from -5 to 15. Multiple green lines represent p21 levels. Black dots on the x-axis at 0 and 5 hours indicate CPT treatment times. p21 levels remain low. (G) The line chart is titled '-Cdt2 + CPT'. The y-axis represents 'p21 (AU)' (multiplied by 10^3) from 0 to 1.5. The x-axis represents 'time from G1/S transition (h)' from -5 to 15. Multiple green lines represent p21 levels. Black dots on the x-axis at 0 and 5 hours indicate CPT treatment times. p21 levels show a significant increase after CPT treatment. (H, I) Deterministic simulations of an unperturbed (H) and an Emi1-depleted (I) cell that suffer damage after S-phase entry. Note the re-activation of Cdh1 in G2-phase in response to DNA damage in the absence of Emi1. (H) The line chart is titled 'unperturbed'. The y-axis represents 'relative level' from 0 to 3. The x-axis represents 'time from cytokinesis (h)' from 0 to 25. A shaded pink region indicates 'S-phase' from approximately 5 to 13 hours. A black horizontal bar indicates 'damage' from approximately 13 to 15 hours. Two lines are plotted: 'active Cdh1' (black) and 'p21' (green). 'active Cdh1' starts high, drops during S-phase, and remains low. 'p21' remains low until damage, then increases. (I) The line chart is titled 'Emi1 depleted'. The y-axis represents 'relative level' from 0 to 3. The x-axis represents 'time from cytokinesis (h)' from 0 to 25. A shaded pink region indicates 'S-phase' from approximately 5 to 13 hours. A black horizontal bar indicates 'damage' from approximately 13 to 15 hours. Two lines are plotted: 'active Cdh1' (black) and 'p21' (green). 'active Cdh1' starts high, drops during S-phase, and re-activates (increases) after damage. 'p21' remains low until damage, then increases.::>
+
+<a id='94e0648e-c3e3-4d1f-9882-2f4d2538d61e'></a>
+
+4
+
+<!-- PAGE BREAK -->
+
+<a id='aee11da4-03b6-4536-b4b5-bc9ffe342c3b'></a>
+
+<::chart: heatmap::>Fig. S4. Loss of p21 leads to deregulated proliferation (related to Fig. 4). (A, B) Percentage of wild-type (A; n = 41224) and p21-knockout (B; n = 133004) cells that enter S-phase (red to blue) in experiments after treatment with the indicated amount of CPT and growth factors (FBS) that were present from the beginning until the end of the experiment. Cells were serum-starved for 72 h before the experiment.The figure shows two heatmaps, A and B, with a common color scale.The color scale ranges from 0 (red) to 100 (blue), with 50 in the middle. The y-axis for both heatmaps is "CPT level (μM)" with values 0, 0.3125, 0.625, 1.25, 2.5, and 5. The x-axis for both heatmaps is "FBS level (%)" with values 0, 0.625, 1.25, 2.5, 5, and 10.A) Heatmap titled "wild type". The top rows (CPT levels 5, 2.5, 1.25, 0.625 μM) are predominantly dark red. The row for CPT level 0.3125 μM shows a transition from red at low FBS levels to light blue at higher FBS levels (from 0.625% to 10%). The bottom row for CPT level 0 μM is light blue across all FBS levels.B) Heatmap titled "-p21". The top row for CPT level 5 μM is dark red. The row for CPT level 2.5 μM is red at low FBS levels, transitioning to lighter red/brown at higher FBS levels. The row for CPT level 1.25 μM shows a transition from red at low FBS levels to light blue at higher FBS levels. The rows for CPT levels 0.625, 0.3125, and 0 μM are predominantly light blue across all FBS levels.<::/chart::>
+
+<a id='c004db0e-bf3d-48cd-b0ce-d988ff7cd657'></a>
+
+5
+
+<!-- PAGE BREAK -->
+
+<a id='8d4902b2-8e8a-4a98-b598-2fc27f32d3b6'></a>
+
+**Mathematical modelling**
+***Restriction point***
+Entry into the cell cycle is control by the restriction point. In order to pass through it, cells hyper-phosphorylate the Rb protein (_Rb_), an inhibitor of the transcription factor E2F (1).
+
+d(Rb_u)
+--- = -r_Rb^Ph * Rb_u + k_Rb^Dp * Rb_p
+dt
+
+(1)
+
+... Dh . Dh --- . Dh
+
+<a id='8e1458ad-9ad7-436b-8e20-addb66721e11'></a>
+
+with r^(Ph)_Rb = k^(Ph)_(Rb,Cd) · Cd + k^(Ph)_(Rb,Ce) · Ce + k^(Ph)_(Rb,Ca) · Ca,
+
+<a id='7b03da4c-68ca-4946-ac2a-0279bf83afda'></a>
+
+and $Rb_t = Rb_u + Rb_p = Rb + RbE2F + Rb_p,$
+
+<a id='624e9a86-c646-4bac-a448-6a08b1e05f4c'></a>
+
+where Rb_t, Rb_p, and Rb_u denote total, hyper- and hypo-phosphorylated Rb, respectively. The latter comprises both free Rb (Rb) and Rb:E2F complexes (RbE2F). In our model, phosphorylation occurs with rate r^Ph_Rb and is mediated by three cyclin:Cdk complexes: CycD:Cdk4/6 (Cd), CycE:Cdk2 (Ce) and CycA:Cdk2 (Ca) with their specific phosphorylation rates k^Ph_{Rb,Cd}, k^Ph_{Rb,Ce} and k^Ph_{Rb,Ca}, respectively (2). The dephosphorylation rate is k^{Dp}_{Rb}. In its hypo-phosphorylated state Rb binds free E2F (E2F) impairing its ability to promote transcription (1). Hence, we assumed that Rb (hyper-)phosphorylation prevents E2F binding and leads to the dissociation of Rb:E2F complexes.
+
+<a id='737e5f26-e73e-4d1d-862d-9f14bed29059'></a>
+
+$$\frac{\text{d}(E2F_t)}{\text{dt}} = r_{E2F}^{Sy} - k_{E2F}^{De} \cdot E2F_t \quad (2)$$
+
+<a id='c898953a-b4c0-43f1-a4d3-2cc9d5996f41'></a>
+
+$$\frac{d(E2F)}{dt} = r_{E2F}^{Sy} - k_{E2F}^{De} \cdot E2F - k_{RbE2F}^{As} \cdot Rb \cdot E2F + (k_{RbE2F}^{Ds} + r_{Rb}^{Ph}) \cdot RbE2F, \quad (3)$$
+
+<a id='c947c6d4-f90d-4577-bb1f-2b55255d0614'></a>
+
+with $r_{E2F}^{Sy} = k_{E2F}^{Sy} + k_{E2F,E2F}^{Sy} \frac{E2F}{j_{E2F}^{Sy} + E2F}$
+
+<a id='90b27674-40d3-46ba-8bf4-da56fb5b9490'></a>
+
+and $E2F_t = E2F + RbE2F.$
+
+<a id='5f12c363-f075-4d01-a2da-58cf049227eb'></a>
+
+Here, E2F_t and E2F are total and free E2F, respectively, and r^Sy_E2F and k^De_E2F denote the E2F synthesis and degradation rate, respectively. Note that E2F promotes its own transcription (3). Hence, we assumed that synthesis occurs with a constitutive rate (k^Sy_E2F) and an E2F-dependent rate (k^Sy_{E2F,E2F}), where half-maximal synthesis is reach at J^Sy_E2F. Association and dissociation of Rb and E2F are described by the rates k^As_{RbE2F} and k^Ds_{RbE2F}, respectively.
+
+<a id='989e0f5a-4e89-4c72-913e-44f03b799bf5'></a>
+
+_**Synthesis and degradation of cyclins and Emi1**_
+Activation of E2F drives the synthesis of a battery of genes that are essential for early cell cycle progression (2, 3). Among these are Emi1 (_E1_), CycE (_Ce_) and CycA (_Ca_).
+
+<a id='e94acdbf-3ddc-47af-835c-74bdfc2b997d'></a>
+
+d(E1_t) / dt = k_E1^Sy * E2F - k_E1,C1^De * E1C1 - k_E1^De * E1, (4)
+d(Ce_t) / dt = k_Ce^Sy * E2F - r_Ce^De * Ce_t, (5)
+VCe
+
+<a id='519a89a8-6886-49fc-b480-25a154d5a1bf'></a>
+
+d(Ca_t)
+---
+dt
+= k_Ca^Sy \cdot E2F - r_Ca^De \cdot Ca_t
+
+with r_Ce^De = k_Ce^De + k_{Ce,Ca}^De \cdot Ca
+
+(6)
+
+<a id='3dc6beb5-f51d-45a7-8b3f-88f8b06d6615'></a>
+
+r_Ca^{De} = k_Ca^{De} + k_{Ca,C1}^{De} \cdot C1,
+and E1_t = E1 + E1C1,
+
+<a id='e3e91d38-777c-445c-bc35-a539966cad9b'></a>
+
+where the index t denotes total protein levels including all complexes that contain the protein. C1 and E1C1 correspond to APC/C<sup>Cdh1</sup> and its complex with Emi1, respectively (see
+
+<a id='8b8317bc-9f34-44f6-874c-ed4bb56ae840'></a>
+
+6
+
+<!-- PAGE BREAK -->
+
+<a id='7f67a0c9-3b93-4cda-a2bd-ebb6de8a4228'></a>
+
+below). The synthesis rates of Emi1, CycE and CycA are k<sup>Sy</sup><sub>E1</sub>, k<sup>Sy</sup><sub>Ce</sub> and k<sup>Sy</sup><sub>Ca</sub>, respectively, while degradation occurs with the constitutive rates k<sup>De</sup><sub>E1</sub>, k<sup>De</sup><sub>Ce</sub> and k<sup>De</sup><sub>Ca</sub>. In addition, Emi1 in Emi1:APC/C<sup>Cdh1</sup> complexes and CycA are degraded with the APC/C<sup>Cdh1</sup>-dependent rates k<sup>De</sup><sub>E1,C1</sub> and k<sup>De</sup><sub>Ca,C1</sub>, respectively (4), while CycE is degraded with the CycA-dependent rate k<sup>De</sup><sub>Ce,Ca</sub> (5, 6). Note that since Cdk2 is in excess over its cyclins (7), Ce and Ca as well as their related variables correspond directly to the levels of CyclE:Cdk2 and CyclA:Cdk2 complexes, respectively.
+
+<a id='5bbd2841-1d14-4f1a-830b-cfcfb344509e'></a>
+
+Inactivation of APC/C<sup>Cdh1</sup>
+
+APC/C<sup>Cdh1</sup> is an ubiquitin E3 ligase that is active from late mitosis to late G1-phase and targets key cell cycle regulators for degradation (4, 8). Its inhibition by Emi1 and by cyclin:Cdk2-mediated phosphorylation is crucial for G1/S progression (4, 9). Therefore, we assumed that APC/C<sup>Cdh1</sup> can exists in a free, active form (C1) as well as two inactive forms: as part of an Emi1:APC/C<sup>Cdh1</sup> complex (E1C1) and as a free but Cdk2-phosphorylated form (C1<sub>p</sub>).
+
+<a id='49514a75-7ace-4711-91d3-f3d60b16b648'></a>
+
+d(C1) / dt - r_C1^Ph · C1 + k_C1^Dp · C1p - k_E1C1^As · E1 · C1 + (k_E1C1^Ds + k_E1,C1^De) · E1C1, (7)
+d(E1C1) / dt = -r_C1^Ph · E1C1 + k_E1C1^As · E1 · C1 - (k_E1C1^Ds + k_E1,C1^De) · E1C1, (8)
+
+with r_C1^Ph = k_C1^Ph + k_C1,Ce^Ph · Ce + k_C1,Ca^Ph · Ca,
+and C1_t = C1 + C1_p + E1C1.
+
+<a id='b8347373-99cd-4297-a0a8-0b1abb35570c'></a>
+
+Here, phosphorylation occurs with rate r^Ph^C1 comprising the constitutive rate k^Ph^C1 as well as the cyclin:Cdk2-dependent rates k^Ph^C1,Ce and k^Ph^C1,Ca. We assumed that Emi1:APC/C^Cdh1 complexes dissociate upon phosphorylation. Dephosphorylation is described by k^Pp^C1. The rates of association and dissociation of APC/C^Cdh1 and Emi1 are k^As^E1C1 and k^Ds^E1C1, respectively. Note that Emi1 is assumed to act as a pseudo-substrate for the APC/C (10). Hence, we chose k^De^E1,C1 > k^De^E1 (see Eq. (4)).
+
+<a id='2e308079-ff8f-4024-8361-e288dea7ce12'></a>
+
+_**p21 dynamics and Cdk2 inhibition**_
+Activation of Cdk2 drives G1/S progression but its kinase activity is opposed by the stoichiometric inhibitor p21 (11). Hence, our model accounts for free p21 (_P21_) and its ability to bind active CycE:Cdk2 (_Ce_) and CycA:Cdk2 (_Ca_) complexes. The resulting complexes of CycE:Cdk2:p21 (_CeP21_) and CycA:Cdk2:p21 (_CaP21_) are considered inactive.
+
+<a id='516363c0-46dd-410a-a9e8-c73dce60648b'></a>
+
+d(P21t)
+---
+ dt
+= kP21Sy + kP21,P53Sy · P53 - rP21De · P21t, (9)
+
+<a id='1fb734b3-4a37-41d6-8087-f52dac73cedb'></a>
+
+d(CeP21)
+---
+dt
+= k^As^CyP21 · P21 · Ce – (k^Ds^CyP21 + r^De^Ce + r^De^P21) · CeP21, (10)
+
+d(CaP21)
+---
+dt
+= k^As^CyP21 · P21 · Ca – (k^Ds^CyP21 + r^De^Ca + r^De^P21) · CaP21, (11)
+
+<a id='baa5e636-4d33-45f9-a267-62b08dfc5203'></a>
+
+with $r_{P21}^{De} = k_{P21}^{De} + k_{P21,Cy}^{De} \cdot Skp2 \cdot (Ce + Ca) + k_{P21,RCa}^{De} \cdot Cdt2 \cdot Rc_a$
+$P21_t = P21 + CeP21 + CaP21 + Pcna_1 + Rc_1,$
+
+<a id='04e29d73-8607-4604-873c-d25b4096ede2'></a>
+
+<::Ce_t = Ce + CeP21,
+Ca_t = Ca + CaP21.
+: figure::>
+
+<a id='81d1e594-bdb1-4e5f-bcc6-b2b2682f0951'></a>
+
+7
+
+<!-- PAGE BREAK -->
+
+<a id='046861fa-3ab9-41c5-a106-71d92bda582b'></a>
+
+Here, synthesis of p21 occurs with the constitutive rate k<sup>Sy</sup><sub>P21</sub> and the p53-dependent rate k<sup>Sy</sup><sub>P21,P53</sub>, where *P53* denotes the transcription factor p53 (12). The degradation rate of p21 is denoted r<sup>De</sup><sub>P21</sub> and comprises a constitutive rate (k<sup>De</sup><sub>P21</sub>) as well as a cyclin:Cdk2-dependent rate (k<sup>De</sup><sub>P21,Cy</sub>) that is linked to the ubiquitin E3 ligase SCF<sup>Skp2</sup> (*Skp2*, (13, 14)). In addition, CRL4<sup>Cdt2</sup> (*Cdt2*), which is recruited to chromatin-bound PCNA within active replication complexes (*Rc<sub>a</sub>*, see below), can mediate p21 degradation with rate k<sup>De</sup><sub>P21,RCa</sub> (13, 15). In our model, free p21 can bind to cyclin:Cdk2 complexes with rate k<sup>As</sup><sub>CyP21</sub> and dissociate from these complexes with rate k<sup>Ds</sup><sub>CyP21</sub>. Furthermore, the total amount of p21 (P21<sub>t</sub>) comprises free p21 (*P21*) as well as p21 in complexes with cyclin:Cdk2 (*CeP21* and *CaP21*), PCNA (*Pcna<sub>i</sub>*), and replication complexes (*Rc<sub>i</sub>*, see below).
+
+<a id='f061bb51-86d6-4e10-863f-acf19f1acc8a'></a>
+
+*Activation of DNA replication*
+During S-phase, DNA is synthesised by specialised replication complexes that assemble on licensed replication origins once there is sufficient Cdk2 activity (16). Therefore, we assumed that Cdk2 activates pre-replication complexes (_Rc_) such that they are primed (_Rc_p) for the loading of DNA processivity factors.
+
+<a id='2632ece4-065f-4165-976e-ffac9fd9ae3f'></a>
+
+d(Rc) / dt = -r_Rc^Ph · Rc + k_Rc^Dp · Rc_p - r_Rc^Ds · Rc,
+
+(12)
+
+<a id='0e755328-e3f4-4c25-bcf7-1592fe7b8d7e'></a>
+
+with $r_{Rc}^{Ph} = k_{Rc}^{Ph} \frac{(Ce+Ca)^n}{(j_{Cy})^n + (Ce+Ca)^{n'}}$
+
+<a id='3b5c1add-29d4-41eb-b52b-fde69969b725'></a>
+
+where priming occurs with rate k_Rc^Ph in an ultrasensitive fashion with hill coefficient n at a cyclin:Cdk2 threshold of j_Cy. Primed replication complexes can revert back to an unprimed state with a small rate k_Rc^Dp and replication complexes are disassembled upon completion of S-phase with rate r_Rc^Ds (see below). Once primed, replication complexes can bind PCNA, which forms a trimeric complex around the DNA that serves as a sliding platform for other processivity factors (17). We assumed that either free PCNA (PCNA_a) or PCNA:p21 complexes (PCNA_i) are bound leading to the formation of active (Rc_a) or inactive (Rc_i) replication complexes, respectively.
+
+<a id='a8c2d0a7-5c52-4e5f-a023-a1c5ca8dbabd'></a>
+
+d(Rc_p) / dt = r_Rc^Ph * Rc - k_Rc^Dp * Rc_p - k_RcPc^As * (Pcna_a + Pcna_i) * Rc_p + k_RcPc^Ds * (Rc_a + Rc_i)
+- r_Rc^Ds * Rc_p, (13)
+
+d(Rc_a) / dt = -k_PcP21^As * P21 * Rc_a + (k_PcP21^Ds + r_P21^De) * Rc_i + k_RcPc^As * Pcna_a * Rc_p - k_RcPc^Ds * Rc_a
+- r_Rc^Ds * Rc_a, (14)
+
+d(Rc_i) / dt = k_PcP21^As * P21 * Rc_a - (k_PcP21^Ds + r_P21^De) * Rc_i + k_RcPc^As * Pcna_i * Rc_p - k_RcPc^Ds * Rc_i
+- r_Rc^Ds * Rc_i. (15)
+
+<a id='acfa666d-a7cb-4df5-b4ff-cb537cebcea1'></a>
+
+The rates of PCNA loading and unloading are $k_{RcPc}^{As}$ and $k_{RcPc}^{Ds}$, respectively. Also note that p21 is the strongest known binding partner of PCNA (18) and it was proposed to compete with other PCNA-binding proteins (17, 19). Thus, we assumed that binding of p21 to active replication complexes with rate $k_{PcP21}^{As}$ (or binding of PCNA:p21 to primed replication complexes) creates inactive replication complexes (20, 21). The dissociation of p21 from PCNA occurs with rate $k_{PcP21}^{Ds}$. In our model, active replication complexes synthesise DNA ($DNA$) and once DNA replication is finished, replication complexes disassemble with rate $r_{Rc}^{Ds}$.
+
+<a id='2a3480d3-8fd3-4ece-8356-d0e2e91c8f87'></a>
+
+d(DNA) / dt = k_DNA^Sy * Rca
+and r_Rc^Ds = H(DNA - 1),
+
+(16)
+
+<a id='eeb41fd7-4466-4f6a-9f4b-030b2db94ab4'></a>
+
+8
+
+<!-- PAGE BREAK -->
+
+<a id='dfa63dbd-1e2b-41e9-88a8-ebd38327c53a'></a>
+
+where k^Sy_DNA is the DNA synthesis rate and *H* the Heaviside function.
+
+<a id='3b0da469-eeb3-4007-b831-a81f4997c531'></a>
+
+**PCNA dynamics**
+We assumed that free PCNA in the nucleus (*Pcna*<sub>a</sub>) is replenished from a cytoplasmic pool and that p21 can bind to PCNA creating PCNA:p21 complexes (*Pcna*<sub>i</sub>, (18)).
+
+<a id='c8af923c-bd4b-4252-b492-dbe29fd0dc5a'></a>
+
+d(Pcna_a)
+---
+dt
+= k_Pc^Im - k_PcP21^As * P21 * Pcna_a + (k_PcP21^Ds + r_P21^De) * Pcna_i
+- (k_Pc^Ex + k_Rc_Pc^As * Rc_p) * Pcna_a + (k_Rc_Pc^Ds + r_Rc^Ds) * Rc_a, (17)
+
+d(Pcna_i)
+---
+dt
+= k_PcP21^As * P21 * Pcna_a - (k_PcP21^Ds + r_P21^De) * Pcna_i
+- (k_Pc^Ex + k_Rc_Pc^As * Rc_p) * Pcna_i + (k_Rc_Pc^Ds + r_Rc^Ds) * Rc_i. (18)
+
+<a id='2e2b810c-bed4-48c9-ba86-d005ecc1c9d1'></a>
+
+Here, k_Pc^Im and k_Pc^Ex denote the nuclear import and export rate PCNA, respectively. The association and dissociation of p21 and PCNA occur with rate k_PcP21^As and k_PcP21^Ds, respectively. The binding and unbinding rates of PCNA and replication complexes are k_RcPc^As and k_RcPc^Ds, respectively.
+
+<a id='0c3f8a6e-bea6-461a-a5f5-63fb8bec4d2f'></a>
+
+_**DNA damage and repair**_
+
+In our model, DNA damage (_Dam_) can either occur independent of the cell cycle stage or specifically during DNA replication. It induces the expression of p53 (_P53_), which promotes damage repair processes (22).
+
+<a id='2572ad16-72d2-48cd-bee8-05ab5c0647b7'></a>
+
+d(Dam) = kDam^Ge + kDam,RC_a^Ge * RC_a - rDam^Re * Dam,
+dt
+
+(19)
+
+<a id='2d3e7423-920a-41d9-a4c6-d86d14ddd04a'></a>
+
+d(P53)
+--- = k^Sy_P53 - r^De_P53 · P53, (20)
+dt
+
+<a id='5a1e2af3-bc99-4a09-8048-4533b25f1b6f'></a>
+
+with $r_{\text{Dam}}^{\text{Re}} = k_{\text{Dam}}^{\text{Re}} + k_{\text{Dam,P53}}^{\text{Re}} \frac{\text{P53}}{j_{\text{Dam}}+\text{Dam}'}$
+
+and $r_{\text{P53}}^{\text{De}} = \frac{k_{\text{P53}}^{\text{De}}}{j_{\text{P53}}+\text{Dam}'}$
+
+<a id='91382dd9-d2bf-406b-85f0-a92a50398a62'></a>
+
+where k^Ge^~Dam~ and k^Ge^~Dam,RC a~ correspond to the constitutive and DNA replication-dependent rates of damage induction, respectively. Damage is repaired with a constitutive rate (k^Re^~Dam~) and a p53-dependent rate (k^Re^~Dam,P53~) assuming that p53 expression triggers repair processes. The latter reaches its half-maximal rate at a damage level of j^~Dam~. Since DNA damage has been shown to stabilize p53 (23), we assumed that p53 synthesis occurs with a constitutive rate (k^Sy^~P53~), while degradation occurs with rate k^De^~P53~, which is inversely proportional to the sum of DNA damage and an inhibition constant j^~P53~.
+
+<a id='6fd3f0db-7ec1-4b18-bd26-e0e3edb744b7'></a>
+
+***Cdh1 activity reporter***
+
+In order to compare our simulation results with measurements of Cdh1 activity obtained by following the degradation of a model APC/CCdh1 substrate (24), we simulated such an activity probe (_Pr_).
+
+<a id='2c586654-0e27-44a6-8b19-e22379c88840'></a>
+
+$\frac{d(Pr)}{dt} = k_{Pr}^{Sy} - (k_{Pr}^{De} + k_{Ca,C1}^{De} \cdot C1) \cdot Pr,\quad(21)$
+
+<a id='57e3eee4-192f-4c84-9717-1508e5f070a9'></a>
+
+where the constitutive synthesis and degradation rates of the probe are k_Pr^Sy and k_Pr^De, respectively, and, without loss of generality, the Cdh1-dependent degradation rate k_Ca,C1^De is the same than for CycA. Based on the analysis of experimental data (24), we calculated Cdh1 activity (C1_act) using the following equation.
+
+<a id='72244d08-8b78-47b9-8967-810ef13510e2'></a>
+
+9
+
+<!-- PAGE BREAK -->
+
+<a id='1dfc35d9-1c19-48d8-8517-6f995c72d9f6'></a>
+
+$$C1_{act} = \frac{k_{Pr}^{Sy} - \frac{\Delta(Pr + Bg)}{\Delta t}}{Pr + Bg}$$ (22)
+
+<a id='f7f317d9-cc07-443a-925e-983f3b17ab96'></a>
+
+Here, we added a small background signal (_Bg_) to reflect that while small changes in probe
+concentration can be accurately calculated from numerical data they might be below the
+signal-to-noise ratio in experiments.
+
+<a id='dea4ab81-5ccd-46e1-bab8-aa81bcd33878'></a>
+
+## Computation
+A deterministic version of the model was prepared using the Systems Biology Toolbox 2 (25) for MatLab (version 9.1.0 R2016b) and simulated with the CVODE routine (26). Bifurcation diagrams were calculated using the freely available software XPP-Aut (27). The model is provided as Dataset S1 and different versions of it are available at www.cellcycle.org.uk/publication. The model was also deposited in BioModels (28) and assigned the identifier MODEL1703030000.
+
+<a id='5b739012-46df-4524-99ee-e0d8c3c7e303'></a>
+
+We simulated a stochastic version of the model using custom-made MatLab code of the stochastic simulation algorithm, also known as Gillespie's algorithm (reviewed in (29)), according to the sorting direct method (30). To this end, the rate expressions of the deterministic model were converted into propensity functions, which requires the transformation of the relative levels of cell cycle regulators into numbers of molecules. Here, we followed the system in a control volume containing on average 1000 molecules/AU of protein and 1 event/AU of DNA damage. Hence, most of the simulated cell-to-cell variability originates in the stochastic infliction of DNA damage, while transcriptional and translational noise play only a minor role. To account for the extrinsic noise observed in our experiments, i.e., the variability in p21 levels after cell division, we chose the initial p21 level for each cell (simulation run) from a log-normal distribution with µ = -0.5 and σ = 0.3. This distribution is based on the distribution of initial p21 levels estimated from experiments (μ = 2.4, σ = 0.3), which was rescaled to account for the difference in p21 level between experiments and simulations. For the simulation of depletion experiments Skp2 and/or Cdt2 were reduced to 1%.
+
+<a id='ed11d580-09b0-409b-be36-defbc37e2ca8'></a>
+
+To classify cells as either proliferating or quiescent we used the fact that these two fates represent attractors in state space in our model (see Fig. 2C-F). In particular, quiescent cells are characterised by high p21 levels as well as low Cdk2 activity, Rb hypo-phosphorylation and low E2F activity, which prevents entry into S-phase. Hence, simulated cells that maintain these features were classified as quiescent, while cells that did enter S-phase were deemed proliferating.
+
+<a id='c2e3e084-8532-47ca-81fa-75bb69e09d62'></a>
+
+**Model parameters**
+Parameter values and non-zero initial conditions of the model are listed in Tables S1 and S2, respectively. A large part of the parameter set is based on our previously published study of p21 dynamics (31), where the model was parameterised to capture p21 dynamics in individual, unperturbed hTert-RPE1 cells as well as in perturbation experiments such as upon depletion of Skp2 and Cdt2. This includes parameters for p21 synthesis and degradation, the import, export, phosphorylation and binding of PCNA, and the dynamics of p53 and DNA damage. Parameter values for the newly added restriction point module are based on experimental observations and were adapted to reproduce cell cycle progression in RPE1 cells (see Fig. 1C-E). In particular, we assumed that in its hypo-phosphorylated state Rb binds tightly to E2F as it was shown to act as a stoichiometric inhibitor (1). Synthesis and degradation of E2F were chosen to yield a bistable response, which was found experimentally (32). Inhibition of APC/C⁷ᐦ⁷ by Emil was modelled via a pseudo-substrate
+
+<a id='2c3086c6-05c0-4a31-8a3c-854c5d0b3b78'></a>
+
+10
+
+<!-- PAGE BREAK -->
+
+<a id='b30982ad-0612-4738-8217-9474aeb931ba'></a>
+
+inhibitor mechanism (10), implying tight binding of both and a slow turnover of Emi1 by Cdh1. Synthesis and degradation of Emi1 and phosphorylation of APC/C<sup>Cdh1</sup> were adjusted to yield a rapid, switch-like inactivation of APC/C<sup>Cdh1</sup> at the G1/S transition based on measurements of APC/C activity (24). Parameters for CycE and CycA synthesis and degradation were chosen to qualitatively match the measurements of both proteins in live, single cells (9) and of overall Cdk2 activity (31, 33), while accounting for the length of cell cycle phases in RPE1 cells (see Fig. 1E). Local parameter sensitivities (see Table S1) were calculated according to
+
+<a id='774dc4f3-0a21-4cd9-85dc-112a738bcb4f'></a>
+
+S_θ = \frac{\Delta M}{M} \frac{\theta}{\Delta \theta}
+
+with
+
+\frac{\Delta M}{M} = \frac{1}{N_v N_t} \sum_{v,t} \left(\frac{y_v(\theta, t) - y_v(\theta^*, t)}{\sigma_v}\right)^2
+
+<a id='028c0777-6f0e-4901-8b77-011732a3090b'></a>
+
+where Sθ is the local sensitivity of parameter θ, comprising the relative change in model output M with respect to the relative change in parameter θ. The relative change in model output was defined as the squared change in state variable V at time t given the original parameter set (yv(θ, t)) and the same output in response to a parameter change (yv(θ*, t)), normalised by the maximum value of variable V (σv), which was summed over all time points and state variables and normalised to the number of simulated time points (Nt) and state variables (Nv), following (34).
+
+<a id='f14c201e-33e1-47a1-ac39-05a95b598e9a'></a>
+
+11
+
+<!-- PAGE BREAK -->
+
+<a id='414be66d-ed6a-419c-9be1-bfd0470f0b73'></a>
+
+Supporting tables
+
+<a id='2fce4ae1-b52a-400b-bb3c-2dfabc505626'></a>
+
+<table id="11-1">
+<tr><td id="11-2" colspan="2">Table S1. Parameters of the mathematical model.</td><td id="11-3"></td><td id="11-4"></td><td id="11-5"></td></tr>
+<tr><td id="11-6">Parameter</td><td id="11-7">Description</td><td id="11-8">Value</td><td id="11-9">Unit</td><td id="11-a">Local Sensitivity (%)</td></tr>
+<tr><td id="11-b">Bg</td><td id="11-c">background of Cdh1-activity probe</td><td id="11-d">0.05</td><td id="11-e">AU</td><td id="11-f">—</td></tr>
+<tr><td id="11-g">C1t</td><td id="11-h">total APC/CCdh1 level</td><td id="11-i">1</td><td id="11-j">AU</td><td id="11-k">0.26</td></tr>
+<tr><td id="11-l">Cd</td><td id="11-m">relative CycD:Cdk4/6 level</td><td id="11-n">0.65</td><td id="11-o">AU</td><td id="11-p">1.33</td></tr>
+<tr><td id="11-q">Cdt2</td><td id="11-r">relative CRL4Cdt2 level</td><td id="11-s">1 (0.01a)</td><td id="11-t">–</td><td id="11-u">0.01</td></tr>
+<tr><td id="11-v">Rb t</td><td id="11-w">total Rb level</td><td id="11-x">5</td><td id="11-y">AU</td><td id="11-z">4.42</td></tr>
+<tr><td id="11-A">Skp2</td><td id="11-B">relative SCFSkp2 level</td><td id="11-C">1 (0.01a)</td><td id="11-D">–</td><td id="11-E">0.14</td></tr>
+<tr><td id="11-F">jcy</td><td id="11-G">Cdk2 threshold for RC priming</td><td id="11-H">1.8</td><td id="11-I">AU</td><td id="11-J">2.4</td></tr>
+<tr><td id="11-K">jDam</td><td id="11-L">DNA damage threshold for repair</td><td id="11-M">0.5</td><td id="11-N">AU</td><td id="11-O">0.002</td></tr>
+<tr><td id="11-P">JP53</td><td id="11-Q">inhibition constant of p53 degradation</td><td id="11-R">0.01</td><td id="11-S">AU</td><td id="11-T">1·10-4</td></tr>
+<tr><td id="11-U">J E2F</td><td id="11-V">Michealis-Menten constant for E2F synthesis</td><td id="11-W">0.2</td><td id="11-X">AU</td><td id="11-Y">0.7</td></tr>
+<tr><td id="11-Z">k CyP21</td><td id="11-10">association of p21 and cyclin:Cdk2</td><td id="11-11">1</td><td id="11-12">1/(AU·min)</td><td id="11-13">0.002</td></tr>
+<tr><td id="11-14">k E1C1</td><td id="11-15">association of Emi1 and APC/Cdh1</td><td id="11-16">10</td><td id="11-17">1/(AU·min)</td><td id="11-18">0.1</td></tr>
+<tr><td id="11-19">KAS KPCP21</td><td id="11-1a">association of PCNA and p21</td><td id="11-1b">100</td><td id="11-1c">1/(AU·min)</td><td id="11-1d">0.001</td></tr>
+<tr><td id="11-1e">kRbE2F (As)</td><td id="11-1f">association of Rb and E2F</td><td id="11-1g">5</td><td id="11-1h">1/(AU·min)</td><td id="11-1i">0.34</td></tr>
+<tr><td id="11-1j">kRcPc (As)</td><td id="11-1k">association of primed RCs and PCNA</td><td id="11-1l">0.01</td><td id="11-1m">1/(AU·min)</td><td id="11-1n">0.45</td></tr>
+<tr><td id="11-1o">kCa (De)</td><td id="11-1p">constitutive CycA degradation</td><td id="11-1q">0.01</td><td id="11-1r">1/min</td><td id="11-1s">0.15</td></tr>
+<tr><td id="11-1t">kCa,C1 (De)</td><td id="11-1u">APC/Cdh1-mediated CycA degradation</td><td id="11-1v">2</td><td id="11-1w">1/(AU·min)</td><td id="11-1x">0.16</td></tr>
+<tr><td id="11-1y">kCe (De)</td><td id="11-1z">constitutive CycE degradation</td><td id="11-1A">0.004</td><td id="11-1B">1/min</td><td id="11-1C">0.89</td></tr>
+<tr><td id="11-1D">k Ce,Ca (superscript De)</td><td id="11-1E">CycA:Cdk2-mediated CycE degradation</td><td id="11-1F">0.015</td><td id="11-1G">1/(AU·min)</td><td id="11-1H">0.48</td></tr>
+<tr><td id="11-1I">k E1 (superscript De)</td><td id="11-1J">constitutive Emi1 degradation</td><td id="11-1K">0.0005</td><td id="11-1L">1/min</td><td id="11-1M">0.002</td></tr>
+<tr><td id="11-1N">k E1,C1 (superscript De)</td><td id="11-1O">APC/Cdh1-mediated Emi1 degradation</td><td id="11-1P">0.005</td><td id="11-1Q">1/min</td><td id="11-1R">0.01</td></tr>
+<tr><td id="11-1S">k E2F (superscript De)</td><td id="11-1T">constitutive E2F degradation</td><td id="11-1U">0.05</td><td id="11-1V">1/min</td><td id="11-1W">10.55</td></tr>
+<tr><td id="11-1X">k P21 (superscript De)</td><td id="11-1Y">constitutive p21 degradation</td><td id="11-1Z">0.0025</td><td id="11-20">1/min</td><td id="11-21">0.05</td></tr>
+<tr><td id="11-22">k
+De
+P21,Cy</td><td id="11-23">cyclin:Cdk2-mediated p21 degradation</td><td id="11-24">0.007</td><td id="11-25">1/(AU·min)</td><td id="11-26">0.14</td></tr>
+<tr><td id="11-27">k
+De
+P21,RCa</td><td id="11-28">RCa-mediated p21 degradation</td><td id="11-29">1</td><td id="11-2a">1/(AU·min)</td><td id="11-2b">0.005</td></tr>
+<tr><td id="11-2c">k
+De
+P53</td><td id="11-2d">DNA damage-dependent p53 degradation</td><td id="11-2e">0.05</td><td id="11-2f">AU/min</td><td id="11-2g">0.02</td></tr>
+<tr><td id="11-2h">k
+De
+Pr</td><td id="11-2i">constitutive degradation of Cdh1-activity probe</td><td id="11-2j">0.0001</td><td id="11-2k">1/min</td><td id="11-2l">1·10-5</td></tr>
+<tr><td id="11-2m">k
+Dp
+C1</td><td id="11-2n">dephosphorylation of APC/CCdh1</td><td id="11-2o">0.05</td><td id="11-2p">1/min</td><td id="11-2q">0.17</td></tr>
+<tr><td id="11-2r">kDpRb</td><td id="11-2s">dephosphorylation of Rb</td><td id="11-2t">0.05</td><td id="11-2u">1/min</td><td id="11-2v">3.61</td></tr>
+<tr><td id="11-2w">kDpRc</td><td id="11-2x">dephosphorylation of primed RCs</td><td id="11-2y">0.05</td><td id="11-2z">1/min</td><td id="11-2A">0.2</td></tr>
+<tr><td id="11-2B">kDsCyP21</td><td id="11-2C">dissociation of cyclin:Cdk2:p21 complexes</td><td id="11-2D">0.05</td><td id="11-2E">1/min</td><td id="11-2F">0.001</td></tr>
+<tr><td id="11-2G">kDSE1C1</td><td id="11-2H">dissociation of Emi1:APC/Cdh1 complexes</td><td id="11-2I">0.01</td><td id="11-2J">1/min</td><td id="11-2K">1·10-5</td></tr>
+<tr><td id="11-2L">kDsPcP21</td><td id="11-2M">dissociation of PCNA:p21 complexes</td><td id="11-2N">0.01</td><td id="11-2O">1/min</td><td id="11-2P">1·10-4</td></tr>
+<tr><td id="11-2Q">k Ds RbE2F</td><td id="11-2R">dissociation of Rb:E2F complexes</td><td id="11-2S">0.005</td><td id="11-2T">1/min</td><td id="11-2U">6·10-5</td></tr>
+<tr><td id="11-2V">k Ds RCpPC</td><td id="11-2W">dissociation of RCp:PCNA complexes</td><td id="11-2X">0.001</td><td id="11-2Y">1/min</td><td id="11-2Z">0.01</td></tr>
+<tr><td id="11-30">k Ex PC</td><td id="11-31">PCNA export from the nucleus</td><td id="11-32">0.006</td><td id="11-33">1/min</td><td id="11-34">0.91</td></tr>
+<tr><td id="11-35">k Ge Dam</td><td id="11-36">replication-independent DNA damage</td><td id="11-37">0.001</td><td id="11-38">AU/min</td><td id="11-39">0.01</td></tr>
+<tr><td id="11-3a">k Ge Dam,RCa</td><td id="11-3b">replication-dependent DNA damage</td><td id="11-3c">0.012</td><td id="11-3d">1/min</td><td id="11-3e">0.01</td></tr>
+<tr><td id="11-3f">kPCIm</td><td id="11-3g">PCNA import into the nucleus</td><td id="11-3h">0.003</td><td id="11-3i">AU/min</td><td id="11-3j">1</td></tr>
+<tr><td id="11-3k">kC1Ph</td><td id="11-3l">constitutive APC/Cdh1 phosphorylation</td><td id="11-3m">0</td><td id="11-3n">1/min</td><td id="11-3o"></td></tr>
+<tr><td id="11-3p">kC1,CaPh</td><td id="11-3q">CycA:Cdk2-mediated APC/Cdh1 phosphorylation</td><td id="11-3r">1</td><td id="11-3s">1/(AU·min)</td><td id="11-3t">0.01</td></tr>
+<tr><td id="11-3u">kC1,CePh</td><td id="11-3v">CycE:Cdk2-mediated APC/Cdh1 phosphorylation</td><td id="11-3w">0.01</td><td id="11-3x">1/(AU·min)</td><td id="11-3y">5·10-4</td></tr>
+<tr><td id="11-3z">kRbCaPh</td><td id="11-3A">CycA:Cdk2-mediated Rb phosphorylation</td><td id="11-3B">0.3</td><td id="11-3C">1/(AU·min)</td><td id="11-3D">0.13</td></tr>
+</table>
+
+<a id='aa5594d1-e6fd-43a0-8ace-6bbd255b1d0e'></a>
+
+12
+
+<!-- PAGE BREAK -->
+
+<a id='6de5a53c-5f26-4ed7-95e8-662e13705e19'></a>
+
+<table id="12-1">
+<tr><td id="12-2">kRbCd Ph</td><td id="12-3">CycD:Cdk4/6-mediated Rb phosphorylation</td><td id="12-4">0.2</td><td id="12-5">1/(AU·min)</td><td id="12-6">1.33</td></tr>
+<tr><td id="12-7">kRbCe Ph</td><td id="12-8">CycE:Cdk2-mediated Rb phosphorylation</td><td id="12-9">0.3</td><td id="12-a">1/(AU·min)</td><td id="12-b">1.68</td></tr>
+<tr><td id="12-c">kRc Ph</td><td id="12-d">cyclin:Cdk2-mediated priming of RCs</td><td id="12-e">0.1</td><td id="12-f">1/min</td><td id="12-g">0.27</td></tr>
+<tr><td id="12-h">kDam Re</td><td id="12-i">p53-independent DNA damage repair</td><td id="12-j">0.001</td><td id="12-k">1/min</td><td id="12-l">0.001</td></tr>
+<tr><td id="12-m">kDam,P53 Re</td><td id="12-n">p53-dependent DNA damage repair</td><td id="12-o">0.005</td><td id="12-p">1/min</td><td id="12-q">0.001</td></tr>
+<tr><td id="12-r">k_{Ca}^{Sy}</td><td id="12-s">constitutive CycA synthesis</td><td id="12-t">0.02</td><td id="12-u">1/min</td><td id="12-v">0.52</td></tr>
+<tr><td id="12-w">k_{Ce}^{Sy}</td><td id="12-x">constitutive CycE synthesis</td><td id="12-y">0.01</td><td id="12-z">1/min</td><td id="12-A">2.14</td></tr>
+<tr><td id="12-B">k_{Dna}^{Sy}</td><td id="12-C">DNA synthesis by active RCs</td><td id="12-D">0.0093</td><td id="12-E">1/min</td><td id="12-F">0.73</td></tr>
+<tr><td id="12-G">k_{E1}^{Sy}</td><td id="12-H">constitutive Emi1 synthesis</td><td id="12-I">0.005</td><td id="12-J">1/min</td><td id="12-K">0.26</td></tr>
+<tr><td id="12-L">k_{E2F}^{Sy}</td><td id="12-M">constitutive E2F synthesis</td><td id="12-N">0.03</td><td id="12-O">AU/min</td><td id="12-P">4.94</td></tr>
+<tr><td id="12-Q">kSy E2F,E2F</td><td id="12-R">E2F-dependent E2F synthesis</td><td id="12-S">0.04</td><td id="12-T">AU/min</td><td id="12-U">4.09</td></tr>
+<tr><td id="12-V">kSy P21</td><td id="12-W">constitutive p21 synthesis</td><td id="12-X">0.002</td><td id="12-Y">AU/min</td><td id="12-Z">0.14</td></tr>
+<tr><td id="12-10">kSy P21,P53</td><td id="12-11">p53-dependent p21 synthesis</td><td id="12-12">0.008</td><td id="12-13">1/min</td><td id="12-14">0.02</td></tr>
+<tr><td id="12-15">kSy P53</td><td id="12-16">constitutive p53 synthesis</td><td id="12-17">0.05</td><td id="12-18">AU/min</td><td id="12-19">0.02</td></tr>
+<tr><td id="12-1a">kSy Pr</td><td id="12-1b">constitutive synthesis of Cdh1 activity probe</td><td id="12-1c">0.01</td><td id="12-1d">AU/min</td><td id="12-1e">0.04</td></tr>
+<tr><td id="12-1f">n</td><td id="12-1g">hill coefficient for priming of RCs</td><td id="12-1h">6</td><td id="12-1i"></td><td id="12-1j">0.29</td></tr>
+</table>
+ªin simulations of depletion experiments
+
+<a id='78fcb437-6e86-49bd-ade1-76639eeb7b9b'></a>
+
+<table id="12-1k">
+<tr><td id="12-1l" colspan="4">Table S2. Non-zero initial conditions of the mathematical model.a</td></tr>
+<tr><td id="12-1m">Variable</td><td id="12-1n">Description</td><td id="12-1o">Value</td><td id="12-1p">Unit</td></tr>
+<tr><td id="12-1q">Cat</td><td id="12-1r">CycA:Cdk2 level</td><td id="12-1s">1.2</td><td id="12-1t">AU</td></tr>
+<tr><td id="12-1u">Cet</td><td id="12-1v">CycE:Cdk2 level</td><td id="12-1w">0.5</td><td id="12-1x">AU</td></tr>
+<tr><td id="12-1y">P21t</td><td id="12-1z">total p21 level</td><td id="12-1A">0.6</td><td id="12-1B">AU</td></tr>
+<tr><td id="12-1C">Рспаа</td><td id="12-1D">free PCNA in the nucleus</td><td id="12-1E">0.5</td><td id="12-1F">AU</td></tr>
+<tr><td id="12-1G">Rc</td><td id="12-1H">pre-replication complexes</td><td id="12-1I">1</td><td id="12-1J">AU</td></tr>
+</table>
+ªThese values correspond to a newly-born cell.
+
+<a id='5de5fe91-b72d-4040-b9a2-eb37ef8f34a3'></a>
+
+13
+
+<!-- PAGE BREAK -->
+
+<a id='e6f01f54-c6ab-4134-bf3c-04bb630054c9'></a>
+
+Supporting references
+1. Frolov MV, Dyson NJ (2004) Molecular mechanisms of E2F-dependent activation and pRB-mediated repression. J Cell Sci 117(11):2173–2181.
+2. Bertoli C, Skotheim JM, de Bruin RAM (2013) Control of cell cycle transcription during G1 and S phases. Nat Rev Mol Cell Biol 14(8):518–528.
+3. Bracken AP, Ciro M, Cocito A, Helin K (2004) E2F target genes: unraveling the biology. Trends Biochem Sci 29(8):409–417.
+4. Pines J (2011) Cubism and the cell cycle: the many faces of the APC/C. Nat Rev Mol Cell Biol 12(7):427–438.
+5. Kalaszczynska I, et al. (2009) Cyclin A is redundant in fibroblasts but essential in hematopoietic and embryonic stem cells. Cell 138(2):352–365.
+6. Won KA, Reed SI (1996) Activation of cyclin E/CDK2 is coupled to site-specific autophosphorylation and ubiquitin-dependent degradation of cyclin E. EMBO J 15(16):4182–4193.
+7. Arooz T, et al. (2000) On the concentrations of cyclins and cyclin-dependent kinases in extracts of cultured human cells. Biochemistry (Mosc) 39(31):9494–9501.
+8. Sivakumar S, Gorbsky GJ (2015) Spatiotemporal regulation of the anaphase-promoting complex in mitosis. Nat Rev Mol Cell Biol 16(2):82–94.
+9. Barr AR, Heldt FS, Zhang T, Bakal C, Novák B (2016) A Dynamical Framework for the All-or-None G1/S Transition. Cell Syst 2(1):27–37.
+10. Miller JJ, et al. (2006) Emi1 stably binds and inhibits the anaphase-promoting complex/cyclosome as a pseudosubstrate inhibitor. Genes Dev 20(17):2410–2420.
+11. Harper JW, et al. (1995) Inhibition of cyclin-dependent kinases by p21. Mol Biol Cell 6(4):387–400.
+12. El-Deiry WS, et al. (1993) WAF1, a potential mediator of p53 tumor suppression. Cell 75(4):817–825.
+13. Starostina NG, Kipreos ET (2012) Multiple degradation pathways regulate versatile CIP/KIP CDK inhibitors. Trends Cell Biol 22(1):33–41.
+14. Frescas D, Pagano M (2008) Deregulated proteolysis by the F-box proteins SKP2 and beta-TrCP: tipping the scales of cancer. Nat Rev Cancer 8(6):438–449.
+15. Havens CG, Walter JC (2011) Mechanism of CRL4(Cdt2), a PCNA-dependent E3 ubiquitin ligase. Genes Dev 25(15):1568–1582.
+16. Diffley JFX (2004) Regulation of early events in chromosome replication. Curr Biol 14(18):R778–R786.
+17. Moldovan G-L, Pfander B, Jentsch S (2007) PCNA, the maestro of the replication fork. Cell 129(4):665–679.
+18. Bruning JB, Shamoo Y (2004) Structural and thermodynamic analysis of human PCNA with peptides derived from DNA polymerase-delta p66 subunit and flap endonuclease-1. Structure 12(12):2209–2219.
+19. Waga S, Hannon GJ, Beach D, Stillman B (1994) The p21 inhibitor of cyclin-dependent kinases controls DNA replication by interaction with PCNA. Nature 369(6481):574–578.
+20. Cayrol C, Knibiehler M, Ducommun B (1998) p21 binding to PCNA causes G1 and G2 cell cycle arrest in p53-deficient cells. Oncogene 16(3):311–320.
+21. Rousseau D, et al. (1999) Growth inhibition by CDK-cyclin and PCNA binding domains of p21 occurs by distinct mechanisms and is regulated by ubiquitin-proteasome pathway. Oncogene 18(30):4313–4325.
+22. Menon V, Povirk L (2014) Involvement of p53 in the repair of DNA double strand breaks: multifaceted Roles of p53 in homologous recombination repair (HRR) and non-homologous end joining (NHEJ). Subcell Biochem 85:321–336.
+23. Kruse J-P, Gu W (2009) Modes of p53 regulation. Cell 137(4):609–622.
+24. Cappell SD, Chung M, Jaimovich A, Spencer SL, Meyer T (2016) Irreversible APC(Cdh1) Inactivation Underlies the Point of No Return for Cell-Cycle Entry. Cell 166(1):167–180.
+
+<a id='2d0d82a8-d040-407e-b5ea-379b4e832a22'></a>
+
+14
+
+<!-- PAGE BREAK -->
+
+<a id='c1e87968-c5b0-46f2-8afd-16dfe9b79e72'></a>
+
+25. Schmidt H, Jirstrand M (2006) Systems Biology Toolbox for MATLAB: a computational platform for research in systems biology. *Bioinformatics* 22(4):514–515.
+26. Cohen S, Hindmarsh AC (1996) CVODE, a stiff/nonstiff ODE solver in C. *Computers in Physics*, pp 138–143.
+27. Ermentrout B (2002) *Simulating, Analyzing, and Animating Dynamical Systems* (Society for Industrial and Applied Mathematics) doi:10.1137/1.9780898718195.
+28. Chelliah V, et al. (2015) BioModels: ten-year anniversary. *Nucleic Acids Res* 43(D1):D542–D548.
+29. Gillespie DT (2007) Stochastic Simulation of Chemical Kinetics. *Annu Rev Phys Chem* 58(1):35–55.
+30. McCollum JM, Peterson GD, Cox CD, Simpson ML, Samatova NF (2006) The sorting direct method for stochastic simulation of biochemical systems with varying reaction execution behavior. *Comput Biol Chem* 30(1):39–49.
+31. Barr AR, et al. (2017) DNA damage during S-phase mediates the proliferation-quiescence decision in the subsequent G1 via p21 expression. *Nat Commun* 8:14728.
+32. Yao G, Lee TJ, Mori S, Nevins JR, You L (2008) A bistable Rb–E2F switch underlies the restriction point. *Nat Cell Biol* 10(4):476–482.
+33. Spencer SL, et al. (2013) The proliferation-quiescence decision is controlled by a bifurcation in CDK2 activity at mitotic exit. *Cell* 155(2):369–383.
+34. Gutenkunst RN, et al. (2007) Universally Sloppy Parameter Sensitivities in Systems Biology Models. *PLoS Comput Biol* 3(10):e189.
+
+<a id='28de9f91-250b-4107-8669-88abff58c07b'></a>
+
+15

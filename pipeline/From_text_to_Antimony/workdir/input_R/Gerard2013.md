@@ -909,3 +909,186 @@ Cell-Cycle Order by Substrate Competition
 <a id='a0b1e28b-bfca-4058-8400-e3054d42ea9b'></a>
 
 Biophysical Journal 104(6) 1367–1379
+
+# Supplementary materials
+
+<a id='f7ce9b8e-7959-4a77-9138-993f5c76f8dd'></a>
+
+Supporting Material
+
+<a id='7fa1a90c-cef7-4424-867c-8871182d35ef'></a>
+
+Minimal models for cell cycle control based on competitive inhibition and multisite phosphorylations of Cdk substrates
+
+<a id='6248dd6e-04f3-42b8-8c4a-27f6798a164b'></a>
+
+Claude Gérard ¹, John J Tyson² and Béla Novák¹
+
+<a id='02d7dc17-654d-4dba-80ee-af4b6534ccec'></a>
+
+1 Oxford Centre for Integrative Systems Biology,
+Department of Biochemistry, University of Oxford,
+South Parks Road, Oxford OX1 3QU, UK
+
+2 Department of Biological Sciences,
+Virginia Polytechnic Institute and State University,
+Blacksburg, VA, USA
+
+<a id='f1bac0e4-f95d-49ac-9af1-19bc940db2dc'></a>
+
+Supplement 1: Parameters of the five models
+
+<a id='1213f5d7-628d-4abc-8f5c-8f514f47954e'></a>
+
+<table id="0-1">
+<tr><td id="0-2">Symbol</td><td id="0-3">Definition</td><td id="0-4">Numerical value</td></tr>
+<tr><td id="0-5" colspan="3">1) Model with two groups of substrates (S &amp; M) and one step of phosphorylation/dephosphorylation (Figs. 1 and 3A)</td></tr>
+<tr><td id="0-6">K₁S</td><td id="0-7">Michaelis constant for phosphorylation of S substrates</td><td id="0-8">0.002</td></tr>
+<tr><td id="0-9">K₂S</td><td id="0-a">Michaelis constant for dephosphorylation of Sp substrates</td><td id="0-b">0.04</td></tr>
+<tr><td id="0-c">K₁M</td><td id="0-d">Michaelis constant for phosphorylation of M substrates</td><td id="0-e">0.04</td></tr>
+<tr><td id="0-f">K2M</td><td id="0-g">Michaelis constant for dephosphorylation of Mp substrates</td><td id="0-h">0.002</td></tr>
+<tr><td id="0-i">ST</td><td id="0-j">Total concentration of substrates required for DNA replication</td><td id="0-k">1</td></tr>
+<tr><td id="0-l">MT</td><td id="0-m">Total concentration of substrates required for mitosis</td><td id="0-n">1</td></tr>
+<tr><td id="0-o">k1S</td><td id="0-p">Rate constant for the phosphorylation of S substrates</td><td id="0-q">3.6</td></tr>
+<tr><td id="0-r">V2S</td><td id="0-s">Maximum dephosphorylation rate of Sp substrates</td><td id="0-t">1</td></tr>
+<tr><td id="0-u">KIM</td><td id="0-v">Rate constant for the phosphorylation of M substrates</td><td id="0-w">1</td></tr>
+<tr><td id="0-x">V2M</td><td id="0-y">Maximum dephosphorylation rate of Mp substrates</td><td id="0-z">0.2</td></tr>
+<tr><td id="0-A" colspan="3">2) Model with two groups of substrates (S &amp; M) and two steps of phosphorylation/dephosphorylation (Figs. 2 and 3B)</td></tr>
+<tr><td id="0-B">KIS</td><td id="0-C">Michaelis constant for phosphorylation of S substrates</td><td id="0-D">0.002</td></tr>
+<tr><td id="0-E">K2S</td><td id="0-F">Michaelis constant for dephosphorylation of Sp substrates</td><td id="0-G">0.04</td></tr>
+<tr><td id="0-H">K3S</td><td id="0-I">Michaelis constant for phosphorylation of Sp substrates</td><td id="0-J">0.002</td></tr>
+<tr><td id="0-K">K4s</td><td id="0-L">Michaelis constant for dephosphorylation of Spp substrates</td><td id="0-M">0.04</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='4d92b020-831e-4ffe-bd44-93ff93c459d3'></a>
+
+<table id="1-1">
+<tr><td id="1-2">K_1M</td><td id="1-3">Michaelis constant for phosphorylation of M substrates</td><td id="1-4">0.04</td></tr>
+<tr><td id="1-5">K_2M</td><td id="1-6">Michaelis constant for dephosphorylation of M_p substrates</td><td id="1-7">0.002</td></tr>
+<tr><td id="1-8">K_3M</td><td id="1-9">Michaelis constant for phosphorylation of M_p substrates</td><td id="1-a">0.04</td></tr>
+<tr><td id="1-b">K_4M</td><td id="1-c">Michaelis constant for dephosphorylation of M_pp substrates</td><td id="1-d">0.002</td></tr>
+<tr><td id="1-e">k_1S</td><td id="1-f">Rate constant for the phosphorylation of S substrates</td><td id="1-g">10</td></tr>
+<tr><td id="1-h">V2S</td><td id="1-i">Maximum dephosphorylation rate of Sp substrates</td><td id="1-j">1.5</td></tr>
+<tr><td id="1-k">k3S</td><td id="1-l">Rate constant for the phosphorylation of Sp substrates</td><td id="1-m">25</td></tr>
+<tr><td id="1-n">V4S</td><td id="1-o">Maximum dephosphorylation rate of Spp substrates</td><td id="1-p">0.25</td></tr>
+<tr><td id="1-q">KIM</td><td id="1-r">Rate constant for the phosphorylation of M substrates</td><td id="1-s">0.6</td></tr>
+<tr><td id="1-t">V2M</td><td id="1-u">Maximum dephosphorylation rate of Mp substrates</td><td id="1-v">0.3</td></tr>
+<tr><td id="1-w">k_{3M}</td><td id="1-x">Rate constant for the phosphorylation of Mp substrates</td><td id="1-y">0.8</td></tr>
+<tr><td id="1-z">V_{4M}</td><td id="1-A">Maximum dephosphorylation rate of Mpp substrates</td><td id="1-B">0.05</td></tr>
+<tr><td id="1-C">S_{T}</td><td id="1-D">Total concentration of substrates required for DNA replication</td><td id="1-E">1</td></tr>
+<tr><td id="1-F">M_{T}</td><td id="1-G">Total concentration of substrates required for mitosis</td><td id="1-H">1</td></tr>
+<tr><td id="1-I"></td><td id="1-J" colspan="2">3) Minimal oscillator: Cdk/cyclin – APC – Sec (Fig. 4)</td></tr>
+<tr><td id="1-K">APC_{T}</td><td id="1-L">Total concentration of APC/Cdc20</td><td id="1-M">1</td></tr>
+<tr><td id="1-N">K_{IAPC}</td><td id="1-O">Michaelis constant for dephosphorylation of APC_{p}</td><td id="1-P">0.01</td></tr>
+<tr><td id="1-Q">K_{2APC}</td><td id="1-R">Michaelis constant for phosphorylation of APC</td><td id="1-S">0.01</td></tr>
+<tr><td id="1-T">V_{IAPC}</td><td id="1-U">Maximum dephosphorylation rate of APCp</td><td id="1-V">0.15</td></tr>
+<tr><td id="1-W">k_{2APC}</td><td id="1-X">Maximum phosphorylation rate of APC</td><td id="1-Y">0.3</td></tr>
+<tr><td id="1-Z">Vscdk</td><td id="1-10">Rate of synthesis of Cdk/cyclin</td><td id="1-11">0.06</td></tr>
+<tr><td id="1-12">kd1cdk</td><td id="1-13">Rate constant for non-specific degradation of Cdk/cyclin</td><td id="1-14">0.01</td></tr>
+<tr><td id="1-15">kdcdk</td><td id="1-16">Maximum rate for Cdk/cyclin degradation by APCp</td><td id="1-17">0.35</td></tr>
+<tr><td id="1-18">Kdcdk</td><td id="1-19">Michaelis constant for Cdk/cyclin degradation by APCp</td><td id="1-1a">0.01</td></tr>
+<tr><td id="1-1b">Vssec</td><td id="1-1c">Rate of synthesis of securin</td><td id="1-1d">0.1</td></tr>
+<tr><td id="1-1e">Kdlsec</td><td id="1-1f">Rate constant for non-specific securin degradation</td><td id="1-1g">0.01</td></tr>
+<tr><td id="1-1h">Kdsec</td><td id="1-1i">Maximum rate for securin degradation by APCp</td><td id="1-1j">0.4</td></tr>
+<tr><td id="1-1k">Kdsec</td><td id="1-1l">Michaelis constant for securin degradation by APCp</td><td id="1-1m">0.001</td></tr>
+<tr><td id="1-1n" colspan="3">4) Intermediate model with dual phosphorylation of APC (M) (Fig. 5). For the other parameter values, see sections 2 and 3 above.</td></tr>
+<tr><td id="1-1o">V4M</td><td id="1-1p">Maximum dephosphorylation rate of Mpp substrates</td><td id="1-1q">0.15</td></tr>
+<tr><td id="1-1r" colspan="3">5) Full model with S promoting the degradation of Cdk/cyclin and securin (Figs. 6 and 7). For the other parameter values, see sections 2 and 3 above.</td></tr>
+<tr><td id="1-1s">K_{1S}</td><td id="1-1t">Michaelis constant for phosphorylation of S substrates</td><td id="1-1u">0.008</td></tr>
+<tr><td id="1-1v">K_{2S}</td><td id="1-1w">Michaelis constant for dephosphorylation of Sp substrates</td><td id="1-1x">0.008</td></tr>
+<tr><td id="1-1y">K_{3S}</td><td id="1-1z">Michaelis constant for phosphorylation of Sp substrates</td><td id="1-1A">0.008</td></tr>
+<tr><td id="1-1B">K_{4S}</td><td id="1-1C">Michaelis constant for dephosphorylation of S_{PP} substrates</td><td id="1-1D">0.008</td></tr>
+<tr><td id="1-1E">K₁M</td><td id="1-1F">Michaelis constant for phosphorylation of M substrates</td><td id="1-1G">0.1</td></tr>
+<tr><td id="1-1H">K₂M</td><td id="1-1I">Michaelis constant for dephosphorylation of Mp substrates</td><td id="1-1J">0.008</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='f5a727fb-e353-4ca1-b5c8-621e686169e3'></a>
+
+<table id="2-1">
+<tr><td id="2-2">K3M</td><td id="2-3">Michaelis constant for phosphorylation of Mp substrates</td><td id="2-4">0.1</td></tr>
+<tr><td id="2-5">K4M</td><td id="2-6">Michaelis constant for dephosphorylation of Mpp substrates</td><td id="2-7">0.008</td></tr>
+<tr><td id="2-8">KIS</td><td id="2-9">Rate constant for the phosphorylation of S substrates by Cdk</td><td id="2-a">12</td></tr>
+<tr><td id="2-b">V2s</td><td id="2-c">Maximum dephosphorylation rate of Sp substrates</td><td id="2-d">0.4</td></tr>
+<tr><td id="2-e">k3s</td><td id="2-f">Rate constant for the phosphorylation of Sp substrates</td><td id="2-g">10</td></tr>
+<tr><td id="2-h">V4S</td><td id="2-i">Maximum dephosphorylation rate of Spp substrates</td><td id="2-j">0.47</td></tr>
+<tr><td id="2-k">KIM</td><td id="2-l">Rate constant for the phosphorylation of M substrates</td><td id="2-m">0.15</td></tr>
+<tr><td id="2-n">V2M</td><td id="2-o">Maximum dephosphorylation rate of Mp substrates</td><td id="2-p">0.3</td></tr>
+<tr><td id="2-q">k3M</td><td id="2-r">Rate constant for the phosphorylation of Mp substrates</td><td id="2-s">0.6</td></tr>
+<tr><td id="2-t">4M</td><td id="2-u">Maximum dephosphorylation rate of Mpp substrates</td><td id="2-v">0.1</td></tr>
+<tr><td id="2-w">Vscdk</td><td id="2-x">Rate of synthesis of Cdk/cyclin</td><td id="2-y">0.03</td></tr>
+<tr><td id="2-z">Vssec</td><td id="2-A">Rate of synthesis of securin</td><td id="2-B">0.03</td></tr>
+<tr><td id="2-C">kdcdk</td><td id="2-D">Maximum rate for Cdk/cyclin degradation by APCpp</td><td id="2-E">0.2</td></tr>
+<tr><td id="2-F">Kdcdk</td><td id="2-G">Michaelis constant for Cdk/cyclin degradation by APCpp</td><td id="2-H">0.02</td></tr>
+<tr><td id="2-I">kdcdk2</td><td id="2-J">Rate constant for degradation of Cdk/cyclin promoted by Cdh1</td><td id="2-K">0.2</td></tr>
+<tr><td id="2-L">kdlcdk</td><td id="2-M">Rate constant for non-specific degradation of Cdk/cyclin</td><td id="2-N">0.001</td></tr>
+<tr><td id="2-O">kdlsec</td><td id="2-P">Rate constant for non-specific degradation of securin</td><td id="2-Q">0.015</td></tr>
+<tr><td id="2-R">kdsec</td><td id="2-S">Rate constant for degradation of securin by APCpp</td><td id="2-T">0.15</td></tr>
+<tr><td id="2-U">kdsec2</td><td id="2-V">Rate constant for degradation of securin promoted by Cdh1</td><td id="2-W">0.3</td></tr>
+<tr><td id="2-X">μ</td><td id="2-Y">Specific growth rate</td><td id="2-Z">0.004</td></tr>
+</table>
+
+<a id='edb120bd-cd73-4952-9041-d612b88a4546'></a>
+
+Notes:
+The minimal models proposed here could represent the cell cycle dynamics of 'primitive' eukaryotes. Having no knowledge of what might have been the values of these kinetic parameters in a primitive eukaryote, we have chosen a set of 'representative' dimensionless parameter values. In addition, we have assumed that the phosphorylation and dephosphorylation of substrates are described by Goldbeter-Koshland switches (1), which rely on zero-order ultrasensitivity (ZOU). ZOU requires that the Michaelis constants for the phosphorylation and dephosphorylation reactions are small compared to the total concentration of the substrates. This assumption can be justified by the facts that the Michaelis-Menten constants for the phosphorylation of substrates by Cdk and their dephosphorylation by phosphatases are in the micromolar range (2, 3), whereas the total concentration of Cdk1 phosphorylation sites in a cell could be in the millimolar range (4), because Cdk1 has hundreds of targets in the cell, most of which likely have multiple phosphorylation sites.
+
+<a id='97032256-d363-4fa0-842b-eb758b503962'></a>
+
+In order to get two separate bistable domains with ordered thresholds for the phosphorylation of S and M pools of substrates (see Fig. 2), we must assume that the rate of phosphorylation of the S pool of substrates is faster than the rate of phosphorylation of the M pool of substrates.
+
+<a id='30e591d9-ee0b-4308-9303-82569108c371'></a>
+
+In the parameter sets used here, the rates of first-phosphorylation steps are typically slower
+
+<!-- PAGE BREAK -->
+
+<a id='f56c1f2b-a38e-4513-9413-363b6afd6015'></a>
+
+than the rates of second-phosphorylation steps (e.g., compare k1S with k3S and k1M with k3M in section 2 above in the Supplement 1). This choice can be justified by the fact that cooperativity involving multiple phosphorylations has been observed in diverse biological systems (5-7). Nonetheless, this inequality is not a crucial assumption of our models (e.g., compare k1S with k3S in section 5 above in the Supplement 1).
+
+<a id='c914d0d2-0b67-42e9-a25e-8e900df66030'></a>
+
+To compensate for our lack of knowledge about parameter values, we performed many bifurcation analyses (see Figs. 1-7), which bring to light the dynamical behaviors of the models as parameter values vary. In our experience, the dynamical properties of these models depend more on their network structure than on precise values of the parameters.
+
+<a id='68d6a8a4-55d3-42c0-b1cf-1161a7f91b1a'></a>
+
+**Supplement 2: Domain of bistability for the singly phosphorylated substrates model**
+The singly phosphorylated substrates model (see Fig. 1A) exhibits one domain of bistability in the phosphorylation state of S and M substrates. Indeed, only one domain of bistability is observed in the simulations of the model (see Figs. 1B, 1C and 3A). Furthermore, by introducing concentrations relative to Michaelis constants (S' = S/K1s, Sp' =SP/K2S, M' = M/K1M and Mp' =Mp/K2M), the kinetic equations (1) and (2) can be re-written as:
+
+<a id='a3ce043f-38d0-4a70-aa0a-57c929cc4fdb'></a>
+
+k₁S · Cdk · S' / (1 + M' + S') = V₂S · Sₚ' / (1 + Mₚ' + Sₚ')
+k₁M · Cdk · M' / (1 + S' + M') = V₂M · Mₚ' / (1 + Sₚ' + Mₚ')
+
+<a id='7c50a615-c65c-403e-a637-1ff02e537ad7'></a>
+
+After dividing one equation by the other and re-arranging, we obtained that:
+
+<a id='d1233f02-760f-471c-b2dc-4bbbfab617ff'></a>
+
+k_1S S' / k_1M S_P' = V_2S M' / V_2M M_P'
+
+<a id='fec60ee4-ae80-4793-b954-8675dd4d7c4b'></a>
+
+This formula shows that the ratio of phosphorylated and unphosphorylated forms of S and M are independent of Cdk activity, which is only possible if there is only one bistable regime.
+
+<a id='09d73b54-42b1-4846-a2d5-454700d986bc'></a>
+
+## Supporting References
+
+1.  Goldbeter, A., and D. E. Koshland, Jr. 1981. An amplified sensitivity arising from covalent modification in biological systems. Proc Natl Acad Sci U S A 78:6840-6844.
+2.  Bouchoux, C., and F. Uhlmann. 2011. A quantitative model for ordered Cdk substrate dephosphorylation during mitotic exit. Cell 147:803-814.
+3.  Loog, M., and D. O. Morgan. 2005. Cyclin specificity in the phosphorylation of cyclin-dependent kinase substrates. Nature 434:104-108.
+
+<!-- PAGE BREAK -->
+
+<a id='3f4303ee-06a6-4b86-b485-1fa919be4b24'></a>
+
+1. Koivomagi, M., E. Valk, R. Venta, A. Iofik, M. Lepiku, D. O. Morgan, and M. Loog. 2011. Dynamics of Cdk1 substrate specificity during the cell cycle. Mol Cell 42:610-623.
+2. Schweiger, R., and M. Linial. 2010. Cooperativity within proximal phosphorylation sites is revealed from large-scale proteomics data. Biol Direct 5:6.
+3. Weinman, E. J., D. Steplock, Y. Zhang, R. Biswas, R. J. Bloch, and S. Shenolikar. 2010. Cooperativity between the phosphorylation of Thr95 and Ser77 of NHERF-1 in the hormonal regulation of renal phosphate transport. J Biol Chem 285:25134-25138.
+4. Pullen, N., N. G. Brown, R. P. Sharma, and M. Akhtar. 1993. Cooperativity during multiple phosphorylations catalyzed by rhodopsin kinase: supporting evidence using synthetic phosphopeptides. Biochemistry 32:3958-3964.

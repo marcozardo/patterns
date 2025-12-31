@@ -785,3 +785,260 @@ Tyson, J.J., K. Chen, and B. Novak. 2001. Network dynamics and cell physiology.
 _Nat. Rev. Mol. Cell Biol._ 2:908–916.
 Tyson, J.J., A. Csikasz-Nagy, and B. Novak. 2002. The dynamics of cell cycle reg-
 ulation. _Bioessays._ 24:1095–1109.
+
+# Supplementary materials
+
+<a id='4ce5a75d-f19f-44a7-ab2b-82b34c9eb95e'></a>
+
+JCB Online Supplemental Material
+Ciliberto et al. http://www.jcb.org/cgi/doi/10.1083/jcb.200306139
+
+<a id='0873232a-ee56-4d21-ab15-f7fa31dd99e5'></a>
+
+**Experimental basis of the model**
+The morphogenesis checkpoint acts through inhibitory phosphorylation of Cdc28 on Tyr19 (Booher et al., 1993). During the normal cell cycle, Mih1 is more active than Swe1 and phosphorylation of Tyr19 is negligible. When bud formation is impaired, the morphogenesis checkpoint stabilizes Swe1 and inactivates Mih1.
+
+<a id='8ef044a4-e244-42f3-ba79-b9f4c337174d'></a>
+
+Swe1. Swe1 level oscillates during the cell cycle, with a peak in S/G2 (Sia et al., 1998; McMillan et al., 1999). Both the synthesis and degradation of Swe1 are cell-cycle regulated. SWE1 transcription is controlled by SBF. Because Cdc28-Clb2 inhibits SBF, SWE1 mRNA peaks in G1 and bottoms out in G2-M. In addition, Swe1 protein is stable during G1 (t1/2 = 90 min), whereas during G2 phase it is seven times more unstable (Sia et al., 1998). Although the regulation of Swe1 degradation has not been completely determined, it is clear that Cdc28-Clb2 and Hsl1 are both required for Swe1 degradation (Lew, 2000).
+
+<a id='145ef057-b619-4d54-99e9-314b4f49a90a'></a>
+
+**Cdc28–Clb2.** Cdc28 level does not fluctuate during the cell cycle, but Clb2 level does. Clb2 is synthesized during G2/M, when the _CLB2_ transcription factor, Mcm1, is active (Amon et al., 1993). Clb2 is rapidly degraded by the anaphase promoting complex as cells exit mitosis (Irniger et al., 1995). Cdc28–Clb2 activity is required for Swe1 degradation, as Swe1 is unstable in the _GAL-SWE1 CDC28Y19F_ mutant and is stabilized in the _GAL-SWE1 GAL-SIC1 CDC28Y19F_ mutant (Sia et al., 1998). (Sic1 is a stoichiometric inhibitor of Cdc28–Clb1-6 dimers.)
+
+<a id='3fb14262-12ac-4929-96e1-9c50c5650c0a'></a>
+
+**Hsl1 and Hsl7.** Hsl1 (related to *Schizosaccharomyces pombe* Nim1) and Hsl7 (a presumptive protein-arginine methyltransferase) are also involved in Swe1 degradation because Swe1 is stable both in *GAL:SWE1 CDC28Y19F hsl1\u0394* and in *GAL:SWE1 CDC28Y19F hsl7\u0394* (McMillan et al., 1999). Hsl1 controls the rate-limiting step of the degradatory process as *HSL1* overexpression speeds up Swe1 degradation, whereas *HSL7* overexpression does not (McMillan et al., 1999). It has been suggested that the localization of these two proteins is essential for their activity (Shulewitz et al., 1999; Lew, 2000; Longtine et al., 2000); once the bud is formed, Hsl1 localizes to the mother-bud neck where it recruits Hsl7, which acts as a bridge between Hsl1 and Swe1. Colocalization of Swe1, Hsl1, and Hsl7 at the mother-bud neck is required for Hsl1\u2013Hsl7 to induce Swe1 degradation because mutants with impaired septin organization show a *SWE1*-dependent G2 delay (Barral et al., 1999). If bud formation is impaired, then septins do not assemble on the neck, Hsl1 and Hsl7 are not properly localized and activated, and Swe1 is not degraded.
+
+<a id='218365c9-1e5e-44ff-978d-2c93303741f8'></a>
+
+During normal growth, Swe1 stabilization is not sufficient to alter significantly the cell cycle, according to Lew and coworkers, who report that both _hsl1Δ_ and _hsl7Δ_ do not show any phenotypic difference compared with wild-type cells (McMillan et al., 1999). On the other hand, other researchers report an elongated bud phenotype and G2 delay for these mutants (Ma et al., 1996; Tanaka and Nojima, 1996). It has been proposed that the difference resides in the amount of Mih1 present in the cell because stationary phase _hsl1Δ_ cells (i.e., low Mih1 level) are elongated whereas exponentially growing cells (i.e., high Mih1 level) are not (McMillan et al., 1999).
+
+<a id='a747c74b-a0f5-4511-8fdf-79e222bdddc1'></a>
+
+**Swe1 degradation pathway.** Summarizing the experimental data concerning Swe1 degradation, Cdc28–Clb2 and Hsl1–Hsl7 belong to the same Swe1 degradation pathway, and both of them are necessary but neither is sufficient for Swe1 degradation. Swe1 stability is greatly increased in _hsl1Δ CDC28Y19F_ (McMillan et al., 1999), i.e., Cdc28–Clb2 activity alone is not sufficient to induce Swe1 degradation. On the other hand, in a system where Cdc28–Clb2 activity is inhibited (_GAL-SIC1 CDC28Y19F_), Swe1 stability is enhanced (Sia et al., 1998), showing that Hsl1 alone cannot induce Swe1 degradation.
+
+<a id='637d91d7-4976-4086-bf41-49e4a4aacf31'></a>
+
+Mih1. Mih1, the budding yeast homologue of Cdc25 (Russell et al., 1989), is not essential for the normal cell cycle. Indeed, it was originally reported that *mih1*\u0394 is only 15% bigger than wild-type cells (Russell et al., 1989), and that these mutant show a short G2 delay (Booher et al., 1993). Moreover, *mih1*\u0394 and wild type are identical when treated under \u03b1-factor arrest and release (Sia et al., 1996).
+
+<a id='5e52564e-8521-4e9b-ac47-a3b214fb5658'></a>
+
+**Mih1 versus Hsl1.** Although the single mutants, _hsl1_\u0394 and _mih1_\u0394, are both perfectly viable and very similar to wild type, the double mutant _mih1_\u0394 _hsl1_\u0394 is lethal, blocked in G2 (McMillan et al., 1999). Apparently, either Hsl1\u2013Hsl7 or Mih1 is able to prevent Swe1 inhibitory activity on Cdc28\u2013Clb2, but when both these components are missing, Swe1 is able to phosphorylate Cdc28 and block cells in G2.
+
+<a id='f2fb219c-6c7f-4b1c-80bd-44d3b8497a3b'></a>
+
+## Bifurcation analysis
+Molecular regulatory circuits in cell biology are governed by nonlinear dynamical systems, usually described in terms of ordinary differential equations. A powerful tool for analyzing the dynamical properties of such equations is bifurcation theory. Recently, Tyson et al. (2001, 2002) have pointed out the relevance of this tool to understanding cell cycle regulation. They show that progress through the yeast cell cycle is governed by a size threshold at G1-S (in budding yeast) or at G2-M (in fission yeast). Growth drives a cell past the threshold and through the chromosome replication-division cycle. Division brings cell size below the threshold, and the process repeats itself. When problems arise (e.g., with DNA replication or chromosome alignment), checkpoint mechanisms stabilize a steady state of the dynamical system (corresponding to arrest in G2 phase or metaphase,
+
+<a id='d6ef184f-12c9-48d3-b053-8faa313aa1eb'></a>
+
+The Journal of Cell Biology © The Rockefeller University Press • 0021-9525
+Volume 163 December 22, 2003
+http://www.jcb.org/cgi/doi/10.1083/jcb.200306139
+
+<a id='c6aa7ae6-9217-4f44-8a9e-1101732d2da8'></a>
+
+1 of 6
+
+<!-- PAGE BREAK -->
+
+<a id='7f095593-9336-44cf-8d56-5cb10e0d3d67'></a>
+
+http://www.jcb.org/cgi/doi/10.1083/jcb.200306139
+
+<a id='298aede4-6cd2-4e68-a4ae-a0b4d8b7c06c'></a>
+
+2 of 6
+
+<a id='7d2e7dee-4555-4f0d-b80f-85831cb87fd5'></a>
+
+respectively). Cell cycle progression is delayed until the problem is fixed, or the cell grows large enough to override the checkpoint, or the cell dies. In this supplement, we show that the morphogenesis checkpoint, as modeled in this paper, has all the characteristic dynamical properties of more familiar checkpoint mechanisms.
+
+<a id='afa36acb-189d-4a56-9bbf-a9b8633d93b4'></a>
+
+**Dynamical systems.** Our model of the morphogenesis checkpoint consists of 19 differential equations (Table S1) plus a few auxiliary algebraic equations and "rules". The instantaneous state of the system is given by specific numerical values of the 19 time-dependent variables: [Clb2], [Cdc20], [Swe1P], [Cdh1], and so on. For a given set of initial conditions (the state of the system at t = 0), the differential equations determine how the state variables will evolve over time (we call their time courses a "cell-cycle trajectory"). Computation of a cell-cycle trajectory requires not only appropriate initial conditions, but also specifications of all the kinetic parameters that appear on the right-hand sides of the differential equations in Table S1 (_k_s,clb, _V_a,swe, and so on). Parameter values and initial conditions for our simulations are displayed in Table S2. The dependence of cell-cycle trajectories on parameter values and initial conditions has been addressed in the main text. For example, simulated _cdc24_ts cells undergo nuclear division later than simulated wild-type cells because certain crucial parameter values are smaller (in the former _k'_mih1 = 0.5, _k_"_mih1 = 0.05, and _k_hsl1 = 0, whereas in the latter _k'_mih1 = 5, _k_"_mih1 = 0.5, and _k_hsl1 = 1; see Table 1. As for initial conditions, although simulated _mih1_Δ cells (both cycling and synchronized with α-factor) share identical parameter values, synchronized cells undergo nuclear division earlier due to the difference in initial conditions (particularly, mass is larger in synchronized cells; see Other rules).
+
+<a id='e6192143-8fca-4eb4-83f9-fd1346ecd820'></a>
+
+Recurrent solutions. If we fix the parameter values in a system of nonlinear ODEs and vary the initial conditions, we will generate a set of trajectories (variables as function of time, t). As t gets large (t→ ∞), we find, in general, that the trajectories starting from many different initial conditions all converge to the same "recurrent" solution, that may be either a steady-state solution (all variables unchanging in time) or a periodic solution (all variables repeat themselves periodically in time). Such recurrent solutions are called "attractors" of the dynamical system. Recurrent solutions may also be "repellors" or "saddles" (Tyson et al., 2001, 2002). The qualitative properties of a dynamical system are determined in large part by the nature of its recurrent solutions. The characterization of these solutions is a branch of applied mathematics, called bifurcation theory.
+
+<a id='2bb8a105-54db-40ee-b93a-e4952eba2351'></a>
+
+Which are the recurrent solutions of the morphogenesis checkpoint model? Experimentally it is impossible to find steady-state solutions during the cell division process because cells are steadily growing and dividing. However, mathematically it is possible to find recurrent solutions of the molecular regulatory network underlying the cell cycle by fixing mass to a constant value (i.e., treating mass as a parameter) and allowing the system to settle down to steady or oscillatory solutions. Repeating this procedure for all physiologically relevant values of mass, it is possible to identify recurrent states of the cell cycle model as a function of mass (*M*). Notice the difference between cell-cycle trajectories and recurrent states: in the former, *M*(*t*) is a variable that increases steadily until cell division, and the molecular regulatory system never reaches a steady or oscillatory state. In recurrent states, *M* is a parameter and variables are unchanging or repeat periodically in time. Recurrent states for the cell cycle model lack an experimental counterpart, but they are useful for understanding the behavior of the dynamical system because they are the attractors of cell-cycle trajectories, as we shall see shortly.
+
+<a id='d9388bf9-6b37-416c-9016-7a667c927c87'></a>
+
+Bifurcation diagrams. A bifurcation diagram is a plot of the recurrent states of a dynamical system as a function of one of its parameters (called the bifurcation parameter). Bifurcation diagrams for wild-type, cdc24ts and hsl1Δ mih1Δ cells are plotted in Fig. S1. The activity of Cdc28–Clb2 is chosen as the variable representing the state of the control system, and M is the bifurcation
+
+<a id='a0c38843-c632-4337-9c52-b6fd8aa503bc'></a>
+
+Figure S1. Bifurcation diagrams for wild-type, *cdc24*^ts^, and *hsl1Δmih1Δ* cells. Recurrent states of Cdc28/Clb2 are plotted against fixed values of mass: stable and unstable steady-states (solid and dashed lines, respectively) and maxima and minima of the stable oscillatory states (top and bottom closed circles, respectively). In the left and middle panels a cell-cycle trajectory of Cdc28/Clb2 as a function of mass (dotted line) is superimposed on the bifurcation diagram. See accompanying text for details. (Left) In wild-type cells, for small values of mass, there is only one stable steady-state, which is the mathematical analogue of G1 phase. As mass increases to 0.3, two new unstable steady-states are born: this point (closed rectangle) is called a saddle-node bifurcation (SN₁). The region with three steady-states terminates at another saddle node, SN₂, at *M* = 1, after which there is only one unstable steady-state. In fact, a second type of bifurcation occurs at this point, called a SNIC bifurcation, which gives rise to stable oscillatory states (large amplitude, stable limit cycles). SN₂ represents the Start transition: when cell size (*M*) exceeds 1, the dynamical system enters S-G2-M, and is attracted toward the large amplitude limit cycles. (Middle) In *cdc24*^ts^ cells, G1 is followed by a new stable steady-state, G2, which is lost at a saddle node, SN₃, for *M* = 2.1. As in wild-type cells, a SNIC bifurcation occurs at this point as well. (Right) In *hsl1Δ mih1Δ* cells, the G2 state persists until nonphysiological cell size (*M* = 29), when it is lost by a saddle node bifurcation, SN₄.
+
+<!-- PAGE BREAK -->
+
+<a id='d31e279b-4709-4486-b442-bc09ed44521a'></a>
+
+http://www.jcb.org/cgi/doi/10.1083/jcb.200306139
+
+<a id='22d97a70-3ac6-4de6-b86c-42df60790d6a'></a>
+
+3 of 6
+
+<a id='d62130ed-6a9b-4c0e-9b13-a955a8afd411'></a>
+
+parameter. In each panel of Fig. S1, we plot the value of [Clb2] on a recurrent solution as a function of M. For a steady-state solution, [Clb2]$_{\text{ss}}$ is a constant (for a fixed value of M), and as M changes, the point (M, [Clb2]$_{\text{ss}}$) traces a curve on the bifurcation diagram. In the left panel of Fig. S1 (wild-type cells), the curve of steady states is S-shaped. Where the "S" is a solid line, the steady states are attractors (also called "nodes") and where the S is a dashed line, the steady states are repellors or saddles. The turning points of the "S are called "saddle-node bifurcation points" (SN$_{1}$ and SN$_{2}$). For mass values larger than SN$_{2}$ there are not only unstable steady states, but also periodic recurrent solutions represented in Fig. S1 by maxima and minima of the oscillations (large black dots).
+
+<a id='dc8c7373-5953-441b-a151-62c37e2ffbcb'></a>
+
+Cdc28-Clb2 trajectories are superimposed on the bifurcation diagrams in the left and middle panels. To do this, we consult the cell-cycle trajectories of Figs. 3 and 7, where [Clb2] and M are plotted as functions of time. At t = 0, we read the values of [Clb2] and M, and place a small dot at the corresponding point on the [Clb2]-mass plane in Fig. S1. A short time later, say t = 1 min, we read new values of [Clb2] and M, and place a second dot on the [Clb2]-mass plane. Continuing in this way for ever larger values of t, we trace out a cell-cycle orbit (dotted line) on the [Clb2]-mass plane.
+
+<a id='1bdbd30a-4a9c-405b-8000-2a10e498aeef'></a>
+
+In wild-type cells, Fig. S1 (left), cell mass is small at the beginning of the cycle and the cell-cycle orbit (dotted line) is initially attracted to the G1 state, where Sic1 and Cdh1 successfully prevent any Cdc28–Clb2 activity in the cell. As mass grows to a critical threshold (Fig. S1, left, SN2), SBF is activated (biologically, this corresponds to the accumulation of a sufficient quantity of Cln3 in the nucleus) and the start transition occurs. The G1 state disappears because the antagonists of Cdc28–Clb2, namely Cdh1 and Sic1, are made unstable by Cdc28–Cln. Past the start transition, the system is driven to high levels of Clb2 by the positive feedback loop between Cdc28–Clb2 and Mcm1, and then to low levels of Clb2 by the subsequent activation of Cdc20. This rise and fall of Clb2-dependent kinase activity is a reflection of the stable oscillatory solutions indicated by the large black dots in the figure. During the rising phase of the oscillation, the cell sweeps through G2 into mitosis. During the decreasing phase of the oscillation (as Cdc20 and Cdh1 degrade Clb2), the cell exits from mitosis and divides (when [Clb2] drops below 0.2; see Other rules). The reduction in cell mass at division returns the control system to its original state in G1.
+
+<a id='9fb3751f-e2db-425e-967b-1e64c46f0e67'></a>
+
+**Checkpoints.** How does this picture change as a consequence of activating the morphogenesis checkpoint? In *cdc24ts* the checkpoint is engaged: the cell-cycle orbit (Fig. S1, middle, dotted line) is attracted by a G1 state and, as mass increases, undergoes the start transition just like wild-type cells. But after start the system is not immediately attracted by the oscillatory state, because oscillations are separated from start by a new branch of steady states, with intermediate values of [Clb2]. What is the molecular basis for this state? It is not a G1 state because SBF is high in this branch (not depicted). Rather, it is a G2-like state. *SWE1*, an SBF-controlled gene, is fully transcribed in this state and, in the absence of a bud, it is not transformed into the inactive modified form Swe1M. Hence, it phosphorylates and inactivates Cdc28–Clb2, creating a G2 steady state. When cell grows sufficiently large (Fig. S1, middle, *M* exceeds the SN3-point), enough Clb2 has accumulated in the nucleus to start the positive feedback loops with Mih1 and Mcm1 and to phosphorylate Swe1. The control system enters the mitotic state. Because nuclear division does not occur in this mutant, the cell-cycle orbit is not closed.
+
+<a id='79f7641c-a069-43a6-9da2-2afac401ee81'></a>
+
+Finally, _hsl1 mih1Δ_ (Fig. S1, right) shows the most dramatic picture. Because Mih1 is missing, Cdc28–Clb2 cannot engage the positive feedback loop and it is kept in the inactive phosphorylated form by Swe1. Moreover, Swe1 cannot be converted into the inactive form Swe1M. The G2–M transition cannot occur until _M_ reaches a very large (nonphysiological) value (_M_ = 29). Biologically, the cell grows in size until it dies (see Other rules). This is the bifurcation diagram of a cell blocked irreversibly in G2.
+
+<a id='1d8f25f9-6bdb-4b94-baae-49854de3918c'></a>
+
+References
+Amon, A., M. Tyers, B. Futcher, and K. Nasmyth. 1993. Mechanisms that help the yeast cell cycle clock tick: G2 cyclins transcriptionally activate G2 cyclins and repress G1 cyclins. Cell. 74:993-1007.
+Barral, Y., M. Parra, S. Bidlingmaier, and M. Snyder. 1999. Nim1-related kinases coordinate cell cycle progression with the organization of the peripheral cytoskeleton in yeast. Genes Dev. 13:176-187.
+Booher, R.N., R.J. Deshaies, and M.W. Kirschner. 1993. Properties of Saccharomyces cerevisiae wee1 and its differential regulation of p34cdc28 in response to G1 and G2 cyclins. EMBO J. 12:3417-3426.
+Irniger, S., S. Piatti, C. Michaelis, and K. Nasmyth. 1995. Genes involved in sister chromatid separation are needed for B-type cyclin proteolysis in budding yeast. Cell. 81:269-277.
+Lew, D.J. 2000. Cell-cycle checkpoints that ensure coordination between nuclear and cytoplasmic events in Saccharomyces cerevisiae. Curr. Opin. Genet. Dev. 10:47-53.
+Longtine, M.S., C.L. Theesfeld, J.N. McMillan, E. Weaver, J.R. Pringle, and D.J. Lew. 2000. Septin-dependent assembly of a cell cycle-regulatory module in Saccharomyces cerevisiae. Mol. Cell. Biol. 20:4049-4061.
+Ma, X.J., Q. Lu, and M. Grunstein. 1996. A search for proteins that interact genetically with histone H3 and H4 amino termini uncovers novel regulators of the Swe1 kinase in Saccharomyces cerevisiae. Genes Dev. 10:1327-1340.
+McMillan, J.N., M.S. Longtine, R.A.L. Sia, C.L. Theesfeld, E.S.G. Bardes, J.R. Pringle, and D.J. Lew. 1999. The morphogenesis checkpoint in Saccharomyces cerevisiae: cell cycle control of Swe1p degradation by hsl1p and hsl7p. Mol. Cell. Biol. 19:6929-6939.
+Russell, P., S. Moreno, and S.I. Reed. 1989. Conservation of mitotic controls in fission and budding yeast. Cell. 57:295-303.
+Shulewitz, M.J., C. Inouye, and J. Thorner. 1999. Hsl7 localizes to a septin ring and serves as an adapter in a regulatory pathway that relieves tyrosine phosphorylation of Cdc28 protein kinase in Saccharomyces cerevisiae. Mol. Cell. Biol. 19:7123-7137.
+Sia, R.A.L., H.A. Herald, and D.J. Lew. 1996. Cdc28 tyrosine phosphorylation and the morphogenesis checkpoint in budding yeast. Mol. Biol. Cell. 7:1657-1666.
+Sia, R.A.L., E.S.G. Bardes, and D.J. Lew. 1998. Control of Swe1p degradation by the morphogenesis checkpoint. EMBO J. 17:6678-6688.
+Tanaka, S., and H. Nojima. 1996. Nik1: a nim1-like protein kinase of S. cerevisiae interacts with the Cdc28 complex and regulates cell cycle progression. Genes Cells. 1:905-921.
+Tyson, J.J., K. Chen, and B. Novak. 2001. Network dynamics and cell physiology. Nat. Rev. Mol. Cell Biol. 2:908-916.
+Tyson, J.J., A. Csikasz-Nagy, and B. Novak. 2002. The dynamics of cell cycle regulation. Bioessays. 24:1095-1109.
+
+<!-- PAGE BREAK -->
+
+<a id='579a0826-9976-4ff1-ae8d-348f5564f640'></a>
+
+Table S1. Differential equations for the morphogenesis checkpoint.
+
+1.  d[Clb2]/dt = k_s,clb (ε+[Mcm*]) M / (1+(M/J_m)) - (k_d,clb+k'_d,clb [Cdh1*]+k''_d,clb [Cdc20*]) [Clb2] - k_swe [Clb2] + k_mih [PClb2] - k_ass [Sic1] [Clb2] + k_diss [Trim] + (k_d,sic+k'_d,sic [Cln]+k''_d,sic [Clb2]) [Trim]
+2.  d[PClb2]/dt = - (k_d,clb+k'_d,clb [Cdh1*]+k''_d,clb [Cdc20*]) [PClb2] + k_swe [Clb2] - k_mih [PClb2] - k_ass [Sic1] [PClb2] + k_diss [PTrim] + (k_d,sic+k'_d,sic [Cln]+k''_d,sic [Clb2]) [PTrim]
+3.  d[Trim]/dt = - k_diss [Trim] + k_ass [Sic1] [Clb2] - (k_d,sic+k'_d,sic [Cln]+k''_d,sic [Clb2]) [Trim] - (k'_d,clb+k''_d,clb [Cdh1*]+k'''_d,clb [Cdc20*]) [Trim] - k_swe [Trim] + k_mih [PTrim]
+4.  d[PTrim]/dt = - k_diss [PTrim] + k_ass [Sic1] [PClb2] - (k_d,sic+k'_d,sic [Cln]+k''_d,sic [Clb2]) [PTrim] - (k'_d,clb+k''_d,clb [Cdh1*]+k'''_d,clb [Cdc20*]) [PTrim] + k_swe [Trim] - k_mih [PTrim]
+5.  d[Mcm*]/dt = - k_i,mcm [Mcm*] / (J_i,mcm+[Mcm*]) + k_a,mcm [Mcm][Clb2] / (J_a,mcm+[Mcm])
+6.  d[Sic1]/dt = k_s,sic - (k_d,sic+k'_d,sic [Cln]+k''_d,sic [Clb2]) [Sic1] - k_ass [Sic1] ([Clb2]+[PClb2]) + k_diss ([PTrim]+[Trim]) + (k'_d,clb+k''_d,clb [Cdh1*]+k'''_d,clb [Cdc20*]) ([Trim]+[PTrim])
+7.  d[Mih1*]/dt = - V_i,mih [Mih1*] / (J_i,mih+[Mih1*]) + V_a,mih [Clb2][Mih1] / (J_a,mih+[Mih1])
+8.  d[IE*]/dt = - k_i,ie [IE*] / (J_i,ie+[IE*]) + k_a,ie [Clb2][IE] / (J_a,ie+[IE])
+9.  d[Cdc20*]/dt = k_a,cdc20 [IE*][Cdc20] / (J_a,cdc20+[Cdc20]) - k_i,cdc20 [Cdc20*] / (J_i,cdc20+[Cdc20*]) - k_d,cdc20 [Cdc20*]
+10. d[Cdc20]/dt = k_s,cdc20 + k'_s,cdc20 [Clb2]^4 / (J_s,cdc20+[Clb2]^4) - k_a,cdc20 [IE*][Cdc20] / (J_a,cdc20+[Cdc20]) + k_i,cdc20 [Cdc20*] / (J_i,cdc20+[Cdc20*]) - k_d,cdc20 [Cdc20]
+11. d[Cdh1*]/dt = - (k_i,cdh [Clb2] + k'_i,cdh [Cln])[Cdh1*] / (J_i,cdh+[Cdh1*]) + (k_a,cdh + k'_a,cdh [Cdc20*])[Cdh1] / (J_a,cdh+[Cdh1])
+12. d[Cln]/dt = k_s,cln [SBF*] - k_d,cln [Cln]
+
+<!-- PAGE BREAK -->
+
+<a id='5266b7dd-7050-4640-90e6-afc6f90c15fa'></a>
+
+13. d[SBF*]/dt = (k'i,sbf + k''i,sbf [Clb2])[SBF*] / (Ji,sbf + [SBF*]) + (k'a,sbf M + k''a,sbf [Cln])[SBF] / (Ja,sbf + [SBF])
+
+14. d[Swe1]/dt = ks,swe [SBF*] + ks,sweC - khsl1 [BUD] [Swe1] + khsl1r [Swe1M] - Vi,wee [Clb2][Swe1] / (Ji,wee + [Swe1]) + Va,wee [PSwe1] / (Ja,wee + [PSwe1]) - k'd,swe [Swe1]
+
+15. d[PSwe1]/dt = - khsl1 [BUD] [PSwe1] + khsl1r [PSwe1M] - Va,wee [PSwe1] / (Ja,wee + [PSwe1]) - k'd,swe [PSwe1]
+
+16. d[Swe1M]/dt = khsl1 [BUD] [Swe1] - khsl1r [Swe1M] - Vi,wee [Clb2][Swe1M] / (Ji,wee + [Swe1M]) + Va,wee [PSwe1M] / (Ja,wee + [PSwe1M]) - k'd,swe [Swe1M]
+
+17. d[PSwe1M]/dt = khsl1 [BUD] [PSwe1] - khsl1r [PSwe1M] - Va,wee [PSwe1M] / (Ja,wee + [PSwe1M]) + Vi,wee [Clb2][Swe1M] / (Ji,wee + [Swe1M]) - k''d,swe [PSwe1M]
+
+<a id='7c34d1f2-68ea-4b2c-8516-0c9748c1299a'></a>
+
+18. d[BE]/dt = k_s,bud [Cln] - k_d,bud [BE]
+19. dM/dt = μ M
+k_mih = k'_mih [Mih1*] + k''_mih [Mih1],
+[IE] = [IE]_total - [IE*],
+[Mih1] = [Mih1]_total - [Mih1*],
+[SBF] = [SBF]_total - [SBF*],
+[BUD] = 0, if cell is unbudded; = 1, if cell is budded.
+k_swe = k'_swe [Swe1] + k''_swe [Swe1M] + k'''_swe [PSwe1],
+[Cdh1] = [Cdh1]_total - [Cdh1*],
+[Mcm] = [Mcm]_total - [Mcm*],
+[Swe1]_total = [Swe1] + [PSwe1] + [Swe1M] + [PSwe1M],
+
+<a id='2d33a470-d72f-4373-8d36-1ccd10e59d8a'></a>
+
+Bud is formed when [BE] increases above 0.6; budded cell divides when [Clb2] drops below 0.2.
+* indicates the more active form of a protein.
+
+<a id='69c987e4-6a12-44c5-ab76-2e424bdac952'></a>
+
+We use a shorthand notation for the molecular species in Figs. 1 and 2: "Clb2" for Cdc28/Clb2, "PClb2" for PCdc28/Clb2, "Trim" for Cdc28/Clb2/Sic1, "PTrim" for PCdc28/Clb2/Sic1, and "Cln" for Cdc28/Cln.
+
+<!-- PAGE BREAK -->
+
+<a id='241100a2-f2f5-4ce8-9677-fd5830b35b68'></a>
+
+Table S2. Initial conditions and parameter values for the differential equations in Table S1.
+
+<a id='ea60c269-2915-42de-ac4e-87e7cbc1fd52'></a>
+
+<table id="5-1">
+<tr><td id="5-2">Rate constants (min⁻¹)</td><td id="5-3"></td><td id="5-4"></td><td id="5-5"></td></tr>
+<tr><td id="5-6">kₛ,clb = 0.015,</td><td id="5-7">k&#x27; d,clb = 0.015,</td><td id="5-8">k&#x27;&#x27; d,clb = 1,</td><td id="5-9">k&#x27;&#x27;&#x27; d,clb = 0.1</td></tr>
+<tr><td id="5-a">k&#x27; swe = 2,</td><td id="5-b">k&#x27;&#x27; swe = .01,</td><td id="5-c">k&#x27;&#x27;&#x27; swe = .2,</td><td id="5-d">k&#x27; mih = 5,</td></tr>
+<tr><td id="5-e">k&#x27;&#x27; mih = 0.5,</td><td id="5-f">kass = 300,</td><td id="5-g">kdiss = 0.1,</td><td id="5-h">kₛ,sic = 0.1,</td></tr>
+<tr><td id="5-i">k d,sic = 0.01,</td><td id="5-j">k&#x27; d,sic = 1,</td><td id="5-k">k&#x27;&#x27; d,sic = 3,</td><td id="5-l">ka,mcm=1,</td></tr>
+<tr><td id="5-m">ki.mcm=.15</td><td id="5-n">Vi.mih = 0.3,</td><td id="5-o">Va.mih = 1,</td><td id="5-p">ka.ie=0.1,</td></tr>
+<tr><td id="5-q">ki.ie=0.04,</td><td id="5-r">ka.cdc20 = 1,</td><td id="5-s">ki.cdc20 = 0.25,</td><td id="5-t">kd.cdc20=0.1</td></tr>
+<tr><td id="5-u">ks,.cdc20=0.005,</td><td id="5-v">ks.cdc20 = 0.3,</td><td id="5-w">ki.cdh =35,</td><td id="5-x">ki.cdh =2,</td></tr>
+<tr><td id="5-y">ka.cdh=1,</td><td id="5-z">ka,cdh =10,</td><td id="5-A">kd,cln = 0.1,</td><td id="5-B">ks.cln = 0.1</td></tr>
+<tr><td id="5-C">Ka.sbf=1,</td><td id="5-D">ka.sbf = 0,</td><td id="5-E">ki.sbf = 1,</td><td id="5-F">ki.sbf = 2,</td></tr>
+<tr><td id="5-G">kS,swe = 0.0025,</td><td id="5-H">ks,sweC = 0,</td><td id="5-I">khsl1 = 1,</td><td id="5-J">khsllr = 0.01</td></tr>
+<tr><td id="5-K">Va,wee=0.3,</td><td id="5-L">Vi,wee=1,</td><td id="5-M">kd,swe = 0.007,</td><td id="5-N">kd,swe = 0.05,</td></tr>
+<tr><td id="5-O">kd,bud = 0.1,</td><td id="5-P">ks,bud = 0.1,</td><td id="5-Q">μ = 0.005</td><td id="5-R"></td></tr>
+</table>
+
+<a id='13839676-9073-453e-816e-2819a575d746'></a>
+
+## Other constants (dimensionless)
+
+Ja,mcm = 0.1, Ji,mcm = 0.1, Ja,mih = 0.1, Ji,mih = 0.1,
+Jm = 10, Js,cdc20 = 0.3, Ja,ie = 0.01, Ji,ie = 0.01,
+Ja,cdc20 = 0.001, Ji,cdc20 = 0.001, Ja,sbf = 0.01, Ji,sbf = 0.01,
+Ja,cdh = 0.01, Ji,cdh = 0.01, Ja,wee = 0.05, Ji,wee = 0.05
+
+[Cdh1] total = [Mcm] total = [SBF] total = [Mih1] total = [IE] total = 1,
+ε = 0.5
+
+<a id='a33d7001-e85c-4362-831f-d24b603f748a'></a>
+
+Initial concentrations (arbitrary units)
+
+[Clb2] = 0.184,
+[Mcm*] = 0.933,
+[Cdc20*] = 1.438,
+[SBF*] = 0.124,
+[PSwe1M] = 0.013,
+
+[PClb2] = 0,
+[Sic1] = 0.003,
+[Cdc20] = 1.172,
+[Swe1] = 0,
+[BE] = 0,
+
+[Trim] = 0.084,
+[Mih1*] = 0.808,
+[Cdh1*] = 0.993,
+[PSwe1] = 0,
+M = 0.802
+
+[PTrim] = 0,
+[IE*] = 0.522,
+[Cln] = 0.054,
+[Swe1M] = 0.018,

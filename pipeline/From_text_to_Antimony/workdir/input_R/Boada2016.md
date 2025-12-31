@@ -1348,3 +1348,516 @@ and we will help you at every step:
 Submit your manuscript at
 www.biomedcentral.com/submit
 BioMed Central
+
+# Supplementary materials
+
+<a id='a9cd48d5-0dd0-47a7-a36d-d92299042c5e'></a>
+
+Additional File 1☆
+
+<a id='39361db0-6fc3-49e3-a238-6dbb5510158a'></a>
+
+Yadira Boadaª, Gilberto Reynoso-Mezab, Jesús Picóª, Alejandro Vignonia,1
+
+ªInstitut d'Automàtica i Informàtica Industrial, Universitat Politècnica de València, Valencia, Spain
+
+bIndustrial and Systems Engineering Graduate Program (PPGEPS), Pontifical Catholic University of Parana (PUCPR), Curitiba, Brasil.
+
+<a id='b655aaf8-3b85-477a-9768-0572be43707d'></a>
+
+## Abstract
+In this file there is all the additional information including: Model reduction, explanation of the Matlab code and additional tables and figure to help support the main paper.
+
+<a id='d6a978b5-a045-4918-91b5-30f6e766f439'></a>
+
+1. I1-FFL model
+
+Next, a complete biochemical model of the I1-FFL gene regularoty network is derived, and its corresponding dynamical model based on balance equations and mass action kinetics is formulated. The biochemical reactions considered can be split in two main classes: the gene expression reactions, and the induction ones. In the gene expression block, the main processes considered for each of the three proteins are the binding of the RNA polymerase to the promoter, transcription, translation, mRNA degradation and protein degradation. In the induction part, the main processes considered are binding between the protein A and the inducer to form the monomer, monomer degradation, dimer formation and its degradation, addition of external inducer, diffusion of the inducer, inducer degradation, binding of the dimer to the gB promoter, binding of the dimer to the gC promoter, and binding between the activator (or repressor) and the gC hybrid promoter. The corresponding set of variables and corresponding symbols are shown in Table 1.
+The resulting set of biochemical reactions is:
+
+<a id='38843303-6109-4845-b855-e711aab6aa0a'></a>
+
+☆ Boada et al. Obtaining model based guidelines for the design of synthetic devices using a multi-objective optimiza-tion framework. An adaptive network case
+¹Actual affiliation is Center for Systems Biology Dresden (CSBD), Max Planck Institute of Molecular Cell Biology and Genetics, Pfotenhauerstr. 108, 01307 Dresden, Germany
+
+<!-- PAGE BREAK -->
+
+<a id='12f0e4e7-6188-40a2-9e0a-2f1812e97af4'></a>
+
+Table S 1. List of variables in the complete model.
+<table id="1-1">
+<tr><td id="1-2">Variable</td><td id="1-3">Description</td><td id="1-4">Units</td><td id="1-5">Symbol</td></tr>
+<tr><td id="1-6">X1</td><td id="1-7">DNA promoter gene A</td><td id="1-8">nM</td><td id="1-9">gA</td></tr>
+<tr><td id="1-a">X2</td><td id="1-b">RNA polymerase</td><td id="1-c">nM</td><td id="1-d">RNAp</td></tr>
+<tr><td id="1-e">X3</td><td id="1-f">gA·RNAp complex</td><td id="1-g">nM</td><td id="1-h">gA·RNAp</td></tr>
+<tr><td id="1-i">X4</td><td id="1-j">messenger RNA for gene A</td><td id="1-k">nM</td><td id="1-l">mA</td></tr>
+<tr><td id="1-m">X5</td><td id="1-n">A protein</td><td id="1-o">nM</td><td id="1-p">A</td></tr>
+<tr><td id="1-q">X6</td><td id="1-r">Intracellular inducer</td><td id="1-s">nM</td><td id="1-t">I</td></tr>
+<tr><td id="1-u">X7</td><td id="1-v">A·I monomer</td><td id="1-w">nM</td><td id="1-x">A·I</td></tr>
+<tr><td id="1-y">X8</td><td id="1-z">(A·I)2 dimer</td><td id="1-A">nM</td><td id="1-B">(A·I)2</td></tr>
+<tr><td id="1-C">X9</td><td id="1-D">DNA promoter gene B</td><td id="1-E">nM</td><td id="1-F">gB</td></tr>
+<tr><td id="1-G">X10</td><td id="1-H">gB(A·I)2 complex</td><td id="1-I">nM</td><td id="1-J">gB(A·I)2</td></tr>
+<tr><td id="1-K">X11</td><td id="1-L">DNA promoter gene C</td><td id="1-M">nM</td><td id="1-N">gC</td></tr>
+<tr><td id="1-O">X12</td><td id="1-P">gC(A·I)2 complex</td><td id="1-Q">nM</td><td id="1-R">gC(A·I)2</td></tr>
+<tr><td id="1-S">X13</td><td id="1-T">gC·B complex</td><td id="1-U">nM</td><td id="1-V">gC·B</td></tr>
+<tr><td id="1-W">X14</td><td id="1-X">gC·B(A·I)2 complex</td><td id="1-Y">nM</td><td id="1-Z">gC·B(A·I)2</td></tr>
+<tr><td id="1-10">X15</td><td id="1-11">gB(A·I)2RNAp complex</td><td id="1-12">nM</td><td id="1-13">gB(A·I)2RNAp</td></tr>
+<tr><td id="1-14">X16</td><td id="1-15">messenger RNA for gene B</td><td id="1-16">nM</td><td id="1-17">mB</td></tr>
+<tr><td id="1-18">X17</td><td id="1-19">B protein</td><td id="1-1a">nM</td><td id="1-1b">B</td></tr>
+<tr><td id="1-1c">X18</td><td id="1-1d">messenger RNA for gene C</td><td id="1-1e">nM</td><td id="1-1f">mC</td></tr>
+<tr><td id="1-1g">X19</td><td id="1-1h">C protein</td><td id="1-1i">nM</td><td id="1-1j">C</td></tr>
+<tr><td id="1-1k">X20</td><td id="1-1l">Extracellular inducer</td><td id="1-1m">nM</td><td id="1-1n">le</td></tr>
+</table>
+
+<a id='66cf45e0-ddaf-4232-9688-56a7fe0e8b43'></a>
+
+<::
+gA + RNAP <img src="/k1_k-1_equilibrium_arrow.png" alt="k1 above, k-1 below, equilibrium arrows"> gA·RNAP
+
+gA·RNAP <img src="/kmA_arrow.png" alt="kmA above arrow"> gA + RNAP + mA
+
+mA <img src="/kPA_arrow.png" alt="kPA above arrow"> mA + A
+
+mA <img src="/dmA_arrow.png" alt="dmA above arrow"> Ø
+
+A <img src="/dA_arrow.png" alt="dA above arrow"> Ø
+
+A + I <img src="/k2_k-2_equilibrium_arrow.png" alt="k2 above, k-2 below, equilibrium arrows"> AI
+
+Ø <img src="/ke_arrow.png" alt="ke above arrow"> Ie
+
+Ie <img src="/kd_kd_equilibrium_arrow.png" alt="kd above, kd below, equilibrium arrows"> I
+
+I <img src="/dI_arrow.png" alt="dI above arrow"> Ø
+
+2(AI) <img src="/k3_k-3_equilibrium_arrow.png" alt="k3 above, k-3 below, equilibrium arrows"> (AI)2
+
+(AI) <img src="/dAI_arrow.png" alt="dAI above arrow"> Ø
+
+(AI)2 <img src="/dAI2_arrow.png" alt="dAI2 above arrow"> Ø
+: figure::>
+
+<a id='31174320-54db-4e01-9ebf-4aa15b20afef'></a>
+
+gene A:
+
+<!-- PAGE BREAK -->
+
+<a id='e67387ed-8f34-4df2-9d7e-08d83f070673'></a>
+
+gene B:
+
+<::
+gB + (AI)₂ <=> k₄ / k₋₄ gB·(AI)₂
+
+gB·(AI)₂ + RNAp <=> k₇ / k₋₇ gB·(AI)₂·RNAP
+
+gB·(AI)₂·RNAP → kmB gB·(AI)₂ + RNAp + mB
+
+mB → kpB mB + B
+
+mB → dmB ∅
+
+B → dB ∅
+: chart::>
+
+<a id='06a072ca-a796-4605-89f6-36752e04264a'></a>
+
+gene C:
+
+<::gC + (AI)₂ \xrightarrow{k₅} gC·(AI)₂
+\xleftarrow{k₋₅}
+
+gC·B + (AI)₂ \xrightarrow{k₆} gC·B·(AI)₂
+\xleftarrow{k₋₆}
+
+gC·(AI)₂ + B \xrightarrow{k₈} gC·B·(AI)₂
+\xleftarrow{k₋₈}
+
+gC + B \xrightarrow{k₉} gC·B
+\xleftarrow{k₋₉}
+
+gC·(AI)₂ + RNAp \xrightarrow{k₁₀} gC·(AI)₂·RNAp
+\xleftarrow{k₋₁₀}
+
+gC·(AI)₂·RNAp \xrightarrow{k_{mC}} gC·(AI)₂ + RNAp + mC
+
+mC \xrightarrow{k_{PC}} mC + C
+
+mC \xrightarrow{d_{mC}} \emptyset
+
+C \xrightarrow{d_C} \emptyset
+: figure::>
+
+<a id='aae5c7f7-bc80-4cc6-bd0d-9da21289ca7a'></a>
+
+Note: the empty set Ø denotes species degradation when placed in the right hand side of a reaction.
+
+<a id='8227937e-945c-4146-b2a8-233d97338585'></a>
+
+Notice we assume that binding between the activating dimer and the gC hybrid promoter is always possible, even if the repressor B is already bound to the promoter, and vice versa. Yet, we consider that whenever the repressor B is bound to the promoter gC, the RNA polymerase cannot bind the promoter.
+
+<a id='3dfa6387-384e-41a3-ac8d-31daafbf887b'></a>
+
+Using the law of mass-action kinetics (Horn and Jackson, 1972; Chellaboina et al., 2009), the previous reactions can be used to formulate the corresponding dynamic balances of the species
+
+<a id='446b0287-501a-4ad1-8cf3-8df3785f623e'></a>
+
+3
+
+<!-- PAGE BREAK -->
+
+<a id='99feeb22-925d-466f-9850-53a9f67bcfba'></a>
+
+concentrations:
+
+x_1 = -k_1 x_1 x_2 + k_{-1} x_3 + k_{mA} x_3
+x_2 = -k_1 x_1 x_2 + k_{-1} x_3 + k_{mA} x_3 - k_7 x_{10} x_2 + k_{-7} x_{15} + k_{mB} x_{15}
+x_3 = k_1 x_1 x_2 - k_{-1} x_3 - k_{mA} x_3
+x_4 = k_{mA} x_3 - d_{mA} x_4
+x_5 = k_{pA} x_4 - d_A x_5 - k_2 x_5 x_6 + k_{-2} x_7
+x_6 = -k_2 x_5 x_6 + k_{-2} x_7 + k_d x_{20} - k_d x_6 - d_I x_6
+x_7 = k_2 x_5 x_6 - k_{-2} x_7 - 2k_3 x_7^2 + 2k_{-3} x_8 - d_{AI} x_7
+x_8 = k_3 x_7^2 - k_{-3} x_8 - k_4 x_8 x_9 + k_{-4} x_{10} - k_5 x_8 x_{11} + k_{-5} x_{12} - k_6 x_8 x_{13} + k_{-6} x_{14} - d_{AI2} x_8
+x_9 = -k_4 x_9 x_8 + k_{-4} x_{10}
+x_{10} = k_4 x_9 x_8 - k_{-4} x_{10} - k_7 x_{10} x_2 + k_{-7} x_{15} + k_{mB} x_{15}
+x_{11} = -k_9 x_{11} x_{17} + k_{-9} x_{13} - k_5 x_{11} x_8 + k_{-5} x_{12}
+x_{12} = k_5 x_{11} x_8 - k_{-5} x_{12} - k_8 x_{12} x_{17} + k_{-8} x_{14}
+x_{13} = k_9 x_{11} x_{17} - k_{-9} x_{13} - k_6 x_{13} x_8 + k_{-6} x_{14}
+x_{14} = k_6 x_{13} x_8 - k_{-6} x_{14} + k_8 x_{12} x_{17} - k_{-8} x_{14}
+x_{15} = k_7 x_{10} x_2 - k_{-7} x_{15} - k_{mB} x_{15}
+x_{16} = k_{mB} x_{15} - d_{mB} x_{16}
+x_{17} = k_{pB} x_{16} - d_B x_{17} - k_9 x_{11} x_{17} + k_{-9} x_{13} - k_8 x_{12} x_{17} + k_{-8} x_{14}
+x_{18} = k_{mC} x_{12} - d_{mC} x_{18}
+x_{19} = k_{pC} x_{18} - d_C x_{19}
+x_{20} = k_d x_6 - k_d x_{20} - d_I x_{20}
+
+<a id='385008bb-fdba-4d90-8397-563768c39fdc'></a>
+
+Note these equations can be derived either by inspection, or using specific software to automate the process. Software packages like BioNetGen (Blinov et al., 2004) or COPASI (Mendes et al., 2009) allow to obtain the dynamic kinetic model from either the set of reactions or from SBML files encoding them.
+
+<a id='ae5f3124-c88d-42dd-a15a-71ed85cb6759'></a>
+
+The complete model is of large order, which implies a high computational cost for the param- eters estimation process that will be carried out later on. Moreover, the large differences in the time scales among the different species in the synthetic gene network (typically many orders of magnitude) originate huge difficulties for simulating the temporal evolution of the network and for understanding the basic principles of its operation. Therefore, the dynamical model will be reduced using time-scale separation and detection of invariant moieties.
+
+<a id='e4081916-5942-486c-a342-31d037533e54'></a>
+
+We apply the _Quasi Steady-State Approximation_ (QSSA) to the fast chemical species (Zagaris
+et al., 2004; Mélykúti et al., 2014). In essence QSSA is a singular perturbation method that
+considers the time-scale separation among the different dynamics. In particular, we will assume
+that binding reactions occur very fast in comparison with those corresponding to transcription,
+translation or even genuine degradation. On the other hand, monomer formation is faster that
+dimerization Therefore, the differential equation corresponding to the AI complex formation
+will be assumed to be at steady state.
+
+<a id='ea86c7b8-deb5-4573-87cb-d90c53e2b3b3'></a>
+
+Additional algebraic relationships among variables can be obtained through _system invari_-
+ants. In the case of reaction networks, it can be observed that some reactions are a linear combi-
+
+<a id='44fbd224-de65-45e7-a83a-71c1435dfc5e'></a>
+
+4
+
+<!-- PAGE BREAK -->
+
+<a id='83b9d881-aa67-4b8b-a16f-adc5bfbce959'></a>
+
+Table S 2. List of variables used in the reduced model.
+<table id="4-1">
+<tr><td id="4-2">Variable</td><td id="4-3">Description</td><td id="4-4">Units</td><td id="4-5">Symbol</td></tr>
+<tr><td id="4-6">x₁</td><td id="4-7">mRNAgA</td><td id="4-8">nM</td><td id="4-9">mA</td></tr>
+<tr><td id="4-a">x₂</td><td id="4-b">A protein</td><td id="4-c">nM</td><td id="4-d">A</td></tr>
+<tr><td id="4-e">x₃</td><td id="4-f">Inducer</td><td id="4-g">nM</td><td id="4-h">I</td></tr>
+<tr><td id="4-i">M</td><td id="4-j">A·I monomer</td><td id="4-k">nM</td><td id="4-l">A·I</td></tr>
+<tr><td id="4-m">X4</td><td id="4-n">(A•I)2 dimer</td><td id="4-o">nM</td><td id="4-p">(A•I)2</td></tr>
+<tr><td id="4-q">X5</td><td id="4-r">mRNAgB</td><td id="4-s">nM</td><td id="4-t">mB</td></tr>
+<tr><td id="4-u">X6</td><td id="4-v">B protein</td><td id="4-w">nM</td><td id="4-x">B</td></tr>
+<tr><td id="4-y">X7</td><td id="4-z">mRNAgC</td><td id="4-A">nM</td><td id="4-B">mC</td></tr>
+<tr><td id="4-C">X8</td><td id="4-D">C protein</td><td id="4-E">nM</td><td id="4-F">C</td></tr>
+<tr><td id="4-G">X9</td><td id="4-H">External I ext</td><td id="4-I">nM</td><td id="4-J">Ie</td></tr>
+</table>
+
+<a id='af6c602c-09cd-47d7-a80c-7d0ab1352325'></a>
+
+nation of other ones. Then, the linear combination of the concentrations of the species involved will keep constant in time. These linear combinations, so called moieties, can be understood as a kind of quasi-species that keep invariant, i.e. keep constant concentration.
+
+<a id='551f3dbd-0d06-4420-bf23-8e29cf7fa233'></a>
+
+After the reduction, ommited here, we get a system of nine ordinary differential equations
+(each one corresponding to the dynamics of one of the species) plus an algebraic equation, and
+26 model parameters that will be the decision variables at the the optimization step. The resulting
+model is:
+
+<a id='7cbeaf05-a4ae-4c25-821f-dc9ac09111f3'></a>
+
+$\dot{x}_1 = k_{mA}C_{gA} - d_{mA}x_1$ (1)
+$\dot{x}_2 = k_{pA}x_1 - d_Ax_2 - k_2x_2x_3 + k_{-2}M$ (2)
+$\dot{x}_3 = -k_2x_2x_3 + k_{-2}M + k_dx_9 - k_dx_3 - d_Ix_3$ (3)
+$\dot{x}_4 = k_3M^2 - 2k_{-3}x_4 - d_{AI2}x_4$ (4)
+$\dot{x}_5 = K_{mB}C_{gB}\frac{x_4}{\theta_1 + x_4} - d_{mB}x_5$ (5)
+$\dot{x}_6 = k_{pB}x_5 - d_Bx_6$ (6)
+$\dot{x}_7 = K_{mC}C_{gC}\frac{x_4 + \beta_1x_6 + \beta_2x_4x_6}{\theta_2 + \theta_3x_4 + \theta_4x_6 + \theta_5x_4x_6} - d_{mC}x_7$ (7)
+$\dot{x}_8 = k_{pC}x_7 - d_Cx_8$ (8)
+$\dot{x}_9 = -k_dx_9 + k_dx_3 - d_{Ie}x_9$ (9)
+
+<a id='e05a9d52-8383-4bc7-9a61-cb258ee24b98'></a>
+
+with $M = -\frac{d_{AI} + k_{-2}}{2k_3} + \frac{1}{2k_3} \sqrt{(d_{AI} + k_{-2})^2 + 4k_3(k_2x_2x_3 + 2k_{-3}x_4)}$.
+The resulting set of biochemical reactions corresponding to the reduced model is:
+
+<a id='8d121de3-ab40-4cd9-bacb-ca6b80b550e9'></a>
+
+5
+
+<!-- PAGE BREAK -->
+
+<a id='98397395-cb3d-44ba-b1fd-2920149fab77'></a>
+
+gene A:
+
+<::
+0 --(f_A)--> + mA
+mA --(k_pA)--> mA + A
+mA --(d_mA)--> 0
+A --(d_A)--> 0
+2A + 2I <--(k_2M)/(2k-3)--> (AI)_2
+0 --(k_e)--> Ie
+Ie <--(k_d)/(k_d)--> I
+I --(d_I)--> 0
+(AI)_2 --(d_AI2)--> 0
+: figure::>
+
+<a id='06650036-d901-42c5-b3e0-e52bdf83b6c1'></a>
+
+gene B:
+
+<::
+0 --(fB)--> mB
+mB --(kPB)--> mB + B
+mB --(dmB)--> 0
+B --(dB)--> 0
+: figure::>
+
+<a id='3816554d-10b3-4546-bdd7-30ec0536f5fa'></a>
+
+gene C:
+
+0 \xrightarrow{f_c} + mC
+mC \xrightarrow{k_{pC}} mC + C
+mC \xrightarrow{d_{mC}} \emptyset
+C \xrightarrow{d_C} \emptyset
+
+<a id='d33247a4-4489-4e6e-bcdb-6b843f08cfd7'></a>
+
+Where $f_A$, $f_B$, and $f_C$ are the lumped propensities obtained from the reduction:
+
+$f_A = K_{mA}C_{gA}$, (10)
+
+$f_B = K_{mB}C_{gC} \frac{x_4}{\theta_1 + x_4}$, (11)
+
+$f_C = K_{mC}C_{gC} \frac{x_4 + \beta_1x_6 + \beta_2x_4x_6}{\theta_2 + \theta_3x_4 + \theta_4x_6 + \theta_5x_4x_6}$, (12)
+
+<!-- PAGE BREAK -->
+
+<a id='4fe1865b-15e5-4de9-b296-494d03e21a18'></a>
+
+## 2. Matlab CODE
+
+A short description of the main functions integrating this code and justification of the value sets is given below. It has been divided in two groups: files related to the model computational characterization, and files used by the optimizer, which link to the first set.
+
+Model code
+
+*   _model_3genes.m_ is a function for the ODEs of the reduced model. Receives the value of the state vector _x_ at time _t_, the parameters, initial conditions and time point; and returns a vector with the derivatives defined in it. When used with the command ode23s in the function _objective_func.m_ one obtains the solution of the ODEs system for the given parameters.
+
+*   _objective_func.m_ is the objective function. It receives the parameters and returns the **objectives values vector**, after calculating J₁ and J₂ for the corresponding dynamic response obtained with the given parameters.
+
+The 14 variables are initialized, and the 10 parameters are not because the optimizer will work with a given range in its code.
+
+The ode23s algorithm gives the variables values Y for each t, using _model_3genes.m_. This _ode_ algorithm was selected because our system model is what it is known as _stiff_, in terms of the numerical solution of ordinary differential equations, i.e. it has both slow and fast dynamics. An ordinary differential equation problem is stiff if the solution being sought is varying slowly, but there are nearby solutions that vary rapidly, so the numerical method must take small steps to obtain satisfactory results. For our integration problem we use an absolute tolerance of 1e-8, and a relative tolerance of 1e-6.
+
+For computational simulation, we start from the equilibrium initial conditions (precomputed) and give a jump of 50nM to the concentration of x9 to simulate the induction. With respect to the simulation parameters, the simulation sampling time (Ts) was fixed to 1e-3 minutes, and a total simulation time _Tsim_ = 300 minutes was used.
+
+*   _eval_obj_fun.m_ is the function that receive a population of parameters, evaluates the objective functions in this population, and accumulates the results in a matrix to return it. It is executed at each iteration of the sp-MODE algorithm.
+
+<a id='3e996b29-e653-4a2a-88d2-188ada965c5d'></a>
+
+MOO code
+First, highlight that we use the script *Tutorial.m* to run all the functions used to obtain the results shown in the main paper.
+
+<a id='03d94b78-c21f-4bc4-a696-90051e4fba3b'></a>
+
+The first step is to run the *spMODEparam* file to build the variable 'spMODEDat' with the variables required for the optimization. Here the number of objectives are defined, also the number of decision variables and the 'Cost Function', which brings the objectives matrix after previous *ode* simulations (by means of interlinked functions mentioned above, constituting in essence the problem 'nucleus' or characterization). The field of search, and bounds to improve pertinency of solutions in the objective space so as to cut solutions with no interest to the DM, are defined here too. Also other aspects, such as maximum Pareto optimal solutions required and a bound on the number of function evaluations.
+
+<a id='507433fb-24fb-49f9-a0f8-35adc484c905'></a>
+
+Once the Pareto set and the Pareto front are found by the optimizer, results can be plot with optional features through the _Leveltool_. This tool provides the LD visualization for the MCDM.
+
+<a id='b7f7ea22-c133-49e5-b6e6-86a63b9cc829'></a>
+
+7
+
+<!-- PAGE BREAK -->
+
+<a id='fb44a92c-57f0-4202-97ad-7ab87b2e5e84'></a>
+
+ * _spMODEparam.m_ generates the required parameters to run the spMODE optimization algorithm.
+In this file the variables regarding the multi-objective problem are defined. The values of interest for our problem are:
+
+1. Number of objectives.
+   spMODEDat.NOBJ = 2
+2. Number of decision variables.
+   spMODEDat.NVAR = 10
+3. Cost Function.
+   spMODEDat.mop = str2func('CostFunction')
+4. Problem Instance.
+   spMODEDat.CostProblem = 'modelo3genes'
+5. Maximum and minimum values for the parameters or decision variables are fixed in order to give a range to the optimizer to search the optimal solutions, (spMODEDat.FieldD). k_d and d_l were fixed to avoid the optimizer to modify the model input I_e, as we want an step input determined by K_e(t).
+6. Bounds on objectives.
+   spMODEDat.Pertinency=[ 1e-3 200; 1e-4 20]; A row for each objective, with the minimum and maximum values desired.
+
+<a id='920d0d9c-d647-44d5-9e09-a9e92778f311'></a>
+
+• *CostFunction.m* calls the cost function of your own multi-objective problem. In this case
+*eval_obj_fun.m*. It also includes a default mechanism to improve pertinency (Objective
+space bounded).
+
+<a id='4bf8d819-80db-4325-8e60-468fa1772f52'></a>
+
+*Clustering and Visualization*
+
+*   **clustering.m** is a script that performs the hierarchical clustering with the solutions obtained from the **spMODE** optimization algorithm, and uses the modified **LD-tool** to plot the LD plots with the cluster number as **Y-axis**.
+
+<a id='7315fb0f-4bda-43c0-bb4f-3af98790b8b6'></a>
+
+_Computational cost._ Execution of our MOO using the sp-MODE algorithm (15.000 evaluations of the objective function) took around 10 hours and 25 minutes and was performed in a Intel XEON Server with 12 cores and 32 Gb of RAM Memory.
+
+<a id='6cf17539-4f56-4fae-982b-413b22d8379d'></a>
+
+8
+
+<!-- PAGE BREAK -->
+
+<a id='a216aa9e-aafd-4429-beea-2e8c7a1ef0ee'></a>
+
+3. Supplementary Tables and Figures
+
+<a id='9e9d2d6c-aac5-4e88-9679-df24df770468'></a>
+
+<::chart: A figure containing three plots. The top plot shows a Pareto front with J2 (J2 Units) on the y-axis (0 to 4) and J1 (J1 Units) on the x-axis (0 to 4). Diamond-shaped points form a curve, labeled "Pareto front points". "Extreme point Y" is at (0, 4), "Extreme point X" is at (4, 0). "Point A" is approximately at (1, 1) and "Point B" is approximately at (3.2, 0.5). The bottom-left plot shows ||J(θ)||1 on the y-axis (0 to 1) and J1(θ) : [J1(θ) units] on the x-axis (0 to 4). Diamond-shaped points form a U-shaped curve. "Extreme Point X" is at (4, 1), "Extreme Point Y" is at (0, 1). "Point B" is approximately at (3.2, 0.8) and "Point A" is approximately at (1.6, 0.45). The bottom-right plot shows ||J(θ)||1 on the y-axis (0 to 1) and J2(θ) : [J2(θ) units] on the x-axis (0 to 4). Diamond-shaped points form a U-shaped curve. "Extreme Point X" is at (0, 1), "Extreme Point Y" is at (4, 1). "Point B" is approximately at (0.5, 0.8) and "Point A" is approximately at (2.2, 0.45). Figure S 1. Example of Level Diagram for a bi-objective Pareto front and set.::>
+
+<a id='da3d0054-a726-416c-9b71-e75734b81d08'></a>
+
+9
+
+<!-- PAGE BREAK -->
+
+<a id='a453d546-6fa3-47a8-a6b7-1201604cc5ed'></a>
+
+<::A figure showing two plots. The main plot is a scatter plot with a line connecting blue circular markers. The x-axis is labeled J1 and ranges from 10^-3 to 10^2 on a logarithmic scale. The y-axis is labeled J2 and ranges from 10^-3 to 10^2 on a logarithmic scale. The line connects a series of blue dots, and there are additional scattered dots in lighter shades of blue and purple. Inset plot: A smaller plot is embedded in the top left corner of the main plot. This inset plot shows multiple decaying curves. The y-axis is labeled "Protein C concentration" and ranges from 0 to 15. The x-axis is labeled "time [min]" and ranges from 0 to 300.::>10
+
+<a id='5d7d9c90-e56d-433f-bec1-800bf15d0175'></a>
+
+Figure S 2. Pareto Front in blue line connected dots. Dots changing from blue to light blue are obtained by changing the degradation rate of protein C represented by $d_c \in [0.30.10.03 0.01]$ starting at the extreme solution. Notice, that decreasing $d_c$ lead to a complete lose of optimality and moreover of the adaptation behavior, as we can see in the temporal profile of the protein C concentration in the inset.
+
+<!-- PAGE BREAK -->
+
+<a id='a81145f2-c954-440d-9b0d-ba41974155d6'></a>
+
+<::Two scatter plots are presented, each showing data points in blue and red. Both plots share a linear y-axis labeled "||J(θ)||₂" ranging from 0 to 1. Both plots also share a logarithmic x-axis ranging from 10⁻³ to 10².  Top Plot:  - X-axis: "J₂ (θ)".  - Blue points: Generally decrease from ||J(θ)||₂ = 1 towards 0 as J₂(θ) increases.  - Red points: Show a curve that increases from low ||J(θ)||₂ values, peaks around J₂(θ) = 10⁰, and then decreases.  Bottom Plot:  - X-axis: "J₁ (θ)".  - Blue points: Generally decrease from ||J(θ)||₂ = 1 towards 0 as J₁(θ) increases.  - Red points: Show a curve that increases from low ||J(θ)||₂ values, peaks around J₁(θ) = 10⁰, and then decreases. : chart::> 11
+
+<a id='7a545e23-e6f8-48f0-a2e0-36a37ddea16c'></a>
+
+Figure S 3. Pareto Front as the distance to ideal point. J₁(θ) is the sensitivity and J₂(θ) is the precision objectives. Cluster 1 is plotted in red circles and cluster 2 is plotted in blue circles.
+
+<!-- PAGE BREAK -->
+
+<a id='a8f9d02a-31a7-45ab-a020-89aedeafc010'></a>
+
+<::Multiple scatter plots arranged in a 3x3 grid, showing the relationship between || J(θ) ||₂ (y-axis) and various parameters (x-axis). Each plot contains blue and red circular data points. The y-axis ranges from 0 to 1 for all plots.
+
+Top row:
+- Plot 1 (left): x-axis is γ₁ from 0 to 200.
+- Plot 2 (center): x-axis is kpB from 0 to 100.
+- Plot 3 (right): x-axis is KmcCgC from 0 to 200.
+
+Middle row:
+- Plot 4 (left): x-axis is dB from 0 to 0.3.
+- Plot 5 (center): x-axis is γ₄ from 0 to 5.
+- Plot 6 (right): x-axis is γ₅ from 0 to 100.
+
+Bottom row:
+- Plot 7 (left): x-axis is KmBCgB from 0 to 200.
+- Plot 8 (center): x-axis is γ₃ from 0 to 0.4.
+- Plot 9 (right): x-axis is dc from 0 to 0.3.
+
+Note: The y-axis label || J(θ) ||₂ is shown twice at the bottom of the left and middle columns, and the x-axis label kpC from 0 to 100 is shown next to the last plot, which should be kpc. The layout suggests a 3x3 grid of plots. The x-axis labels are positioned vertically. One x-axis label, kpC, is misplaced next to the last plot, which should be dc.
+: chart::>
+12
+
+<a id='d34f3929-9273-4016-8fb5-fd6a413bc29d'></a>
+
+Figure S 4. Pareto set of decision variables. Each parameter of the model was plotted according its distance to ideal point. Red circles represent the cluster 1 and blue circles allow to the cluster 2.
+
+<!-- PAGE BREAK -->
+
+<a id='74b75af3-c949-40c5-8050-e64a46da793e'></a>
+
+Table S 3. Solutions obtained from the MOO. Columns are values for the design objectives and parameters. Rows are the solutions obtained.
+<table id="12-1">
+<tr><td id="12-2">Solution</td><td id="12-3">J₁</td><td id="12-4">J₂</td><td id="12-5">KmCgC</td><td id="12-6">KmBgB</td><td id="12-7">d_B</td><td id="12-8">d_C</td><td id="12-9">\u03b3_1</td><td id="12-a">\u03b3_3</td><td id="12-b">\u03b3_4</td><td id="12-c">γ5</td><td id="12-d">kpB</td><td id="12-e">kpC</td></tr>
+<tr><td id="12-f">1</td><td id="12-g">0.00</td><td id="12-h">12.53</td><td id="12-i">104.09</td><td id="12-j">1.00</td><td id="12-k">0.02</td><td id="12-l">0.28</td><td id="12-m">107.41</td><td id="12-n">0.01</td><td id="12-o">1.15</td><td id="12-p">8.56</td><td id="12-q">1.00</td><td id="12-r">11.43</td></tr>
+<tr><td id="12-s">2</td><td id="12-t">0.00</td><td id="12-u">7.72</td><td id="12-v">84.06</td><td id="12-w">1.00</td><td id="12-x">0.02</td><td id="12-y">0.28</td><td id="12-z">193.06</td><td id="12-A">0.00</td><td id="12-B">1.44</td><td id="12-C">9.25</td><td id="12-D">1.00</td><td id="12-E">8.66</td></tr>
+<tr><td id="12-F">3</td><td id="12-G">0.00</td><td id="12-H">4.04</td><td id="12-I">47.71</td><td id="12-J">1.00</td><td id="12-K">0.01</td><td id="12-L">0.30</td><td id="12-M">200.00</td><td id="12-N">0.00</td><td id="12-O">1.25</td><td id="12-P">1.00</td><td id="12-Q">1.00</td><td id="12-R">5.93</td></tr>
+<tr><td id="12-S">4</td><td id="12-T">0.00</td><td id="12-U">3.76</td><td id="12-V">53.93</td><td id="12-W">1.00</td><td id="12-X">0.01</td><td id="12-Y">0.30</td><td id="12-Z">170.42</td><td id="12-10">0.00</td><td id="12-11">0.38</td><td id="12-12">1.00</td><td id="12-13">1.00</td><td id="12-14">5.08</td></tr>
+<tr><td id="12-15">5</td><td id="12-16">0.00</td><td id="12-17">3.38</td><td id="12-18">41.92</td><td id="12-19">1.00</td><td id="12-1a">0.01</td><td id="12-1b">0.30</td><td id="12-1c">188.31</td><td id="12-1d">0.00</td><td id="12-1e">1.17</td><td id="12-1f">1.00</td><td id="12-1g">1.00</td><td id="12-1h">5.68</td></tr>
+<tr><td id="12-1i">6</td><td id="12-1j">0.00</td><td id="12-1k">2.91</td><td id="12-1l">21.52</td><td id="12-1m">1.00</td><td id="12-1n">0.01</td><td id="12-1o">0.30</td><td id="12-1p">176.89</td><td id="12-1q">0.00</td><td id="12-1r">0.00</td><td id="12-1s">1.00</td><td id="12-1t">1.00</td><td id="12-1u">9.44</td></tr>
+<tr><td id="12-1v">7</td><td id="12-1w">0.00</td><td id="12-1x">2.48</td><td id="12-1y">171.91</td><td id="12-1z">1.00</td><td id="12-1A">0.01</td><td id="12-1B">0.29</td><td id="12-1C">185.33</td><td id="12-1D">0.00</td><td id="12-1E">0.00</td><td id="12-1F">1.00</td><td id="12-1G">1.00</td><td id="12-1H">1.00</td></tr>
+<tr><td id="12-1I">8</td><td id="12-1J">0.00</td><td id="12-1K">1.68</td><td id="12-1L">101.48</td><td id="12-1M">1.00</td><td id="12-1N">0.01</td><td id="12-1O">0.30</td><td id="12-1P">200.00</td><td id="12-1Q">0.00</td><td id="12-1R">0.57</td><td id="12-1S">1.00</td><td id="12-1T">1.00</td><td id="12-1U">1.15</td></tr>
+<tr><td id="12-1V">9</td><td id="12-1W">0.00</td><td id="12-1X">1.41</td><td id="12-1Y">103.74</td><td id="12-1Z">1.00</td><td id="12-20">0.01</td><td id="12-21">0.30</td><td id="12-22">163.00</td><td id="12-23">0.00</td><td id="12-24">0.00</td><td id="12-25">1.00</td><td id="12-26">1.00</td><td id="12-27">1.00</td></tr>
+<tr><td id="12-28">10</td><td id="12-29">0.00</td><td id="12-2a">0.98</td><td id="12-2b">77.26</td><td id="12-2c">1.00</td><td id="12-2d">0.01</td><td id="12-2e">0.30</td><td id="12-2f">120.21</td><td id="12-2g">0.00</td><td id="12-2h">0.00</td><td id="12-2i">1.00</td><td id="12-2j">1.00</td><td id="12-2k">1.00</td></tr>
+<tr><td id="12-2l">11</td><td id="12-2m">0.01</td><td id="12-2n">0.64</td><td id="12-2o">47.90</td><td id="12-2p">1.00</td><td id="12-2q">0.01</td><td id="12-2r">0.30</td><td id="12-2s">149.24</td><td id="12-2t">0.00</td><td id="12-2u">0.00</td><td id="12-2v">1.00</td><td id="12-2w">1.00</td><td id="12-2x">1.00</td></tr>
+<tr><td id="12-2y">12</td><td id="12-2z">0.02</td><td id="12-2A">0.24</td><td id="12-2B">1.00</td><td id="12-2C">1.00</td><td id="12-2D">0.01</td><td id="12-2E">0.30</td><td id="12-2F">191.70</td><td id="12-2G">0.00</td><td id="12-2H">0.00</td><td id="12-2I">1.00</td><td id="12-2J">1.00</td><td id="12-2K">15.68</td></tr>
+<tr><td id="12-2L">13</td><td id="12-2M">0.14</td><td id="12-2N">0.03</td><td id="12-2O">1.00</td><td id="12-2P">1.00</td><td id="12-2Q">0.01</td><td id="12-2R">0.30</td><td id="12-2S">200.00</td><td id="12-2T">0.00</td><td id="12-2U">0.00</td><td id="12-2V">1.00</td><td id="12-2W">1.00</td><td id="12-2X">1.80</td></tr>
+<tr><td id="12-2Y">14</td><td id="12-2Z">0.99</td><td id="12-30">0.01</td><td id="12-31">1.00</td><td id="12-32">1.17</td><td id="12-33">0.08</td><td id="12-34">0.30</td><td id="12-35">165.00</td><td id="12-36">0.00</td><td id="12-37">0.78</td><td id="12-38">12.66</td><td id="12-39">1.00</td><td id="12-3a">1.00</td></tr>
+<tr><td id="12-3b">15</td><td id="12-3c">1.73</td><td id="12-3d">0.01</td><td id="12-3e">1.00</td><td id="12-3f">1.00</td><td id="12-3g">0.01</td><td id="12-3h">0.30</td><td id="12-3i">200.00</td><td id="12-3j">0.00</td><td id="12-3k">2.47</td><td id="12-3l">50.50</td><td id="12-3m">1.00</td><td id="12-3n">1.00</td></tr>
+<tr><td id="12-3o">16</td><td id="12-3p">2.98</td><td id="12-3q">0.01</td><td id="12-3r">1.00</td><td id="12-3s">1.00</td><td id="12-3t">0.01</td><td id="12-3u">0.30</td><td id="12-3v">128.61</td><td id="12-3w">0.00</td><td id="12-3x">0.07</td><td id="12-3y">100.00</td><td id="12-3z">1.00</td><td id="12-3A">1.00</td></tr>
+<tr><td id="12-3B">17</td><td id="12-3C">5.37</td><td id="12-3D">0.01</td><td id="12-3E">1.00</td><td id="12-3F">24.05</td><td id="12-3G">0.01</td><td id="12-3H">0.30</td><td id="12-3I">184.64</td><td id="12-3J">0.00</td><td id="12-3K">1.24</td><td id="12-3L">18.72</td><td id="12-3M">1.00</td><td id="12-3N">1.00</td></tr>
+<tr><td id="12-3O">18</td><td id="12-3P">7.54</td><td id="12-3Q">0.01</td><td id="12-3R">1.00</td><td id="12-3S">49.25</td><td id="12-3T">0.01</td><td id="12-3U">0.30</td><td id="12-3V">145.35</td><td id="12-3W">0.01</td><td id="12-3X">1.21</td><td id="12-3Y">12.13</td><td id="12-3Z">1.00</td><td id="12-40">1.00</td></tr>
+<tr><td id="12-41">19</td><td id="12-42">8.82</td><td id="12-43">0.01</td><td id="12-44">1.00</td><td id="12-45">12.53</td><td id="12-46">0.01</td><td id="12-47">0.30</td><td id="12-48">200.00</td><td id="12-49">0.00</td><td id="12-4a">4.30</td><td id="12-4b">100.00</td><td id="12-4c">1.00</td><td id="12-4d">1.00</td></tr>
+<tr><td id="12-4e">12</td><td id="12-4f">11.73</td><td id="12-4g">0.01</td><td id="12-4h">1.00</td><td id="12-4i">68.79</td><td id="12-4j">0.01</td><td id="12-4k">0.30</td><td id="12-4l">199.76</td><td id="12-4m">0.00</td><td id="12-4n">1.02</td><td id="12-4o">33.42</td><td id="12-4p">1.00</td><td id="12-4q">1.00</td></tr>
+<tr><td id="12-4r">21</td><td id="12-4s">14.52</td><td id="12-4t">0.01</td><td id="12-4u">1.00</td><td id="12-4v">73.80</td><td id="12-4w">0.01</td><td id="12-4x">0.30</td><td id="12-4y">155.42</td><td id="12-4z">0.00</td><td id="12-4A">1.10</td><td id="12-4B">36.26</td><td id="12-4C">1.00</td><td id="12-4D">1.00</td></tr>
+<tr><td id="12-4E">22</td><td id="12-4F">18.25</td><td id="12-4G">0.01</td><td id="12-4H">1.00</td><td id="12-4I">100.50</td><td id="12-4J">0.01</td><td id="12-4K">0.30</td><td id="12-4L">168.85</td><td id="12-4M">0.00</td><td id="12-4N">0.66</td><td id="12-4O">46.72</td><td id="12-4P">1.00</td><td id="12-4Q">1.00</td></tr>
+<tr><td id="12-4R">23</td><td id="12-4S">20.10</td><td id="12-4T">0.01</td><td id="12-4U">1.00</td><td id="12-4V">101.56</td><td id="12-4W">0.01</td><td id="12-4X">0.30</td><td id="12-4Y">162.82</td><td id="12-4Z">0.00</td><td id="12-50">1.42</td><td id="12-51">51.65</td><td id="12-52">1.00</td><td id="12-53">1.00</td></tr>
+<tr><td id="12-54">24</td><td id="12-55">22.90</td><td id="12-56">0.01</td><td id="12-57">1.00</td><td id="12-58">100.50</td><td id="12-59">0.01</td><td id="12-5a">0.30</td><td id="12-5b">126.03</td><td id="12-5c">0.01</td><td id="12-5d">0.77</td><td id="12-5e">50.50</td><td id="12-5f">1.00</td><td id="12-5g">1.00</td></tr>
+<tr><td id="12-5h">25</td><td id="12-5i">25.61</td><td id="12-5j">0.01</td><td id="12-5k">1.00</td><td id="12-5l">127.78</td><td id="12-5m">0.01</td><td id="12-5n">0.30</td><td id="12-5o">125.51</td><td id="12-5p">0.01</td><td id="12-5q">1.21</td><td id="12-5r">47.80</td><td id="12-5s">1.00</td><td id="12-5t">1.00</td></tr>
+<tr><td id="12-5u">26</td><td id="12-5v">27.38</td><td id="12-5w">0.01</td><td id="12-5x">1.00</td><td id="12-5y">150.25</td><td id="12-5z">0.01</td><td id="12-5A">0.30</td><td id="12-5B">195.38</td><td id="12-5C">0.00</td><td id="12-5D">2.83</td><td id="12-5E">73.36</td><td id="12-5F">1.00</td><td id="12-5G">1.00</td></tr>
+<tr><td id="12-5H">27</td><td id="12-5I">30.74</td><td id="12-5J">0.01</td><td id="12-5K">1.00</td><td id="12-5L">152.69</td><td id="12-5M">0.01</td><td id="12-5N">0.30</td><td id="12-5O">178.20</td><td id="12-5P">0.00</td><td id="12-5Q">2.97</td><td id="12-5R">81.41</td><td id="12-5S">1.00</td><td id="12-5T">1.00</td></tr>
+<tr><td id="12-5U">28</td><td id="12-5V">33.45</td><td id="12-5W">0.01</td><td id="12-5X">1.00</td><td id="12-5Y">70.15</td><td id="12-5Z">0.01</td><td id="12-60">0.30</td><td id="12-61">78.93</td><td id="12-62">0.00</td><td id="12-63">0.35</td><td id="12-64">100.00</td><td id="12-65">1.00</td><td id="12-66">1.00</td></tr>
+<tr><td id="12-67">29</td><td id="12-68">35.51</td><td id="12-69">0.01</td><td id="12-6a">1.00</td><td id="12-6b">200.00</td><td id="12-6c">0.01</td><td id="12-6d">0.30</td><td id="12-6e">200.00</td><td id="12-6f">0.00</td><td id="12-6g">0.66</td><td id="12-6h">100.00</td><td id="12-6i">1.00</td><td id="12-6j">1.00</td></tr>
+<tr><td id="12-6k">30</td><td id="12-6l">38.11</td><td id="12-6m">0.01</td><td id="12-6n">1.00</td><td id="12-6o">200.00</td><td id="12-6p">0.01</td><td id="12-6q">0.30</td><td id="12-6r">200.00</td><td id="12-6s">0.00</td><td id="12-6t">5.00</td><td id="12-6u">100.00</td><td id="12-6v">1.00</td><td id="12-6w">1.00</td></tr>
+<tr><td id="12-6x">31</td><td id="12-6y">40.38</td><td id="12-6z">0.01</td><td id="12-6A">1.00</td><td id="12-6B">200.00</td><td id="12-6C">0.01</td><td id="12-6D">0.30</td><td id="12-6E">185.33</td><td id="12-6F">0.00</td><td id="12-6G">5.00</td><td id="12-6H">100.00</td><td id="12-6I">1.00</td><td id="12-6J">1.00</td></tr>
+<tr><td id="12-6K">32</td><td id="12-6L">44.39</td><td id="12-6M">0.01</td><td id="12-6N">1.00</td><td id="12-6O">200.00</td><td id="12-6P">0.01</td><td id="12-6Q">0.30</td><td id="12-6R">132.08</td><td id="12-6S">0.00</td><td id="12-6T">1.57</td><td id="12-6U">96.57</td><td id="12-6V">1.00</td><td id="12-6W">1.00</td></tr>
+<tr><td id="12-6X">33</td><td id="12-6Y">47.29</td><td id="12-6Z">0.01</td><td id="12-70">1.00</td><td id="12-71">200.00</td><td id="12-72">0.01</td><td id="12-73">0.30</td><td id="12-74">134.69</td><td id="12-75">0.01</td><td id="12-76">2.05</td><td id="12-77">100.00</td><td id="12-78">1.00</td><td id="12-79">1.00</td></tr>
+</table>
+
+<a id='6f07d2cf-3f84-4a3b-95c7-7744ed0b2496'></a>
+
+13
+
+<!-- PAGE BREAK -->
+
+<a id='8910a73a-d783-4cf3-af54-f435d1d2c91b'></a>
+
+## 4. References
+
+Blinov, M. L., Faeder, J. R., Goldstein, B., Hlavacek, W. S., 2004. Bionetgen: software for rule-based modeling of signal transduction based on the interactions of molecular domains. Bioinformatics 20 (17), 3289-3291.
+Chellaboina, V., Bhat, S., Haddad, M., Bernstein, D. S., 2009. Modeling and analysis of mass-action kinetics. Control Systems, IEEE 29 (4), 60-78.
+Horn, F., Jackson, R., 1972. General mass action kinetics. Archive for rational mechanics and analysis 47 (2), 81-116.
+Mélykúti, B., Hespanha, J. P., Khammash, M., 2014. Equilibrium distributions of simple biochemical reaction systems for time-scale separation in stochastic reaction networks. Journal of The Royal Society Interface 11 (97), 20140054.
+Mendes, P., Hoops, S., Sahle, S., Gauges, R., Dada, J., Kummer, U., 2009. Computational modeling of biochemical networks using copasi. In: Systems Biology. Springer, pp. 17-59.
+Zagaris, A., Kaper, H. G., Kaper, T. J., 2004. Analysis of the computational singular perturbation reduction method for chemical kinetics. Journal of Nonlinear Science 14 (1), 59-91.
+
+<a id='94013f30-1db5-4a5c-b23a-0b66930c515c'></a>
+
+14

@@ -35,7 +35,7 @@ model *Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_le
   compartment_ = 1;
 
   // Variable initializations:
-  p_10 = 0.45;
+  p_10 = 0.65;
   p_20 = 0.68;
   p_30 = 0.8;
   v_10 = 0.5;

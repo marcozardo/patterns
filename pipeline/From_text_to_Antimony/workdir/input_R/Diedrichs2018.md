@@ -1217,3 +1217,454 @@ ODE model of UPR regulatory logic
 <a id='a005b58f-c8ba-4758-a47b-216ce0139455'></a>
 
 1517
+
+# Supplementary materials
+
+<a id='d5b700e6-8798-46f6-b023-4211231ee76f'></a>
+
+
+*Molecular Biology of the Cell*
+
+<a id='b621aefd-e7bd-4e7f-abdb-99e7e27f77fc'></a>
+
+Diedrichs et al.
+
+<!-- PAGE BREAK -->
+
+<a id='a4b33132-668b-4b98-8e71-3efee72b20a8'></a>
+
+Diedrichs et al. Fig. S1
+
+<a id='6331d853-5606-4e07-a0e6-9d37f3950749'></a>
+
+• 2.5 exp.1 ▲ 2.5 exp.2 —2.5 model
+• 10 exp.1 ▲ 10 exp.2 —10 model
+<::chart: The visual content is Figure S1, titled "Comparison of model output against both the entrainment data set and a separate independent data set not used in entrainment." It consists of three line graphs (A, B, C) stacked vertically, each plotting "relative expression" (y-axis) against "time (hours)" (x-axis, shown on a log scale). The legend for all plots indicates:
+- Blue circle: 2.5 exp.1 (entrainment data set)
+- Blue triangle: 2.5 exp.2 (independent data set)
+- Blue line: 2.5 model
+- Red circle: 10 exp.1 (entrainment data set)
+- Red triangle: 10 exp.2 (independent data set)
+- Red line: 10 model
+
+(A) Bip mRNA: The graph shows relative expression levels of Bip mRNA. The y-axis ranges from 0 to 25. Both the 2.5 model (blue line) and 10 model (red line) show an initial increase, peaking around 8-12 hours, then decreasing. The 10 model and its corresponding experimental data points (red circles and triangles) show a higher peak and overall expression compared to the 2.5 model and its data (blue circles and triangles).
+
+(B) Chop mRNA: The graph shows relative expression levels of Chop mRNA. The y-axis ranges from 0 to 80. Similar to Bip mRNA, both models show an increase, peak around 8-12 hours, and then decrease. The 10 model and its experimental data exhibit a significantly higher peak (reaching above 70) and expression compared to the 2.5 model and its data.
+
+(C) Gadd34 mRNA: The graph shows relative expression levels of Gadd34 mRNA. The y-axis ranges from 0 to 25. The expression pattern is similar to Bip mRNA, with both models peaking around 8-12 hours. The 10 model and its experimental data show a higher peak and expression than the 2.5 model and its data.
+
+(A-C) Bip, Chop, and Gadd34 relative expression levels quantified by qRT-PCR from wild-type cells used to entrain the model (circles) and a second independent data set from a separate wild-type cell line (triangles), showing the intrinsic biological variability of the response. The x-axis (time) is shown on a log scale to enhance the presentation of early time points. Individual symbols represent independent biological replicates.::>
+
+<a id='fa962591-8c72-4184-8b79-826b811aa40b'></a>
+
+cell line (triangles), showing the intrinsic biological variability of the response. The x-axis (time) is shown on a log scale to enhance the presentation of early time points. Individual symbols represent biological replicates within an expeirment. A technical error prevented collection of 72h data from experiment 2, so a third experiment at only 72h was conducted to collect those data points (also depicted as triangles). Data at the 1h time point were collected in experiment 1, and shown in Figure 3, but not in experiment 2.
+
+<!-- PAGE BREAK -->
+
+<a id='196fe03c-9e1a-4183-8e82-241182b1314d'></a>
+
+Diedrichs et al. Fig. S2
+
+<a id='6f9edee1-fccc-42f1-8a25-a50b9a398710'></a>
+
+<::Figure S2. RSS optimization of model parameters: chart::>
+Figure S2. RSS optimization of model parameters
+(A) Bee swarm plot of the distribution of RSS values between experimental measurements and model solution obtained by 200 random samples of parameter sets. The y-axis is labeled "RSS" and ranges from 100 to 10000 on a logarithmic scale. Each circle represents an RSS value from a parameter set. A black square symbol indicates the optimum parameter set with an RSS of 224. A black arrow points from a low RSS value to "(B)".
+(B) Time course plots comparing model simulations (lines) with experimental data (circles) for two conditions. The legend shows: RSS 43 model; 2.5 model (blue line); 2.5 experimental (blue circles); 10 model (red line); 10 experimental (red circles). The left plot, titled "Bip mRNA", shows mRNA levels on the y-axis (0-16) versus time on the x-axis (0-72). The right plot, titled "P-eIF2α", shows P-eIF2α levels on the y-axis (0-14) versus time on the x-axis (0-72). Both plots have a gray shaded region at the bottom, indicating a baseline.
+
+<a id='9d957d8c-ce35-4946-bae0-c7dead5b6a6d'></a>
+
+(B) Model output files for a parameter set with a lower RSS than the model (arrowhead on bee swarm plot), showing good fit for Bip mRNA expression (left panel) but grossly incorrect output for eIF2\u03b1 phosphorylation (right panel), since there is no evidence that eIF2\u03b1 phosphorylation becomes quantitatively impaired during the recovery phase. Such discrepancies typified the few parameter sets with an RSS lower than the model's.
+
+<!-- PAGE BREAK -->
+
+<a id='d1536cec-486e-43d1-b95e-ebb8ff8ee7d5'></a>
+
+Diedrichs et al. Fig. S3
+<::
+A. Unfolded Proteins chart. The Y-axis ranges from 0 to 12, with major ticks at 0, 2, 4, 6, 8, 10, 12. The X-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. The chart displays four lines: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. A gray shaded area is present at the bottom of the chart.
+D. P-PERK chart. The Y-axis ranges from 0 to 28, with major ticks at 0, 4, 8, 12, 16, 20, 24, 28. The X-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. The chart displays two solid lines, one red and one blue. A gray shaded area is present at the bottom of the chart.
+: chart::>
+
+<a id='7a7c4686-4cf5-41a9-81d7-86512e012034'></a>
+
+<::Figure: The image contains two line graphs, B and E, sharing a common legend at the top. The legend indicates four conditions: "2.5 w.t." (blue solid line), "2.5 Perk-/-" (blue dashed line), "10 w.t." (red solid line), and "10 Perk-/-" (red dashed line). Both graphs show a time course from 0 to 72 on the x-axis, likely representing hours. Figure B is titled "P-IRE1" and has a y-axis ranging from 0 to 40 in increments of 4. All four lines show an initial peak followed by a decay over time. The red solid line (10 w.t.) reaches the highest peak, close to 38, while the blue dashed line (2.5 Perk-/-) has the lowest peak, around 4. Figure E is titled "P-eIF2α" and has a y-axis ranging from 0 to 9 in increments of 1. Similar to Figure B, all lines show an initial peak followed by a decay. The red solid line (10 w.t.) reaches the highest peak, around 8.5. A light gray shaded area is present from y=0 to y=1 across the entire x-axis, likely indicating a baseline or threshold.::>
+
+<a id='30199e4a-1250-4135-983c-ea4dcbf890bb'></a>
+
+C<::Graph titled XBP1. The y-axis ranges from 0 to 16. The x-axis ranges from 0 to 72, with labels at 0, 12, 24, 36, 48, 60, and 72. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. A gray shaded region is present at the bottom of the graph, from y-axis value 0 to approximately 1.: chart::>F<::Graph titled ATF4. The y-axis ranges from 0 to 11. The x-axis ranges from 0 to 72, with labels at 0, 12, 24, 36, 48, 60, and 72. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. A gray shaded region is present at the bottom of the graph, from y-axis value 0 to approximately 1.: chart::>
+
+<a id='054490bc-e4d2-4564-8b2f-36691f55ea4c'></a>
+
+G<::Graph titled "Chop mRNA" with Y-axis from 0 to 70 and X-axis from 0 to 72. Four curves are plotted: a solid red line peaking at approximately 70 around x=10-12, a solid blue line peaking at approximately 22 around x=10-12, a dashed red line consistently near 0, and a dashed blue line consistently near 0.: chart::>J<::Graph titled "GADD34" with Y-axis from 0 to 12 and X-axis from 0 to 72. Four curves are plotted: a solid red line peaking at approximately 12 around x=10-12, a solid blue line peaking at approximately 6 around x=10-12, a dashed red line consistently near 0, and a dashed blue line consistently near 0. A light gray shaded area is present between y=0 and y=1 across the entire x-axis.: chart::>
+
+<a id='23e894f7-c366-47d8-8fdd-9571f9881033'></a>
+
+H
+CHOP
+<::line graph titled "CHOP". The x-axis is labeled from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. The y-axis is labeled from 0 to 60, with major ticks at 0, 10, 20, 30, 40, 50, 60. There are four lines plotted: a solid red line peaking around 58 at x=12, a solid blue line peaking around 20 at x=12, a dashed red line with low values peaking slightly above 0, and a dashed blue line with very low values peaking slightly above 0.::>
+K
+ATF6cl
+<::line graph titled "ATF6cl". The x-axis is labeled from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. The y-axis is labeled from 0 to 10, with major ticks at 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. There are four lines plotted: a solid red line peaking around 9 at x=12, a solid blue line peaking around 5 at x=12, a dashed red line peaking around 10 at x=12, and a dashed blue line peaking around 7 at x=12. A grey shaded region extends from y=0 to y=1 across the entire x-axis.::>
+N
+BiPfree
+<::line graph titled "BiPfree". The x-axis is labeled from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. The y-axis is labeled from 0 to 1.4, with major ticks at 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4. There are four lines plotted: a solid red line increasing from 0 to approximately 0.7-0.8 between x=48 and x=60, a solid blue line increasing from 0 to approximately 1.3 at x=48 then decreasing, a dashed red line increasing from 0 to approximately 0.5-0.6 between x=48 and x=60, and a dashed blue line increasing from 0 to approximately 0.8 between x=48 and x=60. A grey shaded region extends from y=0 to y=0.4 across the entire x-axis.::>
+
+<a id='ef24f978-f986-4366-ad7b-c0baf0748ad5'></a>
+
+I Gadd34 mRNA <::chart: A line graph titled "Gadd34 mRNA" with a Y-axis ranging from 0 to 18 and an X-axis ranging from 0 to 72. Four lines are plotted: a red solid line, a blue solid line, a red dashed line, and a blue dashed line. The red solid line peaks at approximately 17-18 around X=12, then gradually decreases. The blue solid line peaks at approximately 8-9 around X=12, then gradually decreases. Both dashed lines remain very low, mostly below 2, with slight peaks around X=12. A gray shaded area covers the region from Y=0 to approximately Y=1, indicating a baseline.::> L Bip mRNA <::chart: A line graph titled "Bip mRNA" with a Y-axis ranging from 0 to 16 and an X-axis ranging from 0 to 72. Four lines are plotted: a red solid line, a blue solid line, a red dashed line, and a blue dashed line. The red solid line peaks at approximately 15-16 around X=12, then gradually decreases. The blue solid line peaks at approximately 10-11 around X=12, then gradually decreases. The red dashed line peaks at approximately 9-10 around X=12, then gradually decreases. The blue dashed line peaks at approximately 8-9 around X=12, then gradually decreases. A gray shaded area covers the region from Y=0 to approximately Y=1, indicating a baseline.::>
+
+<a id='dccad13b-3424-43db-a42f-866a42958a4c'></a>
+
+M             BiP             N
+<::chart: Two line graphs. The left graph, labeled 'M', has 'BiP' as its title. Its y-axis ranges from 0 to 6. Its x-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. There is a shaded gray region from y=0 to y=1. The right graph, labeled 'N', has its y-axis ranging from 0 to 1.4, with major ticks at 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4. Its x-axis ranges from 0 to 12, with major ticks at 0, 12. This graph also contains four lines: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. A small gray shaded region is visible at the bottom of this graph.:>
+Figure S3: Wild-type versus Perk-/- cells.
+
+<!-- PAGE BREAK -->
+
+<a id='c9b6d235-aebc-413a-96c4-f752cae227da'></a>
+
+Diedrichs et al. Fig. S4
+<::Panel A: Line graph titled "Unfolded Proteins". The y-axis ranges from 0 to 12. The x-axis ranges from 0 to 72. Four lines are plotted: solid red, dashed red, solid blue, and dashed blue. A gray shaded region is present along the x-axis from 0 to approximately 1 on the y-axis.
+: chart::>
+<::Panel D: Line graph titled "P-PERK". The y-axis ranges from 0 to 28. The x-axis ranges from 0 to 72. Four lines are plotted: solid red, dashed red, solid blue, and dashed blue. A gray shaded region is present along the x-axis from 0 to approximately 1 on the y-axis.
+: chart::>
+
+<a id='d5065887-e763-43f4-b0ca-0924097ca5cc'></a>
+
+G <::Line graph titled "Chop mRNA". The y-axis ranges from 0 to 70, with major ticks at 10, 20, 30, 40, 50, 60, 70. The x-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72. There are four lines plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. All lines show a peak between x=0 and x=12, then decrease and level off. The red lines peak higher than the blue lines.::>
+
+<a id='c0644532-d35d-4016-af6c-0d7dd26ad598'></a>
+
+<::Figure S4: Wild-type versus Ire1-
+: chart:
+J GADD34
+Line graph with x-axis from 0 to 72 (labeled 0, 12, 24, 36, 48, 60, 72) and y-axis from 0 to 12 (labeled 0, 2, 4, 6, 8, 10, 12). A grey shaded area spans from y=0 to y=1. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The red lines peak higher around x=12-18, then decrease. The blue lines peak lower around x=12-18, then decrease.
+M BiP
+Line graph with x-axis from 0 to 72 (labeled 0, 12, 24, 36, 48, 60, 72) and y-axis from 0 to 6 (labeled 0, 1, 2, 3, 4, 5, 6). A grey shaded area spans from y=0 to y=1. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The red lines increase to a plateau around x=36-48. The blue lines increase to a lower plateau around x=36-48, then slightly decrease.::>
+
+<a id='d81d7ce1-b99c-4377-a3c1-cda175514957'></a>
+
+<::B: P-IRE1. A line graph with two lines, red and blue, showing changes over time (0 to 72 on the x-axis, labeled 0, 12, 24, 36, 48, 60, 72). The y-axis ranges from 0 to 40, with tick marks at 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40. The red line starts at 0, peaks sharply at approximately 37 at time 0, then decreases to below 4 by time 24, and gradually flattens out around 2-3. The blue line starts at 0, peaks at approximately 13 around time 6, then decreases to below 4 by time 24, and gradually flattens out around 1-2. A light grey shaded region extends from y=0 to y=1 across the entire x-axis.: chart::>
+<::E: P-eIF2α. A line graph with two lines, red (solid and dashed) and blue (solid and dashed), showing changes over time (0 to 72 on the x-axis, labeled 0, 12, 24, 36, 48, 60, 72). The y-axis ranges from 0 to 9, with tick marks at 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. The red line starts at 0, peaks sharply at approximately 8.5 around time 2-3, then decreases rapidly, crossing below 1 around time 12, and then slowly increases to approximately 1.5 by time 72. The blue line starts at 0, peaks at approximately 5.5 around time 4-5, then decreases rapidly, crossing below 1 around time 12, and then slowly increases to approximately 1.5 by time 72. A light grey shaded region extends from y=0 to y=1 across the entire x-axis.: chart::>
+
+<a id='b397c744-1c62-40de-8a9f-073ea88bd05e'></a>
+
+C XBP1<::Line graph with Y-axis labeled from 0 to 16 in increments of 2, and X-axis labeled from 0 to 72 in increments of 12. Two solid lines are plotted: a red line and a blue line. Both lines start near 0, sharply rise to a peak (red line peaks around 14, blue line peaks around 10) between X=0 and X=12, and then gradually decrease, stabilizing at a low value near 0 by X=72. A light gray shaded area is present along the X-axis, spanning from Y=0 to Y=1. A dashed red line and a dashed blue line are also visible within this shaded area, closely following the X-axis. : chart::>F ATF4<::Line graph with Y-axis labeled from 0 to 11 in increments of 1, and X-axis labeled from 0 to 72 in increments of 12. Four lines are plotted: a solid red line, a solid blue line, a dashed red line, and a dashed blue line. All lines start near 0, sharply rise to a peak between X=0 and X=12. The dashed red line peaks highest (around 10), followed by the solid red line (around 9), then the dashed blue line (around 4), and finally the solid blue line (around 3.5). All lines then gradually decrease, stabilizing at a low value near 0 by X=72. A light gray shaded area is present along the X-axis, spanning from Y=0 to Y=1. : chart::>
+
+<a id='8768f8cf-b565-4ea4-85a8-6db62af107d2'></a>
+
+I Gadd34 mRNA <::line chart showing mRNA levels over time. The y-axis ranges from 0 to 18, and the x-axis ranges from 0 to 72. Four lines are plotted: a red dashed line peaking around 17 at x=12, a red solid line peaking around 15 at x=12, a blue dashed line peaking around 8 at x=12, and a blue solid line peaking around 8 at x=12. All lines show an initial increase followed by a decrease. A gray shaded region extends from y=0 to y=2 across the x-axis.:chart::>L Bip mRNA <::line chart showing mRNA levels over time. The y-axis ranges from 0 to 18, and the x-axis ranges from 0 to 72. Four lines are plotted: a red dashed line peaking around 18 at x=12, a red solid line peaking around 16 at x=12, a blue dashed line peaking around 11 at x=12, and a blue solid line peaking around 10 at x=12. All lines show an initial increase followed by a decrease. A gray shaded region extends from y=0 to y=2 across the x-axis.:chart::>
+
+<a id='2cedc35b-78e5-46af-bd12-8a66caf091cf'></a>
+
+<::2.5 w.t. --- 2.5 Ire1-/- --- 10 w.t. --- 10 Ire1-/-
+: figure::>
+
+<a id='26264acb-2789-47b1-8e7a-a8301e1be876'></a>
+
+<::figure: chart::>H. CHOP: A line graph with the y-axis from 0 to 60 and the x-axis from 0 to 72. Four lines are plotted: a red solid line, a red dashed line, a blue solid line, and a blue dashed line. All lines start near 0, peak between 6 and 12 on the x-axis (red lines peak higher than blue lines), and then gradually decrease towards 0 by 72 on the x-axis. A grey shaded region is present along the x-axis from 0 to approximately 1 on the y-axis.K. ATF6cl: A line graph with the y-axis from 0 to 10 and the x-axis from 0 to 72. Four lines are plotted: a red solid line, a red dashed line, a blue solid line, and a blue dashed line. All lines start near 0, increase to a peak (red lines peak higher than blue lines, around 9 and 5 respectively), and then gradually decrease, leveling off above 0 by 72 on the x-axis. A grey shaded region is present from 0 to 1 on the y-axis, extending across the x-axis.N. BiPfree: A line graph with the y-axis from 0 to 1.4 and the x-axis from 0 to 72. Four lines are plotted: a blue solid line, a blue dashed line, a red solid line, and a red dashed line. All lines start near 0, increase to a peak (blue lines peak higher than red lines, around 1.3-1.4 and 0.7-0.9 respectively) between 36 and 48 on the x-axis, and then gradually decrease, leveling off above 0 by 72 on the x-axis. A grey shaded region is present from 0 to 0.4 on the y-axis, extending across the x-axis.<::/figure::>-/- cells.
+
+<!-- PAGE BREAK -->
+
+<a id='283790c2-3706-4b20-9580-de321caf465e'></a>
+
+<::Diedrichs et al. Fig. S5
+
+Figure composed of two line graphs, labeled A and D.
+
+Graph A: Unfolded Proteins
+- A partial legend shows a blue line associated with the number '2'.
+- X-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72.
+- Y-axis ranges from 0 to 12, with major ticks at 0, 2, 4, 6, 8, 10, 12.
+- Four distinct lines are plotted:
+    - A solid red line, peaking around Y=10 at X=4, then gradually decreasing to Y=5.
+    - A dashed red line, starting around Y=9, slowly decreasing to Y=8.
+    - A solid blue line, peaking around Y=6 at X=4, then decreasing to Y=1.
+    - A dashed blue line, starting around Y=6, slowly decreasing to Y=5.
+- A grey shaded region is present at the bottom of the graph, from Y=0 to approximately Y=1.
+
+Graph D: P-PERK
+- X-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, 72.
+- Y-axis ranges from 0 to 28, with major ticks at 0, 4, 8, 12, 16, 20, 24, 28.
+- Four distinct lines are plotted:
+    - A solid red line, peaking around Y=26 at X=4, then gradually decreasing to Y=4.
+    - A dashed red line, starting around Y=20, slowly decreasing to Y=14.
+    - A solid blue line, peaking around Y=16 at X=4, then decreasing to Y=1.
+    - A dashed blue line, starting around Y=12, slowly decreasing to Y=7.
+- A grey shaded region is present at the bottom of the graph, from Y=0 to approximately Y=1.
+: figure::>
+
+<a id='5421bc99-03da-487e-99d7-9e83c875f73f'></a>
+
+<::Line graph: The graph shows two panels, B and E, displaying time-course data with a common legend at the top. The legend indicates four data series: "2.5 w.t." (blue dashed line), "2.5 Atf6-/-" (blue solid line), "10 w.t." (red dashed line), and "10 Atf6-/-" (red solid line). 
+
+Panel B, titled "P-IRE1", has a y-axis ranging from 0 to 40 in increments of 4, and an x-axis ranging from 0 to 72 in increments of 12. The graph shows the temporal dynamics of P-IRE1 for the four conditions. 
+
+Panel E, titled "P-eIF2α", has a y-axis ranging from 0 to 9 in increments of 1, and an x-axis ranging from 0 to 72 in increments of 12. A gray shaded region is present at the bottom of the graph, between y-axis values 0 and approximately 1.5. The graph shows the temporal dynamics of P-eIF2α for the four conditions.
+: chart::>
+
+<a id='0363cf94-012a-4dfb-9a92-b18738c851c1'></a>
+
+<::Figure C and F are line graphs showing XBP1 and ATF4 expression over time, respectively. Both graphs have an x-axis ranging from 0 to 72 and a grey shaded area near the bottom, indicating a baseline or threshold. Figure C, titled "XBP1," has a y-axis from 0 to 16. It displays four curves: a solid red curve peaking at approximately 14 and then decreasing to around 3-4; a dashed red curve peaking at approximately 14 and slowly decreasing to around 12; a solid blue curve peaking at approximately 10 and decreasing to near 0; and a dashed blue curve peaking at approximately 12 and slowly decreasing to around 8. Figure F, titled "ATF4," has a y-axis from 0 to 11. It also displays four curves: a solid red curve peaking at approximately 10 and then decreasing to around 2; a dashed red curve peaking at approximately 10.5 and slowly decreasing to around 2.5; a solid blue curve peaking at approximately 4 and decreasing to around 1; and a dashed blue curve peaking at approximately 4.5 and slowly decreasing to around 2.: chart::>
+
+<a id='2cb907bd-47b8-4318-8aa2-6eb6b22f08bd'></a>
+
+<::chart: The figure displays three line graphs (G, J, M) showing changes over time (0 to 72 hours) for different mRNA levels. Each graph includes four lines: red solid, blue solid, red dashed, and blue dashed. The dashed lines represent Atf6α- conditions, and the solid lines represent wild-type conditions. The caption indicates these conditions are for 5 nM.|||Graph G: Chop mRNA. The y-axis ranges from 0 to 70. The red solid line peaks at approximately 70 around 9-12 hours, then declines. The blue solid line peaks at approximately 22 around 9-12 hours, then declines. The red dashed line peaks at approximately 23 around 9-12 hours, then declines. The blue dashed line peaks at approximately 18 around 9-12 hours, then declines.|||Graph J: GADD34. The y-axis ranges from 0 to 12. A grey shaded area is present from 0 to approximately 1 on the y-axis. The red solid line peaks at approximately 12 around 15-18 hours, then declines. The blue solid line peaks at approximately 6 around 15-18 hours, then declines. The red dashed line peaks at approximately 11 around 15-18 hours, then declines. The blue dashed line peaks at approximately 7 around 15-18 hours, then declines.|||Graph M: BiP. The y-axis ranges from 0 to 6. A grey shaded area is present from 0 to approximately 1 on the y-axis. The red solid line increases to a plateau of approximately 5 from around 24 hours. The blue solid line increases to a plateau of approximately 3.5 from around 24 hours. The red dashed line increases to a plateau of approximately 2 from around 24 hours. The blue dashed line increases to a plateau of approximately 1.5 from around 24 hours. Figure S5: Wild-type versus Atf6α- (dashed lines) conditions for 5 nM::>
+
+<a id='69095c99-bc74-4007-a637-87be55cd7f56'></a>
+
+<::Figure: Three line graphs, labeled H, K, and N, showing protein levels over time.::> - cells. Panel (O) shows CHOP in reatment.
+
+<a id='05bbd380-ca4d-4a87-b63b-df5028e1855d'></a>
+
+<::Figure with three panels (I, L, O) displaying mRNA expression levels over time.: figure::>I. Gadd34 mRNA: A line graph with the Y-axis ranging from 0 to 18 and the X-axis from 0 to 72. Four curves are plotted: a red solid line, a red dashed line, a blue solid line, and a blue dashed line.L. Bip mRNA: A line graph with the Y-axis ranging from 0 to 16 and the X-axis from 0 to 72. Four curves are plotted: a red solid line, a red dashed line, a blue solid line, and a blue dashed line.O. CHOP, 5 nM: A line graph with the Y-axis ranging from 0 to 60 and the X-axis from 0 to 72. Two curves are plotted: a black solid line and a black dashed line.Legend for all panels: wild-type (solid lines) and Atf6-/- (dashed lines).
+
+<!-- PAGE BREAK -->
+
+<a id='41afa99b-a417-4fb0-9dcd-45e4b752226e'></a>
+
+Diedrichs et al. Fig. S6
+<::Figure A: Line graph titled "Unfolded Proteins". The y-axis ranges from 0 to 12. The x-axis ranges from 0 to 72. There are four lines: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. A grey shaded area is present at the bottom of the graph.: chart::>
+<::Figure D: Line graph titled "P-PERK". The y-axis ranges from 0 to 28. The x-axis ranges from 0 to 72. There are four lines: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. A grey shaded area is present at the bottom of the graph.: chart::>
+<::Figure G: Title "Chop mRNA". The graph content is not visible.: chart::>
+<::visual content::>
+
+<a id='93ce423b-ecb5-47d9-8775-93f16838f522'></a>
+
+<::Figure: Two line graphs, labeled B and E, sharing a common legend. The legend defines four conditions: blue solid line represents "-2.5 w.t.", blue dashed line represents "2.5 Atf4-/-", red solid line represents "10 w.t.", and red dashed line represents "10 Atf4".
+
+Graph B, titled "P-IRE1", shows concentration on the y-axis (from 0 to 40) versus time on the x-axis (from 0 to 72). All lines show an initial rapid increase followed by a gradual decrease. The red solid line (10 w.t.) peaks highest around 36-38. The red dashed line (10 Atf4) peaks lower than the red solid line, around 28-30, but remains higher than the blue lines. The blue solid line (2.5 w.t.) peaks around 20. The blue dashed line (2.5 Atf4-/-) peaks around 12-14. Both dashed lines (Atf4-/-) generally show higher values than their respective wild-type (w.t.) counterparts at later time points.
+
+Graph E, titled "P-eIF2α", shows concentration on the y-axis (from 0 to 10) versus time on the x-axis (from 0 to 72). A gray shaded region extends from y=0 to y=1. All lines show an initial rapid increase followed by a decrease. The red dashed line (10 Atf4) peaks highest around 9-9.5. The red solid line (10 w.t.) peaks slightly lower than the red dashed line, around 9. The blue dashed line (2.5 Atf4-/-) peaks around 7. The blue solid line (2.5 w.t.) peaks around 5-6. The red solid line and blue solid line both drop below the shaded region (y=1) after approximately 12-24 hours. In contrast, the red dashed line and blue dashed line remain above the shaded region throughout the observed time, indicating sustained levels.::>
+
+<a id='e902ba29-7a68-4578-a5e6-e16848d59031'></a>
+
+-/-C XBP1<::Line graph titled 'XBP1' with an x-axis from 0 to 72 (labeled 0, 12, 24, 36, 48, 60, 72) and a y-axis from 0 to 16 (labeled 0, 2, 4, 6, 8, 10, 12, 14, 16). There are four lines: a red solid line peaking around 14, a red dashed line peaking around 10, a blue solid line peaking around 10, and a blue dashed line peaking around 10. All lines peak around x=6 and then decline. A grey shaded area spans from y=0 to y=1 across the entire x-axis.: chart::>F ATF4<::Line graph titled 'ATF4' with an x-axis from 0 to 72 (labeled 0, 12, 24, 36, 48, 60, 72) and a y-axis from 0 to 11 (labeled 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11). There are two solid lines: a red line peaking around 10 and a blue line peaking around 4. Both lines peak around x=6 and then decline, stabilizing around y=1. A grey shaded area spans from y=0 to y=1 across the entire x-axis.: chart::>
+
+<a id='e9e3124d-3487-4715-853e-3ee2860e9c23'></a>
+
+<::figure: Two line graphs are presented, labeled G and J. Both graphs share the same x-axis, ranging from 0 to 72 with major ticks at 0, 12, 24, 36, 48, 60, and 72. The x-axis represents time.  Graph G is titled "Chop mRNA". Its y-axis ranges from 0 to 70 with major ticks every 10 units. It displays two solid lines (red and blue) and two dashed lines (red and blue). The red solid line peaks at approximately 70 units around x=8-10, then gradually decreases. The blue solid line peaks at approximately 22 units around x=8-10, then gradually decreases. Both dashed lines remain close to the x-axis, with the red dashed line slightly above the blue dashed line. Graph J is titled "GADD34". Its y-axis ranges from 0 to 12 with major ticks every 2 units. It also displays two solid lines (red and blue) and two dashed lines (red and blue). A light grey shaded area covers the region from y=0 to y=1. The red solid line peaks at approximately 12 units around x=16-18, then gradually decreases. The blue solid line peaks at approximately 6 units around x=16-18, then gradually decreases. The red dashed line peaks at approximately 3 units around x=8-10 and then decreases, while the blue dashed line peaks at approximately 2.5 units around x=8-10 and then decreases, both remaining above the grey shaded area.::>
+
+<a id='ae996de6-0f53-4d16-bbde-56af96286173'></a>
+
+<::Figure H: Line graph titled "CHOP". The y-axis ranges from 0 to 60. The x-axis ranges from 0 to 72. There are four lines: a solid red line peaking around 60 at x=12, a solid blue line peaking around 20 at x=12, a dashed red line flat at 0, and a dashed blue line flat at 0.Figure K: Line graph titled "ATF6cl". The y-axis ranges from 0 to 10. The x-axis ranges from 0 to 72. There are four lines: a solid red line peaking around 9 at x=8-10, a solid blue line peaking around 5 at x=8-10, a dashed red line peaking around 9.5 at x=8-10, and a dashed blue line peaking around 5.2 at x=8-10. All lines decrease after their peak and stabilize. A grey shaded area is present from y=0 to y=1 across the entire x-axis.: chart::>
+
+<a id='044bb7e3-f03c-4f0a-bcd4-1ff29f88cfba'></a>
+
+I Gadd34 mRNA <::graph: A line graph titled "Gadd34 mRNA" shows values on the y-axis from 0 to 18 in increments of 2, and time points on the x-axis from 0 to 72 in increments of 12. There are three lines plotted: a solid red line peaking at approximately 17 around x=12 and then decreasing, a solid blue line peaking at approximately 8 around x=12 and then decreasing, and a dashed red line that remains very low, just above 0, across the entire x-axis. A gray shaded bar is present at the bottom of the graph, along the x-axis from 0 to 72, at y=0.::> L Bip mRNA <::graph: A line graph titled "Bip mRNA" shows values on the y-axis from 0 to 16 in increments of 2, and time points on the x-axis from 0 to 72 in increments of 12. There are four lines plotted: a solid red line peaking at approximately 15 around x=12 and then decreasing, a solid blue line peaking at approximately 10 around x=12 and then decreasing, a dashed red line peaking at approximately 6 around x=18 and then decreasing, and a dashed blue line peaking at approximately 4 around x=18 and then decreasing. A gray shaded bar is present at the bottom of the graph, along the x-axis from 0 to 72, at y=0.::>
+
+<a id='3237a4df-5109-4334-9fde-7c6ad3fb8e76'></a>
+
+<::Figure S6: Wild-type versus Atf4-/- cells.: chart::>Figure S6 presents a series of line graphs comparing Wild-type versus Atf4-/- cells. The figure consists of two main panels, labeled M and N, each containing a larger time-course graph and a smaller inset graph. The x-axes generally represent time, ranging from 0 to 72 units for the main graphs and showing only 0 for the insets, implying an initial time point. A gray shaded region is present at the bottom of the y-axis in all graphs.  Panel M (top) shows a main graph with a y-axis from 0 to 12. Four lines are plotted: a solid red line peaking around 12 at approximately x=18, a solid blue line peaking around 6 at approximately x=18, a dashed red line, and a dashed blue line, both of which remain relatively flat at lower values. The x-axis is labeled "BiP". The inset graph for Panel M shows a y-axis from 0 to 10 with two lines, red and blue, sharply increasing from the origin. Panel N (bottom) shows a main graph with a y-axis from 0 to 6. Four lines are plotted: a solid red line increasing to approximately 5, a solid blue line increasing to approximately 3.5, a dashed red line increasing to approximately 3.5, and a dashed blue line increasing to approximately 2.5. The inset graph for Panel N shows a y-axis from 0 to 1.4 with two lines, red and blue, increasing from the origin. The gray shaded area in Panel M's main graph is from Y=0 to Y=1, in Panel M's inset from Y=0 to Y=1, in Panel N's main graph from Y=0 to Y=1, and in Panel N's inset from Y=0 to Y=0.4. The red and blue lines likely distinguish between wild-type and Atf4-/- cells, with solid and dashed lines potentially indicating different conditions or measurements.
+
+<a id='b72b2989-3db4-4e93-ab66-1fb4e11f22b7'></a>
+
+<::chart
+Title: BiPfree
+The chart shows a shaded grey horizontal band across the lower part of the graph. Above this band, there are four lines. Two solid lines, one blue and one red, show a peak and then a decline. The blue solid line peaks higher and earlier than the red solid line. Two dashed lines, one blue and one red, generally increase over time. The blue dashed line is mostly within the grey band, while the red dashed line starts below it and gradually rises into it.
+X-axis labels: 12, 24, 36, 48, 60, 72
+::>
+
+<!-- PAGE BREAK -->
+
+<a id='5a50e50a-017c-40f7-8e23-6ed8492ad304'></a>
+
+Diedrichs et al. Fig. S7<::chart: The image displays two line charts, labeled A and D, both plotting values against time (0 to 72). A small blue dash appears in the top right corner, possibly indicating a legend. Plot A, titled "Unfolded Proteins," shows values on the y-axis ranging from 0 to 12. It contains four lines: a red solid line, a red dashed line, a blue solid line, and a blue dashed line. A gray shaded area is present at the bottom of the plot. Plot D, titled "P-PERK," shows values on the y-axis ranging from 0 to 28. Similar to Plot A, it also contains four lines: a red solid line, a red dashed line, a blue solid line, and a blue dashed line, with a gray shaded area at the bottom.::>
+
+<a id='a373faa3-e14f-4c30-bd02-02af1cead274'></a>
+
+<::Figure showing two line graphs, B and E, sharing a common legend. The legend indicates four conditions: 2.5 w.t. (blue solid line), 2.5 G34-/- (blue dashed line), 10 w.t. (red solid line), and 10 G34-/- (red dashed line). Graph B, titled "P-IRE1", shows concentration on the y-axis (0 to 40) versus time on the x-axis (0 to 72). The red solid line (10 w.t.) peaks highest around time 4, then gradually decreases. The blue solid line (2.5 w.t.) peaks lower around time 4 and decreases. The blue dashed line (2.5 G34-/-) peaks around time 8-12 and decreases. The red dashed line (10 G34-/-) peaks around time 8-12 and decreases. A grey shaded area is present near the x-axis. Graph E, titled "P-eIF2α", shows concentration on the y-axis (0 to 16) versus time on the x-axis (0 to 72). The red dashed line (10 G34-/-) peaks highest around time 8 and then gradually decreases. The red solid line (10 w.t.) peaks lower around time 4 and decreases quickly. The blue solid line (2.5 w.t.) peaks around time 4 and decreases quickly. The blue dashed line (2.5 G34-/-) peaks around time 8-12 and decreases. A grey shaded area is present near the x-axis.: chart::>
+
+<a id='31167ce6-d1e4-4f0b-8bba-01b162365212'></a>
+
+<::Figure C shows a line graph titled "XBP1" with a y-axis ranging from 0 to 16 and an x-axis ranging from 0 to 72, labeled at intervals of 12. Four lines are plotted: a solid red line peaking at approximately 14, a dashed red line peaking at approximately 10, a solid blue line peaking at approximately 10, and a dashed blue line peaking at approximately 4, all peaking around x=6 and then decreasing over time. A grey shaded area is present along the x-axis, from y=0 to y=1. Figure F shows a line graph titled "ATF4" with a y-axis ranging from 0 to 18 and an x-axis ranging from 0 to 72, labeled at intervals of 12. Four lines are plotted: a solid red line peaking at approximately 10, a dashed red line peaking at approximately 17, a solid blue line peaking at approximately 4, and a dashed blue line peaking at approximately 3, all peaking around x=6 and then decreasing over time. A grey shaded area is present along the x-axis, from y=0 to y=1.: chart::>
+
+<a id='1160b136-4547-418b-b689-4e15188001af'></a>
+
+<::Chop mRNA line graph. The y-axis is labeled "G" and ranges from 0 to 90. The x-axis ranges from 0 to 72. There are four lines plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. All lines show an initial increase, peak around x=8-12, and then decrease, eventually leveling off at low values. The dashed red line peaks highest, followed by the solid red, then solid blue, and finally the dashed blue line.: chart::>
+
+<a id='e20d98ea-b492-4d6f-b770-2458d4c12993'></a>
+
+<::Line chart titled "GADD34".The Y-axis is labeled "J" and ranges from 0 to 12.The X-axis ranges from 0 to 72.Two lines are plotted:A red line starts at approximately 1, peaks around 12 at x=18, then declines and stabilizes around 2.A blue line starts at approximately 1, peaks around 6 at x=18, then declines and stabilizes around 1.A light grey shaded area spans from y=0 to y=1 across the entire x-axis, with a dashed red and black line at y=0.: chart::>
+
+<a id='5d9dad61-d8ce-479d-abe5-9a90c3a11766'></a>
+
+<::line graph::>### BiPThis line graph displays data over an x-axis with tick marks at 0, 12, 24, 36, 48, 60, 72. There are two y-axes: a left y-axis labeled "M" with a scale from 0 to 6, and a right y-axis labeled "N" with a scale from 0 to 1.4. A gray shaded region spans the x-axis from 0 to 72, covering y-values from 0 to 1 on the left y-axis scale. Four distinct lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line.Figure S7: Wild-type versus Gadd34-/- c<::>
+
+<a id='bed6235f-d381-4452-8382-7c80f3e2c8ec'></a>
+
+<::Figure: Three line graphs (H, K, N) showing protein levels over time (0-72 units). Each graph displays four lines: solid red, dashed red, solid blue, and dashed blue. Graph H, titled "CHOP", has a Y-axis from 0 to 100. The red dashed line peaks highest around 95 at 12 units, followed by the red solid line peaking around 60 at 12 units. The blue solid line peaks around 20 at 12 units, and the blue dashed line peaks around 10 at 12 units. All lines then decrease. Graph K, titled "ATF6_n", has a Y-axis from 0 to 10 and a grey shaded area from 0 to 1. The red dashed line peaks highest around 9.5 at 6-12 units, followed by the red solid line peaking around 9 at 6-12 units. The blue solid line peaks around 5 at 12 units, and the blue dashed line peaks around 4 at 12 units. All lines then decrease. Graph N, titled "BiP_free", has a Y-axis from 0 to 1.4 and a grey shaded area from 0 to 0.4. The blue solid line peaks highest around 1.3 at approximately 36 units, then decreases. The red solid line increases to about 0.8 at 72 units. The red dashed line increases to about 0.7 at 72 units. The blue dashed line increases to about 0.6 at 72 units. l-/- cells.::>
+
+<a id='7af12e9d-33a8-4098-8c68-c59acd9a1db5'></a>
+
+I<::Graph titled "Gadd34 mRNA". The y-axis ranges from 0 to 18 in increments of 2. The x-axis ranges from 0 to 72 in increments of 12. There are two solid lines, one red and one blue. The red line peaks at approximately 17-18 at x=12, then decreases. The blue line peaks at approximately 8-9 at x=12, then decreases. A gray shaded area is present along the x-axis, from y=0 to y=1.: graph::>L<::Graph titled "Bip mRNA". The y-axis ranges from 0 to 18 in increments of 2. The x-axis ranges from 0 to 72 in increments of 12. There are four lines: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The solid red line peaks at approximately 15-16 at x=12, then decreases. The dashed red line peaks at approximately 11-12 at x=12, then decreases. The solid blue line peaks at approximately 10-11 at x=12, then decreases. The dashed blue line peaks at approximately 5-6 at x=12, then decreases. A gray shaded area is present along the x-axis, from y=0 to y=1.: graph::>
+
+<!-- PAGE BREAK -->
+
+<a id='d484210a-39a0-4d33-a4fe-d1b24aa40699'></a>
+
+Diedrichs et al. Fig. S8
+<::Two line charts. The top chart, labeled "A", shows "Unfolded Proteins" on the y-axis (ranging from 0 to 12) against an x-axis ranging from 0 to 72. It contains two sets of lines: red solid and dashed lines, and blue solid and dashed lines. A gray shaded area is present at the bottom, from y=0 to approximately y=1. The bottom chart, labeled "D", shows "P-PERK" on the y-axis (ranging from 0 to 28) against an x-axis ranging from 0 to 72. It also contains two sets of lines: red solid and dashed lines, and blue solid and dashed lines. A gray shaded area is present at the bottom, from y=0 to approximately y=1.
+: chart::> 
+
+<a id='b5006555-a046-4611-befe-09fb5e778ca7'></a>
+
+<::Figure G: Line graph showing Chop mRNA levels over time. The y-axis ranges from 0 to 100, and the x-axis ranges from 0 to 72. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The red lines show a peak around 9-12 on the x-axis, with the dashed red line peaking higher than the solid red line. The blue lines also show a peak around 9-12 on the x-axis, with the dashed blue line peaking slightly higher than the solid blue line, but both blue lines are significantly lower than the red lines. All lines decrease to near zero by x-axis value 36 and remain low until 72.: chart::>
+
+<a id='eb47b1bb-48de-4069-8626-e786428b02c0'></a>
+
+<::line graph: J GADD34. The y-axis ranges from 0 to 20, with tick marks every 2 units. The x-axis ranges from 0 to 72, with major tick marks at 0, 12, 24, 36, 48, 60, and 72. There are four lines plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The solid red line peaks around 12 on the y-axis at approximately x=18. The dashed red line peaks around 18 on the y-axis at approximately x=20. The solid blue line peaks around 6 on the y-axis at approximately x=18. The dashed blue line peaks around 7.5 on the y-axis at approximately x=18. All lines start near 0 on the y-axis at x=0 and converge to a value around 1-2 on the y-axis by x=72. A light grey shaded region extends along the x-axis from y=0 to approximately y=1.:>
+
+<a id='ba31aaa4-9c66-4a96-b51a-62b8b4e5e6f0'></a>
+
+<::E P-eIF2\u03b1\nLine graph with Y-axis labeled from 0 to 14 and X-axis labeled from 0 to 72. The graph displays four curves: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. All four curves show an initial increase to a peak between X-values of approximately 4 and 8, followed by a gradual decrease and flattening out. A grey shaded region is present at the bottom of the graph, extending from Y=0 to approximately Y=1 across the entire X-axis range.\n: chart::>
+
+<a id='ce5bc102-83e8-41cb-8cbc-11386bbd1dd4'></a>
+
+<::Figure: Three line graphs showing the temporal dynamics of different biological markers. All graphs share a common x-axis representing time from 0 to 72 units. Each graph contains four lines: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The graphs are labeled H, K, and N.
+
+Graph H: CHOP
+- Y-axis: Values from 0 to 90.
+- The red solid line peaks around 60 at x=12 and then declines.
+- The red dashed line peaks around 85 at x=12 and then declines.
+- The blue solid line peaks around 18 at x=12 and then declines.
+- The blue dashed line peaks around 15 at x=12 and then declines.
+
+Graph K: ATF6cl
+- Y-axis: Values from 0 to 10.
+- A light grey shaded region extends from y=0 to y=1.
+- The red solid line peaks around 9 at x=8 and then declines.
+- The red dashed line peaks around 9.5 at x=8 and then declines.
+- The blue solid line peaks around 5.5 at x=8 and then declines.
+- The blue dashed line peaks around 4.5 at x=8 and then declines.
+
+Graph N: BiPfree
+- Y-axis: Values from 0 to 1.4.
+- A light grey shaded region extends from y=0 to y=0.5.
+- A small red shaded rectangle is present at x=0, extending from y=0 to approximately y=0.45.
+- The red solid line increases from a low value, peaking around 0.7 at x=48, then slightly declines.
+- The red dashed line increases from a low value, peaking around 0.8 at x=48, then slightly declines.
+- The blue solid line increases from a low value, peaking around 1.3 at x=40, then declines.
+- The blue dashed line increases from a low value, peaking around 1.1 at x=40, then declines.::>
+
+<a id='8baece96-58d6-4fcc-a3fe-a2737539d51e'></a>
+
+C XBP1 <::Line graph titled "XBP1". The y-axis ranges from 0 to 16. The x-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, and 72. There is a light gray shaded region from y=0 to y=1 across the entire x-axis. Four lines are plotted: a solid red line peaking around (4, 14), a dashed red line following a similar trend, a solid blue line peaking around (8, 10), and a dashed blue line following a similar trend, peaking around (8, 8). All lines decrease after their peaks.::> F ATF4
+
+<a id='fa54b201-5b25-4333-bfe7-f342ea06988d'></a>
+
+<::Figure F: A line chart titled "ATF4" shows values on the y-axis ranging from 0 to 16, and on the x-axis ranging from 0 to 72. There are four lines plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. The red lines peak around x=6-8, with the dashed red line peaking higher (around 15) than the solid red line (around 10). The blue lines also peak around x=6-8, with the dashed blue line peaking slightly higher (around 4) than the solid blue line (around 3). All lines decrease after their peak and level off around a value of 1-2 towards x=72. A grey shaded area is present at the bottom of the chart, extending from y=0 to approximately y=1.: chart::>
+
+<a id='404bafd2-54f6-4b31-b5b3-edddd37ac406'></a>
+
+I<::chart: Line graph titled "Gadd34 mRNA". The y-axis ranges from 0 to 20. The x-axis ranges from 0 to 72. A gray shaded area is present from y=0 to y=1. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. All lines show an initial increase, peak around x=12-18, and then gradually decrease, stabilizing at low values by x=72. The red lines are generally higher than the blue lines, and the dashed lines are generally higher than their solid counterparts.:>L<::chart: Line graph titled "Bip mRNA". The y-axis ranges from 0 to 16. The x-axis ranges from 0 to 72. A gray shaded area is present from y=0 to y=1. Four lines are plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. All lines show an initial increase, peak around x=12-18, and then gradually decrease, stabilizing at low values by x=72. The red lines are generally higher than the blue lines, and the dashed lines are generally higher than their solid counterparts.:>
+
+<a id='ca4f8bd9-e8b9-4078-99fd-41295d4c1267'></a>
+
+Figure S8: Wild-type cells versus cells in which eIF2α phosphorylation regulates only *Atf4* translation but not translation of *Chop* or *Gadd34* (Δf.f.).
+
+<a id='39c9259b-9568-471f-ba43-4c4ed493cfa1'></a>
+
+<::Figure B and C: A line graph titled "P-IRE1" shows four curves over time. The legend indicates:
+- Blue solid line: 2.5 w.t.
+- Blue dashed line: 2.5 \u0394 f.f.
+- Red solid line: 10 w.t.
+- Red dashed line: 10 \u0394 f.f.
+
+The x-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, and 72.
+
+The left y-axis (labeled 'B') ranges from 0 to 40, with major ticks at 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, and 40.
+
+The right y-axis (labeled 'C') ranges from 0 to 16, with major ticks at 0, 2, 4, 6, 8, 10, 12, 14, and 16.
+
+The curves generally start near 0, rise to a peak, and then gradually decrease.
+- The blue solid line peaks around 20-24 on the left y-axis early on (around x=4) and then decreases.
+- The blue dashed line peaks lower than the blue solid line early on (around x=4-8) and then decreases.
+- The red solid line peaks around 36 on the left y-axis (around x=2) and then gradually decreases to around 4 by x=72.
+- The red dashed line peaks slightly below the red solid line (around x=2) and then gradually decreases, staying close to the red solid line.: chart::>
+
+<a id='57cc7c11-6147-4a44-96a3-f9d2f9eb706b'></a>
+
+<::A line graph titled "BiP". The y-axis is labeled "M" and ranges from 0 to 6. The x-axis ranges from 0 to 72, with major ticks at 0, 12, 24, 36, 48, 60, and 72. There are four lines plotted: a solid red line, a dashed red line, a solid blue line, and a dashed blue line. All lines start at approximately y=1 at x=0, increase to a peak between x=36 and x=48, and then decrease towards x=72. The red lines peak higher than the blue lines. A grey shaded rectangle spans the entire x-axis from y=0 to y=1.: chart::>
+
+<!-- PAGE BREAK -->
+
+<a id='e1adb795-94e3-429b-9d6c-add519da5782'></a>
+
+Diedrichs et al. Fig. S9<::chart: The image displays Figure S9, a multi-panel line graph, showing the levels of various cellular components over a time course from 0 to 72 units (likely hours). A gray shaded area at the bottom of each graph, from 0 to 1 on the y-axis, represents a baseline.The figure contains five panels:
+Panel A, titled "Unfolded Proteins", shows multiple lines with y-axis values ranging from 0 to 7. The lines generally peak between 6 and 12 units on the x-axis before declining.
+Panel D, titled "P-PERK", shows multiple lines with y-axis values ranging from 0 to 18. The lines generally peak between 6 and 12 units on the x-axis before declining.
+Panel G, titled "Chop mRNA", shows multiple lines with y-axis values ranging from 0 to 28. The lines generally peak between 12 and 24 units on the x-axis before declining.
+Panel J, titled "GADD34", shows multiple lines with y-axis values ranging from 0 to 8. The lines generally peak between 12 and 24 units on the x-axis before declining.
+Panel M, titled "BiP", shows multiple lines with y-axis values ranging from 0 to 4. The lines show an initial increase followed by a decline, with levels remaining elevated longer than in other panels.Figure S9: Wild-type cells versus ce ATF4 to Bip (ΔΑ4->b), or both (linea)::>
+
+<a id='2953a4f8-5504-4ba7-a21c-1dbd76fab14b'></a>
+
+<::figure: Five line graphs (B, E, H, K, N) showing protein levels over time (0 to 72 units on X-axis, labeled 0, 12, 24, 36, 48, 60, 72). A legend at the top indicates: w.t. (solid blue line), Δ A6->c (dashed yellow line), Δ A4->b (dashed green line), and lii (dotted purple line). Each graph has a grey shaded area at the bottom indicating the contribution of ATF6cl that has been removed. Figure B is titled P-IRE1, with Y-axis from 0 to 24. Figure E is titled P-eIF2α, with Y-axis from 0 to 6. Figure H is titled CHOP, with Y-axis from 0 to 24. Figure K is titled ATF6cl, with Y-axis from 0 to 7. Figure N is titled BiPfree, with Y-axis from 0 to 1.4. The accompanying text states: cells in which the contribution of ATF6cl (indicated by grey shaded area) have been removed, under the 2::>
+
+<a id='a0c44f37-0cbf-4e63-8826-61bcd7277b99'></a>
+
+near
+<::Figure: This figure contains five line charts, labeled C, F, I, L, and O, displaying time-course data from 0 to 72 units on the x-axis. A shaded gray band is present near the x-axis in all panels. Multiple data series are represented by different colored lines (blue solid, yellow dashed, green dashed, purple dotted).
+
+**C: XBP1**
+This chart shows data ranging from 0 to 12 on the y-axis.
+
+**F: ATF4**
+This chart shows data ranging from 0 to 5 on the y-axis.
+
+**I: Gadd34 mRNA**
+This chart shows data ranging from 0 to 10 on the y-axis.
+
+**L: Bip mRNA**
+This chart shows data ranging from 0 to 12 on the y-axis.
+
+**O: CHOP/BiP**
+This chart shows data ranging from 0 to 18 on the y-axis.
+
+F6a to Chop (AA6->c) or of 2.5 nM condition.::>
+
+<!-- PAGE BREAK -->
+
+<a id='522cc9a9-55bf-4bda-b924-73bdf2761cd0'></a>
+
+Diedrichs et al. Fig. S10
+
+<::
+A Unfolded Proteins
+chart: A line graph showing three curves over time (X-axis from 0 to 72) with values ranging from 0 to 12 on the Y-axis. All lines start near 0, rise to a peak between X=0 and X=12, and then gradually decrease and stabilize. The top curve is a purple dotted line. Below it, a blue solid line and a yellow dashed line closely follow each other. A gray shaded region is present at the bottom of the graph, spanning the full X-axis from Y=0 to approximately Y=1.5.
+::>
+D P-PERK
+
+<a id='c5623f2f-8672-4644-bac8-ed3e399d236d'></a>
+
+<::line graph::> A line graph showing three curves over time. The y-axis ranges from 0 to 28, with major ticks at 4, 8, 12, 16, 20, 24, 28. The x-axis ranges from 0 to 72, with major ticks at 12, 24, 36, 48, 60, 72. All three curves start near 0 on the y-axis at x=0, quickly rise to a peak between 26 and 28 on the y-axis, then decrease. Two of the curves, one solid blue and one dashed yellow, closely follow each other, decreasing sharply and then leveling off around y=3-4 by x=72. The third curve, a dotted purple/pink line, decreases more slowly and levels off around y=6-7 by x=72. G Chop mRNA <::>
+
+<a id='1ef0cfe6-47bb-4de1-8f18-e34945ebd0b7'></a>
+
+G <::A line chart titled "Chop mRNA". The y-axis is labeled from 0 to 80 in increments of 10. The x-axis is labeled from 0 to 72 in increments of 12. The chart displays five distinct lines: A solid blue line rises to a peak of approximately 70 at x-value around 9-10, then decreases and stabilizes around 5-10 after x=36. A dashed green line rises to a peak of approximately 75 at x-value around 10-11, then decreases and stabilizes around 5-10 after x=36, largely overlapping with the blue line at later points. A dotted red line rises to a peak of approximately 22 at x-value around 9-10, then decreases and stabilizes around 5-10 after x=36. A dashed yellow line rises to a peak of approximately 15-20 at x-value around 12-15, then decreases and stabilizes around 5-10 after x=36. A dotted purple line rises slowly to a peak of approximately 10-12 at x-value around 18-24, then remains relatively stable between 5 and 10, often overlapping with the yellow dashed line at later time points.: chart::>
+
+<a id='264ccad5-05b9-48d2-90e4-142932a6c10a'></a>
+
+J GADD34 <::chart: The chart is titled "GADD34". The y-axis ranges from 0 to 14, with tick marks at 2, 4, 6, 8, 10, 12, 14. The x-axis ranges from 0 to 72, with tick marks at 0, 12, 24, 36, 48, 60, 72. There are four lines plotted: a solid blue line, a dashed green line, a dashed yellow line, and a dotted purple line. All lines start at approximately y=1 at x=0. The solid blue line peaks at around y=12 at x=18 and then decreases. The dashed green line peaks higher, around y=13.5 at x=18, then decreases. The dashed yellow line peaks lower, around y=9 at x=18, then decreases. The dotted purple line rises to a peak around y=10.5 at x=18, then slowly decreases and plateaus around y=4. A gray shaded bar extends from y=0 to y=1 across the entire x-axis.::> M BiP <::chart: The chart is titled "BiP". The y-axis ranges from 0 to 6, with tick marks at 1, 2, 3, 4, 5, 6. The x-axis ranges from 0 to 72, with tick marks at 0, 12, 24, 36, 48, 60, 72. There are four lines plotted: a solid blue line, a dashed yellow line, a dashed green line, and a dotted purple line. All lines start at approximately y=1 at x=0. The solid blue line, dashed yellow line, and dashed green line are nearly identical, rising to a peak around y=5.2 at x=48 and then slightly decreasing. The dotted purple line rises slowly from y=1 to approximately y=3.5 at x=72. A gray shaded bar extends from y=0 to y=1 across the entire x-axis.::> Figure S10: Wild-type cells versus ATF4 to Bip (ΔΑ4->b), or both (linea
+
+<a id='59ed6b17-a11c-40ff-b092-c3aba2b5dd5f'></a>
+
+-w.t. --- Δ A6->c --- Δ A4->b --- linear
+<::Figure B: P-IRE1 chart. The chart shows four lines (w.t., Δ A6->c, Δ A4->b, linear) plotted against time (X-axis: 0, 12, 24, 36, 48, 60, 72) and an unspecified quantity (Y-axis: 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40). All lines start at 0, rapidly increase to a peak around x=4-8, then decay. The 'linear' line (purple dotted) decays slower and stabilizes at a higher value (around 4-5) compared to the other three lines. The 'w.t.' (blue solid), 'Δ A6->c' (yellow dashed), and 'Δ A4->b' (green dashed) lines closely overlap and decay to a value near 0-2. A gray shaded region extends along the x-axis from y=0 to approximately y=2.
+: chart::>
+<::Figure E: P-eIF2α chart. The chart shows four lines (w.t., Δ A6->c, Δ A4->b, linear) plotted against time (X-axis: 0, 12, 24, 36, 48, 60, 72) and an unspecified quantity (Y-axis: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9). All lines start at 0, rapidly increase to a peak around x=4-8, then decay. All four lines closely overlap throughout the decay, stabilizing at a value near 0-1. A gray shaded region extends along the x-axis from y=0 to approximately y=1.
+: chart::>
+
+<a id='f61667bd-5225-413a-92b6-041e7ba039ad'></a>
+
+C XBP1 <::Line graph with Y-axis from 0 to 16 and X-axis from 0 to 72. Multiple colored lines (purple dotted, green dotted, yellow dashed, blue solid) show an initial peak around X=6-12, then decline and stabilize. A gray horizontal bar is present along the X-axis from 0 to 72.: chart::> F ATF4 <::Line graph with Y-axis from 0 to 11 and X-axis from 0 to 72. Multiple colored lines (purple dotted, green dotted, yellow dashed, blue solid) show an initial peak around X=6-12, then decline and stabilize. A gray horizontal bar is present along the X-axis from 0 to 72.: chart::>
+
+<a id='21fdd234-0b0a-4654-884c-1bb61a08260a'></a>
+
+<::Figure I: Line graph titled "Gadd34 mRNA". The y-axis ranges from 0 to 18 in increments of 2. The x-axis ranges from 0 to 72 in increments of 12. Four lines are plotted, showing mRNA levels over time. A solid blue line peaks around 18 at x=12, then gradually decreases. A dashed green line peaks slightly higher than the blue line around x=12. A dotted purple line peaks around 12 at x=12 and decreases slowly. A dashed yellow line peaks around 12 at x=12 and decreases.::> <::Figure L: Line graph titled "Bip mRNA". The y-axis ranges from 0 to 16 in increments of 2. The x-axis ranges from 0 to 72 in increments of 12. Four lines are plotted, showing mRNA levels over time. A solid blue line peaks around 15 at x=12, then gradually decreases. A dashed yellow line closely follows the solid blue line. A dotted purple line peaks around 6 at x=12 and decreases slowly. A dashed green line remains very low, close to 0.::> <::Figure O: Line graph titled "CHOP/BiP". The y-axis ranges from 0 to 48 in increments of 8. The x-axis ranges from 0 to 72 in increments of 12. Four lines are plotted, showing protein levels over time. A solid blue line peaks around 32 at x=12, then gradually decreases. A dashed green line peaks around 48 at x=12, then decreases. A dotted purple line peaks around 16 at x=12 and decreases slowly. A dashed yellow line peaks around 8 at x=12 and decreases. Caption: F6a to Chop (ΔA6->c) or of 0 nM condition.::>
+
+<a id='f47680d6-79e4-4788-94e4-190e0af750f7'></a>
+
+<::Figure H shows a line graph titled "CHOP" with Y-axis values from 0 to 64 and X-axis values from 0 to 72. Four lines are plotted: a solid blue line and a dashed green line both peak around X=8-12 at Y values of approximately 56-64, then decrease. A dashed yellow line and a dotted purple line both peak at lower Y values (around 16-24) and also decrease.Figure K shows a line graph titled "ATF6cl" with Y-axis values from 0 to 10 and X-axis values from 0 to 72. A solid blue line and a dashed yellow line both peak around X=8-12 at Y values of approximately 9-10, then decrease to Y values around 2-3. A dotted purple line peaks slightly higher and decreases more slowly. A gray shaded area is present from Y=0 to Y=1.Figure N shows a line graph titled "BiPfree" with Y-axis values from 0 to 0.8 and X-axis values from 0 to 72. A solid blue line and a dashed yellow line both increase from 0 to a peak around X=36 at Y values of approximately 0.7-0.8, then decrease. A dotted purple line increases slowly from 0 to approximately 0.4. A gray shaded area is present from Y=0 to Y=0.45.cells in which the contribution of Al ar) have been removed, under the 1: chart::>

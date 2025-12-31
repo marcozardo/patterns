@@ -1036,3 +1036,294 @@ Todar, K., 2002. Growth of bacterial populations. In: Todar's Online Textbook of
 Tsukaguchi, K., de, L.B., Boom, W.H., 1999. Differential regulation of IFN-gamma, TNF-alpha, and IL-10 production by CD4(+) alphabetaTCR + T cells and vdelta2(+) gammadelta T cells in response to monocytes infected with Mycobacterium tuberculosis-H37Ra. Cell Immunol. 194, 12–20.
 Wang, H., Bloom, O., Zhang, M., Vishnubhakat, J.M., Ombrellino, M., Che, J., Frazier, A., Yang, H., Ivanova, S., Borovikova, L., Manogue, K.R., Faist, E., Abraham, E., Andersson, J., Andersson, U., Molina, P.E., Abumrad, N.N., Sama, A., Tracey, K.J., 1999. HMG-1 as a late mediator of endotoxin lethality in mice. Science 285, 248–251.
 Zouali, M., 2001. Antibodies. In: Encyclopedia of Life Science. Nature Publishing Group. Date Accessed: 8-18-2005. www.els.net.
+
+<a id='46ca400b-9b39-442e-b107-836a3bc6d067'></a>
+
+# Supplementary Material
+
+<a id='f4ebb3c8-522f-48a1-94fa-6dad4f95d11c'></a>
+
+*A reduced mathematical model of the acute inflammatory response:*
+*I. Derivation of model and analysis of anti-inflammation*
+
+<a id='a6b46568-c097-4f29-99d3-61969a9bd57d'></a>
+
+Introduction:
+
+The standard parameter values for both the subsystems and the reduced model
+equations (1)–(4) (equations (9)–(12) in the main text) are supplied in the table provided.
+These parameter values are selected to remain within the given ranges and constraints
+found in the experimental literature as well as in unpublished data. Details on the
+derivation of these ranges are given below. Parameters that could not be documented
+from existing data were estimated such that the subsystems behave in a biologically
+appropriate manner for all physiologically relevant levels of the anti-inflammatory
+mediator. Furthermore, when the pathogenic insult is replaced by endotoxin as an
+initiating event, as presented in Day et al. (2006), the resulting model exhibits observed
+biological behaviors of the immune mediators during repeated endotoxin administrations
+
+<a id='42f1b500-161b-4194-94d5-e688c6154480'></a>
+
+Units for N*, CA, and D cannot be determined, since they represent various types of cells, signaling proteins such as cytokines, and/or other mediators concurrently. These variables quantify the response of the immune function they represent rather than, for example, an exact cell count. Correspondingly, units of most parameters related to these variables are not in conventional form, but rather in terms of the associated variable. How parameters are estimated in relation to a given subsystem is detailed below along with comments for documented parameters.
+
+<!-- PAGE BREAK -->
+
+<a id='f29ac3b3-a11d-4c66-9661-4709295c4c6c'></a>
+
+Equations:
+
+dP/dt = k_pg P(1 - P/p_∞) - k_pm s_m P / (μ_m + k_mp P) - k_pn f(N*)P
+
+dN*/dt = s_nr R / (μ_nr + R) - μ_n N*
+
+dD/dt = k_dn f_s(f(N*)) - μ_d D
+
+dC_A/dt = s_c + k_cn f(N* + k_cnd D) / (1 + f(N* + k_cnd D)) - μ_c C_A
+
+<a id='ae5ce680-6761-4329-9563-9c0c72a2accd'></a>
+
+where R = f(k_{nn}N^* + k_{np}P + k_{nd}D),
+f(V) = \frac{V}{1 + (\frac{C_A}{c_{\infty}})^2}
+
+<a id='99d8696f-a589-4767-a455-d4fb6e1077ee'></a>
+
+and the saturation function is phenomenologically defined as $f_s(V) = \frac{V^6}{x_{dn}^6 + V^6}$
+
+<!-- PAGE BREAK -->
+
+<a id='327583dd-916d-4981-ab26-313ab43de3ce'></a>
+
+Table
+<table id="2-1">
+<tr><td id="2-2">Parameter</td><td id="2-3">Range</td><td id="2-4">Value</td><td id="2-5">Description</td><td id="2-6">Comments</td><td id="2-7">Sources</td></tr>
+<tr><td id="2-8">Kpm</td><td id="2-9">Estimated</td><td id="2-a">0.6/M-units per hr</td><td id="2-b">Rate at which the non-specific local response (M) eliminates pathogen</td><td id="2-c">1, 5</td><td id="2-d"></td></tr>
+<tr><td id="2-e">Kmp</td><td id="2-f">Estimated</td><td id="2-g">0.01/P-units per hr</td><td id="2-h">Rate at which the non-specific local response is exhausted by pathogen (P)</td><td id="2-i">1, 6</td><td id="2-j"></td></tr>
+<tr><td id="2-k">Sm</td><td id="2-l">Estimated</td><td id="2-m">0.005 M-units/hr</td><td id="2-n">Source of non-specific local response</td><td id="2-o">1, 7</td><td id="2-p"></td></tr>
+<tr><td id="2-q">μm</td><td id="2-r">0.0013 -0.0048/hr</td><td id="2-s">0.002/hr</td><td id="2-t">Decay rate for the non-specific local response</td><td id="2-u">1, 8</td><td id="2-v">(Janeway, Jr. et al., 2001; Zouali, 2001);</td></tr>
+<tr><td id="2-w">Kpg</td><td id="2-x">0.021-2.44/hr</td><td id="2-y">Various</td><td id="2-z">The growth rate of pathogen</td><td id="2-A">1, 9</td><td id="2-B">(Spector, 1956; Todar, 2002)</td></tr>
+<tr><td id="2-C">poo</td><td id="2-D">Estimated</td><td id="2-E">20x10^6/cc</td><td id="2-F">Maximum pathogen population</td><td id="2-G">1, 10</td><td id="2-H">(Vodovotz, Y. personal communication)</td></tr>
+<tr><td id="2-I">Kpn</td><td id="2-J">Maximum 2.5/ N*-units per hr</td><td id="2-K">1.8/N*-units per hr</td><td id="2-L">Rate at which activated phagocytes (N*) consume pathogen</td><td id="2-M">2, 11</td><td id="2-N">(Branwood et al., 1992)</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='133d016b-6409-4ae4-94d3-a2056b7dd25d'></a>
+
+<table id="3-1">
+<tr><td id="3-2">Parameter</td><td id="3-3">Range</td><td id="3-4">Value</td><td id="3-5">Description</td><td id="3-6">Comments</td><td id="3-7">Sources</td></tr>
+<tr><td id="3-8">Knp</td><td id="3-9">Estimated</td><td id="3-a">0.1/P-units per hr</td><td id="3-b">Activation of resting phagocytes (NR) by pathogen</td><td id="3-c">2, 3</td><td id="3-d"></td></tr>
+<tr><td id="3-e">Kon</td><td id="3-f">Estimated</td><td id="3-g">0.01/N*-units per hr</td><td id="3-h">Activation of resting phagocytes by previously activated phagocytes and their cytokines</td><td id="3-i">2, 3, 12</td><td id="3-j"></td></tr>
+<tr><td id="3-k">Snr</td><td id="3-l">Estimated</td><td id="3-m">0.08 NR-units/hr</td><td id="3-n">Source of resting phagocytes</td><td id="3-o">2, 3, 13</td><td id="3-p"></td></tr>
+<tr><td id="3-q">μη</td><td id="3-r">0.069-0.12/hr</td><td id="3-s">0.12/hr</td><td id="3-t">Decay rate of resting phagocytes</td><td id="3-u">2, 3, 14</td><td id="3-v">(Coxon et al., 1999)</td></tr>
+<tr><td id="3-w">μn</td><td id="3-x">Less than μnr</td><td id="3-y">0.05/hr</td><td id="3-z">Decay rate of activated phagocytes</td><td id="3-A">2, 3, 15</td><td id="3-B">(Coxon et al., 1999)</td></tr>
+<tr><td id="3-C">knd</td><td id="3-D">Less than knp</td><td id="3-E">0.02/D-units per hr</td><td id="3-F">Activation of resting phagocytes by tissue damage (D)</td><td id="3-G">3, 16</td><td id="3-H">(Andersson et al., 2000)</td></tr>
+<tr><td id="3-I">Kdn</td><td id="3-J">Estimated</td><td id="3-K">0.35 D-units/hr</td><td id="3-L">Maximum rate of damage produced by activated phagocytes (and/or associated cytokines and free radicals)</td><td id="3-M">3</td><td id="3-N"></td></tr>
+<tr><td id="3-O">Xdn</td><td id="3-P">Estimated</td><td id="3-Q">0.06 N*-units</td><td id="3-R">Determines level of activated</td><td id="3-S">3</td><td id="3-T"></td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='d1ef2b2b-e79a-4859-8996-51bc812366e8'></a>
+
+<table id="4-1">
+<tr><td id="4-2">Parameter</td><td id="4-3">Range</td><td id="4-4">Value</td><td id="4-5">Description</td><td id="4-6">Comments</td><td id="4-7">Sources</td></tr>
+<tr><td id="4-8"></td><td id="4-9"></td><td id="4-a"></td><td id="4-b">phagocytes needed to bring damage production up to half its maximum.</td><td id="4-c"></td><td id="4-d"></td></tr>
+<tr><td id="4-e">μd</td><td id="4-f">0.017 minimum</td><td id="4-g">0.02/hr</td><td id="4-h">Decay rate of damage; a combination of repair, resolution, and regeneration of tissue.</td><td id="4-i">3, 17</td><td id="4-j">(Wang et al., 1999)</td></tr>
+<tr><td id="4-k">C∞</td><td id="4-l">Estimated</td><td id="4-m">0.28 CA-units</td><td id="4-n">Controls the strength of the anti-inflammatory mediator (CA)</td><td id="4-o">4, 18</td><td id="4-p">(Isler et al., 1999)</td></tr>
+<tr><td id="4-q">Sc</td><td id="4-r">Estimated</td><td id="4-s">0.0125 CA-units/hr</td><td id="4-t">Source of the anti-inflammatory mediator</td><td id="4-u">4, 19</td><td id="4-v">(Tsukaguchi et al., 1999)</td></tr>
+<tr><td id="4-w">Kcn</td><td id="4-x">Estimated</td><td id="4-y">0.04 CA-units/hr</td><td id="4-z">Maximum production rate of the anti-inflammatory mediator</td><td id="4-A">4</td><td id="4-B"></td></tr>
+<tr><td id="4-C">Kond</td><td id="4-D">Estimated</td><td id="4-E">48 N*-units/D-units</td><td id="4-F">Relative effectiveness of activated phagocytes and damaged tissue in inducing</td><td id="4-G">4</td><td id="4-H"></td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='250aad42-d2f2-4069-b514-4dbf2f9a4c9a'></a>
+
+<table id="5-1">
+<tr><td id="5-2">Parameter</td><td id="5-3">Range</td><td id="5-4">Value</td><td id="5-5">Description</td><td id="5-6">Comments</td><td id="5-7">Sources</td></tr>
+<tr><td id="5-8">μc</td><td id="5-9">0.15-2.19/hr</td><td id="5-a">0.1/hr</td><td id="5-b">production of the anti-inflammatory mediator Decay rate of the anti-inflammatory mediator.</td><td id="5-c">4, 20</td><td id="5-d">(Bacon et al., 1973; Bocci, 1991; Fuchs et al., 1996; Huhn et al., 1997)</td></tr>
+<tr><td id="5-e">Hill coefficient for Eqn. (3)</td><td id="5-f">Positive integers</td><td id="5-g">6</td><td id="5-h">The Hill coefficient used in the production term of tissue damage from the activated phagocytes</td><td id="5-i">3, 21</td><td id="5-j"></td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='afc3d259-2a95-4631-b536-fbe1f0649696'></a>
+
+Comments
+
+<a id='3af226f8-c4d1-4af4-9ddd-e34a10eddde0'></a>
+
+1)
+
+The non-specific local immune response/pathogen (_M_/_P_) subsystem with the _M_ equation in quasi state gave rise to the first two terms of the pathogen equation, equation (1).
+The parameters in these terms were fit such that the pathogen equation is bistable for kpg below 1.5/hr, which is where the health state loses stability. The kpg level 1.5 was chosen such that for most physically observed pathogen growth rates the outcome of health is stable.
+
+<a id='8b3fd43e-9436-4ce4-b8bb-b8d12d1436b7'></a>
+
+2)
+
+The activated phagocytes/pathogen (N*/P) subsystem was fit such that for low pathogen growth rate (kpg) health is the only stable state, and at a moderately high kpg septic death exists and is stable. Parameters in this subsystem were first estimated so that these general dynamics occurred for a significant range of the physiologically possible levels of the anti-inflammatory mediator. They were then adjusted so that the reduced model and the altered model for endotoxin (Day et al., 2006) exhibited observed biological behaviors of the immune mediators in the presence of pathogen (see comment 4) and endotoxin, respectively.
+
+<a id='5ac86763-aca3-42a7-9c94-082b7b4bee34'></a>
+
+3)
+The activated phagocytes/tissue damage (N*/D) subsystem was initially fit such that for physiologically relevant levels of the anti-inflammatory mediator the system is bistable between health and aseptic death with a reasonable basin of attraction for the health state. Adjustments were then made so that the reduced model and the altered model for
+
+<!-- PAGE BREAK -->
+
+<a id='6b180bf8-2169-465e-9eda-6ef1d91c534f'></a>
+
+endotoxin (Day et al., 2006) exhibited observed biological behaviors of the immune
+mediators the presence of pathogen (see comment 4) and endotoxin, respectively.
+
+<a id='887a00d6-2008-43c0-8536-90ce8518658b'></a>
+
+4)
+Once the anti-inflammatory mediator (CA) was incorporated in the model as a dynamic
+variable, the parameters where adjusted so that the reduced model now has the
+following behavior (1) the model is bistable between the health and aseptic death states
+for low kpg with a plausible basin of attraction for the health state, (2) for moderate to high
+kpg all three states (health, aseptic death, and septic death) are stable, and (3) as kpg
+continues to increase the health state and the aseptic death state lose stability.
+
+<a id='73ed6fb7-0db2-4f01-b485-fc99bd7c2fa8'></a>
+
+5)
+
+The parameter, *kpm*, quantifies the ability of the local non-specific immune response to clear pathogen. This response is comprised of local factors such as defensins, local macrophages, and non-specific antibodies (e.g. IgA's). This response is considered to be less efficient than the phagocyte driven response, which yields the constraint *kpm*<*kpn*.
+The value of this parameter was estimated such that the local non-specific immune response can be overwhelmed with a modest to large inoculum of pathogen.
+
+<a id='581415b5-1ccd-4071-ad03-5afa0ecf3f7d'></a>
+
+6)
+The Rate at which the local non-specific immune response is exhausted, kmp, was set so
+that kpmSm / µm = 1.5/hr.
+
+<a id='18cebba3-388f-446b-83b3-d56645fd9a1c'></a>
+
+7)
+
+The parameter, *s*m, representing the source of the local non-specific immune response
+(*M*) was estimated to balance, μm, the decay rate of *M*. These parameters are closely
+related since the ratio *k*p*m*s*m*/μm=1.5/hr and at health state *M* =*S*m/μm.
+
+<!-- PAGE BREAK -->
+
+<a id='33216ca3-778f-4d9c-852d-60cf0520f3c9'></a>
+
+8)
+The range for the decay rate of the non-specific local immune response, m, was based
+on the reported half-lives of immunoglobulin G and A, which are non-specific antibodies
+probably key in this response. These half-lives were documented in the textbook
+Immunobiology Fig. 4.16 on page 143 (Janeway, Jr. et al., 2001) and Table 1 of Zouali
+et al. (2001).
+
+<a id='057a6617-ad5b-476b-8e9e-8f526fc12fe6'></a>
+
+9)
+Though changed throughout our simulations, the physiologically relevant range for the growth rate of pathogen, *k*<sub>pg</sub>, was taken from Todar's Online Textbook of Bacteriology (Todar, 2002), which uses references from Spector's textbook, Handbook of Biological Data (Spector, 1956).
+
+<a id='d0e22733-4cfc-463c-9d76-896d9a174264'></a>
+
+10)
+
+The maximum pathogen level, p∞, was estimated from a lethal model of E.coli rat peritonitis from unpublished data received via personal communication with Y. Vodovotz.
+
+<a id='b909c6ba-a771-4f3d-b301-c764aeed4090'></a>
+
+11)
+
+We based our estimation for the maximum of **kpn**, the rate at which activated phagocytes consume pathogen, on the observed mean rate of phagocytosis by macrophages in the presence of unlimited supply of particles up to 20 microns. This result is from the abstract of Branwood et al. (1992). This is taken as the maximum since the supply of pathogen is limited under normal circumstances.
+
+<!-- PAGE BREAK -->
+
+<a id='79490e86-6a87-4652-871c-dea77c5832a0'></a>
+
+12)
+The parameter, k_nn, corresponding to the rate of activation of resting phagocytes by
+those previously activated, was estimated while to ensure μ_n > s_nr k_nn / μ_nr. This inequality
+must hold for the health state to be stable.
+
+<a id='bf063ffd-99db-4a45-bcb1-7ae4a32a3dde'></a>
+
+13)
+
+The source of resting phagocytes, _s_nr, was set to ensure a stable concentration of resting phagocytes (_N_R) in the health state. As with the other source parameter, _s_m, this _s_nr was adjusted to balance the decay rate of resting phagocytes. These parameters are related since at health _N_R = _s_nr / _μ_nr.
+
+<a id='31a773be-f504-412b-8d6f-4d36c3ec1fed'></a>
+
+14)
+The range for the decay rate of the resting phagocytes, μnr, was calculated from the half-lives (6-20 hours) of circulating neutrophils presented in Coxon et al. (1999).
+
+<a id='b5335364-caaa-4749-8ef3-2beba43c3703'></a>
+
+15)
+The half-life of activated phagocytes, μn, is longer than the half-life of resting
+phagocytes, μnr, due to delayed apoptosis in the activated population; therefore μn< μnr
+(Coxon et al., 1999).
+
+<a id='60d45d69-f3d5-42a1-95da-31ca14171a67'></a>
+
+16)
+The peak of the activated phagocyte response elicited from pathogen, k_np, is greater
+than that triggered by damage, k_nd; therefore, k_nd < k_np.
+
+<a id='3c0b890c-653a-46d1-9831-129ad937b548'></a>
+
+17)
+The minimum for *μd*, which represents tissue repair, resolution, and regeneration, was estimated from data in Wang et al. (1999). We used the half-life of HMG-1 (HMGb-1), since it is a histone tethering protein leaked by damaged cells as a surrogate for the
+
+<!-- PAGE BREAK -->
+
+<a id='28422715-63b0-42d2-8e7b-4d6b3cc9c7fd'></a>
+
+many danger molecules that perpetuate the inflammatory signal. Wang and colleagues
+give data for HMG-1 levels during an inflammatory response to bacterial
+lipopolysaccharide (LPS). Therefore, we estimated the lower limit as the slope of the
+data shown in Fig. 1C of Wang et al. (1999) during the decay phase of HMG-1. It would
+be unrealistic to set μd to a value higher than the time constant of a recognized marker
+of cellular injury.
+
+<a id='c2e41926-4921-4760-820c-52c22207709b'></a>
+
+18)
+The value for c∞ was set such that f(x) = x / (1 + (C_A / c_∞)^2) corresponds to ≈ 75% inhibition,
+
+<a id='1a0c06bd-41a2-40b4-9085-e2b337f6d245'></a>
+
+i.e. 1 / (1 + (C_A / c_∞)^2) ≈ 3/4, when C_A reaches maximum value in response to an insult. We
+
+<a id='c76ee341-c633-4f34-bd97-d89bae282e1d'></a>
+
+set this to be approximately 75% because Fig. 6B in Isler et al. (1999) shows that when the anti-inflammatory mediator, IL-10, is blocked with anti-IL10 there is approximately a 75% increase in the production of IL-12 (a pro-inflammatory cytokine produced by activated phagocytes).
+
+<a id='65cc8c92-724a-4fee-9297-8cb87928e734'></a>
+
+19)
+Organisms have constitutive levels of anti-inflammatory effectors. Therefore the source
+parameter, **s**c, was chosen to balance the corresonding documented half-life, µc. These
+parameters are related because at the health state CA = Sc/ µc.
+
+<a id='b3efc460-1d86-4d41-b34a-52bfe7948b0a'></a>
+
+20)
+Anti-inflammatory signals have downstream cellular effects not explicitly modeled herein,
+lasting longer than the effector cytokines or molecules producing them. Therefore, the
+value for με was set at the lower limit of reported half-lives of anti-inflammatory effectors,
+
+<!-- PAGE BREAK -->
+
+<a id='565b5709-da36-4c7d-8612-cdb4ad3cb9ad'></a>
+
+which were estimated from pg. 130 of Bacon et al. (1973), Table 1 on pg. 277 of Bocci
+(1991), pg. 291 of Fuchs et al. (1996), and the abstract of Huhn et al. (1997).
+
+<a id='aadd6afe-3691-4b09-b48e-68a332e0a69f'></a>
+
+21)
+The Hill coefficient for equation (3) was set to six so that the response of tissue damage to activated phagocytes is not hypersensitive. A lower Hill coefficient would not appropriately represent this. In other words, it is biologically plausible that low levels of activated phagocytes do not trigger significant amounts of damage that could lead to a positive feedback capable of sustaining aseptic death. Also, for values six and higher, there was not a significant difference in the sensitivity of damage to the activated phagocytes. Contrary to the common inference regarding the use of Hill coefficients in enzymatic kinetics, we are not implying that a cooperativity-based mechanism is at work.
+
+<!-- PAGE BREAK -->
+
+<a id='d7f4ac71-c84b-4444-8cc0-e3e533df343b'></a>
+
+References

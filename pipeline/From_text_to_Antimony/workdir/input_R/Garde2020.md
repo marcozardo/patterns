@@ -948,3 +948,222 @@ Mol. Life Sci.* (doi:10.1007/s00018-019-03382-0)
 <a id='a8b6b80c-0272-49f9-92e7-a92909805ff0'></a>
 
 royalsocietypublishing.org/journal/rsos R. Soc. open sci. 7: 190810
+
+# Supplementary materials
+
+<a id='acb3eea5-e62f-41ea-90de-5f5981b936ac'></a>
+
+SUPPLEMENT TO
+
+<a id='30caebc3-737c-4fc6-bb36-d8bb6454fe63'></a>
+
+Differential equation based minimal model describing metabolic oscillations in *Bacillus subtilis* biofilms
+
+<a id='ff80a8b0-bbf2-47af-903f-d7e450359373'></a>
+
+Ravindra Garde 1,2, Bashar Ibrahim 1,4,5, Ákos T. Kovács³, Stefan Schuster¹*
+
+¹Dept. of Bioinformatics, Matthias Schleiden Institute, Friedrich Schiller University Jena,
+Ernst-Abbe-Platz 2, 07743 Jena, Germany
+
+²Max Planck Institute for Chemical Ecology Hans-Knöll-Str. 8, 07745, Jena, Germany
+
+³Bacterial Interactions and Evolution Group, DTU Bioengineering, Technical University of
+Denmark, Søltofts Plads Building 221, 2800 Kgs. Lyngby, Denmark
+
+⁴Centre for Applied Mathematics and Bioinformatics, Gulf University for Science and
+Technology, Hawally 32093, Kuwait
+
+⁵Department of Mathematics and Natural Sciences, Gulf University for Science and
+Technology, Hawally 32093, Kuwait
+
+<a id='cace68a6-19aa-4201-a89d-f20324226887'></a>
+
+*Corresponding Author
+
+<!-- PAGE BREAK -->
+
+<a id='1ded13d9-e924-4864-abd1-28b1eb22c5c8'></a>
+
+Applying the quasi-steady-state approximation to ammonia
+
+Just as in the case of the QSSA variable G, (see main text for details), we apply the same approximation to the variable A.
+
+<a id='9fd11671-fe12-4cd8-9216-9eb36144c893'></a>
+
+A = k_5 / k_3 G_i (S1)
+
+<a id='e67b3e77-bb55-4b1b-85f7-cdeb6cc4e818'></a>
+
+From Eq. (1), we derive a reduced system:
+
+$\frac{dG_p}{dt} = k_1 G_E G_p - k_4 G_p - \frac{k_2 k_5}{k_3} G_p$ (S2)
+
+<a id='6be557b1-32d0-453f-a2fd-2ad759cc1377'></a>
+
+dG_i / dt = k_4 G_p - k_5 G_i (S3)
+
+<a id='25f67039-3601-4ff1-9f12-55be128f2d8f'></a>
+
+The system shows two steady states:
+
+Gp1=Gi1=0                                                                     (S4a,b)
+
+<a id='15b4d22b-b174-40fb-b064-f94779e05ffc'></a>
+
+$G_{p2} = \frac{(k_1 G_E - k_4) k_3}{k_2 k_4}$, $G_{i2} = \frac{(k_1 G_E - k_4) k_3}{k_2 k_5}$ (S5a,b)
+
+<a id='019f25b2-0927-4065-8da2-6acdde5afa05'></a>
+
+(see Eqs. (3a,c)). The Jacobian matrix reads:
+
+$M=\begin{pmatrix}
+k_1 G_E - k_4 - \frac{k_2 k_5}{k_3} G_i & - \frac{k_2 k_5}{k_3} G_p \\
+k_4 & -k_5
+\end{pmatrix}$ (S6)
+
+<a id='6bdcf1af-30d7-486b-9018-1faee306a4d0'></a>
+
+For the trivial steady state (TSS, Eq. (S4)), it leads to:
+
+$M = \begin{pmatrix} k_1 G_E - k_4 & 0 \\ k_4 & -k_5 \end{pmatrix}$
+
+(S7)
+
+<a id='96fe5a4e-2b4c-4a6f-b7e8-d595f30ff2c6'></a>
+
+For matrices with such a triangular structure, the eigenvalues are given by the diagonal
+elements. In our case:
+
+$\lambda_{1}=k_{1}G_{E}-k_{4},\lambda_{2}=-k_{5}$ (S8)
+
+<!-- PAGE BREAK -->
+
+<a id='8feaf6ab-d17a-4c3e-937d-e076d95c735c'></a>
+
+In any case, the eigenvalues are real, so that not even damped oscillations are possible. For k1GE < k4, both eigenvalues are negative, so that the trivial steady state is a stable node. For k1GE > k4, one eigenvalue is negative and the other one positive. The steady state then is unstable, it is a saddle point.
+For the NTSS (Eq. (S5)), the Jacobian matrix becomes:
+
+<a id='6b49a04a-dd1e-42a8-9084-e0b67e3bd441'></a>
+
+M = 
+  ( 0  - k_1 G_E - k_4 k_5 / k_4 )
+  ( k_4 - k_3 )
+
+(S9)
+
+<a id='645f4330-79d7-41e6-9aef-a7ca6adb15a9'></a>
+
+The characteristic equation reads:
+
+$\lambda^2 + k_3\lambda + (k_1G_E - k_4)k_5 = 0$ (S10)
+
+<a id='c3fbd486-6212-4179-b6fa-92dab3a1d1e7'></a>
+
+This has the solutions
+
+<a id='ed69c529-c65f-44a2-ac31-75bc96e8abae'></a>
+
+\lambda_{1/2} = -\frac{k_3}{2} \pm \sqrt{\frac{k_3^2}{4} - (k_1 G_E - k_4)k_5} (S11)
+
+<a id='983465fd-6118-4a56-823a-a722f4883085'></a>
+
+Now, we distinguish three cases:
+
+a) For k₁G_E < k₄, the term under the square root is positive, so that the root is real.
+   Moreover, it is larger than k₃/2. Thus, one eigenvalue is negative and the other one
+   positive. The steady state then is unstable, it is a saddle point.
+
+b) For 0 < k₁G_E - k₄ < k₃²/4k₅, the root is again real. It is less than k₃/2, though. Both
+   eigenvalues are negative; the steady state is a stable node.
+
+c) For k₁G_E - k₄ > k₃²/4k₅, the root is imaginary. Both eigenvalues are complex numbers,
+
+<a id='bf971744-c2f4-47e9-8f79-5c4ac4081319'></a>
+
+with the same negative real part -k3/2. The steady state is a stable focus. This state is, thus, reached by damped oscillations.
+
+<a id='dda7831f-65a2-4731-8630-539d4e618107'></a>
+
+The transition between stable node and stable focus occurs at k₁G_E - k₄ = k₃²/4k₅. The results
+
+<a id='261cf35e-2af7-4ea5-bc70-730ae890f066'></a>
+
+of this approximation are similar to those in the main text section on QSSA. We can conclude that the limit-cycle oscillations vanish if ammonia diffuses very fast.
+
+<!-- PAGE BREAK -->
+
+<a id='ae984938-da75-49e3-827b-6b98049fd053'></a>
+
+<::Bifurcation Plot: chart::>Bifurcation Plot. The chart displays a scatter plot with red data points. The Y-axis is labeled "[Gp] in mmol/l" and ranges from 0 to 800. The X-axis is labeled "k2 (lh/mmol)" and ranges from 0 to 12. The plot shows a wide spread of [Gp] values for small k2 values (near 0), which then rapidly narrows and decreases as k2 increases, eventually showing a more stable, lower range of [Gp] values for larger k2. A legend at the bottom indicates the data points correspond to "[Gp]|[k2]".
+
+<a id='303629ed-6dd3-44ed-a329-4981179952d6'></a>
+
+Figure S1: Bifurcation plot of Gp versus k2. It can be seen that the model is not very sensitive to k2 in terms of amplitude of oscillations if k2 ≥ 2 h⁻¹.
+
+<!-- PAGE BREAK -->
+
+<a id='a4971fa3-4898-4e69-b96c-cfde1016c6e0'></a>
+
+<::chart: Bifurcation Plot::>Bifurcation Plot. The Y-axis is labeled "[G_p] in mmol/l" and ranges from 0 to 16. The X-axis is labeled "k_3 (h⁻¹)" and ranges from 0 to 8. The plot shows red scattered points. For k_3 values approximately less than 1, there is a single line of points. Between k_3 approximately 1 and 5.5, the points form a dense, wide region, indicating oscillations with varying amplitudes. Above k_3 approximately 5.5, the points narrow down to a single line again. There is a legend entry "[Gp]|k3".Figure S2: Bifurcation plot of G_p versus k_3. The model is sensitive to k_3 if k_3 ≥ 4 h⁻¹ in terms of amplitude of oscillations.<::
+
+<!-- PAGE BREAK -->
+
+<a id='43f35da4-db91-4e29-979f-18a1aa1d4408'></a>
+
+<::Bifurcation Plot. The y-axis is labeled "[G_p] in mmol/l" with values from 0 to 50. The x-axis is labeled "k_4 (h⁻¹)" with values from 0 to 5. The plot shows red data points forming a bifurcation diagram. For k_4 values less than approximately 3.5 h⁻¹, there is a spread of [G_p] values, indicating multiple possible states or oscillatory behavior, with the spread being largest for k_4 values between 1 and 2 h⁻¹. For k_4 values greater than approximately 3.5 h⁻¹, the [G_p] values converge to a single, low value near 0. Legend: [Gp]|k4. Figure S3: Bifurcation plot of G_p versus k_4. The model is sensitive to k_4 if k_4 ≤ 3 h⁻¹ in terms of
+: chart::>
+
+<a id='1db7cf31-1984-4147-a283-0d12f4ddaade'></a>
+
+amplitude of oscillations.
+
+<!-- PAGE BREAK -->
+
+<a id='9fefb6d0-6cd0-43f1-913f-87311c739935'></a>
+
+<::line graph: Time Course showing Concentration (mmol/l) vs. Time (h). The x-axis ranges from 0 to 100 hours. The y-axis ranges from 0 to 16 mmol/l. Three lines are plotted: a yellow line labeled "[A]|Time", a red line labeled "[Gi]|Time", and a blue line labeled "[Gp]|Time". The red line ([Gi]) shows large, spike-like oscillations, peaking around 14 mmol/l. The blue line ([Gp]) shows smaller, spike-like oscillations that peak shortly before the red line's peaks, reaching about 8 mmol/l. The yellow line ([A]) remains consistently low, near 0 mmol/l, with small fluctuations. The oscillations are periodic, with peaks occurring approximately every 20 hours. Figure S4: Time course after introducing self-amplification to G, in addition to Gp. This can be obtained by changing the term k4Gp to k4G₁Gp in eq (1). The oscillations become spike-like but no dramatic difference to the results of the minimal model can be seen. In order to obtain realistic oscillations, the parameter values needed to be changed. The parameters from Table 1 were reduced to 10% while k3 was increased to 15.93 h⁻¹. In the main text, we only use self-amplification for Gp.::>
+
+<!-- PAGE BREAK -->
+
+<a id='f2423a89-3aa6-4ef3-8031-f376643dd0e5'></a>
+
+<::A line chart titled "Time Course". The y-axis is labeled "mmol/l" and ranges from 0 to 2,500. The x-axis is labeled "h" and ranges from 0 to 12. The chart displays six data series:
+- [B1] [Time]: Represented by a red line, showing a relatively flat concentration that slightly increases after approximately 9 hours.
+- [B2] [Time]: Represented by a blue line, similar to [B1] but at a slightly higher concentration.
+- [B3] [Time]: Represented by a green line, similar to [B2] but at a slightly higher concentration.
+- [B4] [Time]: Represented by a cyan line, similar to [B3] but at a slightly higher concentration.
+- [B5] [Time]: Represented by a magenta line, showing a more pronounced increase starting around 8-9 hours, reaching approximately 300 mmol/l by 11 hours.
+- [SS] [Time]: Represented by a yellow line, which remains low until about 9.5 hours, then exhibits a sharp, exponential increase, reaching over 2,000 mmol/l by 11 hours.
+: chart::>
+
+<a id='47389907-2c74-4813-ad95-fe1a24978a31'></a>
+
+Figure S5: Plot of the time course of growth as calculated from Eq. (4) for various initial values of Gp from 1 mmol/l - 10 mmol/l with a step size of 1 mmol/l (all wavy curves). On average the curves have a doubling time of about 99 minutes. The black monotonic curve (initial value: 10-9 mmol/l) indicates the growth calculated by the steady state values. It can be seen that the steady state growth rate overtakes the oscillating growth rate at about 10.5 hours.
+
+<a id='ffc35794-8ed4-4b29-8790-60d1352e3901'></a>
+
+Table S1: Sensitivity analysis for all variables at steady state with respect to all parameters.
+Darker shades denote higher sensitivity. Positive sensitivity is shown in green and negative in red. White means that the variable is not sensitive to that parameter.
+
+<a id='d52b4e1d-f48a-4173-9f7a-903fb5b6bfad'></a>
+
+a: Values indicate unscaled derivatives at steady state.
+<table id="7-1">
+<tr><td id="7-2"></td><td id="7-3">K1</td><td id="7-4">K2</td><td id="7-5">K3</td><td id="7-6">K4</td><td id="7-7">k5</td></tr>
+<tr><td id="7-8">[A]</td><td id="7-9">5.6604</td><td id="7-a">-0.2944</td><td id="7-b">0</td><td id="7-c">-0.1887</td><td id="7-d">0</td></tr>
+<tr><td id="7-e">[G]</td><td id="7-f">9.8441</td><td id="7-g">-0.5120</td><td id="7-h">0.6790</td><td id="7-i">-0.3281</td><td id="7-j">-1.1798</td></tr>
+<tr><td id="7-k">[Gp]</td><td id="7-l">11.3208</td><td id="7-m">-0.5888</td><td id="7-n">0.7809</td><td id="7-o">-1.9392</td><td id="7-p">0</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='15a960f8-36c2-418f-8260-9f4df1c8e0b6'></a>
+
+**b**: Values indicate scaled derivatives at steady state.
+<table id="8-1">
+<tr><td id="8-2"></td><td id="8-3">k_1</td><td id="8-4">k_2</td><td id="8-5">k_3</td><td id="8-6">k_4</td><td id="8-7">K5</td></tr>
+<tr><td id="8-8">[A]</td><td id="8-9">1.2416</td><td id="8-a">-1</td><td id="8-b">0</td><td id="8-c">-0.2416</td><td id="8-d">0</td></tr>
+<tr><td id="8-e">[G]</td><td id="8-f">1.2416</td><td id="8-g">-1</td><td id="8-h">1</td><td id="8-i">-0.2416</td><td id="8-j">-1</td></tr>
+<tr><td id="8-k">[G_p]</td><td id="8-l">1.2416</td><td id="8-m">-1</td><td id="8-n">1</td><td id="8-o">-1.2416</td><td id="8-p">0</td></tr>
+</table>

@@ -1078,3 +1078,228 @@ PLOS ONE | DOI:10.1371/journal.pone.0168133 January 6, 2017
 <a id='b2ec8ef6-5550-4ce5-b46b-8d81b8ac9b44'></a>
 
 20 / 20
+
+# Supplementary materials
+
+<a id='02489722-d8be-438d-9572-0adce664b466'></a>
+
+## S3 File. Analytical results
+
+We analytically investigate the properties of the co-infection model (5) at a chronic HIV steady state. As described, our model only captures the effect HIV has on HPV dynamics and, hence, we can simplify model (5) to include the four HPV equations, and constant T= 3.2x10^5 cells per
+
+<a id='b69af675-730c-4dfe-bf33-144a33c54150'></a>
+
+ml, $\overline{I} = \frac{c_1\overline{V}}{N_1\delta} = 2.4 \times 10^3$ cells per ml and $\overline{V} = 4.8 \times 10^4$ virions per ml, $i.e. (\overline{T}, \overline{I}, \overline{V})$ are at a steady state. We also assume $k_1=k_2=k$ as listed in Table 1. The reduced model is:
+
+<a id='51ffb349-f794-45f4-8783-7bf6aa267b62'></a>
+
+$$\frac{dY_1}{dt} = \psi W \frac{(1+p\overline{V})N_2-Y_1}{\varphi+(1+p\overline{V})N_2-Y_1} - \varepsilon Y_1 - \mu Y_1 - aY_1E$$
+$$\frac{dY_2}{dt} = \varepsilon Y_1 + r\varepsilon Y_2 - \mu Y_2 - aY_2E$$
+$$\frac{dW}{dt} = \mu(k_1Y_1 + k_2Y_2) - c_2W \quad (6)$$
+$$\frac{dE}{dt} = \omega Y_2E \left(1 - \frac{E}{K}\right)$$
+
+<a id='5f17d5b3-18da-43cc-8ce0-823fcc348b3e'></a>
+
+System (6) has three steady states: A virus free steady state,
+
+$S_0 = (0,0,0,E)$, (8)
+
+<a id='ffc59a32-6f80-4ff0-a425-43f1ce371cad'></a>
+
+a chronic immuno tolerant HPV steady state,
+
+<a id='81512716-2397-4809-a8a9-10839abce9f0'></a>
+
+S_I = (\tilde{Y}_1, \tilde{Y}_2, \tilde{W}, 0),                                 (9)
+
+<a id='cd5752bc-d2e8-404b-9b15-3cddf72fc4ac'></a>
+
+where,
+
+<a id='88fb3587-d2bc-49b6-a0f0-44289ac62620'></a>
+
+Y₁ = Acr(ε + μ) + Bκμψ(1-r) / -kψur + cεr + cur + kμψ'
+
+(10)
+
+<a id='1a647e7d-4db3-4142-928a-80239e52f245'></a>
+
+$\widehat{Y}_{2} = \frac{-Acr(\varepsilon+\mu)+B\kappa\mu\psi(r-1)}{r(-k\psi\mu r+c\varepsilon r+c\mu r+k\mu\psi)}'$ (11)
+
+<a id='197d6702-4941-4fdc-8f5f-5a746b622350'></a>
+
+W̃ = μκ Acr(ε+μ)(r-1)-Bκμψ(r-1)² / rc(-kψμr+cεr+cμr+kμψ)
+(12)
+
+<!-- PAGE BREAK -->
+
+<a id='64ad2a7c-7045-43e1-a8b0-e7455997f985'></a>
+
+with A = (1 + p\overline{V})N_2 and B = \varphi + (1 + p\overline{V})N_2 and a chronic immuno competent HPV
+
+<a id='cf852c3e-7d30-4674-8080-28f646251a2b'></a>
+
+steady state,
+
+<a id='2b143586-3cfc-4977-baca-370bfb43fc7d'></a>
+
+S2 = (Y1, Y2, W, E),
+(13)
+
+<a id='79a6454d-94ee-403d-984a-138b6b901867'></a>
+
+where,
+
+$Y_1 = (\overline{A}\overline{K}^2 a^2 c + \overline{A}\overline{K}^2 ac\mu - \overline{A}\overline{K}ac\overline{\epsilon} r - \overline{B}\overline{K}ak\overline{\mu}\overline{\psi} - \overline{B}\overline{K}k\overline{\mu}^2\overline{\psi} + \overline{B}\overline{\epsilon}k\overline{\mu}\overline{\psi}r$
+
+$+ \overline{A}\overline{K}ac\overline{\epsilon}\overline{\mu} + \overline{A}\overline{K}ac + \overline{A}\overline{K}c\overline{\epsilon}\overline{\mu} + \overline{A}\overline{K}c\overline{\mu}^2 - A\overline{c}\overline{\epsilon}^2 r - A\overline{c}\overline{\epsilon}\overline{\mu}r - \overline{B}\overline{\epsilon}k\overline{\mu}\overline{\psi}) / (\overline{K}^2 a^2 c$
+
+$+ \overline{K}^2 ac\mu - \overline{K}ac\overline{\epsilon}r - \overline{K}ak\overline{\mu}\overline{\psi} - \overline{K}k\overline{\mu}^2\overline{\psi} + \overline{\epsilon}k\overline{\mu}\overline{\psi}r + \overline{K}a\overline{c}\overline{\epsilon} + \overline{K}ac\overline{\mu} + \overline{K}c\overline{\epsilon}\overline{\mu}$
+
+$+ \overline{K}c\overline{\mu}^2 - \overline{c}\overline{\epsilon}^2 r - \overline{c}\overline{\epsilon}\overline{\mu}r - \overline{\epsilon}k\overline{\mu}\overline{\psi}),$ (14)
+
+<a id='5124d869-8634-4ae9-8c51-85e31603b361'></a>
+
+Y_2 = epsilon (bar{A}K^2 a^2 c + bar{A}K^2 a c mu - bar{A}K a c epsilon r - bar{B}K bar{a} k mu psi - bar{B}K k mu^2 psi + B epsilon k mu psi r
++ bar{A}K bar{a} c epsilon + bar{A}K bar{a} c mu + bar{A}K c epsilon mu + bar{A}K c mu^2 - A c epsilon^2 r - A c epsilon mu r - B epsilon k mu psi) / (bar{K}^3 a^3 c
++ 2bar{K}^3 a^2 c mu + bar{K}^3 a c mu^2 - 2bar{K}^2 a^2 c epsilon r - bar{K}^2 a^2 k mu psi - 2bar{K}^2 a c epsilon mu r - 2bar{K}^2 a k mu^2 psi
+- bar{K}^2 k mu^3 psi + bar{K} a c epsilon^2 r^2 + 2bar{K} a epsilon k mu psi r + 2bar{K} epsilon k mu^2 psi r - epsilon^2 k mu psi r^2 + bar{K}^2 a^2 c epsilon
++ bar{K}^2 a^2 c mu + 2bar{K}^2 a c epsilon mu + 2bar{K}^2 a c mu^2 + bar{K}^2 c epsilon mu^2 + bar{K}^2 c mu^3 - 2bar{K} a epsilon^2 c r - 2bar{K} a c epsilon mu r
+- bar{K} a epsilon k mu psi - 2bar{K} c epsilon^2 mu r - 2bar{K} c epsilon mu^2 r - bar{K} epsilon k mu^2 psi + c epsilon^3 r^2 + c epsilon^2 mu r^2 + epsilon^2 k mu psi r),
+(15)
+
+<a id='3c4d9d08-f284-4396-a2e4-95fdf956162e'></a>
+
+$\bar{W} = [A c(\bar{K}^2 a^2 + \bar{K}^2 a \mu - \bar{K} a \epsilon r + \bar{K} a \epsilon + \bar{K} \epsilon \mu + \bar{K} a \mu + \bar{K} \mu^2 \\ - \epsilon^2 r - \epsilon \mu r) - B k \mu \psi (\bar{K} a + \bar{K} \mu + \epsilon - r \epsilon) \mu k](\bar{K} a + \bar{K} \mu - \epsilon r \\ + \epsilon) / c(\bar{K}^3 a^3 c + 2\bar{K}^3 a^2 c \mu + \bar{K}^3 a c \mu^2 - 2\bar{K}^2 a^2 c \epsilon r - \bar{K}^2 a^2 k \mu \psi \\ - 2\bar{K}^2 a c \epsilon \mu r - 2\bar{K}^2 a k \mu^2 \psi - \bar{K}^2 k \mu^3 \psi + \bar{K} a c r^2 \epsilon^2 + 2\bar{K} a k \epsilon \mu \psi r \\ + 2\bar{K} k \epsilon \mu^2 \Psi r - \epsilon^2 k \mu \psi r^2 + \bar{K}^2 a^2 c \epsilon + \bar{K}^2 a^2 c \mu + 2\bar{K}^2 a c \epsilon \mu + 2\bar{K}^2 a c \mu^2 \\ + \bar{K}^2 c \epsilon \mu^2 + \bar{K}^2 c \mu^3 - 2\bar{K} a c \epsilon^2 r - 2\bar{K} a c \epsilon \mu r - \bar{K} a \epsilon k \mu \psi - 2\bar{K} c \epsilon^2 \mu r \\ - 2\bar{K} c \epsilon \mu^2 r - \bar{K} \epsilon k \mu^2 \Psi + c \epsilon^2 r^2 + c \epsilon^2 \mu r^2 + \epsilon^2 k \mu \psi r),$ \\ (16)
+
+<a id='f2d53eb9-a094-4875-a136-e8d9b76fadbc'></a>
+
+Ē = K̄, (17)
+
+<!-- PAGE BREAK -->
+
+<a id='398ffe17-b2d1-4e3f-9e14-6e489a85b19d'></a>
+
+To investigate the asymptotic stability of S₀, we compute the Jacobian for the model (6):
+
+<::J =
+$$\begin{bmatrix}
+- \psi W - \frac{\varphi}{(\varphi + (1+pV)N_2 - Y_1)^2} - \varepsilon - \mu - aE & 0 & \psi \frac{(1+pV)N_2 - Y_1}{\varphi + (1+pV)N_2 - Y_1} & -aY_1 \\
+\varepsilon & r\varepsilon - \mu - aE & 0 & -aY_2 \\
+\mu k & \mu k & -c_2 & 0 \\
+0 & \omega E(1 - \frac{E}{K}) & 0 & \omega Y_2 - 2\omega aY_2 \frac{E}{K}
+\end{bmatrix}$$
+(18): figure::>
+
+<a id='0d1e93a5-ab2a-4434-9d3b-ab722111bf81'></a>
+
+At S₀,
+
+$J(S_0) = \begin{bmatrix}
+-\varepsilon-\mu-E-\lambda & 0 & \Omega & 0 \\
+\varepsilon & r\varepsilon-\mu-E-\lambda & 0 & 0 \\
+\mu k & \mu k & -c_2-\lambda & 0 \\
+0 & \omega E(1-\frac{E}{K}) & 0 & -\lambda
+\end{bmatrix}$
+
+(19)
+
+<a id='4e07227e-f7a9-418f-86e1-180c435439ee'></a>
+
+where, ψ ( (1 + pV)N₂ - Y₁ ) / ( φ + (1 + pV)N₂ - Y₁ ) = Ω The corresponding characteristic equation is:
+
+<a id='4640c975-e1b3-4228-b56c-602b919e2c93'></a>
+
+$$(-\lambda)[\lambda^3 + \lambda^2 (c_2 - \varepsilon r + 2aE + \varepsilon + 2\mu) + \lambda[c_2 (\varepsilon + \mu + aE) + c_2(-\varepsilon r + aE + \mu) - \Omega\mu k + (-\varepsilon - \mu - aE)(\varepsilon r - aE - \mu)] + (\varepsilon + \mu + aE)c_2 (\mu + aE - r\varepsilon) - \varepsilon\mu k\Omega] = 0. \quad (20)$$
+
+<a id='42c2de86-0b1d-4ceb-a7e8-8b4816e6696d'></a>
+
+We know that there is a \lambda such that \lambda= 0.
+
+<a id='d6f4d502-5e88-4076-b4ee-ad97de08dbca'></a>
+
+By Routh-Hurwitz criterion, all other eigenvalues are negative when a₁>0, a₃>0 and a₁a₂>a₃,
+where,
+
+<a id='fda51343-0ab6-4e8d-ba45-d92fcbb6f211'></a>
+
+a_1 = c_2 r + 2aE + 2 , (21)
+
+<!-- PAGE BREAK -->
+
+<a id='b0cc2460-804e-496b-a972-9d2acdac9fb5'></a>
+
+a₂ = c₂(ε + μ + aE) + c₂(-εr + aE + μ) - Ωμκ + (-ε - μ - aE)(εr - aE - μ),
+(22)
+
+<a id='b76116a3-6fe3-47c7-baea-e2827ac4199d'></a>
+
+a₃ = (ε + μ + aE)c₂(μ + aE – rε) – εμκΩ. (23)
+
+<a id='fae91f40-6701-4f9d-be36-a14be0298cd9'></a>
+
+a₁ > 0 always since r < 1. a₃ > 0 when
+$$\frac{\Omega\mu k}{c_2} < \frac{(\varepsilon + \mu + aE)(-\varepsilon r + aE + \mu)}{(\varepsilon + \mu + aE - r\varepsilon)} \quad (24)$$
+
+<a id='cb69bc42-7cdc-4769-a1b4-ea6ef625b8cb'></a>
+
+Finally, a1a2 - a3 > 0 when a3 >0 (not shown).
+
+<a id='d0fa7d54-3233-4641-bfae-b830a22532c5'></a>
+
+Condition (24) translates to
+
+<a id='60260c69-424d-434d-9271-02cfe558e1c4'></a>
+
+$\frac{\psi\kappa\mu(1+\overline{p}\overline{V})N_2}{c_2(\varphi+(1+\overline{p}\overline{V})N_2)} < \frac{(\varepsilon+\mu+aE)(-\varepsilon r+aE+\mu)}{(\varepsilon+\mu+aE-r\varepsilon)}$, (25)
+
+<a id='931cd924-76fe-4b98-9810-5b865530ef38'></a>
+
+which means that when the HPV infection rate times the HPV production rate (in the presence of HIV) is less than the combined effect of effector cells and natural death rate of HPV, HPV will be cleared. The asymptotic stability of chronic states S1 and S2 is messy and will not be presented here.
+
+<a id='11014007-fcff-4b57-a0a8-c5b6cb56d44d'></a>
+
+S2 File. Analysis of the coinfection model using the full model
+
+<a id='80cd0d1b-23b8-4c3a-8f40-d8cb8751a3f3'></a>
+
+We investigate the properties of the co-infection model using the large model developed in the original HPV work's supplementary material from Murall at al 2015. The extended model includes the population of uninfected basal epithelial cells, *X*, which are born at rate *λ(t)* and die at rate *μ*.
+HPV, *W*, interacts with uninfected basal epithelial cells, *X*, at rate *ψ* to produce infected cells, *Y₁*.
+We assume that the infection is density dependent with *φ* representing the uninfected cell concentration where the infection is half-maximal. Below is the expanded co-infection model wherein we included the effect of *tat*, *pV*, with the birth of uninfected basal epithelium. The term (1 + *pV*)*λ(t)* accounts for the production of epithelial cells that are susceptible for HPV infection.
+The rest of the co-infection dynamics are described in the main text.
+
+<a id='53ca808f-b1a2-41aa-9672-058bdf16a893'></a>
+
+The expanded co-infection model becomes:
+
+<a id='9c0ef226-eb21-40d7-8fee-3b69fc572e83'></a>
+
+$$\frac{dT}{dt} = s - dT - (1 - \varepsilon_{RT})\beta TV,$$
+$$\frac{dI}{dt} = (1 - \varepsilon_{RT})\beta TV - \delta I,$$
+$$\frac{dV}{dt} = (1 - \varepsilon_{PI})N_1\delta I - c_1V,$$
+$$\frac{dX}{dt} = (1 + pV)\lambda(t) - \mu X - \psi W \frac{x}{\varphi+x},$$
+$$\frac{dY_1}{dt} = \psi W \frac{x}{\varphi+x} - \varepsilon Y_1 - \mu Y_1 - aY_1E,$$
+$$\frac{dY_2}{dt} = \varepsilon Y_1 + r\varepsilon Y_2 - \mu Y_2 - aY_2E,$$
+$$\frac{dW}{dt} = \mu k(Y_1 + Y_2) - c_2W,$$
+$$\frac{dE}{dt} = \omega Y_2E \left(1 - \frac{E}{K(T)}\right) \quad (26)$$
+
+
+<a id='5684c8e2-6082-473a-819a-ef006f3821b0'></a>
+
+with initial conditions with initial conditions $T(0) > 0$, $I(0) > 0$, $V(0) > 0$, $X(0) > X_1$, $Y_1(0) = Y_{10}$,
+$Y_2(0) = Y_{20}$, $W(0) = W_0$ and $E(0) = E_0$ where $t = 0$ is the time of co-infection.
+
+<a id='ce049c4e-a736-438e-a9bf-136bf476bae8'></a>
+
+Since, *tat* is known to play an important role in the disruption of epithelial tight junctions, thereby
+
+<!-- PAGE BREAK -->
+
+<a id='8ed3708c-a259-4803-ad5b-b8191f59806d'></a>
+
+facilitating the entry of HPV into the mucosal epithelium [30]. We compare the dynamics of model (26) against those of main model (5) for the same tat effect (1+pV) = 2.
+
+<a id='9e10effd-e482-4efc-ab73-e1264d9896e7'></a>
+
+When considering HIV induced immunosuppression in HIV/HPV co-infected individuals with different CD4+ T cells levels of i) $\bar{T} = 10^6$ cells per ml, corresponding to a healthy patient ii) $\bar{T} = 5\times10^5$ cells per ml, corresponding to average chronic HIV CD4+ T cell numbers [41]; iii) $\bar{T} = 3.3\times10^5$ cells per ml as in the HIV/HPV co-infection study [35]; and iv) $\bar{T} = 2\times10^5$ cells per ml, corresponding to AIDS; the extended model (26) has similar results as the reduced model (5) (see (A) in Fig. S2). Similarly, when we considered the effects of co-infection under the setup of the oral co-infection trial [35] for $pV = 1$ and $K(T) = 11.5$ cells (corresponding to CD4+ T cell concentration of $\bar{T} = 3.3\times10^5$ per ml) we found that both model (6) and (26) give similar results.
+In particular, HPV is cleared under cART conditions $\varepsilon_{RT} = 0.95$ and $\varepsilon_{PI} = 0.5$ and the timing of the clearance depends on two factors: the HPV stage and the level of CD4+ T cells at the start of cART (see (B) in Fig. S2).

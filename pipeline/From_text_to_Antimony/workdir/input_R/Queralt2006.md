@@ -839,3 +839,367 @@ Zachariae, W., and Nasmyth, K. (1999). Whose end is destruction: cell division a
 <a id='1e53d5fc-5ba1-47f5-bb80-4a9159653401'></a>
 
 732 Cell 125, 719–732, May 19, 2006 ©2006 Elsevier Inc.
+
+# Supplementary materials
+
+<a id='c1d663ee-b7c1-475a-8b58-d1a0046b9fa5'></a>
+
+Supplemental Data
+
+Downregulation of PP2A^Cdc55
+
+Phosphatase by Separase Initiates
+
+Mitotic Exit in Budding Yeast
+
+Ethel Queralt, Chris Lehane, Bela Novak, and Frank Uhlmann
+
+<!-- PAGE BREAK -->
+
+<a id='ff8b44e6-9565-4f1f-8de2-e3f7f59199cc'></a>
+
+A<:: 3D waterfall plot showing DNA content histograms over time for cells treated with + securinmdb. The x-axis represents DNA content (1c, 2c), and the y-axis represents cell count. The z-axis represents release time (min) with values 40, 80, 120, 160, 200, 240, and an initial HU arrest.::>net1-1 + securinmdb<:: 3D waterfall plot showing DNA content histograms over time for cells treated with net1-1 + securinmdb. The x-axis represents DNA content (1c, 2c), and the y-axis represents cell count. The z-axis represents release time (min) with values 40, 80, 120, 160, 200, 240, and an initial HU arrest.::><:: Western blot image. The blot is divided into two main sections: '+ securinmdb' and 'net1-1 + securinmdb'. Each section has lanes corresponding to different release times (min): HU, 40, 80, 120, 160, 200, 240. The blot shows two rows of bands, labeled '- securin' and '- Cdc28' on the right. For securin, bands are faint at HU and 40 min in the '+ securinmdb' section, increasing in intensity from 80 to 240 min. In the 'net1-1 + securinmdb' section, securin bands are faint at HU and 40 min, and increase from 80 to 240 min, appearing slightly more intense than the first section at later time points. For Cdc28, bands are consistently present across all time points and both conditions, serving as a loading control.::>
+
+<a id='ae375c80-cc80-46ec-b13d-292ff93f3aac'></a>
+
+B<::Line chart showing four plots in a 2x2 grid. The y-axis for all plots is '% of cells' ranging from 0 to 100. The x-axis for all plots is 'time (min)' ranging from 0 to 80. The data points are connected by lines.Plot 1 (Top Left): Title 'budding index'. Shows two lines: one with black circles labeled 'esp1-2' and another with white triangles labeled 'wt'. The 'esp1-2' line starts around 90% and stays mostly above 80%, with a slight dip around 30-40 min. The 'wt' line starts around 85%, dips to about 50% at 30 min, and then rises back to around 80%.Plot 2 (Top Right): Title 'budding index'. Shows two lines: one with black circles labeled 'esp1-2 TAB6' and another with white triangles labeled 'TAB6'. The 'esp1-2 TAB6' line starts around 75%, dips to about 50% at 40 min, and then rises to about 60%. The 'TAB6' line starts around 75%, dips to about 50% at 40 min, and then rises to about 85%.Plot 3 (Bottom Left): Title 'nuclear securin'. Shows two lines: one with black circles labeled 'esp1-2' and another with white triangles labeled 'wt'. The 'esp1-2' line starts around 90%, decreases steadily to about 20% at 40 min, and then slightly increases to about 35%. The 'wt' line starts around 85%, decreases sharply to near 0% at 20-30 min, and then rises to about 70% at 50 min before decreasing to about 35%.Plot 4 (Bottom Right): Title 'nuclear securin'. Shows two lines: one with black circles labeled 'esp1-2 TAB6' and another with white triangles labeled 'TAB6'. The 'esp1-2 TAB6' line starts around 70%, decreases steadily to about 10% at 40 min, and then slightly increases to about 40%. The 'TAB6' line starts around 70%, decreases sharply to near 0% at 30-40 min, and then rises to about 60% at 60 min before decreasing to about 40%.: line chart::>
+
+<a id='49daab0d-4035-4dd0-befc-6a04c2b0de49'></a>
+
+Supplementary Figure S1. Mitotic exit block in the absence of active separase is rescued by ectopic Cdc14 activation. (A) The mitotic block by securinmdb is by-passed by the net1-1 mutant defective in Cdc14 inhibition. Strains Y2786 (MATa CDC14-Pk6 GAL-PDS1mdb) and Y2788 (as 2786, but net1-1), were arrested in early S-phase with hydroxyurea and released into galactose containing media to induce securinmdb expression. Equal expression of securinmdb in both cultures was confirmed by Western blotting using antiserum sc-9076 (Santa Cruz) that recognises overexpressed but not endogenous levels of securin. net1-1 cells exited from mitosis to produce aneuploid daughter cells while separase remained inhibited. (B) Mitotic exit in a separase mutant is rescued by the dominant active Cdc14 allele CDC14-TAB6 (TAB6). Strains Y2833 (MATa MET3-CDC20 CDC14-Pk6 PDS1-myc18), Y2834 (as Y2833, but esp1-2), Y2835 (as Y2833, but CDC14-TAB6) and Y2836 (as Y2834, but MATα CDC14-TAB6) were arrested in metaphase by depletion of Cdc20, shifted to 37°C for 2.5 h, and released into anaphase by re-addition of Cdc20. Nuclear securin disappeared in all cultures with similar timing, indicating that Cdc20 was active. esp1-2 prevented mitotic exit and cytokinesis (visualised by a drop in the budding index) in the wild type, but not CDC14-TAB6 background. Re-entry into the next cell cycle is compromised in esp1-2 cells, probably due to the aneuploidy caused by defective chromosome segregation.
+
+<!-- PAGE BREAK -->
+
+<a id='99f06c6a-adf4-43be-bd7e-0f27ca919c3e'></a>
+
+wt<::A figure consisting of two panels.The top panel is a line graph titled "wt". The y-axis is labeled "% of cells" and ranges from 0 to 100. The x-axis is labeled "time (min)" and ranges from 0 to 60. Two data series are plotted: one with black circles connected by lines, labeled "Cdc14 release", and another with open triangles connected by lines, labeled "budding".The bottom panel contains two Western blot images. The top blot is labeled "wt" and shows lanes marked "meta", and then numerical labels from "10" to "60", indicating "release (min)". Bands are shown for "Clb2" and "Swi6". The bottom blot is labeled "cdc5-4" and shows similar lanes and bands for "Clb2" and "Swi6".::>
+
+<a id='d3075620-5315-4446-95fd-edb36a91c4b6'></a>
+
+<::line chart: Title: cdc5-4, X-axis: time (min), Y-axis: % of cells, Data series: - budding: represented by white triangles, showing a high percentage (around 80-90%) of cells budding, decreasing slightly over time. - Cdc14 release: represented by black circles, showing a peak release around 10 min (approx. 60% of cells), then decreasing to low levels.::> <::fluorescence microscopy images: Top row: cdc5-4 (10 min), Bottom row: cdc5-4 (20 min), Columns: DAPI (blue stain), Cdc14 (orange stain), tubulin (green stain), Description: Images show cellular staining for DAPI, Cdc14, and tubulin at 10 min and 20 min time points for cdc5-4 cells.::>
+
+<a id='b1c690ef-6267-404c-8a1d-8efbc746e17d'></a>
+
+Supplementary Figure S2. Polo kinase is required for mitotic exit, but not for Cdc14 activation at anaphase onset. Strains Y2645 (MATa GAL-CDC20 CDC14-myc18) and Y2646 (as Y2645, but cdc5-4) were arrested in metaphase (meta) by depletion of Cdc20, shifted to 37°C for 1 h to inactivate Polo, and released into synchronous anaphase. Cdc14 was transiently released from the nucleolus at the time of spindle elongation, but Clb2 destruction was not completed and cells remained arrested in telophase. Pictures shown are of cells 10 min (upper panel) and 20 min (lower panel) after release. This phenotype is reminiscent of MEN mutant cells, suggesting that after metaphase Polo fulfils its main function as part of MEN.
+
+<!-- PAGE BREAK -->
+
+<a id='a1626562-fa47-43fd-8d2c-0208f1764280'></a>
+
+<::The image contains four panels (A, B, C, D) displaying experimental results related to cell cycle progression and protein activity over time. The panels are arranged in a 2x2 grid.  Panel A (top left) is a 3D-like plot showing DNA content (1c, 2c) on the x-axis and time (meta, 20, 40, 60 min) on the y-axis, with cell count implicitly represented by the height of the peaks. The peaks show a shift from 2c to 1c over time. Panel B (top right) is a line graph titled "Cdc14 release % of cells" on the y-axis (ranging from 0 to 100) versus "time (min)" on the x-axis (ranging from 0 to 50). The data points, represented by filled circles, show an initial increase in Cdc14 release, peaking around 10 minutes at approximately 80%, followed by a decrease over time, reaching near 0% by 50 minutes. Panel C (bottom left) shows two sets of blots. The top set is labeled "32P-phosphate incorporation" and includes two rows of bands for H1 and Net1. The lanes are labeled "untag", "meta", "meta", and then time points "10, 20, 30, 40, 50" (min). H1 and Net1 show strong bands in the "meta" lanes, which gradually decrease in intensity across the time course. The bottom set of blots is labeled "Western blot" and shows bands for Clb2-Pk and Cdc28, with the same lane labels as above. Clb2-Pk bands decrease in intensity over the time course, while Cdc28 bands remain relatively consistent, likely serving as a loading control. Panel D (bottom right) is a line graph titled "kinase activity" on the y-axis (ranging from 0 to 100) versus "time (min)" on the x-axis (ranging from 0 to 50). Two data series are plotted: H1 (filled circles) and Net1 (open triangles). Both H1 and Net1 kinase activities are high at time 0. H1 activity drops sharply to near 0 by 20 minutes and remains low. Net1 activity also drops by 20 minutes but then shows a slight increase before declining again, staying above H1 activity after 20 minutes.::>
+
+<a id='f8ef42a0-3150-46ca-9531-6b195b5564bc'></a>
+
+**Supplementary Figure S3.** Cdk activity against Net1 is down-regulated at the time of Cdc14 release. Clb2 dependent kinase activity was measured in strain Y2312 (*MATa GAL-CDC20 CLB2-Pk3 CDC14-HA6*), undergoing synchronous metaphase to anaphase transition. Clb2 was immunoprecipitated, and associated kinase activity was measured using Histone H1 and the Net1(1-600) fragement as substrates. Duplicate samples of the zero time point in metaphase were analysed. Incorporation of 32P-phosphate was quantified using a phosphorimager. Clb2, and as loading control Cdc28, levels in the cell extracts were analysed by Western blotting.
+
+<!-- PAGE BREAK -->
+
+<a id='c0d97e2f-ff01-4336-82a0-d187bb0432fe'></a>
+
+A
+<::Figure: Graph panel A shows cell cycle progression and anaphase onset for wild-type (wt) cells. The left plot is a 3D histogram showing DNA content (1c, 2c peaks) over time (min), ranging from 20 to 140 min. The x-axis is labeled '1c 2c' and 'α factor'. The right plot is a 2D line graph showing "% of cells" on the y-axis (0-100) versus "time (min)" on the x-axis (0-140). It displays two curves: 'anaphase spindles' (triangles) and 'Cdc14 release' (filled circles).::>
+<::Figure: Graph panel A shows cell cycle progression and anaphase onset for rts1Δ mutant cells. The left plot is a 3D histogram showing DNA content (1c, 2c peaks) over time (min), ranging from 20 to 140 min. The x-axis is labeled '1c 2c' and 'α factor'. The right plot is a 2D line graph showing "% of cells" on the y-axis (0-100) versus "time (min)" on the x-axis (0-140). It displays two curves: 'anaphase spindles' (triangles) and 'Cdc14 release' (filled circles).::>
+<::Figure: Graph panel A shows cell cycle progression and anaphase onset for rts3Δ mutant cells. The left plot is a 3D histogram showing DNA content (1c, 2c peaks) over time (min), ranging from 20 to 140 min. The x-axis is labeled '1c 2c' and 'α factor'. The right plot is a 2D line graph showing "% of cells" on the y-axis (0-100) versus "time (min)" on the x-axis (0-140). It displays two curves: 'anaphase spindles' (triangles) and 'Cdc14 release' (filled circles).::>
+<::Figure: Graph panel A shows cell cycle progression and anaphase onset for cdc55Δ mutant cells. The left plot is a 3D histogram showing DNA content (1c, 2c peaks) over time (min), ranging from 20 to 140 min. The x-axis is labeled '1c 2c' and 'α factor'. The right plot is a 2D line graph showing "% of cells" on the y-axis (0-100) versus "time (min)" on the x-axis (0-140). It displays two curves: 'anaphase spindles' (triangles) and 'Cdc14 release' (filled circles).::>
+B
+<::Figure: Graph panel B shows cell cycle progression and anaphase onset for rts1Δ mutant cells. The left plot is a 3D histogram showing DNA content (1c, 2c, meta peaks) over time (min), ranging from 20 to 100 min. The x-axis is labeled '1c 2c' and 'meta'. The right plot is a 2D line graph showing "% of cells" on the y-axis (0-100) versus "time (min)" on the x-axis (0-100). It displays two curves: 'anaphase spindles' (triangles) and 'Cdc14 release' (filled circles).::>
+
+<a id='c28fd761-e0d7-4fce-879c-397d30d8e483'></a>
+
+Supplementary Figure S4. (A) Cell cycle analysis of strains lacking each of the PP2A phosphatase regulatory subunits Rts1, Rts3 or Cdc55. Strains Y808 (_MATa CDC14-HA6_), Y2242 (as Y808, but _rts1Δ_), Y2243 (as Y808, but _rts3Δ_) and Y2426 (as Y808, but _cdc55Δ_) were arrested with _α_-factor and released into a synchronous cell cycle. Mitotic progression was prolonged in _rts1Δ_ cells, but Cdc14 nucleolar release coincided with anaphase onset. _rts3Δ_ cells showed no detectable difference from wild type. Cells lacking Cdc55 were slow to progress through mitosis, and Cdc14 release from the nucleolus was delayed relative to anaphase onset. (B) Cdc14 nucleolar release during synchronous mitosis in cells lacking Rts1. Strain Y2246 (_MATa MET3-CDC20 CDC14-HA6 rts1Δ_) was arrested in metaphase by depletion of Cdc20 and released into anaphase by Cdc20 readdition. Cdc14 nucleolar release coincided with anaphase spindle elongation, indistinguishable from the wild type control shown in Figure 4.
+
+<!-- PAGE BREAK -->
+
+<a id='e32ebe2b-bb4f-4540-8555-850c5774b0e2'></a>
+
+<::logo: [Not a logo] wt esp1-2 Pk-Cdc55 Cdc28
+This image displays two western blot bands, one labeled "Pk-Cdc55" and the other "Cdc28", with two lanes each labeled "wt" and "esp1-2".::>
+
+<a id='8a206d76-9e20-49af-ae89-9b72bda27ffc'></a>
+
+**Supplementary Figure S5.** Western blot showing reduced levels of Cdc55 in _esp1-2_ mutant cells. Two independent isolates of the strains are shown. Cdc28 serves as a loading control.
+
+<!-- PAGE BREAK -->
+
+<a id='07b676c5-3151-466f-afc7-6d097ff272d2'></a>
+
+<::Biological pathway diagram showing regulation of cell cycle progression, likely related to mitotic exit. The diagram illustrates multiple interconnected regulatory loops involving key proteins. AA (an activating factor) promotes the activity of Cdc20 (red pac-man shape) and securin (purple hourglass shape). Cdc20, in turn, promotes the degradation of target proteins (represented by four small red circles). Cdc20 also forms a complex with securin, leading to the cleavage of securin by separase (orange oval), which then releases separase and a modified securin. This modified securin can be further processed by Cdc20 and separase. Cdh1 (pink pac-man shape) activity is regulated by Cdc14 (green oval) and Clb2 (yellow oval). Cdc14 activates Cdh1, while Clb2 inhibits Cdh1. Cdh1 also promotes the degradation of target proteins (represented by four small gray circles). Polo (protein kinase) is activated by AA and inhibits Cdh1, while Cdh1 inhibits Polo. Polo also activates Tem1 (light blue hexagon). Tem1, along with Cdc15 (dark blue rectangle) and PP2A (dark blue rectangle), forms a complex. Clb2 phosphorylates Cdc15 to form Cdc15-P. The Tem1-Cdc15 complex, along with Cdc14, activates Net1 (red pac-man shape). Net1 can be in a phosphorylated state (P Net1). Cdc14 and PP2A regulate Net1. Clb2 inhibits the Net1-Cdc14 complex. Dashed lines indicate inhibitory interactions, while solid lines with arrows indicate activation or transformation steps. Double-headed arrows indicate reversible reactions.::>
+
+<a id='4908254a-7242-4059-9dce-0e6d68a2205d'></a>
+
+Supplementary Figure S6.1. A detailed wiring diagram of the budding yeast mitotic exit model. The wiring diagram in Figure 7A was redrawn in a form suitable for mathematical description. Solid arrows leading to or from a component represent biochemical reactions (activation/inactivation, or synthesis from amino acids (AA)/degradation) in which the given component will participate. The regulation of these biochemical reactions by other components in the network is indicated by dashed arrows.
+
+<!-- PAGE BREAK -->
+
+<a id='a6125a9a-a2cf-48d5-92e7-d41d523b220b'></a>
+
+separase inactivation (compare Fig. 1B) <::chart: The chart displays two subplots, both showing concentration over time. The x-axis for both subplots is "time (min)" ranging from 0 to 100. The left y-axis for the top subplot ranges from 0.0 to 1.0. The right y-axis for the top subplot is "Cdc14" ranging from 0.0 to 0.5. The left y-axis for the bottom subplot ranges from 0.0 to 1.0. The top subplot shows the following curves: - Clb2 (yellow line), starting at 1.0 and decreasing to approximately 0.3. - Cdc20 (red line), starting at approximately 0.05 and increasing to approximately 0.35. - Cdc14 (green line), staying at approximately 0.05. - MEN (blue line), staying at approximately 0.05. - PP2A (blue line), staying at approximately 1.0. The bottom subplot shows the following curves: - securin (purple line), starting at approximately 0.6 and decreasing to approximately 0.0. - Net1-P (red line), starting at approximately 0.4 and decreasing to approximately 0.05. - separase (orange line), staying at approximately 0.05.::>
+
+<a id='db452715-dd83-4e05-a96f-4e88bf8e055a'></a>
+
+Supplementary Figure S6.2. Mitotic exit arrest caused by the separase mutant esp1-2td. The simulation starts from a metaphase block (Cdc 20 deprivation, kscdc20=0) and it is assumed that the esp1-2td allele leads to the absence of separase (ks,separase=0). After re-addition of Cdc20 (ks,cdc20=0.015) securin is degraded, but separase is absent. Lacking PP2ACdc55 downregulation prevents Net1 phosphorylation and Tem1 activation that would be necessary for Cdc14 activation. Clb2 starts to be degraded by Cdc20 until it reaches approximately half of its metaphase level. This reduces Cdk activity, and also Net1 phosphorylation. In this way Cdc14 is never released, and despite decreasing Cdk activity the Cdc14/Cdk ratio never raises to activate either Cdc15 or Cdh1.
+
+<!-- PAGE BREAK -->
+
+<a id='75e079df-6897-48c9-805a-02683967cb3a'></a>
+
+<::Graph titled "separase overexpression" with subtitle "(compare Fig. 2A)". The x-axis is labeled "time (min)" and ranges from 0 to 120. The left y-axis ranges from 0.0 to 1.0. The right y-axis is labeled "Cdc14" and ranges from 0.0 to 0.5. The graph displays two panels.
+
+Top panel:
+- A yellow line labeled "Clb2" starts near 1.0 and slightly decreases over time.
+- A green line labeled "Cdc14" starts at 0.0, increases sharply from around 20 min, and levels off near 1.0 by 80 min.
+- A blue line labeled "MEN" starts at 0.0, increases sharply from around 60 min, and levels off near 0.6 by 100 min.
+- A red line labeled "Cdc20" starts at 0.0 and remains close to 0.0 throughout the time course.
+
+Bottom panel:
+- A blue line labeled "securin" starts near 1.0, decreases steadily, and levels off near 0.2 by 100 min.
+- A red line labeled "Net1-P" starts near 0.4, increases steadily, and levels off near 1.0 by 80 min.
+- A magenta line labeled "PP2A" is a horizontal line around 0.6.
+- An orange line labeled "separase" starts at 0.0 and increases steadily, reaching around 0.3 by 120 min.
+: chart::>
+
+<a id='27426532-8172-4066-ad9b-8f2fa3307f8d'></a>
+
+<::A line graph titled "separase overexpression and net1-6Cdk (compare Fig. 2B)". The x-axis is labeled "time (min)" and ranges from 0 to 120. The left y-axis is unlabeled and ranges from 0.0 to 1.0. The right y-axis is labeled "Cdc14" and ranges from 0.0 to 0.5. The graph shows six data series: A yellow line labeled "Clb2" remains constant at 1.0 on the left y-axis. A green line labeled "Cdc14" and "MEN" remains constant at 0.0 on the left y-axis. A pink line labeled "securin" remains constant at approximately 0.6 on the left y-axis. A blue line labeled "PP2A" starts at 0.9 and decreases to about 0.2 by 120 min. An orange line labeled "separase" starts at 0.0 and increases to about 0.4 by 120 min. A red line labeled "Net1-P" starts at 0.0 and increases to about 0.5 by 120 min.: chart::>
+
+<a id='a672f722-38b2-446d-a7b8-b97e621cc5be'></a>
+
+Supplementary Figure S6.3. Separase-induced Cdc14 activation. Separase overexpression is started at time zero by increasing its synthesis rate 8-fold above normal (k_s, separase=0.008) in metaphase blocked (Cdc20 deprived) cells (left panel). Separase levels are increasing over time (not shown) and at around 50-60 min reach the level of securin. Beyond this time, free (active) separase accumulates, inhibits PP2A^Cdc55, and thus causes Net1 phosphorylation and Cdc14 nucleolar release (left panel). The Cdc14/Clb2 ratio is increasing, thereby slowly activating Cdc15. PP2A^Cdc55 inhibition also promotes Tem1 activation by allowing Bfa1 phosphorylation. Although MEN is activated, Clb2 kinase activity remains high in the absence of Cdc20 mediated Clb2 degradation, which also prevents Cdh1 from becoming active. If the rate of Net1 phosphorylation by Cdk is decreased to 15% (k_p = 0.06), which mimics mutations of some but not all Cdk phosphorylation sites, Net1 phosphorylation after separase induction is reduced and delayed (right panel). The delayed Cdc14 activation further slows down activation of the positive feedback loop between MEN and Cdc14.
+
+<!-- PAGE BREAK -->
+
+<a id='c4bffd76-9659-4ad0-8a99-7aad94921b57'></a>
+
+Cdk inhibition before separase overexpression (compare Fig. 3A) <::chart: A two-panel line graph titled "Cdk inhibition before separase overexpression (compare Fig. 3A)" shows the concentration changes of several proteins over time. The x-axis for both panels is "time (min)", ranging from -20 to 80. The left y-axis for the top panel ranges from 0.0 to 1.0. The right y-axis for the top panel is labeled "Cdc14" and ranges from 0.0 to 0.5. The left y-axis for the bottom panel ranges from 0.0 to 1.0. Top Panel: - A light blue line labeled "Cdk" starts at 1.0, drops sharply to near 0.0 around time 0 min, and remains low. - A yellow line labeled "Clb2" starts at 1.0, begins to decrease around 0 min, and reaches approximately 0.3 at 80 min. - A red line labeled "Cdc20" starts at 0.0, increases from 0 min, peaks around 0.3-0.4, and then slightly decreases. - A green line labeled "Cdc14" starts at 0.0, shows a slight increase around 0 min, remains low, and then slightly increases from around 40 min to approximately 0.05. Bottom Panel: - A magenta line labeled "securin" starts at approximately 0.6, drops sharply to near 0.0 between 10 and 15 min, and remains low. - A red line labeled "Net1-P" starts at approximately 0.4, drops sharply to near 0.0 between -5 and 0 min, and remains low. - A blue line labeled "PP2A" starts at 1.0, drops sharply between 10 and 15 min to approximately 0.2, and remains low. - An orange line labeled "separase" starts at 0.0, rises sharply from 0 min to approximately 0.2, and then levels off.::>
+
+<a id='9fd7a0d7-d450-408f-ae13-b133286cbefe'></a>
+
+Cdk inhibition before Cdc20 induction (compare Fig. 3C) <::Two stacked line graphs showing protein levels over time. The x-axis is "time (min)" ranging from -20 to 120. The top graph has a left y-axis from 0.0 to 1.0 and a right y-axis labeled "Cdc14" from 0.0 to 0.5. Lines in the top graph are: "Cdk" (light blue, high then drops to low around -10 min), "Cdc14" (green, low throughout, with a slight increase around 0 min), and "Clb2" (yellow, constant at 1.0). The bottom graph has a left y-axis from 0.0 to 1.0. Lines in the bottom graph are: "securin" (pink, constant at ~0.6), "PP2A" (blue, starts at 1.0 and drops around 40 min), "Net1-P" (red, high then drops to low around -10 min, then increases slightly from 40 min), and "separase" (orange, starts low and increases from 40 min).: chart::> time (min) 
+
+<a id='6e9d47c8-92ef-45d3-aff7-9be38c19472a'></a>
+
+Supplementary Figure S6.4. Cdk inhibition prevents Cdc14 release. This figure shows the simulation of cdc28-as1 mutant cells treated with 1NM-PP1 in metaphase, before separase (left panel) or Cdc20 (right panel) induction. We assume that the drug binds reversibly and is used at an effective concentration of 10 times IC50. The drug is added to metaphase arrested (Cdc20 deprived) cells 15 min before induction of separase (kS,separase=0.008) or Cdc20 (kS,cdc20=0.015). As a consequence of Cdk inhibition, Net1 is dephosphorylated by PP2ACdc55. Free separase, after overexpression or Cdc20-mediated securin destruction, reduces PP2ACdc55 activity but Net1 is not phosphorylated because residual activity of inhibited Cdk cannot overcome remaining PP2ACdc55. MEN remains inactive as no Cdc14 is active to dephosphorylate Cdc15. Polo, which is required for Bfa1 phosphorylation, is also inactivated after Cdk inhibition. If Cdk inhibition in metaphase is very tight, as might be achieved by overexpression of the Cdk inhibitor Sic1, Cdc14 activity present in metaphase can overcome Cdk, leading to Cdh1 activation without need for separase activity (simulation not shown, compare Amon, A. (1997): EMBO J. 16, 2693-2707).
+
+<!-- PAGE BREAK -->
+
+<a id='f6d25c0c-f899-4383-9705-173708ac8c15'></a>
+
+<::Line graph with two panels titled "cdc55Δ (compare Fig. 4A)". Both panels share a common x-axis labeled "time (min)" ranging from 0 to 60.
+
+Top Panel:
+- Left y-axis ranges from 0.0 to 1.0.
+- Right y-axis ranges from 0.0 to 0.5 and is labeled "Cdc14".
+- Lines represent:
+  - Green line: Cdc14, starts high, decreases from ~35 min.
+  - Pink line: Cdh1, starts low, rises sharply to 0.5 at ~30 min, then stays constant.
+  - Yellow line: Clb2, peaks at ~15 min, then decreases.
+  - Blue line: MEN, peaks at ~30 min, then decreases sharply.
+  - Red line: Cdc20, peaks at ~25 min, then decreases.
+
+Bottom Panel:
+- Left y-axis ranges from 0.0 to 1.0.
+- Lines represent:
+  - Red line: Net1-P, starts at 1.0, decreases from ~40 min.
+  - Purple line: securin, starts at ~0.6, decreases to near 0.0 by ~20 min, then rises slowly.
+  - Orange line: separase, peaks at ~25 min.
+  - Blue line: PP2A, constant at 0.0.
+: figure::>
+
+<a id='192218a9-6876-4af0-a248-26229058c5d1'></a>
+
+<::Graph showing bub2Δ (compare Fig. 6B). The graph consists of two panels, both plotting protein levels/activity against time (min) on the x-axis, ranging from 0 to 60 minutes. The left y-axis for both panels ranges from 0.0 to 1.0, representing relative concentration or activity. The right y-axis for the top panel ranges from 0.0 to 0.5 and is labeled "Cdc14".
+
+Top Panel:
+- Green line: Cdc14
+- Yellow line: Clb2
+- Blue line: MEN
+- Red line: Cdc20
+- Pink line: Cdh1
+
+Bottom Panel:
+- Red line: Net1-P
+- Blue line: PP2A
+- Orange line: separase
+- Purple line: securin
+: figure::>
+
+<a id='569e6cab-3d80-4171-8eae-47a105056f74'></a>
+
+Supplementary Figure S6.5. Mitotic exit in cdc55Δ and in bub2Δ cells. In the absence of Cdc55 (left panel, [PP2A]T=0 ), Net1 is completely phosphorylated and Cdc14 is already released in metaphase (Cdc20 deprivation, time = 0). MEN is also activated, but cells cannot exit, because Clb2 kinase activity is too high for Cdh1 become active. Cells are in a stable state of high Clb2/Cdk activity and fully active Cdc14. Note that while MEN is active, Cdc14 activation in cdc55Δ cells is independent of MEN (simulation not shown). After Cdc20 induction (ks,cdc20=0.015) Clb2 starts to be degraded and once the ratio of Clb2/Cdc14 falls below a critical value Cdh1 is activated. Cdh1 eliminates both Cdk and MEN activity (by degrading Polo), and Net1 phosphorylation slowly drops owing to PP2A-independent dephosphorylation by Cdc14. If Bub2 is eliminated (right panel), Tem1 is ectopically activated (k'i,tem = 0) causing slow activation of MEN and Cdc14 already in metaphase. After Cdc20 induction MEN activation is faster than normal because the Cdc14/Clb2 ratio starts higher.
+
+<!-- PAGE BREAK -->
+
+<a id='6240ed6c-3bbf-49db-bb3d-1d4f2d5601d1'></a>
+
+<::Graph titled "indestructable securin (compare Fig.1A)". The x-axis is "time (min)" ranging from 0 to 100. The graph consists of two subplots vertically stacked.The top subplot has a left y-axis ranging from 0.0 to 1.0 and a right y-axis for Cdc14 ranging from 0.0 to 0.5. It shows the following curves: - A yellow curve labeled "Clb2" starts at 1.0 and decreases to about 0.3. - A red curve labeled "Cdc20" starts near 0.0 and increases to about 0.3. - A green curve labeled "Cdc14" stays flat at 0.0. An arrow labeled "MEN" points to the green curve at time 0. - A blue curve labeled "PP2A" stays flat at 1.0.The bottom subplot has a y-axis ranging from 0.0 to 1.0. It shows the following curves: - A magenta curve labeled "securin" stays flat at about 0.6. - A red curve labeled "Net1-P" starts at about 0.4 and decreases to about 0.05. - An orange curve labeled "separase" stays flat at 0.0.::>
+
+<a id='92d50c9c-0ef9-4fa6-ad6b-e9ff16ada10b'></a>
+
+<::Figure: A two-panel line graph titled "indestructable securin and bub2Δ" with a subtitle "(compare Fig.6B)". Both panels share a common x-axis labeled "time (min)" ranging from 0 to 60. The y-axes represent arbitrary units.
+
+Top Panel:
+Left y-axis ranges from 0.0 to 1.0. Right y-axis is labeled "Cdc14" and ranges from 0.0 to 0.5.
+- A green line, labeled "Cdc14" (left y-axis), starts around 0.2, increases to a peak near 0.9 at around 30 min, then decreases sharply to 0.0 by 50 min.
+- A yellow line, labeled "Clb2" (left y-axis), starts at 1.0, decreases steadily to near 0.0 by 40 min.
+- A blue line, labeled "MEN" (left y-axis), starts near 0.1, increases to a peak near 0.9 at around 40 min, then decreases sharply to 0.0 by 50 min.
+- A red line, labeled "Cdc20" (left y-axis), starts near 0.0, increases to a peak near 0.2 at around 20 min, then decreases, and rises again to a smaller peak near 0.1 around 35 min, then decreases to 0.0 by 40 min.
+- A pink line, labeled "Cdh1" (right y-axis), starts near 0.0, rises sharply to 0.5 at around 35 min, and remains stable at 0.5 until 60 min.
+
+Bottom Panel:
+Left y-axis ranges from 0.0 to 1.0.
+- A red line, labeled "Net1-P" (and also implicitly "PP2A"), starts around 0.6, increases to a peak near 1.0 at around 15 min, stays high until about 48 min, then decreases sharply to 0.0 by 55 min.
+- A purple line, labeled "securin", starts around 0.6, remains stable at 0.6 throughout the 60 min.
+- An orange line, labeled "separase", starts at 0.0, remains stable at 0.0 throughout the 60 min.
+- A blue line, labeled "PP2A", starts near 1.0 and remains stable at 1.0 throughout the 60 min.
+: chart::>
+
+<a id='4ac9a449-2d03-4765-a1e5-8561831217fe'></a>
+
+Supplementary Figure S6.6. Ectopic MEN activation allows separase-independent mitotic exit. Block of mitotic exit by indestructible securinmdb (left panel). For simplicity, we neglect degradable securin present in the experimental strain and we set the Cdc20-dependent securin degradation rate to zero (k'd,securin = 0). After Cdc20 induction Clb2 is slowly degraded, but securinmdb keeps separase inactive. The lacking PP2ACdc55 downregulation prevents Net1 phosphorylation that would be necessary for Cdc14 activation. On the contrary, Net1 phosphorylation further decreases as Clb2 levels fall. In this way the Cdc14/Cdk ratio never raises enough to activate either Cdc15 or Cdh1. Right panel: Bub2 deletion (k'i,tem = 0) activates Tem1, which results in a slow activation of the Cdc14-MEN positive feedback loop. After induction of Cdc20 (ks,cdc20=0.015), Clb2 level decreases and cells exit mitosis. Note that the initial trigger for Cdc14 release by separase is missing and Cdc14 release and exit is driven by MEN only.
+
+<!-- PAGE BREAK -->
+
+<a id='e3dfe759-99f4-42a3-a26f-992298a903d1'></a>
+
+<::Figure S67: Two sets of graphs illustrating Cdc14 activation and mitotic exit in different conditions. The overall figure caption is: Supplementary Figure S67 Cdc14 activation and mitotic exit are delayed in the absence of Net1 Cdk phosphorylation (compare A. The x-axis for all graphs is "time (min)" ranging from 0 to 80. Each set of graphs consists of two sub-panels, one above the other, sharing the x-axis. The left y-axis for all sub-panels ranges from 0.0 to 1.0. The right y-axis for the top sub-panels ranges from 0.0 to 0.5, labeled "Cdc14". The right y-axis for the bottom sub-panels is not explicitly labeled with a range but implies a similar scale. The y-axis labels for the left side are numerical (0.0, 0.5, 1.0). Top labels for each set indicate the condition. The graphs show the levels of various proteins over time. Left Set: "net1-6Cdk" condition. Top sub-panel: Shows curves for Clb2 (yellow, decreasing), Cdc20 (red, increasing then decreasing), MEN (blue, peaking around 60 min), Cdc14 (green, peaking around 60 min), and Cdh1 (pink, peaking around 60 min). Bottom sub-panel: Shows curves for securin (purple, decreasing), PP2A (blue, decreasing then increasing), Net1-P (red, peaking around 60 min), and separase (orange, increasing then decreasing). Right Set: "net1-6Cdk without MEN" condition. Top sub-panel: Shows curves for Clb2 (yellow, decreasing), Cdc20 (red, increasing), and Cdc14 (green, remaining at 0.0). Bottom sub-panel: Shows curves for securin (purple, decreasing), PP2A (blue, decreasing), Net1-P (red, increasing), and separase (orange, increasing).::>
+
+<a id='6f21aa82-f6d3-4a12-ac8b-2e5aa9b36a51'></a>
+
+Supplementary Figure S6.7. Cdc14 activation and mitotic exit are delayed in the absence of Net1 Cdk phosphorylation (compare Azzam et al. (2004) Science 305, 516-519). The rate of Net1 phosphorylation by Cdk was decreased to 15% (k_p = 0.06), which mimics mutations of some but not all Cdk phosphorylation sites. As a consequence Net1 is hardly phosphorylated in metaphase arrested (Cdc20 deprived) cells (time =0). After Cdc20 induction (k_s,cdc20 =0.015) the initial phosphorylation of Net1 by Cdk is reduced, but the positive feedback loop between MEN and Cdc14 gets slowly activated as Cdk activity falls (left panel). The timing of mitotic exit depends on residual Cdk phosphorylation of Net1. In the absence of any Net1 Cdk phosphorylation (k_p = 0), exit occurs after an 80 min delay in this simulation. In the absence of MEN (k'_p=0) activity (right panel) the reduced Cdk phosphorylation of Net1 prevents transient Cdc14 activation.
+
+<!-- PAGE BREAK -->
+
+<a id='5b31a0de-c5ad-4da4-bcba-e3d6449269e3'></a>
+
+Suppl. Figure S6.8: A mathematical model of the molecular network regulating exit from mitosis in budding yeast.
+
+The wiring diagram shown on Suppl. Fig. S6.1 was converted to a set of differential and algebraic equations using basic principles of biochemical reaction kinetics. The differential equations (DE) describe the time rate of change of the components in the wiring diagram. Each biochemical reaction on Suppl. Fig. S6.1 gives a term to the right-hand-side of the differential equation(s) for component(s) participating in the reaction. The DE for a particular component has as many terms on the right-hand side as biochemical processes the component participates in (solid lines on Suppl. Fig. S6.1). The form of the terms is based on our previous work (Chen, K.C., Calzone, L., Csikasz-Nagy, A., Cross, F.R., Novak, B., and Tyson, J.J. (2004). Integrative analysis of cell cycle control in budding yeast. Mol. Biol. Cell. 15, 3841-3862.) All variables are dimensionless and represent relative intracellular protein concentrations.
+
+<a id='c9808b5a-31e4-4d97-99b2-daab380caed6'></a>
+
+Reversible phosphorylation/dephosphorylation reactions (of Cdh1, Net1, Cdc15 and Polo) and activation/inactivation of Tem1 are described by Michaelis-Menten kinetics. All synthesis, degradation, binding and dissociation reactions are approximated by the law of mass action. Synthesis terms are of zero order (constant), spontaneous degradations and dissociations are first order, while associations and regulated degradations are second order reactions. Kinetic parameters starting with lower case k or l have a dimension of min⁻¹, and the other parameters (e.g. Michaelis constants) are dimensionless.
+
+<a id='e5616e22-578f-4207-ad0a-21943ef57f31'></a>
+
+The Cdk subunit (Cdc28) and the APC core is neglected from the dynamic description because their level is constant and not rate limiting throughout the cell cycle. Clb2 represents the level of Cdc28/Clb2 complexes, while Cdk refers to the kinase activity of Cdc28/Clb2 dimers. In the absence of chemical inhibitor (Inh) the kinase activity is given by the Clb2 concentration. We assume that the chemical inhibitor binds rapidly and reversibly to the Cdk/Cyclin dimers and [Inh] refers to the intracellular concentration relative to IC50 value. Similarly, Cdc20 and Cdh1 represent the concentration of active Cdc20/APC and Cdh1/APC complexes.
+
+<a id='ad57449b-b567-4781-ae89-d4f838f5ea74'></a>
+
+The 'T' subscript refers to the total concentration of proteins existing in more than one form. For some proteins the total concentration is constant (Cdh1, Net1, Cdc14, Tem1 and Cdc15) while for others (securin, separase and Polo) it changes with time, which is described by the corresponding DE. For proteins having active and inactive forms the DE is always given to describe the active form (dephosphorylated Cdh1, Net1 and Cdc15, and phosphorylated Polo). The concentration of the corresponding inactive forms is thus given by the algebraic equation: [total] – [active]. Separate DEs are written for the two unphosphorylated forms of Net1 (free, and complexed with Cdc14) and phosphorylated (inactive) Net1-P is calculated by substracting both from total Net1. We assume that Clb2 and MEN kinases phosphorylate Net1 both free and bound to Cdc14, and that phosphorylated Net1:Cdc14 complexes dissociate quickly into Net1-P and Cdc14. As a consequence, the level of phosphorylated Net1:Cdc14 dimer is assumed to be negligible.
+
+<a id='d9f0c58a-6165-4bc6-8b22-58844f590edc'></a>
+
+1
+
+<!-- PAGE BREAK -->
+
+<a id='d1b0dab2-883c-4e26-90fb-376767dd2f1c'></a>
+
+Tem1 and Cdc15 represent the active forms (GTP bound and unphosphorylated, respectively) of these proteins. Only active Tem1 and Cdc15 associate reversibly, and their complex is called MEN (described by a separate DE) which promotes Net1 phosphorylation. To simplify the mathematical description we made Polo and Cdc55 regulate Tem1 directly rather than acting through Bfal.
+
+<a id='f750c542-14d4-42c1-bfa3-f5da59cf08a7'></a>
+
+While the total concentration of separase, [separase]T, is constant, we use a DE to be able to describe separase expression under control of the GAL promoter. We assume that separase converts active PP2A into a less (10%) active form. During normal mitotic progression at the separase activity peak 80% of PP2A is converted to the less active form, causing a reduction of PP2A activity to approximately 30% of its metaphase value.
+
+<a id='c8c4e874-b9ac-48a2-abb7-871aac1d9bde'></a>
+
+Computer programs (WINPP and XPP), freely available from G. Bard Ermentrout (Department of Mathematics, University of Pittsburgh, PA, USA, http://www.math.pitt.edu/~bard/xpp/xpponw95.html) were used for numerical simulations (using the stiff algorithm).
+
+<a id='0c15b551-cdb5-48d6-93ca-cf5432251347'></a>
+
+2
+
+<!-- PAGE BREAK -->
+
+<a id='0dfa286b-a44b-4380-b4d5-ddb226c95d15'></a>
+
+d [Clb2] / dt = ks,clb2 - (kd,clb2 + k'd,clb2 [Cdc20] + k"d,clb2 [Cdh1]) [Clb2]
+d [Cdc20] / dt = ks,cdc20 - (kd,cdc20 + k'd,cdc20 [Cdh1]) [Cdc20]
+d [Cdh1] / dt = (kd,cdh + k'd,cdh [Cdc14]) ([Cdh1]T - Cdh1) / (Jcdh + [Cdh1]T - Cdh1) - k'p,cdh [Cdk] Cdh1 / (Jcdh + Cdh1)
+d [securin]T / dt = ks,securin - (kd,securin + k'd,securin [Cdc20]) [securin]T
+d [separase]T / dt = ks,separase - kd,separase [separase]T
+d [securin:separase] / dt = la,securin [securin] [separase] - (ld,securin + kd,separase + k'd,securin [Cdc20]) [securin:separase]
+d [Net1] / dt = (k'a [Cdc14] + ka [PP2A]) [Net1-P] / (Jnet + [Net1-P]) - (kp [Cdk] + k'p [MEN]) [Net1] / (Jnet + [Net1] + [Net1:Cdc14]) - la,net [Net1] [Cdc14] + ld,net [Net1:Cdc14]
+d [Net1:Cdc14] / dt = la,net [Net1] [Cdc14] - ld,net [Net1:Cdc14] - (kp [Cdk] + k'p [MEN]) [Net1:Cdc14] / (Jnet + [Net1] + [Net1:Cdc14])
+d [Polo]T / dt = ks,polo - (kd,polo + k'd,polo [Cdh1]) [Polo]T
+d [Polo] / dt = (ka,polo + k'a,polo [Cdk]) ([Polo]T - [Polo]) / (Jpolo + [Polo]T - [Polo]) - ki,polo [Polo] / (Jpolo + [Polo]) - (kd,polo + k'd,polo [Cdh1]) [Polo]
+d [Tem1] / dt = (ka,tem + k'a,tem [Polo]) ([Tem1]T - [Tem1]) / (Jtem1 + [Tem1]T - [Tem1]) - (ki,tem + k'i,tem [PP2A]) [Tem1] / (Jtem1 + [Tem1])
+d [Cdc15] / dt = (ka,cdc15 + k'a,cdc15 [Cdc14]) ([Cdc15]T - [Cdc15]) / (Jcdc15 + [Cdc15]T - [Cdc15]) - (ki,cdc15 + k'i,cdc15 [Cdk]) [Cdc15] / (Jcdc15 + [Cdc15])
+d [MEN] / dt = la,men ([Tem1] - [MEN]) ([Cdc15] - [MEN]) - ld,men [MEN] - (ki,tem + k'i,tem [PP2A]) [MEN] / (Jtem1 + [Tem1]) - (ki,cdc15 + k'i,cdc15 [Cdk]) [MEN] / (Jcdc15 + [Cdc15])
+[PP2A] = (1 + kpp k1 [separase]) / (1 + k1 [separase]) [PP2A]T
+[Cdk] = [Clb2] / (1 + [Inh])
+[securin] = [securin]T - [securin:separase]
+[separase] = [separase]T - [securin:separase]
+[Net1-P] = [Net1]T - [Net1] - [Net1:Cdc14]
+[Cdc14] = [Cdc14]T - [Net1:Cdc14]
+
+<a id='74f2b34d-4ec7-49bb-ae98-d1027ae9b43b'></a>
+
+3
+
+<!-- PAGE BREAK -->
+
+<a id='d3bb9656-c2f4-49f8-8ea4-73e3bdc87fc3'></a>
+
+**Values of kinetic parameters:**
+
+Clb2 synthesis and degradation:
+kS,clb2 = 0.03, kd,clb2 = 0.03, k'd,clb2 = 0.2, k''d,clb2 = 2
+
+<a id='3224b3ef-79a8-40b1-b80d-0b303a06eb65'></a>
+
+Cdc20 synthesis and degradation:
+ks,cdc20 = 0.015, kd,cdc20 = 0.05, k'd,cdc20 = 2
+
+<a id='3a80428f-1ee4-452e-b34f-b82cd6dce598'></a>
+
+Cdh1 activation/inactivation:
+kd,cdh = 0.01, k'd,cdh = 1, k'pcdh = 1, Jcdh = 0.0015, [Cdh1]T = 1
+
+<a id='0cfdd6bb-5659-4cf7-a215-dafe835e853d'></a>
+
+'securin' and 'separase' synthesis/degradation and association/dissociation:
+ks,securin = 0.03, kd,securin = 0.05, k'd,securin = 2, ks,separase = 0.001 kd,separase = 0.004, la,securin = 500, ld,securin = 1
+
+<a id='53b7d68e-288e-47d3-8629-826b2446e7b2'></a>
+
+Net1 phosphorylation/dephosphorylation and association/dissociation with Cdc14:k'd = 0.1, kd = 0.45, kp = 0.4, k'p = 2, Jnet = 0.2, la,net = 500 ld,net = 1, [Net1]T = 1, [Cdc14]T = 0.5
+
+<a id='2b8d6a1a-382c-4505-a137-789332355880'></a>
+
+Polo synthesis/degradation and activation/inactivation:
+ks,polo = 0.01, kd,polo = 0.01, k'd,polo = 0.25, ka,polo = 0, k'a,polo = 0.5, ki,polo = 0.1, Jpolo = 0.25
+
+<a id='fb07b926-b581-4e7a-a3f6-1ac7e56fc00d'></a>
+
+Tem1 activation/inactivation:
+k_a,tem =0, k'_a,tem = 0.5, k_i,tem = 0.1, k'_item = 1, J_tem1 = 0.005, [Tem1]_T = 1
+
+<a id='a19c7f43-df1d-4f62-ac7d-55b92b46b80f'></a>
+
+Cdc15 activation/inactivation:
+ka,cdc15 = 0.02, k'a,cdc15 = 0.5, ki,cdc15 = 0, k'i,cdc15 = 0.2, Jcdc15 = 0.2, la,men = 10, ld,men = 0.1, [Cdc15]T = 1
+
+<a id='8a8afe14-ddc5-46ca-bcaf-7755e1c6ddf1'></a>
+
+PP2A regulation:
+kpp = 0.1, ki=20, [PP2A]T =1
+
+<a id='851d1b12-c473-4afa-9696-499ddb6d0431'></a>
+
+[Inh]=0 in the absence and [Inh]=10 in the presence of Cdk inhibitor.
+
+<a id='1a1286cb-801e-4309-b338-92d92b2b6004'></a>
+
+4
+
+<!-- PAGE BREAK -->
+
+<a id='25db1530-d729-4f45-bb3d-5b07603d0c98'></a>
+
+## Initial conditions:
+All the simulations were started from a Cdc20 deprived (kS,cdc20 = 0) stable metaphase state with the following initial values for dynamic variables: [Clb2] = 0.997, [Cdc20] = 0, [Cdh1] = 3.8·10⁻⁵, [securin]T = 0.6, [separase]T = 0.25, [securin:separase] = 0.248, [Net1] = 0.098, [Net1:Cdc14] = 0.485, [Polo]T = 0.99, [Polo] = 0.945, [Tem1] = 3.89·10⁻³, [Cdc15] = 2.57·10⁻², [MEN] = 8·10⁻⁶
+
+<a id='e74093b4-1cd7-47f7-84ee-190968c031c4'></a>
+
+5

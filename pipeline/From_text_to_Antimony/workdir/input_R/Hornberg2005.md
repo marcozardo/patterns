@@ -855,3 +855,857 @@ Supplementary Information accompanies the paper on Oncogene website (http://www.
 <a id='2d3c2d73-7739-4f7b-887d-3122f4b7cb54'></a>
 
 Oncogene
+
+# Supplementary materials
+
+<a id='993fe137-5228-4246-808d-36506a924aa4'></a>
+
+Supplementary Table 1: reactions and rate equations
+
+<a id='42c93be3-e09a-4fec-aa59-9d3c108cb4cc'></a>
+
+<table><thead><tr><th>v</th><th>reactions</th><th>rate equations</th></tr></thead><tbody><tr><td>1</td><td>[EGFR]+[EGF] → [EGF-EGFR]</td><td>k1 * c(1) * c(2) -kd1 * c(3)</td></tr><tr><td>2</td><td>[EGF-EGFR]+[EGF-EGFR] → [(EGF-EGFR)2]</td><td>k2 * c(3) * c(3) -kd2 * c(4)</td></tr><tr><td>3</td><td>[(EGF-EGFR)2] → [(EGF-EGFR*)2]</td><td>k3 * c(4) * 1 -kd3 * c(5)</td></tr><tr><td>4</td><td>[(EGF-EGFR*)2-GAP-Grb2]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Prot]</td><td>k4 * c(23) * c(12) -kd4 * c(7)</td></tr><tr><td>5</td><td>[(EGF-EGFR*)2-GAP-Grb2-Prot] → [(EGF-EGFRi*)2-GAP-Grb2]+[Proti]</td><td>k5 * c(18) * c(9) -kd5 * c(7)</td></tr><tr><td>6</td><td>[EGFR] → [EGFRI]</td><td>k6 * c(2) * 1 -kd6 * c(6)</td></tr><tr><td>7</td><td>[(EGF-EGFR*)2] → [(EGF-EGFRi*)2]</td><td>k6 * c(5) * 1 -kd6 * c(8)</td></tr><tr><td>8</td><td>[(EGF-EGFR*)2]+[GAP] → [(EGF-EGFR*)2-GAP]</td><td>k8 * c(5) * c(14) -kd8 * c(15)</td></tr><tr><td>9</td><td>[(EGF-EGFR*)2-GAP] → [(EGF-EGFRI*)2-GAP]</td><td>k6 * c(23) * 1 -kd6 * c(18)</td></tr><tr><td>10</td><td>[EGFRI]+[EGFi] → [EGF-EGFRI]</td><td>k10b * c(6) * c(16) -kd10 * c(10)</td></tr><tr><td>11</td><td>[EGF-EGFRi]+[EGF-EGFRi] → [(EGF-EGFRI)2]</td><td>k2 * c(10) * c(10) -kd2 * c(11)</td></tr><tr><td>12</td><td>[(EGF-EGFRI)2] → [(EGF-EGFRI*)2]</td><td>k3 * c(11) * 1 -kd3 * c(8)</td></tr><tr><td>13</td><td>→ [EGFR]</td><td>k13 * 1 * 1 -kd13 * c(2)</td></tr><tr><td>14</td><td>[(EGF-EGFRI*)2]+ [GAP] → [(EGF-EGFRI*)2-GAP]</td><td>k8 * c(8) * c(14) -kd8 * c(17)</td></tr><tr><td>15</td><td>[Proti] → [Prot]</td><td>k15 * c(9) * 1 -kd15 * c(12)</td></tr><tr><td>16</td><td>[(EGF-EGFR*)2-GAP]+[Grb2] → [(EGF-EGFR*)2-GAP-Grb2]</td><td>k16 * c(22) * c(15) -kd63 * c(23)</td></tr><tr><td>17</td><td>[(EGF-EGFR*)2-GAP-Grb2]+[Sos] → [(EGF-EGFR*)2-GAP-Grb2-Sos]</td><td>k17 * c(24) * c(23) -kd17 * c(25)</td></tr><tr><td>18</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos]+[Ras-GDP] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP]</td><td>k18 * c(26) * c(25) -kd18 * c(27)</td></tr><tr><td>19</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP] → [(EGF-EGFR*)2-GAP-Grb2-Sos]+[Ras-GTP]</td><td>k19 * c(28) * c(25) -kd19 * c(27)</td></tr><tr><td>20</td><td>[Ras-GTP*]+[(EGF-EGFR*)2-GAP-Grb2-Sos] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP]</td><td>k20 * c(25) * c(43) -kd20 * c(29)</td></tr><tr><td>21</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP] ↔ [(EGF-EGFR*)2-GAP-Grb2-Sos]+[Ras-GDP]</td><td>k21 * c(25) * c(26) -kd21 * c(29)</td></tr><tr><td>22</td><td>[(EGF-EGFR*)2-GAP]+[Shc] → [(EGF-EGFR*)2-GAP-Shc]</td><td>k22 * c(31) * c(15) -kd22 * c(32)</td></tr><tr><td>23</td><td>[(EGF-EGFR*)2-GAP-Shc] → [(EGF-EGFR*)2-GAP-Shc*]</td><td>k23 * c(32) * 1 -kd23 * c(33)</td></tr><tr><td>24</td><td>[(EGF-EGFR*)2-GAP-Shc*]+[Grb2] → [(EGF-EGFR*)2-GAP-Shc*-Grb2]</td><td>k16 * c(22) * c(33) -kd24 * c(34)</td></tr><tr><td>25</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2]+[Sos] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]</td><td>k25 * c(24) * c(34) -kd25 * c(35)</td></tr><tr><td>26</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]</td><td>k18 * c(26) * c(35) -kd18 * c(36)</td></tr><tr><td>27</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] + [Ras-GTP]</td><td>k19 * c(35) * c(28) -kd19 * c(36)</td></tr><tr><td>28</td><td>[Raf]+[Ras-GTP] → [Raf-Ras-GTP]</td><td>k28 * c(28) * c(41) -kd28 * c(42)</td></tr><tr><td>29</td><td>[Raf-Ras-GTP] → [Raf*]+[Ras-GTP*]</td><td>k29 * c(43) * c(45) -kd29 * c(42)</td></tr><tr><td>30</td><td>[Ras-GTP*]+[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]</td><td>k20 * c(35) * c(43) -kd20 * c(37)</td></tr><tr><td>31</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP]</td><td>k21 * c(35) * c(26) -kd21 * c(37)</td></tr><tr><td>32</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] ↔ [(EGF-EGFR*)2-GAP]+[Shc*-Grb2-Sos]</td><td>k32 * c(15) * c(38) -kd32 * c(35)</td></tr><tr><td>33</td><td>[Shc*-Grb2-Sos] → [Grb2-Sos]+[Shc*]</td><td>k33 * c(40) * c(30) -kd33 * c(38)</td></tr><tr><td>34</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos] → [(EGF-EGFR*)2-GAP]+[Grb2-Sos]</td><td>k34 * c(15) * c(30) -kd34 * c(25)</td></tr></tbody></table>
+
+<!-- PAGE BREAK -->
+
+<a id='7d59e776-e440-4cdd-8793-d4f2a6b149b7'></a>
+
+35 [Grb2-Sos] → [Grb2] +[Sos]
+36 [Shc*] → [Shc]
+37 [(EGF-EGFR*)2-GAP-Shc*] → [(EGF-EGFR*)2-GAP]+[Shc*]
+38 [Shc*]+[Grb2] → [Shc*-Grb2]
+39 [(EGF-EGFR*)2-GAP-Shc*-Grb2] → [(EGF-EGFR*)2-GAP]+[Shc*-Grb2]
+40 [Shc*-Grb2]+[Sos] → [Shc*-Grb2-Sos]
+41 [(EGF-EGFR*)2-GAP-Shc*] + [Grb2-Sos] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]
+42 [Raf*]+[Phosphatase1] → [Raf*-Phosphatase1]
+43 [Raf*-Phosphatase1] → [Raf]+[Phosphatase1]
+44 [MEK] + [Raf*] → [MEK-Raf*]
+45 [MEK-Raf*] → [MEK-P] +[Raf*]
+46 [MEK-P]+[Raf*] → [MEK-P-Raf*]
+47 [MEK-P-Raf*] → [MEK-PP] + [Raf*]
+48 [MEK-PP]+[Phosphatase2] → [MEK-PP-Phosphatase2]
+49 [MEK-PP-Phosphatase2] → [MEK-P] + [Phosphatase2]
+50 [MEK-P]+[Phosphatase2] → [MEK-P-Phosphatase2]
+51 [MEK-P-Phosphatase2] → [MEK]+[Phosphatase2]
+52 [ERK]+[MEK-PP] → [ERK-MEK-PP]
+53 [ERK-MEK-PP] → [ERK-P]+[MEK-PP]
+54 [ERK-P]+[MEK-PP] ↔ [ERK-P-MEK-PP]
+55 [ERK-P-MEK-PP] → [ERK-PP]+[MEK-PP]
+56 [ERK-PP]+[Phosphatase3] → [ERK-PP-Phosphatase3]
+57 [ERK-PP-Phosphatase3] → [ERK-P]+[Phosphatase3]
+58 [ERK-P] + [Phosphatase3] → [ERK-P-Phosphatase3]
+59 [ERK-P-Phosphatase3] → [ERK]+[Phosphatase3]
+60 [EGFRI] → [EGFRideg]
+61 [EGFi]→ [EGFideg]
+62 [(EGF-EGFRi*)2] → [(EGF-EGFRi*)2deg]
+63 [(EGF-EGFRi*)2-GAP]+[Grb2] → [(EGF-EGFRi*)2-GAP-Grb2]
+64 [(EGF-EGFRi*)2-GAP-Grb2]+[Sos] → [(EGF-EGFRi*)2-GAP-Grb2-Sos]
+65 [(EGF-EGFRi*)2-GAP-Grb2-Sos]+[Ras-GDP] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP]
+66 [(EGF-EGFRI*)2-GAP-Grb2-Sos-Ras-GDP] ↔ [(EGF-EGFRI*)2-GAP-Grb2-Sos]+[Ras-GTPi]
+67 [Ras-GTPi*]+[(EGF-EGFRi*)2-GAP-Grb2-Sos] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTPi]
+68 [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP] ↔ [(EGF-EGFRI*)2-GAP-Grb2-Sos]+[Ras-GDP]
+69 [(EGF-EGFRi*)2-GAP]+[Shc] → [(EGF-EGFRi*)2-GAP-Shc]
+70 [(EGF-EGFR*)2-GAP-Shc] → [(EGF-EGFR*)2-GAP-Shc*]
+71 [(EGF-EGFRi*)2-GAP-Shc*]+[Grb2] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2]
+
+<a id='b2c93b05-862c-4c8e-9bd4-b2ef05481fa4'></a>
+
+k35 * c(24) * c(22) -kd35 * c(30)
+k36 * c(40) * 1 -kd36 * c(31)
+k37 * c(15) * c(40) -kd37 * c(33)
+k16 * c(22) * c(40) -kd24 * c(39)
+k37 * c(15) * c(39) -kd37 * c(34)
+k40 * c(24) * c(39) -kd40 * c(38)
+k41 * c(30) * c(33) -kd41 * c(35)
+k42 * c(44) * c(45) -kd42 * c(46)
+k43 * c(41) * c(44) -kd43 * c(46)
+k44 * c(47) * c(45) -kd52 * c(48)
+k45 * c(49) * c(45) -kd45 * c(48)
+k44 * c(49) * c(45) -kd52 * c(50)
+k47 * c(51) * c(45) -kd47 * c(50)
+k48 * c(51) * c(53) -kd48 * c(52)
+k49 * c(49) * c(53) -kd49 * c(52)
+k50 * c(53) * c(49) -kd50 * c(54)
+k49 * c(47) * c(53) -kd49 * c(54)
+k52 * c(55) * c(51) -kd44 * c(56)
+k53 * c(51) * c(57) -kd53 * c(56)
+k52 * c(51) * c(57) -kd44 * c(58)
+k55 * c(59) * c(51) -kd55 * c(58)
+k56 * c(59) * c(60) -kd56 * c(61)
+k57 * c(57) * c(60) -kd57 * c(61)
+k58 * c(60) * c(57) -kd58 * c(62)
+k57 * c(55) * c(60) -kd57 * c(62)
+k60 * c(6) * 1 -kd60 * c(86)
+k61 * c(16) * 1 -kd61 * c(13)
+k60 * c(8) * 1 -kd60 * c(87)
+k16 * c(17) * c(22) -kd63 * c(18)
+k17 * c(24) * c(18) -kd17 * c(19)
+k18 * c(26) * c(19) -kd18 * c(20)
+k19 * c(69) * c(19) -kd19 * c(20)
+k20 * c(71) * c(19) -kd20 * c(21)
+k21 * c(19) * c(26) -kd21 * c(21)
+k22 * c(31) * c(17) -kd22 * c(63)
+k23 * c(63) * 1 -kd23 * c(64)
+k16 * c(22) * c(64) -kd24 * c(65)
+
+<!-- PAGE BREAK -->
+
+<a id='c23c8158-1b50-4d05-9174-4b1d9a25d5b7'></a>
+
+72 [(EGF-EGFRi*)2-GAP-Shc*-Grb2]+[Sos] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]
+73 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]
+74 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] + [Ras-GTPi]
+75 [Raf]+[Ras-GTPi] → [Raf-Ras-GTPi]
+76 [Raf-Ras-GTPi] → [Rafi*]+[Ras-GTPi*]
+77 [Ras-GTPi*]+[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]
+78 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP]
+79 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] ↔ [(EGF-EGFRI*)2-GAP]+[Shc-Grb2-Sos]
+80 [(EGF-EGFRi*)2-GAP-Grb2-Sos] ↔ [(EGF-EGFRi*)2-GAP]+[Grb2-Sos]
+81 [(EGF-EGFRi*)2-GAP-Shc*] ↔ [(EGF-EGFRi*)2-GAP]+[Shc*]
+82 [(EGF-EGFRi*)2-GAP-Shc*-Grb2] ↔ [(EGF-EGFRi*)2-GAP]+[Shc*-Grb2]
+83 [(EGF-EGFRi*)2-GAP-Shc*] + [Grb2-Sos] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]
+84 [Rafi*]+[Phosphatase1] ↔ [Rafi*-Phosphatase1]
+85 [Rafi*-Phosphatase1] → [Raf]+[Phosphatase1]
+86 [MEK] + [Rafi*] ↔ [MEK-Rafi*]
+87 [MEK-Rafi*] → [MEKI-P] + [Rafi*]
+88 [MEKI-P]+[Rafi*] ↔ [MEK-P-Rafi*]
+89 [MEK-P-Rafi*] → [MEKI-PP] + [Rafi*]
+90 [MEKI-PP]+[Phosphatase2] ↔ [MEKI-PP-Phosphatase2]
+91 [MEKI-PP-Phosphatase2] → [MEKI-P] + [Phosphatase2]
+92 [MEKI-P]+[Phosphatase2] ↔ [MEKI-P-Phosphatase2]
+93 [MEKI-P-Phosphatase2] → [MEK]+[Phosphatase2]
+94 [ERK]+[MEKI-PP] ↔ [ERK-MEKI-PP]
+95 [ERK-MEKI-PP] → [ERKI-P]+[MEKI-PP]
+96 [ERKI-P]+[MEKI-PP] ↔ [ERKI-P-MEKI-PP]
+97 [ERKI-P-MEKI-PP] → [ERKI-PP]+[MEKI-PP]
+98 [ERKI-PP]+[Phosphatase3] ↔ [ERKI-PP-Phosphatase3]
+99 [ERKI-PP-Phosphatase3] → [ERKI-P]+[Phosphatase3]
+100 [ERKI-P] + [Phosphatase3] ↔ [ERKI-P-Phosphatase3]
+101 [ERKI-P-Phosphatase3] → [ERK]+[Phosphatase3]
+102 [(EGF-EGFR*)2-GAP] → [(EGF-EGFRI*)2-GAP]
+103 [(EGF-EGFR*)2-GAP-Shc] → [(EGF-EGFRi*)2-GAP-Shc]
+104 [(EGF-EGFR*)2-GAP-Shc*] → [(EGF-EGFRI*)2-GAP-Shc*]
+105 [(EGF-EGFR*)2-GAP-Grb2-Sos] → [(EGF-EGFRi*)2-GAP-Grb2-Sos]
+106 [(EGF-EGFR*)2-GAP-Grb2-Sos]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Prot]
+107 [(EGF-EGFR*)2-GAP-Grb2-Sos-Prot] → [ (EGF-EGFRi*)2-GAP-Grb2-Sos]+[Proti]
+108 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP]
+
+<a id='5a4e01d9-3661-42e3-82b9-ed9c07ba2796'></a>
+
+k25* c(24) * c(65) -kd25* c(66)
+k18* c(26) * c(66) -kd18* c(67)
+k19* c(66) * c(69) -kd19* c(67)
+k28* c(69) * c(41) -kd28* c(70)
+k29* c(71) * c(72) -kd29* c(70)
+k20* c(71) * c(66) -kd20* c(68)
+k21* c(66) * c(26) -kd21 * c(68)
+k32* c(17) * c(38) -kd32 * c(66)
+k34* c(17) * c(30) -kd34* c(19)
+k37* c(17) * c(40) -kd37 * c(64)
+k37* c(17) * c(39) -kd37* c(65)
+k41* c(30) * c(64) -kd41* c(66)
+k42* c(44) * c(72) -kd42* c(73)
+k43* c(41) * c(44) -kd43 * c(73)
+k44* c(47) * c(72) -kd52* c(74)
+k45* c(75) * c(72) -kd45* c(74)
+k44* c(72) * c(75) -kd52* c(76)
+k47* c(72) * c(77) -kd47* c(76)
+k48* c(77) * c(53) -kd48* c(78)
+k49* c(75) * c(53) -kd49* c(78)
+k50* c(53) * c(75) -kd50* c(79)
+k49* c(47) * c(53) -kd49* c(79)
+k52*c(55) * c(77) -kd44* c(80)
+k53* c(81) * c(77) -kd53 * c(80)
+k52* c(77) * c(81) -kd44* c(82)
+k55* c(83) * c(77) -kd55* c(82)
+k56* c(83) * c(60) -kd56* c(84)
+k57* c(81) * c(60) -kd57* c(84)
+k58* c(60) * c(81) -kd58* c(85)
+k57* c(55) * c(60) -kd57 * c(85)
+k6* c(15)* 1-kd6 * c(17)
+k6* c(32) * 1 -kd6* c(63)
+k6 * c(33) * 1 -kd6* c(64)
+k6* c(25) * 1 -kd6 * c(19)
+k4* c(25) * c(12) -kd4 * c(88)
+k5* c(9) * c(19) -kd5* c(88)
+k6* c(27) * 1 -kd6 * c(20)
+
+<!-- PAGE BREAK -->
+
+<a id='07d5aaab-960d-49ed-be5e-5251ab65ddcc'></a>
+
+109 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP-Prot]
+110 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP-Prot] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP]+[Proti]
+111 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP]
+112 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP-Prot]
+113 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP-Prot] → [ (EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP]+[Proti]
+114 [(EGF-EGFR*)2-GAP-Shc*-Grb2] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2]
+115 [(EGF-EGFR*)2-GAP-Shc*-Grb2]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Prot]
+116 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Prot] → [ (EGF-EGFRi*)2-GAP-Shc*-Grb2]+[Proti]
+117 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]→ [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos]
+118 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Prot]
+119 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Prot] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[Proti]
+120 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]
+121 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP-Prot]
+122 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP-Prot] → [ (EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]+[Proti]
+123 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]
+124 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP-Prot]
+125 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP-Prot] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]+[Proti]
+126 [(EGF-EGFR*)2-GAP-Grb2-Sos]+[ERK-PP] → [(EGF-EGFR*)2-GAP-Grb2-Sos-ERK-PP]
+127 [(EGF-EGFRi*)2-GAP-Grb2-Sos]+[ERKI-PP] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-ERKI-PP]
+128 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[ERK-PP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-ERK-PP]
+129 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[ERKI-PP] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-ERKI-PP]
+130 [Sos]+[ERK-PP] → [Sos-ERK-PP]
+131 [Sos]+[ERKI-PP] → [Sos-ERKI-PP]
+132 [(EGF-EGFRi*)2-GAP] → [(EGF-EGFRI*)2deg]
+133 [(EGF-EGFRi*)2-GAP-Grb2] → [(EGF-EGFRi*)2deg]
+134 [(EGF-EGFRi*)2-GAP-Grb2-Sos] → [(EGF-EGFRi*)2deg]
+135 [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2deg]
+136 [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2deg]
+137 [(EGF-EGFRi*)2-GAP-Shc] → [(EGF-EGFRi*)2deg]
+138 [(EGF-EGFRi*)2-GAP-Shc*] → [(EGF-EGFRi*)2deg]
+139 [(EGF-EGFRi*)2-GAP-Shc*-Grb2] → [(EGF-EGFRi*)2deg]
+140 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] → [(EGF-EGFRi*)2deg]
+141 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2deg]
+142 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2deg]
+143 [(EGF-EGFR*)2-GAP-Grb2-Sos-ERK-PP] → [(EGF-EGFR*)2-GAP-Grb2-Sos]deg+[ERK-PP]
+144 [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-ERK-PP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]deg+[ERK-PP]
+145 [Sos-ERK-PP] → [Sosi]+[ERK-PP]
+
+<a id='db2b2d97-b946-49dd-a652-f6967d65c692'></a>
+
+k4* c(27) * c(12) -kd4* c(89)
+k5* c(9) * c(20) -kd5 * c(89)
+k6* c(29) * 1 -kd6 * c(21)
+k4* c(29) * c(12) -kd4 * c(90)
+k5* c(9) * c(21) -kd5 * c(90)
+k6* c(34) * 1 -kd6 * c(65)
+k4* c(34) * c(12) -kd4* c(91)
+k5* c(9) * c(65) -kd5* c(91)
+k6* c(35) * 1 -kd6 * c(66)
+k4* c(35) * c(12) -kd4* c(92)
+k5* c(9) * c(66) -kd5 * c(92)
+k6* c(36) * 1 -kd6 * c(67)
+k4* c(36) * c(12) -kd4 * c(93)
+k5* c(9) * c(67) -kd5 * c(93)
+k6* c(37) * 1 -kd6 * c(68)
+k4* c(37) * c(12) -kd4 * c(94)
+k5* c(68) * c(9) -kd5 * c(94)
+k126* c(59) * c(25) -kd126* c(95)
+k126* c(83) * c(19) -kd126* c(96)
+k126* c(59) * c(35) -kd126* c(97)
+k126* c(83) * c(66) -kd126* c(98)
+k126* c(59) * c(24) -kd126* c(101)
+k126* c(83) * c(24) -kd126* c(102)
+k60* c(17) * 1 -kd60* c(87)
+k60* c(18) * 1 -kd60* c(87)
+k60* c(19) * 1 -kd60* c(87)
+k60* c(20)* 1-kd60* c(87)
+k60* c(21) * 1 -kd60* c(87)
+k60* c(63) * 1 -kd60 * c(87)
+k60* c(64) * 1 -kd60 * c(87)
+k60* c(65) * 1 -kd60 * c(87)
+k60* c(66) * 1 -kd60* c(87)
+k60* c(67) * 1 -kd60 * c(87)
+k60* c(68) * 1 -kd60* c(87)
+k127* c(59) * c(99) -kd127* c(95)
+k127* c(59) * c(99) -kd127* c(97)
+k127* c(59) * c(103) -kd127* c(101)
+
+<!-- PAGE BREAK -->
+
+<a id='78e6dfdf-177c-45b0-91c9-f3b21b98140a'></a>
+
+146 [(EGF-EGFRi*)2-GAP-Grb2-Sos-ERKI-PP] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos]deg+[ERKI-PP]
+k127* c(83)* c(100) -kd127* c(96)
+147 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-ERKI-PP] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]deg+[ERKi-PP]
+k127* c(83)* c(100) -kd127* c(98)
+148 [Sos-ERK-PPi] ↔ [Sosi]+[ERK-PPi]
+k127* c(83)* c(103) -kd127* c(102)
+
+<!-- PAGE BREAK -->
+
+<a id='49744f95-a261-4f62-aa98-dc79364cffeb'></a>
+
+Supplementary table 2: parameter values and initial conditions
+<table id="5-1">
+<tr><td id="5-2">parameter</td><td id="5-3">value*</td><td id="5-4"></td><td id="5-5">c</td><td id="5-6">components</td><td id="5-7">initial concentrations**</td></tr>
+<tr><td id="5-8">k1</td><td id="5-9">3.00E+07</td><td id="5-a"></td><td id="5-b">c1</td><td id="5-c">EGF</td><td id="5-d">5.00E-08</td></tr>
+<tr><td id="5-e">kd1</td><td id="5-f">3.84E-03</td><td id="5-g"></td><td id="5-h">c2</td><td id="5-i">EGFR</td><td id="5-j">5.00E+04</td></tr>
+<tr><td id="5-k">k10</td><td id="5-l">1.40E+05</td><td id="5-m"></td><td id="5-n">c3</td><td id="5-o">EGF-EGFR</td><td id="5-p">0.00E+00</td></tr>
+<tr><td id="5-q">k10b</td><td id="5-r">5.43E-02</td><td id="5-s"></td><td id="5-t">c4</td><td id="5-u">(EGF-EGFR)2</td><td id="5-v">0.00E+00</td></tr>
+<tr><td id="5-w">kd10b</td><td id="5-x">0.00E+00</td><td id="5-y"></td><td id="5-z">c5</td><td id="5-A">(EGF-EGFR*)2</td><td id="5-B">0.00E+00</td></tr>
+<tr><td id="5-C">kd10</td><td id="5-D">1.10E-02</td><td id="5-E"></td><td id="5-F">c6</td><td id="5-G">EGFRI</td><td id="5-H">0.00E+00</td></tr>
+<tr><td id="5-I">k2</td><td id="5-J">1.66E-05</td><td id="5-K"></td><td id="5-L">c7</td><td id="5-M">(EGF-EGFR*)2-GAP-Grb2-Prot</td><td id="5-N">0.00E+00</td></tr>
+<tr><td id="5-O">kd2</td><td id="5-P">1.00E-01</td><td id="5-Q"></td><td id="5-R">c8</td><td id="5-S">(EGF-EGFRI*)2</td><td id="5-T">0.00E+00</td></tr>
+<tr><td id="5-U">k3</td><td id="5-V">1.00E+00</td><td id="5-W"></td><td id="5-X">c9</td><td id="5-Y">Proti</td><td id="5-Z">0.00E+00</td></tr>
+<tr><td id="5-10">kd3</td><td id="5-11">1.00E-02</td><td id="5-12"></td><td id="5-13">c10</td><td id="5-14">EGF-EGFRI</td><td id="5-15">0.00E+00</td></tr>
+<tr><td id="5-16">k4</td><td id="5-17">1.73E-07</td><td id="5-18"></td><td id="5-19">c11</td><td id="5-1a">(EGF-EGFRI)2</td><td id="5-1b">0.00E+00</td></tr>
+<tr><td id="5-1c">kd4</td><td id="5-1d">1.66E-03</td><td id="5-1e"></td><td id="5-1f">c12</td><td id="5-1g">Prot</td><td id="5-1h">8.10E+04</td></tr>
+<tr><td id="5-1i">kd5</td><td id="5-1j">1.46E-02</td><td id="5-1k"></td><td id="5-1l">c13</td><td id="5-1m">EGFideg</td><td id="5-1n">0.00E+00</td></tr>
+<tr><td id="5-1o">k5</td><td id="5-1p">0.00E+00</td><td id="5-1q"></td><td id="5-1r">c14</td><td id="5-1s">GAP</td><td id="5-1t">1.20E+04</td></tr>
+<tr><td id="5-1u">k6</td><td id="5-1v">5.00E-04</td><td id="5-1w"></td><td id="5-1x">c15</td><td id="5-1y">(EGF-EGFR*)2-GAP</td><td id="5-1z">0.00E+00</td></tr>
+<tr><td id="5-1A">kd6</td><td id="5-1B">5.00E-03</td><td id="5-1C"></td><td id="5-1D">c16</td><td id="5-1E">EGFI</td><td id="5-1F">0.00E+00</td></tr>
+<tr><td id="5-1G">k8</td><td id="5-1H">1.66E-06</td><td id="5-1I"></td><td id="5-1J">c17</td><td id="5-1K">(EGF-EGFRI*)2-GAP</td><td id="5-1L">0.00E+00</td></tr>
+<tr><td id="5-1M">kd8</td><td id="5-1N">2.00E-01</td><td id="5-1O"></td><td id="5-1P">c18</td><td id="5-1Q">(EGF-EGFRI*)2-GAP-Grb2</td><td id="5-1R">0.00E+00</td></tr>
+<tr><td id="5-1S">k13</td><td id="5-1T">4.28E+04</td><td id="5-1U"></td><td id="5-1V">c19</td><td id="5-1W">(EGF-EGFRi*)2-GAP-Grb2-Sos</td><td id="5-1X">0.00E+00</td></tr>
+<tr><td id="5-1Y">kd13</td><td id="5-1Z">0.00E+00</td><td id="5-20"></td><td id="5-21">c20</td><td id="5-22">(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP</td><td id="5-23">0.00E+00</td></tr>
+<tr><td id="5-24">k15</td><td id="5-25">1.00E+04</td><td id="5-26"></td><td id="5-27">c21</td><td id="5-28">(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP</td><td id="5-29">0.00E+00</td></tr>
+<tr><td id="5-2a">Ikd15</td><td id="5-2b">0.00E+00</td><td id="5-2c"></td><td id="5-2d">c22</td><td id="5-2e">Grb2</td><td id="5-2f">1.10E+04</td></tr>
+<tr><td id="5-2g">k16</td><td id="5-2h">1.66E-05</td><td id="5-2i"></td><td id="5-2j">c23</td><td id="5-2k">(EGF-EGFR*)2-GAP-Grb2</td><td id="5-2l">0.00E+00</td></tr>
+<tr><td id="5-2m">kd16</td><td id="5-2n">0.00E+00</td><td id="5-2o"></td><td id="5-2p">c24</td><td id="5-2q">Sos</td><td id="5-2r">2.63E+04</td></tr>
+<tr><td id="5-2s">k17</td><td id="5-2t">1.66E-05</td><td id="5-2u"></td><td id="5-2v">c25</td><td id="5-2w">(EGF-EGFR*)2-GAP-Grb2-Sos</td><td id="5-2x">0.00E+00</td></tr>
+<tr><td id="5-2y">Ikd17</td><td id="5-2z">6.00E-02</td><td id="5-2A"></td><td id="5-2B">c26</td><td id="5-2C">Ras-GDP</td><td id="5-2D">7.20E+04</td></tr>
+<tr><td id="5-2E">Ik18</td><td id="5-2F">2.50E-05</td><td id="5-2G"></td><td id="5-2H">c27</td><td id="5-2I">(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP</td><td id="5-2J">0.00E+00</td></tr>
+<tr><td id="5-2K">Ikd18</td><td id="5-2L">3.80E+04</td><td id="5-2M"></td><td id="5-2N">C28</td><td id="5-2O">Ras-GTP</td><td id="5-2P">0.00E+00</td></tr>
+<tr><td id="5-2Q">k19</td><td id="5-2R">1.66E-07</td><td id="5-2S"></td><td id="5-2T">C29</td><td id="5-2U">(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP</td><td id="5-2V">0.00E+00</td></tr>
+<tr><td id="5-2W">kd19</td><td id="5-2X">5.00E-01</td><td id="5-2Y"></td><td id="5-2Z">c30</td><td id="5-30">Grb2-Sos</td><td id="5-31">4.00E+04</td></tr>
+<tr><td id="5-32">k20</td><td id="5-33">3.50E-06</td><td id="5-34"></td><td id="5-35">c31</td><td id="5-36">Shc</td><td id="5-37">1.01E+05</td></tr>
+<tr><td id="5-38">kd20</td><td id="5-39">4.00E-01</td><td id="5-3a"></td><td id="5-3b">c32</td><td id="5-3c">(EGF-EGFR*)2-GAP-SHC</td><td id="5-3d">0.00E+00</td></tr>
+<tr><td id="5-3e">k21</td><td id="5-3f">3.66E-07</td><td id="5-3g"></td><td id="5-3h">c33</td><td id="5-3i">(EGF-EGFR*)2-GAP-SHC*</td><td id="5-3j">0.00E+00</td></tr>
+<tr><td id="5-3k">kd21</td><td id="5-3l">2.30E-02</td><td id="5-3m"></td><td id="5-3n">c34</td><td id="5-3o">(EGF-EGFR*)2-GAP-SHC*-Grb2</td><td id="5-3p">0.00E+00</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='9e47ae3a-205b-4688-87a7-623ac68f5ed6'></a>
+
+<table id="6-1">
+<tr><td id="6-2">k22</td><td id="6-3">3.50E-05</td><td id="6-4"></td><td id="6-5">c35</td><td id="6-6">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos</td><td id="6-7">0.00E+00</td></tr>
+<tr><td id="6-8">kd22</td><td id="6-9">1.00E-01</td><td id="6-a"></td><td id="6-b">c36</td><td id="6-c">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos-Ras-GDP</td><td id="6-d">0.00E+00</td></tr>
+<tr><td id="6-e">k23</td><td id="6-f">6.00E+00</td><td id="6-g"></td><td id="6-h">c37</td><td id="6-i">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos-Ras-GTP</td><td id="6-j">0.00E+00</td></tr>
+<tr><td id="6-k">kd23</td><td id="6-l">6.00E-02</td><td id="6-m"></td><td id="6-n">c38</td><td id="6-o">Shc*-Grb2-Sos</td><td id="6-p">0.00E+00</td></tr>
+<tr><td id="6-q">kd24</td><td id="6-r">5.50E-01</td><td id="6-s"></td><td id="6-t">c39</td><td id="6-u">Shc*-Grb2</td><td id="6-v">0.00E+00</td></tr>
+<tr><td id="6-w">k25</td><td id="6-x">1.66E-05</td><td id="6-y"></td><td id="6-z">c40</td><td id="6-A">Shc*</td><td id="6-B">0.00E+00</td></tr>
+<tr><td id="6-C">kd25</td><td id="6-D">2.14E-02</td><td id="6-E"></td><td id="6-F">c41</td><td id="6-G">Raf</td><td id="6-H">4.00E+04</td></tr>
+<tr><td id="6-I">k28</td><td id="6-J">1.66E-06</td><td id="6-K"></td><td id="6-L">c42</td><td id="6-M">Raf-Ras-GTP</td><td id="6-N">0.00E+00</td></tr>
+<tr><td id="6-O">kd28</td><td id="6-P">5.30E-03</td><td id="6-Q"></td><td id="6-R">c43</td><td id="6-S">Ras-GTP*</td><td id="6-T">0.00E+00</td></tr>
+<tr><td id="6-U">k29</td><td id="6-V">1.17E-02</td><td id="6-W"></td><td id="6-X">c44</td><td id="6-Y">Phosphatase1</td><td id="6-Z">4.00E+04</td></tr>
+<tr><td id="6-10">kd29</td><td id="6-11">1.00E+00</td><td id="6-12"></td><td id="6-13">c45</td><td id="6-14">Raf*</td><td id="6-15">0.00E+00</td></tr>
+<tr><td id="6-16">kd32</td><td id="6-17">1.00E-01</td><td id="6-18"></td><td id="6-19">c46</td><td id="6-1a">Raf*-phosphatase1</td><td id="6-1b">0.00E+00</td></tr>
+<tr><td id="6-1c">k32</td><td id="6-1d">4.00E-07</td><td id="6-1e"></td><td id="6-1f">c47</td><td id="6-1g">MEK</td><td id="6-1h">2.10E+07</td></tr>
+<tr><td id="6-1i">kd33</td><td id="6-1j">2.00E-01</td><td id="6-1k"></td><td id="6-1l">c48</td><td id="6-1m">MEK-Raf*</td><td id="6-1n">0.00E+00</td></tr>
+<tr><td id="6-1o">k33</td><td id="6-1p">3.50E-05</td><td id="6-1q"></td><td id="6-1r">c49</td><td id="6-1s">MEK-P</td><td id="6-1t">0.00E+00</td></tr>
+<tr><td id="6-1u">kd34</td><td id="6-1v">3.00E-02</td><td id="6-1w"></td><td id="6-1x">c50</td><td id="6-1y">MEK-P-Raf*</td><td id="6-1z">0.00E+00</td></tr>
+<tr><td id="6-1A">k34</td><td id="6-1B">7.50E-06</td><td id="6-1C"></td><td id="6-1D">c51</td><td id="6-1E">MEK-PP</td><td id="6-1F">0.00E+00</td></tr>
+<tr><td id="6-1G">kd35</td><td id="6-1H">1.50E-03</td><td id="6-1I"></td><td id="6-1J">c52</td><td id="6-1K">MEK-PP-phosphatase2</td><td id="6-1L">0.00E+00</td></tr>
+<tr><td id="6-1M">k35</td><td id="6-1N">7.50E-06</td><td id="6-1O"></td><td id="6-1P">c53</td><td id="6-1Q">phosphatase2</td><td id="6-1R">4.00E+04</td></tr>
+<tr><td id="6-1S">k36</td><td id="6-1T">5.00E-03</td><td id="6-1U"></td><td id="6-1V">c54</td><td id="6-1W">MEK-P-phosphatase2</td><td id="6-1X">0.00E+00</td></tr>
+<tr><td id="6-1Y">kd36</td><td id="6-1Z">0.00E+00</td><td id="6-20"></td><td id="6-21">c55</td><td id="6-22">ERK</td><td id="6-23">2.21E+07</td></tr>
+<tr><td id="6-24">kd37</td><td id="6-25">3.00E-01</td><td id="6-26"></td><td id="6-27">c56</td><td id="6-28">ERK-MEK-PP</td><td id="6-29">0.00E+00</td></tr>
+<tr><td id="6-2a">k37</td><td id="6-2b">1.50E-06</td><td id="6-2c"></td><td id="6-2d">c57</td><td id="6-2e">ERK-P</td><td id="6-2f">0.00E+00</td></tr>
+<tr><td id="6-2g">k40</td><td id="6-2h">5.00E-05</td><td id="6-2i"></td><td id="6-2j">c58</td><td id="6-2k">ERK-P-MEK-PP</td><td id="6-2l">0.00E+00</td></tr>
+<tr><td id="6-2m">kd40</td><td id="6-2n">6.40E-02</td><td id="6-2o"></td><td id="6-2p">c59</td><td id="6-2q">ERK-PP</td><td id="6-2r">0.00E+00</td></tr>
+<tr><td id="6-2s">k41</td><td id="6-2t">5.00E-05</td><td id="6-2u"></td><td id="6-2v">c60</td><td id="6-2w">phosphatase3</td><td id="6-2x">1.00E+07</td></tr>
+<tr><td id="6-2y">kd41</td><td id="6-2z">4.29E-02</td><td id="6-2A"></td><td id="6-2B">c61</td><td id="6-2C">ERK-PP-phosphatase3</td><td id="6-2D">0.00E+00</td></tr>
+<tr><td id="6-2E">k42</td><td id="6-2F">1.18E-04</td><td id="6-2G"></td><td id="6-2H">c62</td><td id="6-2I">ERK-P-phosphatase3</td><td id="6-2J">0.00E+00</td></tr>
+<tr><td id="6-2K">kd42</td><td id="6-2L">2.00E-01</td><td id="6-2M"></td><td id="6-2N">c63</td><td id="6-2O">(EGF-EGFRI*)2-GAP-SHC</td><td id="6-2P">0.00E+00</td></tr>
+<tr><td id="6-2Q">kd43</td><td id="6-2R">1.00E+00</td><td id="6-2S"></td><td id="6-2T">c64</td><td id="6-2U">(EGF-EGFRI*)2-GAP-SHC*</td><td id="6-2V">0.00E+00</td></tr>
+<tr><td id="6-2W">k43</td><td id="6-2X">0.00E+00</td><td id="6-2Y"></td><td id="6-2Z">c65</td><td id="6-30">(EGF-EGFRi*)2-GAP-SHC*-Grb2</td><td id="6-31">0.00E+00</td></tr>
+<tr><td id="6-32">kd44</td><td id="6-33">1.83E-02</td><td id="6-34"></td><td id="6-35">c66</td><td id="6-36">(EGF-EGFRI*)2-GAP-SHC*-Grb2-Sos</td><td id="6-37">0.00E+00</td></tr>
+<tr><td id="6-38">kd45</td><td id="6-39">3.81E+04</td><td id="6-3a"></td><td id="6-3b">c67</td><td id="6-3c">(EGF-EGFRI*)2-GAP-SHC*-Grb2-Sos-Ras-GDP</td><td id="6-3d">0.00E+00</td></tr>
+<tr><td id="6-3e">k45</td><td id="6-3f">0.00E+00</td><td id="6-3g"></td><td id="6-3h">c68</td><td id="6-3i">(EGF-EGFRi*)2-GAP-SHC*-Grb2-Sos-Ras-GTP</td><td id="6-3j">0.00E+00</td></tr>
+<tr><td id="6-3k">kd47</td><td id="6-3l">3.82E+04</td><td id="6-3m"></td><td id="6-3n">c69</td><td id="6-3o">Ras-GTPi</td><td id="6-3p">0.00E+00</td></tr>
+<tr><td id="6-3q">k47</td><td id="6-3r">0.00E+00</td><td id="6-3s"></td><td id="6-3t">c70</td><td id="6-3u">Raf-Ras-GTPi</td><td id="6-3v">0.00E+00</td></tr>
+<tr><td id="6-3w">k48</td><td id="6-3x">2.38E-01</td><td id="6-3y"></td><td id="6-3z">c71</td><td id="6-3A">Ras-GTPi</td><td id="6-3B">0.00E+00</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='7a052dbc-5af2-402d-b762-0d17e491fff1'></a>
+
+<table id="7-1">
+<tr><td id="7-2">kd48</td><td id="7-3">8.00E-01</td><td id="7-4"></td><td id="7-5">c72</td><td id="7-6">Rafi*</td><td id="7-7">0.00E+00</td></tr>
+<tr><td id="7-8">kd49</td><td id="7-9">5.80E-02</td><td id="7-a"></td><td id="7-b">c73</td><td id="7-c">Rafi*-phosphatase1</td><td id="7-d">0.00E+00</td></tr>
+<tr><td id="7-e">k49</td><td id="7-f">0.00E+00</td><td id="7-g"></td><td id="7-h">c74</td><td id="7-i">MEK-Rafi*</td><td id="7-j">0.00E+00</td></tr>
+<tr><td id="7-k">k50</td><td id="7-l">4.50E-07</td><td id="7-m"></td><td id="7-n">c75</td><td id="7-o">MEKI-P</td><td id="7-p">0.00E+00</td></tr>
+<tr><td id="7-q">kd50</td><td id="7-r">5.00E-01</td><td id="7-s"></td><td id="7-t">c76</td><td id="7-u">MEK-P-Rafi*</td><td id="7-v">0.00E+00</td></tr>
+<tr><td id="7-w">kd52</td><td id="7-x">3.30E-02</td><td id="7-y"></td><td id="7-z">c77</td><td id="7-A">MEKI-PP</td><td id="7-B">0.00E+00</td></tr>
+<tr><td id="7-C">kd53</td><td id="7-D">1.60E+01</td><td id="7-E"></td><td id="7-F">c78</td><td id="7-G">MEKI-PP-phosphatase2</td><td id="7-H">0.00E+00</td></tr>
+<tr><td id="7-I">k53</td><td id="7-J">0.00E+00</td><td id="7-K"></td><td id="7-L">c79</td><td id="7-M">MEKi-P-phosphatase2</td><td id="7-N">0.00E+00</td></tr>
+<tr><td id="7-O">kd55</td><td id="7-P">3.82E+04</td><td id="7-Q"></td><td id="7-R">c80</td><td id="7-S">ERKI-MEKI-PP</td><td id="7-T">0.00E+00</td></tr>
+<tr><td id="7-U">k5</td><td id="7-V">0.00E+00</td><td id="7-W"></td><td id="7-X">c81</td><td id="7-Y">ERKI-P</td><td id="7-Z">0.00E+00</td></tr>
+<tr><td id="7-10">kd56</td><td id="7-11">6.00E-01</td><td id="7-12"></td><td id="7-13">c82</td><td id="7-14">ERKI-P-MEKI-PP</td><td id="7-15">0.00E+00</td></tr>
+<tr><td id="7-16">k56</td><td id="7-17">2.35E-05</td><td id="7-18"></td><td id="7-19">c83</td><td id="7-1a">ERKI-PP</td><td id="7-1b">0.00E+00</td></tr>
+<tr><td id="7-1c">Ikd57</td><td id="7-1d">2.46E-01</td><td id="7-1e"></td><td id="7-1f">c84</td><td id="7-1g">ERKI-PP-phosphatase3</td><td id="7-1h">0.00E+00</td></tr>
+<tr><td id="7-1i">k57</td><td id="7-1j">0.00E+00</td><td id="7-1k"></td><td id="7-1l">c85</td><td id="7-1m">ERKi-P-phosphatase3</td><td id="7-1n">0.00E+00</td></tr>
+<tr><td id="7-1o">k58</td><td id="7-1p">8.33E-02</td><td id="7-1q"></td><td id="7-1r">980</td><td id="7-1s">EGFRideg</td><td id="7-1t">0.00E+00</td></tr>
+<tr><td id="7-1u">kd58</td><td id="7-1v">5.00E-01</td><td id="7-1w"></td><td id="7-1x">c87</td><td id="7-1y">(EGF-EGFRi*)2deg</td><td id="7-1z">0.00E+00</td></tr>
+<tr><td id="7-1A">k52</td><td id="7-1B">8.91E-01</td><td id="7-1C"></td><td id="7-1D">c88</td><td id="7-1E">(EGF-EGFR*)2-GAP-Grb2-Sos-Prot</td><td id="7-1F">0.00E+00</td></tr>
+<tr><td id="7-1G">k44</td><td id="7-1H">1.95E-01</td><td id="7-1I"></td><td id="7-1J">c89</td><td id="7-1K">(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP-Prot</td><td id="7-1L">0.00E+00</td></tr>
+<tr><td id="7-1M">k60</td><td id="7-1N">5.50E-03</td><td id="7-1O"></td><td id="7-1P">c90</td><td id="7-1Q">(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP-Prot</td><td id="7-1R">0.00E+00</td></tr>
+<tr><td id="7-1S">Ikd60</td><td id="7-1T">0.00E+00</td><td id="7-1U"></td><td id="7-1V">c91</td><td id="7-1W">(EGF-EGFR*)2-GAP-SHC*-Grb2-Prot</td><td id="7-1X">0.00E+00</td></tr>
+<tr><td id="7-1Y">k61</td><td id="7-1Z">6.70E-04</td><td id="7-20"></td><td id="7-21">c92</td><td id="7-22">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos-Prot</td><td id="7-23">0.00E+00</td></tr>
+<tr><td id="7-24">kd61</td><td id="7-25">0.00E+00</td><td id="7-26"></td><td id="7-27">c93</td><td id="7-28">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos-Ras-GDP-Prot</td><td id="7-29">0.00E+00</td></tr>
+<tr><td id="7-2a">kd63</td><td id="7-2b">2.75E-01</td><td id="7-2c"></td><td id="7-2d">c94</td><td id="7-2e">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos-Ras-GTP-Prot</td><td id="7-2f">0.00E+00</td></tr>
+<tr><td id="7-2g">k63</td><td id="7-2h">0.00E+00</td><td id="7-2i"></td><td id="7-2j">c95</td><td id="7-2k">(EGF-EGFR*)2-GAP-Grb2-Sos-ERK-PP</td><td id="7-2l">0.00E+00</td></tr>
+<tr><td id="7-2m">k126</td><td id="7-2n">1.66E-07</td><td id="7-2o"></td><td id="7-2p">960</td><td id="7-2q">(EGF-EGFRi*)2-GAP-Grb2-Sos-ERKI-PP</td><td id="7-2r">0.00E+00</td></tr>
+<tr><td id="7-2s">kd126</td><td id="7-2t">2.00E+00</td><td id="7-2u"></td><td id="7-2v">c97</td><td id="7-2w">(EGF-EGFR*)2-GAP-SHC*-Grb2-Sos-ERK-PP</td><td id="7-2x">0.00E+00</td></tr>
+<tr><td id="7-2y">kd127</td><td id="7-2z">1.00E-04</td><td id="7-2A"></td><td id="7-2B">c98</td><td id="7-2C">(EGF-EGFRI*)2-GAP-SHC*-Grb2-Sos-ERKI-PP</td><td id="7-2D">0.00E+00</td></tr>
+<tr><td id="7-2E">k127</td><td id="7-2F">0.00E+00</td><td id="7-2G"></td><td id="7-2H">c99</td><td id="7-2I">(EGF-EGFR*)2-GAP-Grb2-Sos deg</td><td id="7-2J">0.00E+00</td></tr>
+<tr><td id="7-2K"></td><td id="7-2L"></td><td id="7-2M"></td><td id="7-2N">c100</td><td id="7-2O">(EGF-EGFR*)2-GAP-Grb2-Sos deg</td><td id="7-2P">0.00E+00</td></tr>
+<tr><td id="7-2Q"></td><td id="7-2R"></td><td id="7-2S"></td><td id="7-2T">c101</td><td id="7-2U">Sos-ERK-PP</td><td id="7-2V">0.00E+00</td></tr>
+<tr><td id="7-2W"></td><td id="7-2X"></td><td id="7-2Y"></td><td id="7-2Z">c102</td><td id="7-30">Sos-ERKI-PP</td><td id="7-31">0.00E+00</td></tr>
+<tr><td id="7-32"></td><td id="7-33"></td><td id="7-34"></td><td id="7-35">c103</td><td id="7-36">Sosi</td><td id="7-37">0.00E+00</td></tr>
+</table>
+
+<a id='538fc042-2962-4e6d-bf01-b40f85130523'></a>
+
+* first order rate constants in 1/s and second order rate constants in [M-1 s-1]
+** in molecules per cell
+
+<!-- PAGE BREAK -->
+
+<a id='a861c7c5-93f3-40a6-bada-78e40c1ca37c'></a>
+
+Supplementary table 3: control coefficients on amplitude A, duration d and integrated response I
+for all 148 reactions calculated by small or large perturbations
+<table id="8-1">
+<tr><td id="8-2" rowspan="2">V</td><td id="8-3" colspan="3">small perturbations (δp/p= 10^-6)</td><td id="8-4" colspan="3">large perturbations (δp/p= - 0.5)</td><td id="8-5" colspan="3">large perturbations (δp/p= 0.5)</td></tr>
+<tr><td id="8-6">A</td><td id="8-7">d</td><td id="8-8">l</td><td id="8-9">A</td><td id="8-a">d</td><td id="8-b">I</td><td id="8-c">A</td><td id="8-d">d</td><td id="8-e">I</td></tr>
+<tr><td id="8-f">1</td><td id="8-g">9.91E-06</td><td id="8-h">5.60E-05</td><td id="8-i">1.07E-04</td><td id="8-j">2.69E-05</td><td id="8-k">1.36E-04</td><td id="8-l">2.58E-04</td><td id="8-m">5.88E-06</td><td id="8-n">3.61E-05</td><td id="8-o">6.56E-05</td></tr>
+<tr><td id="8-p">2</td><td id="8-q">9.83E-05</td><td id="8-r">4.96E-04</td><td id="8-s">8.98E-04</td><td id="8-t">2.09E-04</td><td id="8-u">9.80E-04</td><td id="8-v">1.81E-03</td><td id="8-w">6.26E-05</td><td id="8-x">3.30E-04</td><td id="8-y">5.86E-04</td></tr>
+<tr><td id="8-z">3</td><td id="8-A">2.82E-05</td><td id="8-B">1.04E-04</td><td id="8-C">2.18E-04</td><td id="8-D">7.37E-05</td><td id="8-E">2.53E-04</td><td id="8-F">5.29E-04</td><td id="8-G">1.67E-05</td><td id="8-H">6.21E-05</td><td id="8-I">1.26E-04</td></tr>
+<tr><td id="8-J">4</td><td id="8-K">-1.45E-04</td><td id="8-L">-7.24E-03</td><td id="8-M">-1.10E-02</td><td id="8-N">-1.50E-04</td><td id="8-O">-7.83E-03</td><td id="8-P">-1.19E-02</td><td id="8-Q">-1.40E-04</td><td id="8-R">-6.74E-03</td><td id="8-S">-1.02E-02</td></tr>
+<tr><td id="8-T">5</td><td id="8-U">-4.26E-05</td><td id="8-V">-1.01E-03</td><td id="8-W">-1.35E-03</td><td id="8-X">-4.90E-05</td><td id="8-Y">-1.73E-03</td><td id="8-Z">-2.20E-03</td><td id="8-10">-3.79E-05</td><td id="8-11">-7.27E-04</td><td id="8-12">-9.99E-04</td></tr>
+<tr><td id="8-13">6</td><td id="8-14">-1.82E-06</td><td id="8-15">4.04E-05</td><td id="8-16">4.08E-05</td><td id="8-17">-2.04E-06</td><td id="8-18">4.46E-05</td><td id="8-19">4.16E-05</td><td id="8-1a">-1.72E-06</td><td id="8-1b">3.83E-05</td><td id="8-1c">3.80E-05</td></tr>
+<tr><td id="8-1d">7</td><td id="8-1e">-7.16E-04</td><td id="8-1f">1.41E-02</td><td id="8-1g">1.60E-02</td><td id="8-1h">-7.43E-04</td><td id="8-1i">1.94E-02</td><td id="8-1j">2.22E-02</td><td id="8-1k">-6.91E-04</td><td id="8-1l">1.09E-02</td><td id="8-1m">1.22E-02</td></tr>
+<tr><td id="8-1n">8</td><td id="8-1o">4.00E-03</td><td id="8-1p">2.54E-02</td><td id="8-1q">4.60E-02</td><td id="8-1r">8.79E-03</td><td id="8-1s">4.86E-02</td><td id="8-1t">8.88E-02</td><td id="8-1u">2.54E-03</td><td id="8-1v">1.71E-02</td><td id="8-1w">3.08E-02</td></tr>
+<tr><td id="8-1x">9</td><td id="8-1y">6.17E-06</td><td id="8-1z">1.44E-03</td><td id="8-1A">2.00E-03</td><td id="8-1B">6.22E-06</td><td id="8-1C">1.45E-03</td><td id="8-1D">2.02E-03</td><td id="8-1E">6.15E-06</td><td id="8-1F">1.43E-03</td><td id="8-1G">1.99E-03</td></tr>
+<tr><td id="8-1H">10</td><td id="8-1I">-2.01E-08</td><td id="8-1J">-1.55E-06</td><td id="8-1K">3.59E-06</td><td id="8-1L">1.84E-09</td><td id="8-1M">2.68E-07</td><td id="8-1N">3.97E-07</td><td id="8-1O">5.45E-10</td><td id="8-1P">8.76E-08</td><td id="8-1Q">1.28E-07</td></tr>
+<tr><td id="8-1R">11</td><td id="8-1S">7.75E-06</td><td id="8-1T">3.11E-05</td><td id="8-1U">6.05E-05</td><td id="8-1V">8.34E-06</td><td id="8-1W">3.94E-05</td><td id="8-1X">6.37E-05</td><td id="8-1Y">7.32E-06</td><td id="8-1Z">2.68E-05</td><td id="8-20">5.34E-05</td></tr>
+<tr><td id="8-21">12</td><td id="8-22">1.79E-06</td><td id="8-23">4.66E-06</td><td id="8-24">7.97E-06</td><td id="8-25">3.06E-06</td><td id="8-26">1.10E-05</td><td id="8-27">2.21E-05</td><td id="8-28">1.19E-06</td><td id="8-29">4.19E-06</td><td id="8-2a">8.58E-06</td></tr>
+<tr><td id="8-2b">13</td><td id="8-2c">1.64E-05</td><td id="8-2d">2.51E-02</td><td id="8-2e">2.51E-02</td><td id="8-2f">1.63E-05</td><td id="8-2g">2.75E-02</td><td id="8-2h">2.65E-02</td><td id="8-2i">1.63E-05</td><td id="8-2j">2.28E-02</td><td id="8-2k">2.37E-02</td></tr>
+<tr><td id="8-2l">14</td><td id="8-2m">3.86E-04</td><td id="8-2n">3.63E-02</td><td id="8-2o">5.29E-02</td><td id="8-2p">4.28E-04</td><td id="8-2q">6.48E-02</td><td id="8-2r">8.73E-02</td><td id="8-2s">3.49E-04</td><td id="8-2t">2.48E-02</td><td id="8-2u">3.79E-02</td></tr>
+<tr><td id="8-2v">15</td><td id="8-2w">8.52E-08</td><td id="8-2x">0.00E+00</td><td id="8-2y">2.70E-06</td><td id="8-2z">-8.91E-10</td><td id="8-2A">-1.25E-08</td><td id="8-2B">-1.67E-08</td><td id="8-2C">-3.45E-10</td><td id="8-2D">-4.01E-09</td><td id="8-2E">-7.76E-09</td></tr>
+<tr><td id="8-2F">16</td><td id="8-2G">-5.69E-06</td><td id="8-2H">8.52E-04</td><td id="8-2I">8.64E-04</td><td id="8-2J">-1.08E-05</td><td id="8-2K">1.30E-03</td><td id="8-2L">1.27E-03</td><td id="8-2M">-3.76E-06</td><td id="8-2N">6.35E-04</td><td id="8-2O">6.52E-04</td></tr>
+<tr><td id="8-2P">17</td><td id="8-2Q">-1.44E-04</td><td id="8-2R">-1.13E-03</td><td id="8-2S">-2.69E-03</td><td id="8-2T">-2.13E-04</td><td id="8-2U">-1.66E-03</td><td id="8-2V">-3.97E-03</td><td id="8-2W">-1.09E-04</td><td id="8-2X">-8.50E-04</td><td id="8-2Y">-2.03E-03</td></tr>
+<tr><td id="8-2Z">18</td><td id="8-30">9.92E-04</td><td id="8-31">7.38E-03</td><td id="8-32">1.44E-02</td><td id="8-33">1.68E-03</td><td id="8-34">1.21E-02</td><td id="8-35">2.35E-02</td><td id="8-36">7.05E-04</td><td id="8-37">5.32E-03</td><td id="8-38">1.04E-02</td></tr>
+<tr><td id="8-39">19</td><td id="8-3a">3.62E-03</td><td id="8-3b">2.38E-02</td><td id="8-3c">4.66E-02</td><td id="8-3d">4.76E-03</td><td id="8-3e">2.94E-02</td><td id="8-3f">5.73E-02</td><td id="8-3g">2.92E-03</td><td id="8-3h">2.00E-02</td><td id="8-3i">3.93E-02</td></tr>
+<tr><td id="8-3j">20</td><td id="8-3k">1.53E-06</td><td id="8-3l">2.08E-03</td><td id="8-3m">3.51E-03</td><td id="8-3n">3.09E-06</td><td id="8-3o">3.90E-03</td><td id="8-3p">6.58E-03</td><td id="8-3q">9.72E-07</td><td id="8-3r">1.42E-03</td><td id="8-3s">2.39E-03</td></tr>
+<tr><td id="8-3t">21</td><td id="8-3u">-1.85E-04</td><td id="8-3v">3.69E-02</td><td id="8-3w">6.01E-02</td><td id="8-3x">-1.92E-04</td><td id="8-3y">3.87E-02</td><td id="8-3z">6.27E-02</td><td id="8-3A">-1.78E-04</td><td id="8-3B">3.53E-02</td><td id="8-3C">5.77E-02</td></tr>
+<tr><td id="8-3D">22</td><td id="8-3E">1.77E-03</td><td id="8-3F">4.46E-02</td><td id="8-3G">7.44E-02</td><td id="8-3H">2.91E-03</td><td id="8-3I">6.60E-02</td><td id="8-3J">1.06E-01</td><td id="8-3K">1.28E-03</td><td id="8-3L">3.38E-02</td><td id="8-3M">5.79E-02</td></tr>
+<tr><td id="8-3N">23</td><td id="8-3O">1.59E-04</td><td id="8-3P">1.35E-03</td><td id="8-3Q">2.60E-03</td><td id="8-3R">3.19E-04</td><td id="8-3S">2.68E-03</td><td id="8-3T">5.16E-03</td><td id="8-3U">1.06E-04</td><td id="8-3V">8.99E-04</td><td id="8-3W">1.73E-03</td></tr>
+<tr><td id="8-3X">24</td><td id="8-3Y">8.45E-05</td><td id="8-3Z">3.45E-04</td><td id="8-40">5.48E-04</td><td id="8-41">1.11E-04</td><td id="8-42">4.55E-04</td><td id="8-43">7.15E-04</td><td id="8-44">6.82E-05</td><td id="8-45">2.78E-04</td><td id="8-46">4.41E-04</td></tr>
+<tr><td id="8-47">25</td><td id="8-48">-3.46E-04</td><td id="8-49">-3.67E-03</td><td id="8-4a">-7.35E-03</td><td id="8-4b">-3.97E-04</td><td id="8-4c">-4.17E-03</td><td id="8-4d">-8.36E-03</td><td id="8-4e">-3.07E-04</td><td id="8-4f">-3.28E-03</td><td id="8-4g">-6.56E-03</td></tr>
+<tr><td id="8-4h">26</td><td id="8-4i">5.78E-03</td><td id="8-4j">3.78E-02</td><td id="8-4k">7.04E-02</td><td id="8-4l">1.34E-02</td><td id="8-4m">7.03E-02</td><td id="8-4n">1.30E-01</td><td id="8-4o">3.67E-03</td><td id="8-4p">2.59E-02</td><td id="8-4q">4.84E-02</td></tr>
+<tr><td id="8-4r">27</td><td id="8-4s">2.14E-02</td><td id="8-4t">1.25E-01</td><td id="8-4u">2.36E-01</td><td id="8-4v">7.52E-02</td><td id="8-4w">2.21E-01</td><td id="8-4x">4.03E-01</td><td id="8-4y">1.17E-02</td><td id="8-4z">8.89E-02</td><td id="8-4A">1.68E-01</td></tr>
+<tr><td id="8-4B">28</td><td id="8-4C">1.21E-03</td><td id="8-4D">5.05E-03</td><td id="8-4E">8.06E-03</td><td id="8-4F">3.39E-03</td><td id="8-4G">9.51E-03</td><td id="8-4H">1.57E-02</td><td id="8-4I">6.29E-04</td><td id="8-4J">3.38E-03</td><td id="8-4K">5.25E-03</td></tr>
+<tr><td id="8-4L">29</td><td id="8-4M">6.10E-06</td><td id="8-4N">1.68E-04</td><td id="8-4O">1.84E-04</td><td id="8-4P">1.71E-05</td><td id="8-4Q">3.58E-04</td><td id="8-4R">4.01E-04</td><td id="8-4S">3.51E-06</td><td id="8-4T">1.11E-04</td><td id="8-4U">1.18E-04</td></tr>
+<tr><td id="8-4V">30</td><td id="8-4W">2.69E-05</td><td id="8-4X">8.40E-03</td><td id="8-4Y">1.30E-02</td><td id="8-4Z">5.30E-05</td><td id="8-50">1.60E-02</td><td id="8-51">2.46E-02</td><td id="8-52">1.80E-05</td><td id="8-53">5.69E-03</td><td id="8-54">8.79E-03</td></tr>
+<tr><td id="8-55">31</td><td id="8-56">-1.30E-03</td><td id="8-57">1.38E-01</td><td id="8-58">2.03E-01</td><td id="8-59">-1.34E-03</td><td id="8-5a">1.51E-01</td><td id="8-5b">2.14E-01</td><td id="8-5c">-1.25E-03</td><td id="8-5d">1.28E-01</td><td id="8-5e">1.92E-01</td></tr>
+<tr><td id="8-5f">32</td><td id="8-5g">-3.13E-03</td><td id="8-5h">-2.20E-02</td><td id="8-5i">-5.51E-02</td><td id="8-5j">-2.75E-03</td><td id="8-5k">-1.63E-02</td><td id="8-5l">-5.24E-02</td><td id="8-5m">-3.47E-03</td><td id="8-5n">-2.41E-02</td><td id="8-5o">-5.33E-02</td></tr>
+<tr><td id="8-5p">33</td><td id="8-5q">-1.87E-05</td><td id="8-5r">-1.90E-04</td><td id="8-5s">-6.65E-04</td><td id="8-5t">-3.57E-05</td><td id="8-5u">-3.22E-04</td><td id="8-5v">-1.26E-03</td><td id="8-5w">-1.26E-05</td><td id="8-5x">-1.30E-04</td><td id="8-5y">-4.48E-04</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='812a75d3-169a-4eaa-9ea3-49e240fb043a'></a>
+
+<table id="9-1">
+<tr><td id="9-2">34</td><td id="9-3">2.75E-04</td><td id="9-4">-5.21E-04</td><td id="9-5">2.49E-03</td><td id="9-6">3.79E-04</td><td id="9-7">-4.51E-04</td><td id="9-8">3.60E-03</td><td id="9-9">2.14E-04</td><td id="9-a">-5.15E-04</td><td id="9-b">1.87E-03</td></tr>
+<tr><td id="9-c">35</td><td id="9-d">1.12E-04</td><td id="9-e">1.90E-03</td><td id="9-f">2.98E-03</td><td id="9-g">1.57E-04</td><td id="9-h">2.28E-03</td><td id="9-i">3.54E-03</td><td id="9-j">9.02E-05</td><td id="9-k">1.66E-03</td><td id="9-l">2.63E-03</td></tr>
+<tr><td id="9-m">36</td><td id="9-n">1.33E-04</td><td id="9-o">-1.05E-02</td><td id="9-p">1.68E-02</td><td id="9-q">1.46E-04</td><td id="9-r">1.72E-02</td><td id="9-s">5.54E-02</td><td id="9-t">1.23E-04</td><td id="9-u">-1.98E-02</td><td id="9-v">-2.06E-03</td></tr>
+<tr><td id="9-w">37</td><td id="9-x">-1.04E-03</td><td id="9-y">-1.18E-02</td><td id="9-z">-3.51E-02</td><td id="9-A">-9.65E-04</td><td id="9-B">-9.04E-03</td><td id="9-C">-3.52E-02</td><td id="9-D">-1.11E-03</td><td id="9-E">-1.30E-02</td><td id="9-F">-3.32E-02</td></tr>
+<tr><td id="9-G">38</td><td id="9-H">-2.79E-05</td><td id="9-I">-1.03E-03</td><td id="9-J">-1.16E-03</td><td id="9-K">-4.26E-05</td><td id="9-L">-1.82E-03</td><td id="9-M">-2.02E-03</td><td id="9-N">-2.09E-05</td><td id="9-O">-7.20E-04</td><td id="9-P">-8.14E-04</td></tr>
+<tr><td id="9-Q">39</td><td id="9-R">-5.65E-05</td><td id="9-S">5.39E-04</td><td id="9-T">-3.55E-04</td><td id="9-U">-6.40E-05</td><td id="9-V">6.52E-04</td><td id="9-W">-4.01E-04</td><td id="9-X">-5.06E-05</td><td id="9-Y">4.57E-04</td><td id="9-Z">-3.28E-04</td></tr>
+<tr><td id="9-10">40</td><td id="9-11">-2.95E-05</td><td id="9-12">-7.09E-04</td><td id="9-13">-9.17E-04</td><td id="9-14">-5.23E-05</td><td id="9-15">-1.30E-03</td><td id="9-16">-1.68E-03</td><td id="9-17">-2.04E-05</td><td id="9-18">-4.85E-04</td><td id="9-19">-6.28E-04</td></tr>
+<tr><td id="9-1a">41</td><td id="9-1b">1.49E-03</td><td id="9-1c">1.49E-02</td><td id="9-1d">4.07E-02</td><td id="9-1e">3.14E-03</td><td id="9-1f">3.20E-02</td><td id="9-1g">7.40E-02</td><td id="9-1h">9.75E-04</td><td id="9-1i">9.25E-03</td><td id="9-1j">2.75E-02</td></tr>
+<tr><td id="9-1k">42</td><td id="9-1l">-7.24E-02</td><td id="9-1m">-6.99E-01</td><td id="9-1n">-1.13E+00</td><td id="9-1o">-2.96E-02</td><td id="9-1p">-1.25E+00</td><td id="9-1q">-1.96E+00</td><td id="9-1r">-6.09E-01</td><td id="9-1s">-4.38E-01</td><td id="9-1t">-9.27E-01</td></tr>
+<tr><td id="9-1u">43</td><td id="9-1v">-1.52E-02</td><td id="9-1w">-1.46E-01</td><td id="9-1x">-2.35E-01</td><td id="9-1y">-1.73E-02</td><td id="9-1z">-2.83E-01</td><td id="9-1A">-4.57E-01</td><td id="9-1B">-1.34E-02</td><td id="9-1C">-9.80E-02</td><td id="9-1D">-1.59E-01</td></tr>
+<tr><td id="9-1E">44</td><td id="9-1F">4.40E-02</td><td id="9-1G">6.40E-01</td><td id="9-1H">9.24E-01</td><td id="9-1I">8.15E-01</td><td id="9-1J">6.67E-01</td><td id="9-1K">1.21E+00</td><td id="9-1L">1.94E-02</td><td id="9-1M">5.70E-01</td><td id="9-1N">8.20E-01</td></tr>
+<tr><td id="9-1O">45</td><td id="9-1P">2.92E-03</td><td id="9-1Q">1.20E-02</td><td id="9-1R">1.97E-02</td><td id="9-1S">7.07E-03</td><td id="9-1T">2.27E-02</td><td id="9-1U">3.73E-02</td><td id="9-1V">1.70E-03</td><td id="9-1W">8.04E-03</td><td id="9-1X">1.32E-02</td></tr>
+<tr><td id="9-1Y">46</td><td id="9-1Z">4.20E-02</td><td id="9-20">1.91E-01</td><td id="9-21">4.19E-01</td><td id="9-22">6.96E-01</td><td id="9-23">1.70E-01</td><td id="9-24">7.61E-01</td><td id="9-25">1.94E-02</td><td id="9-26">1.65E-01</td><td id="9-27">3.53E-01</td></tr>
+<tr><td id="9-28">47</td><td id="9-29">1.31E-03</td><td id="9-2a">2.75E-03</td><td id="9-2b">5.91E-03</td><td id="9-2c">2.73E-03</td><td id="9-2d">5.35E-03</td><td id="9-2e">1.15E-02</td><td id="9-2f">8.59E-04</td><td id="9-2g">1.86E-03</td><td id="9-2h">3.98E-03</td></tr>
+<tr><td id="9-2i">48</td><td id="9-2j">-3.31E-04</td><td id="9-2k">-2.80E-02</td><td id="9-2l">-3.64E-02</td><td id="9-2m">-6.26E-04</td><td id="9-2n">-5.45E-02</td><td id="9-2o">-7.10E-02</td><td id="9-2p">-2.26E-04</td><td id="9-2q">-1.88E-02</td><td id="9-2r">-2.45E-02</td></tr>
+<tr><td id="9-2s">49</td><td id="9-2t">-5.90E-03</td><td id="9-2u">-4.53E-01</td><td id="9-2v">-6.07E-01</td><td id="9-2w">-6.32E-03</td><td id="9-2x">-7.20E-01</td><td id="9-2y">-9.73E-01</td><td id="9-2z">-5.63E-03</td><td id="9-2A">-3.44E-01</td><td id="9-2B">-4.50E-01</td></tr>
+<tr><td id="9-2C">50</td><td id="9-2D">1.79E-04</td><td id="9-2E">8.50E-03</td><td id="9-2F">2.02E-02</td><td id="9-2G">3.36E-04</td><td id="9-2H">1.70E-02</td><td id="9-2I">3.86E-02</td><td id="9-2J">1.22E-04</td><td id="9-2K">5.66E-03</td><td id="9-2L">1.37E-02</td></tr>
+<tr><td id="9-2M">51</td><td id="9-2N">-1.69E-03</td><td id="9-2O">-4.70E-01</td><td id="9-2P">-4.40E-01</td><td id="9-2Q">-1.67E-03</td><td id="9-2R">-6.86E-01</td><td id="9-2S">-6.09E-01</td><td id="9-2T">-1.71E-03</td><td id="9-2U">-3.55E-01</td><td id="9-2V">-3.41E-01</td></tr>
+<tr><td id="9-2W">52</td><td id="9-2X">7.98E-04</td><td id="9-2Y">2.02E-01</td><td id="9-2Z">1.72E-01</td><td id="9-30">1.44E-03</td><td id="9-31">2.86E-01</td><td id="9-32">2.54E-01</td><td id="9-33">5.66E-04</td><td id="9-34">1.61E-01</td><td id="9-35">1.33E-01</td></tr>
+<tr><td id="9-36">53</td><td id="9-37">-1.42E-04</td><td id="9-38">1.84E-01</td><td id="9-39">1.58E-01</td><td id="9-3a">-1.84E-04</td><td id="9-3b">4.02E-01</td><td id="9-3c">3.42E-01</td><td id="9-3d">-1.08E-04</td><td id="9-3e">1.19E-01</td><td id="9-3f">1.03E-01</td></tr>
+<tr><td id="9-3g">54</td><td id="9-3h">1.49E-02</td><td id="9-3i">1.98E-01</td><td id="9-3j">3.27E-01</td><td id="9-3k">2.97E-02</td><td id="9-3l">2.88E-01</td><td id="9-3m">4.42E-01</td><td id="9-3n">9.97E-03</td><td id="9-3o">1.55E-01</td><td id="9-3p">2.66E-01</td></tr>
+<tr><td id="9-3q">55</td><td id="9-3r">6.58E-02</td><td id="9-3s">-4.04E-01</td><td id="9-3t">-2.07E-01</td><td id="9-3u">6.99E-01</td><td id="9-3v">-7.09E-01</td><td id="9-3w">1.19E-01</td><td id="9-3x">3.77E-02</td><td id="9-3y">-3.15E-01</td><td id="9-3z">-1.81E-01</td></tr>
+<tr><td id="9-3A">56</td><td id="9-3B">-1.22E-03</td><td id="9-3C">-9.41E-03</td><td id="9-3D">-2.69E-02</td><td id="9-3E">-2.31E-03</td><td id="9-3F">-1.30E-02</td><td id="9-3G">-4.54E-02</td><td id="9-3H">-8.33E-04</td><td id="9-3I">-7.18E-03</td><td id="9-3J">-1.91E-02</td></tr>
+<tr><td id="9-3K">57</td><td id="9-3L">-7.97E-02</td><td id="9-3M">2.16E-01</td><td id="9-3N">-9.08E-02</td><td id="9-3O">-6.05E-02</td><td id="9-3P">3.27E-01</td><td id="9-3Q">-7.06E-02</td><td id="9-3R">-1.64E-01</td><td id="9-3S">1.84E-01</td><td id="9-3T">-1.23E-01</td></tr>
+<tr><td id="9-3U">58</td><td id="9-3V">-1.05E-04</td><td id="9-3W">3.29E-03</td><td id="9-3X">1.81E-02</td><td id="9-3Y">-1.76E-04</td><td id="9-3Z">1.02E-02</td><td id="9-40">3.43E-02</td><td id="9-41">-7.47E-05</td><td id="9-42">1.58E-03</td><td id="9-43">1.22E-02</td></tr>
+<tr><td id="9-44">59</td><td id="9-45">-4.20E-04</td><td id="9-46">-3.89E-01</td><td id="9-47">-3.47E-01</td><td id="9-48">-5.62E-04</td><td id="9-49">-4.92E-01</td><td id="9-4a">-4.40E-01</td><td id="9-4b">-3.33E-04</td><td id="9-4c">-3.35E-01</td><td id="9-4d">-2.96E-01</td></tr>
+<tr><td id="9-4e">60</td><td id="9-4f">3.79E-08</td><td id="9-4g">-6.53E-05</td><td id="9-4h">-7.28E-05</td><td id="9-4i">-7.25E-08</td><td id="9-4j">-7.87E-05</td><td id="9-4k">-9.12E-05</td><td id="9-4l">-6.18E-08</td><td id="9-4m">-5.67E-05</td><td id="9-4n">-6.51E-05</td></tr>
+<tr><td id="9-4o">61</td><td id="9-4p">8.52E-08</td><td id="9-4q">9.33E-06</td><td id="9-4r">1.42E-05</td><td id="9-4s">2.78E-10</td><td id="9-4t">8.75E-06</td><td id="9-4u">1.00E-05</td><td id="9-4v">1.13E-10</td><td id="9-4w">8.42E-06</td><td id="9-4x">9.80E-06</td></tr>
+<tr><td id="9-4y">62</td><td id="9-4z">5.86E-05</td><td id="9-4A">-3.63E-02</td><td id="9-4B">-3.83E-02</td><td id="9-4C">6.11E-05</td><td id="9-4D">-3.16E-02</td><td id="9-4E">-3.72E-02</td><td id="9-4F">5.63E-05</td><td id="9-4G">-3.47E-02</td><td id="9-4H">-3.56E-02</td></tr>
+<tr><td id="9-4I">63</td><td id="9-4J">1.19E-05</td><td id="9-4K">2.77E-03</td><td id="9-4L">4.19E-03</td><td id="9-4M">1.65E-05</td><td id="9-4N">4.44E-03</td><td id="9-4O">6.66E-03</td><td id="9-4P">9.21E-06</td><td id="9-4Q">2.01E-03</td><td id="9-4R">3.06E-03</td></tr>
+<tr><td id="9-4S">64</td><td id="9-4T">6.25E-05</td><td id="9-4U">2.54E-03</td><td id="9-4V">4.50E-03</td><td id="9-4W">9.05E-05</td><td id="9-4X">3.85E-03</td><td id="9-4Y">6.73E-03</td><td id="9-4Z">4.77E-05</td><td id="9-50">1.90E-03</td><td id="9-51">3.37E-03</td></tr>
+<tr><td id="9-52">65</td><td id="9-53">-2.84E-04</td><td id="9-54">-4.35E-03</td><td id="9-55">-9.37E-03</td><td id="9-56">-4.54E-04</td><td id="9-57">-6.88E-03</td><td id="9-58">-1.49E-02</td><td id="9-59">-2.07E-04</td><td id="9-5a">-3.19E-03</td><td id="9-5b">-6.83E-03</td></tr>
+<tr><td id="9-5c">66</td><td id="9-5d">-1.03E-03</td><td id="9-5e">-1.19E-02</td><td id="9-5f">-2.64E-02</td><td id="9-5g">-1.17E-03</td><td id="9-5h">-1.39E-02</td><td id="9-5i">-3.14E-02</td><td id="9-5j">-9.16E-04</td><td id="9-5k">-1.04E-02</td><td id="9-5l">-2.28E-02</td></tr>
+<tr><td id="9-5m">67</td><td id="9-5n">-2.25E-05</td><td id="9-5o">-5.41E-04</td><td id="9-5p">-1.10E-03</td><td id="9-5q">-3.96E-05</td><td id="9-5r">-1.00E-03</td><td id="9-5s">-2.04E-03</td><td id="9-5t">-1.56E-05</td><td id="9-5u">-3.70E-04</td><td id="9-5v">-7.54E-04</td></tr>
+<tr><td id="9-5w">68</td><td id="9-5x">-2.65E-05</td><td id="9-5y">9.00E-03</td><td id="9-5z">1.32E-02</td><td id="9-5A">-2.75E-05</td><td id="9-5B">9.33E-03</td><td id="9-5C">1.37E-02</td><td id="9-5D">-2.58E-05</td><td id="9-5E">8.70E-03</td><td id="9-5F">1.28E-02</td></tr>
+<tr><td id="9-5G">69</td><td id="9-5H">-1.06E-03</td><td id="9-5I">-4.14E-02</td><td id="9-5J">-6.50E-02</td><td id="9-5K">-1.60E-03</td><td id="9-5L">-4.77E-02</td><td id="9-5M">-8.12E-02</td><td id="9-5N">-7.96E-04</td><td id="9-5O">-3.65E-02</td><td id="9-5P">-5.48E-02</td></tr>
+<tr><td id="9-5Q">70</td><td id="9-5R">-1.08E-04</td><td id="9-5S">-9.33E-06</td><td id="9-5T">-8.10E-04</td><td id="9-5U">-2.11E-04</td><td id="9-5V">-1.23E-05</td><td id="9-5W">-1.58E-03</td><td id="9-5X">-7.27E-05</td><td id="9-5Y">-6.07E-06</td><td id="9-5Z">-5.42E-04</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='577bb6f4-7fc8-4736-8e6a-3d86c01b7449'></a>
+
+<table id="10-1">
+<tr><td id="10-2">71</td><td id="10-3">-2.54E-05</td><td id="10-4">-1.17E-04</td><td id="10-5">-2.45E-04</td><td id="10-6">-3.31E-05</td><td id="10-7">-1.53E-04</td><td id="10-8">-3.23E-04</td><td id="10-9">-2.07E-05</td><td id="10-a">-9.38E-05</td><td id="10-b">-1.99E-04</td></tr>
+<tr><td id="10-c">72</td><td id="10-d">1.27E-04</td><td id="10-e">2.27E-03</td><td id="10-f">4.22E-03</td><td id="10-g">1.48E-04</td><td id="10-h">2.61E-03</td><td id="10-i">4.83E-03</td><td id="10-j">1.11E-04</td><td id="10-k">2.01E-03</td><td id="10-l">3.74E-03</td></tr>
+<tr><td id="10-m">73</td><td id="10-n">-1.45E-03</td><td id="10-o">-1.49E-02</td><td id="10-p">-2.99E-02</td><td id="10-q">-2.35E-03</td><td id="10-r">-2.44E-02</td><td id="10-s">-4.94E-02</td><td id="10-t">-1.05E-03</td><td id="10-u">-1.08E-02</td><td id="10-v">-2.14E-02</td></tr>
+<tr><td id="10-w">74</td><td id="10-x">-5.40E-03</td><td id="10-y">-4.28E-02</td><td id="10-z">-8.95E-02</td><td id="10-A">-6.07E-03</td><td id="10-B">-5.23E-02</td><td id="10-C">-1.12E-01</td><td id="10-D">-4.83E-03</td><td id="10-E">-3.66E-02</td><td id="10-F">-7.49E-02</td></tr>
+<tr><td id="10-G">75</td><td id="10-H">-7.84E-04</td><td id="10-I">-9.17E-05</td><td id="10-J">-7.37E-04</td><td id="10-K">-1.09E-03</td><td id="10-L">7.26E-05</td><td id="10-M">-5.89E-04</td><td id="10-N">-5.72E-04</td><td id="10-O">-1.06E-04</td><td id="10-P">-6.18E-04</td></tr>
+<tr><td id="10-Q">76</td><td id="10-R">-3.83E-05</td><td id="10-S">9.33E-06</td><td id="10-T">-6.85E-06</td><td id="10-U">-7.62E-05</td><td id="10-V">1.89E-05</td><td id="10-W">-2.26E-05</td><td id="10-X">-2.56E-05</td><td id="10-Y">5.82E-06</td><td id="10-Z">-8.67E-06</td></tr>
+<tr><td id="10-10">77</td><td id="10-11">-1.25E-04</td><td id="10-12">-2.54E-03</td><td id="10-13">-4.69E-03</td><td id="10-14">-2.21E-04</td><td id="10-15">-4.74E-03</td><td id="10-16">-8.74E-03</td><td id="10-17">-8.76E-05</td><td id="10-18">-1.73E-03</td><td id="10-19">-3.21E-03</td></tr>
+<tr><td id="10-1a">78</td><td id="10-1b">-1.40E-04</td><td id="10-1c">3.02E-02</td><td id="10-1d">3.88E-02</td><td id="10-1e">-1.45E-04</td><td id="10-1f">3.17E-02</td><td id="10-1g">4.03E-02</td><td id="10-1h">-1.35E-04</td><td id="10-1i">2.88E-02</td><td id="10-1j">3.74E-02</td></tr>
+<tr><td id="10-1k">79</td><td id="10-1l">1.18E-03</td><td id="10-1m">3.82E-02</td><td id="10-1n">6.13E-02</td><td id="10-1o">1.30E-03</td><td id="10-1p">5.66E-02</td><td id="10-1q">8.22E-02</td><td id="10-1r">1.08E-03</td><td id="10-1s">2.90E-02</td><td id="10-1t">4.94E-02</td></tr>
+<tr><td id="10-1u">80</td><td id="10-1v">-6.23E-05</td><td id="10-1w">-5.88E-04</td><td id="10-1x">-9.23E-04</td><td id="10-1y">-7.55E-05</td><td id="10-1z">-7.35E-04</td><td id="10-1A">-1.15E-03</td><td id="10-1B">-5.32E-05</td><td id="10-1C">-4.87E-04</td><td id="10-1D">-7.67E-04</td></tr>
+<tr><td id="10-1E">81</td><td id="10-1F">2.41E-04</td><td id="10-1G">2.58E-02</td><td id="10-1H">3.68E-02</td><td id="10-1I">2.48E-04</td><td id="10-1J">3.55E-02</td><td id="10-1K">4.83E-02</td><td id="10-1L">2.33E-04</td><td id="10-1M">2.01E-02</td><td id="10-1N">2.97E-02</td></tr>
+<tr><td id="10-1O">82</td><td id="10-1P">1.99E-05</td><td id="10-1Q">2.34E-03</td><td id="10-1R">3.28E-03</td><td id="10-1S">2.26E-05</td><td id="10-1T">2.78E-03</td><td id="10-1U">3.87E-03</td><td id="10-1V">1.75E-05</td><td id="10-1W">2.02E-03</td><td id="10-1X">2.84E-03</td></tr>
+<tr><td id="10-1Y">83</td><td id="10-1Z">-5.66E-04</td><td id="10-20">-1.25E-02</td><td id="10-21">-2.27E-02</td><td id="10-22">-9.72E-04</td><td id="10-23">-1.83E-02</td><td id="10-24">-3.42E-02</td><td id="10-25">-3.99E-04</td><td id="10-26">-9.53E-03</td><td id="10-27">-1.70E-02</td></tr>
+<tr><td id="10-28">84</td><td id="10-29">8.67E-06</td><td id="10-2a">-8.60E-02</td><td id="10-2b">-8.78E-02</td><td id="10-2c">-1.80E-03</td><td id="10-2d">-1.67E-01</td><td id="10-2e">-1.90E-01</td><td id="10-2f">4.00E-04</td><td id="10-2g">-5.93E-02</td><td id="10-2h">-5.98E-02</td></tr>
+<tr><td id="10-2i">85</td><td id="10-2j">-1.15E-04</td><td id="10-2k">-1.80E-02</td><td id="10-2l">-1.89E-02</td><td id="10-2m">-3.36E-04</td><td id="10-2n">-3.54E-02</td><td id="10-2o">-3.76E-02</td><td id="10-2p">-6.30E-05</td><td id="10-2q">-1.21E-02</td><td id="10-2r">-1.26E-02</td></tr>
+<tr><td id="10-2s">86</td><td id="10-2t">5.41E-04</td><td id="10-2u">1.06E-01</td><td id="10-2v">1.10E-01</td><td id="10-2w">-2.65E-05</td><td id="10-2x">1.09E-01</td><td id="10-2y">1.12E-01</td><td id="10-2z">6.87E-04</td><td id="10-2A">1.03E-01</td><td id="10-2B">1.08E-01</td></tr>
+<tr><td id="10-2C">87</td><td id="10-2D">-8.13E-04</td><td id="10-2E">8.78E-04</td><td id="10-2F">3.15E-04</td><td id="10-2G">-1.06E-03</td><td id="10-2H">1.98E-03</td><td id="10-2I">1.60E-03</td><td id="10-2J">-6.18E-04</td><td id="10-2K">5.51E-04</td><td id="10-2L">7.35E-05</td></tr>
+<tr><td id="10-2M">88</td><td id="10-2N">-5.54E-04</td><td id="10-2O">-3.66E-03</td><td id="10-2P">-5.12E-03</td><td id="10-2Q">-9.81E-04</td><td id="10-2R">-3.06E-03</td><td id="10-2S">-5.45E-03</td><td id="10-2T">-2.98E-04</td><td id="10-2U">-3.75E-03</td><td id="10-2V">-4.17E-03</td></tr>
+<tr><td id="10-2W">89</td><td id="10-2X">-3.44E-05</td><td id="10-2Y">-3.73E-05</td><td id="10-2Z">-5.84E-05</td><td id="10-30">-6.60E-05</td><td id="10-31">-7.00E-05</td><td id="10-32">-1.10E-04</td><td id="10-33">-2.31E-05</td><td id="10-34">-2.39E-05</td><td id="10-35">-3.83E-05</td></tr>
+<tr><td id="10-36">90</td><td id="10-37">-1.61E-06</td><td id="10-38">4.23E-04</td><td id="10-39">8.51E-04</td><td id="10-3a">-4.38E-06</td><td id="10-3b">8.32E-04</td><td id="10-3c">1.66E-03</td><td id="10-3d">-9.16E-07</td><td id="10-3e">2.84E-04</td><td id="10-3f">5.74E-04</td></tr>
+<tr><td id="10-3g">91</td><td id="10-3h">-2.69E-04</td><td id="10-3i">1.97E-03</td><td id="10-3j">5.83E-03</td><td id="10-3k">-2.91E-04</td><td id="10-3l">-3.42E-03</td><td id="10-3m">-9.88E-04</td><td id="10-3n">-2.49E-04</td><td id="10-3o">1.20E-03</td><td id="10-3p">4.06E-03</td></tr>
+<tr><td id="10-3q">92</td><td id="10-3r">6.01E-05</td><td id="10-3s">4.30E-03</td><td id="10-3t">7.12E-03</td><td id="10-3u">1.09E-04</td><td id="10-3v">8.47E-03</td><td id="10-3w">1.35E-02</td><td id="10-3x">4.14E-05</td><td id="10-3y">2.87E-03</td><td id="10-3z">4.82E-03</td></tr>
+<tr><td id="10-3A">93</td><td id="10-3B">-6.32E-05</td><td id="10-3C">-8.94E-02</td><td id="10-3D">-7.41E-02</td><td id="10-3E">-6.72E-05</td><td id="10-3F">-1.26E-01</td><td id="10-3G">-9.88E-02</td><td id="10-3H">-5.97E-05</td><td id="10-3I">-6.82E-02</td><td id="10-3J">-5.89E-02</td></tr>
+<tr><td id="10-3K">94</td><td id="10-3L">-6.52E-04</td><td id="10-3M">-2.79E-03</td><td id="10-3N">-8.97E-03</td><td id="10-3O">-7.66E-04</td><td id="10-3P">-4.10E-03</td><td id="10-3Q">-1.01E-02</td><td id="10-3R">-5.94E-04</td><td id="10-3S">-2.13E-03</td><td id="10-3T">-8.28E-03</td></tr>
+<tr><td id="10-3U">95</td><td id="10-3V">-3.26E-04</td><td id="10-3W">-1.98E-03</td><td id="10-3X">-2.14E-04</td><td id="10-3Y">-5.47E-04</td><td id="10-3Z">-2.28E-03</td><td id="10-40">-2.99E-04</td><td id="10-41">-2.31E-04</td><td id="10-42">-1.71E-03</td><td id="10-43">-1.96E-04</td></tr>
+<tr><td id="10-44">96</td><td id="10-45">9.60E-04</td><td id="10-46">-1.99E-03</td><td id="10-47">-6.10E-04</td><td id="10-48">1.08E-03</td><td id="10-49">-2.34E-03</td><td id="10-4a">-1.34E-03</td><td id="10-4b">8.18E-04</td><td id="10-4c">-1.56E-03</td><td id="10-4d">6.29E-05</td></tr>
+<tr><td id="10-4e">97</td><td id="10-4f">-3.84E-04</td><td id="10-4g">-8.36E-04</td><td id="10-4h">-1.26E-03</td><td id="10-4i">-4.52E-04</td><td id="10-4j">-3.06E-03</td><td id="10-4k">-3.02E-03</td><td id="10-4l">-3.30E-04</td><td id="10-4m">-3.54E-04</td><td id="10-4n">-7.13E-04</td></tr>
+<tr><td id="10-4o">98</td><td id="10-4p">-1.51E-05</td><td id="10-4q">9.64E-05</td><td id="10-4r">-1.87E-06</td><td id="10-4s">-4.75E-05</td><td id="10-4t">1.91E-04</td><td id="10-4u">-2.63E-05</td><td id="10-4v">-7.81E-06</td><td id="10-4w">6.36E-05</td><td id="10-4x">-3.95E-06</td></tr>
+<tr><td id="10-4y">99</td><td id="10-4z">-7.91E-04</td><td id="10-4A">2.75E-03</td><td id="10-4B">1.78E-03</td><td id="10-4C">-1.77E-03</td><td id="10-4D">5.49E-03</td><td id="10-4E">3.23E-03</td><td id="10-4F">-4.34E-04</td><td id="10-4G">1.82E-03</td><td id="10-4H">1.21E-03</td></tr>
+<tr><td id="10-4I">100</td><td id="10-4J">5.31E-04</td><td id="10-4K">3.38E-03</td><td id="10-4L">7.88E-03</td><td id="10-4M">1.04E-03</td><td id="10-4N">6.91E-03</td><td id="10-4O">1.57E-02</td><td id="10-4P">3.57E-04</td><td id="10-4Q">2.23E-03</td><td id="10-4R">5.25E-03</td></tr>
+<tr><td id="10-4S">101</td><td id="10-4T">1.44E-03</td><td id="10-4U">1.35E-03</td><td id="10-4V">2.06E-03</td><td id="10-4W">2.94E-03</td><td id="10-4X">-4.21E-04</td><td id="10-4Y">1.81E-03</td><td id="10-4Z">9.51E-04</td><td id="10-50">1.20E-03</td><td id="10-51">1.62E-03</td></tr>
+<tr><td id="10-52">102</td><td id="10-53">3.96E-06</td><td id="10-54">4.46E-03</td><td id="10-55">6.15E-03</td><td id="10-56">3.94E-06</td><td id="10-57">4.50E-03</td><td id="10-58">6.20E-03</td><td id="10-59">3.87E-06</td><td id="10-5a">4.43E-03</td><td id="10-5b">6.10E-03</td></tr>
+<tr><td id="10-5c">103</td><td id="10-5d">-2.62E-06</td><td id="10-5e">7.62E-04</td><td id="10-5f">9.37E-04</td><td id="10-5g">-2.68E-06</td><td id="10-5h">7.62E-04</td><td id="10-5i">9.35E-04</td><td id="10-5j">-2.68E-06</td><td id="10-5k">7.60E-04</td><td id="10-5l">9.32E-04</td></tr>
+<tr><td id="10-5m">104</td><td id="10-5n">3.12E-05</td><td id="10-5o">8.49E-03</td><td id="10-5p">1.11E-02</td><td id="10-5q">3.16E-05</td><td id="10-5r">8.61E-03</td><td id="10-5s">1.13E-02</td><td id="10-5t">3.09E-05</td><td id="10-5u">8.38E-03</td><td id="10-5v">1.10E-02</td></tr>
+<tr><td id="10-5w">105</td><td id="10-5x">6.30E-05</td><td id="10-5y">8.42E-03</td><td id="10-5z">1.19E-02</td><td id="10-5A">6.46E-05</td><td id="10-5B">8.66E-03</td><td id="10-5C">1.23E-02</td><td id="10-5D">6.15E-05</td><td id="10-5E">8.20E-03</td><td id="10-5F">1.16E-02</td></tr>
+<tr><td id="10-5G">106</td><td id="10-5H">-1.29E-03</td><td id="10-5I">-3.63E-02</td><td id="10-5J">-5.64E-02</td><td id="10-5K">-1.35E-03</td><td id="10-5L">-4.24E-02</td><td id="10-5M">-6.62E-02</td><td id="10-5N">-1.23E-03</td><td id="10-5O">-3.17E-02</td><td id="10-5P">-4.93E-02</td></tr>
+<tr><td id="10-5Q">107</td><td id="10-5R">-4.09E-04</td><td id="10-5S">-5.38E-03</td><td id="10-5T">-8.07E-03</td><td id="10-5U">-4.74E-04</td><td id="10-5V">-8.94E-03</td><td id="10-5W">-1.27E-02</td><td id="10-5X">-3.60E-04</td><td id="10-5Y">-3.94E-03</td><td id="10-5Z">-6.10E-03</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='415779aa-56f7-4962-bc6e-d3beed058301'></a>
+
+<table id="11-1">
+<tr><td id="11-2">108</td><td id="11-3">-3.91E-06</td><td id="11-4">2.15E-04</td><td id="11-5">3.33E-04</td><td id="11-6">-4.24E-06</td><td id="11-7">2.14E-04</td><td id="11-8">3.30E-04</td><td id="11-9">-3.67E-06</td><td id="11-a">2.15E-04</td><td id="11-b">3.32E-04</td></tr>
+<tr><td id="11-c">109</td><td id="11-d">-7.37E-04</td><td id="11-e">-3.71E-03</td><td id="11-f">-7.27E-03</td><td id="11-g">-7.68E-04</td><td id="11-h">-3.94E-03</td><td id="11-i">-7.69E-03</td><td id="11-j">-7.09E-04</td><td id="11-k">-3.51E-03</td><td id="11-l">-6.89E-03</td></tr>
+<tr><td id="11-m">110</td><td id="11-n">-2.06E-04</td><td id="11-o">-1.02E-03</td><td id="11-p">-2.15E-03</td><td id="11-q">-2.30E-04</td><td id="11-r">-1.42E-03</td><td id="11-s">-2.95E-03</td><td id="11-t">-1.84E-04</td><td id="11-u">-8.22E-04</td><td id="11-v">-1.75E-03</td></tr>
+<tr><td id="11-w">111</td><td id="11-x">-7.70E-06</td><td id="11-y">8.44E-04</td><td id="11-z">1.04E-03</td><td id="11-A">-7.85E-06</td><td id="11-B">8.57E-04</td><td id="11-C">1.06E-03</td><td id="11-D">-7.74E-06</td><td id="11-E">8.37E-04</td><td id="11-F">1.04E-03</td></tr>
+<tr><td id="11-G">112</td><td id="11-H">-2.23E-04</td><td id="11-I">-1.44E-02</td><td id="11-J">-2.20E-02</td><td id="11-K">-2.33E-04</td><td id="11-L">-1.62E-02</td><td id="11-M">-2.48E-02</td><td id="11-N">-2.14E-04</td><td id="11-O">-1.30E-02</td><td id="11-P">-1.98E-02</td></tr>
+<tr><td id="11-Q">113</td><td id="11-R">-4.76E-05</td><td id="11-S">-1.81E-03</td><td id="11-T">-2.41E-03</td><td id="11-U">-5.39E-05</td><td id="11-V">-3.16E-03</td><td id="11-W">-4.06E-03</td><td id="11-X">-4.26E-05</td><td id="11-Y">-1.28E-03</td><td id="11-Z">-1.75E-03</td></tr>
+<tr><td id="11-10">114</td><td id="11-11">4.62E-06</td><td id="11-12">8.66E-04</td><td id="11-13">1.10E-03</td><td id="11-14">4.55E-06</td><td id="11-15">8.71E-04</td><td id="11-16">1.11E-03</td><td id="11-17">4.53E-06</td><td id="11-18">8.65E-04</td><td id="11-19">1.10E-03</td></tr>
+<tr><td id="11-1a">115</td><td id="11-1b">-1.56E-04</td><td id="11-1c">-5.35E-03</td><td id="11-1d">-7.72E-03</td><td id="11-1e">-1.60E-04</td><td id="11-1f">-5.70E-03</td><td id="11-1g">-8.21E-03</td><td id="11-1h">-1.52E-04</td><td id="11-1i">-5.05E-03</td><td id="11-1j">-7.29E-03</td></tr>
+<tr><td id="11-1k">116</td><td id="11-1l">-4.76E-05</td><td id="11-1m">-7.52E-04</td><td id="11-1n">-1.02E-03</td><td id="11-1o">-5.45E-05</td><td id="11-1p">-1.25E-03</td><td id="11-1q">-1.59E-03</td><td id="11-1r">-4.21E-05</td><td id="11-1s">-5.48E-04</td><td id="11-1t">-7.74E-04</td></tr>
+<tr><td id="11-1u">117</td><td id="11-1v">1.93E-04</td><td id="11-1w">2.46E-02</td><td id="11-1x">3.12E-02</td><td id="11-1y">1.97E-04</td><td id="11-1z">2.53E-02</td><td id="11-1A">3.20E-02</td><td id="11-1B">1.88E-04</td><td id="11-1C">2.39E-02</td><td id="11-1D">3.04E-02</td></tr>
+<tr><td id="11-1E">118</td><td id="11-1F">-7.42E-03</td><td id="11-1G">-1.46E-01</td><td id="11-1H">-2.16E-01</td><td id="11-1I">-6.81E-03</td><td id="11-1J">-1.83E-01</td><td id="11-1K">-2.70E-01</td><td id="11-1L">-8.03E-03</td><td id="11-1M">-1.22E-01</td><td id="11-1N">-1.82E-01</td></tr>
+<tr><td id="11-1O">119</td><td id="11-1P">-2.43E-03</td><td id="11-1Q">-2.26E-02</td><td id="11-1R">-3.50E-02</td><td id="11-1S">-2.81E-03</td><td id="11-1T">-3.67E-02</td><td id="11-1U">-5.30E-02</td><td id="11-1V">-2.15E-03</td><td id="11-1W">-1.69E-02</td><td id="11-1X">-2.71E-02</td></tr>
+<tr><td id="11-1Y">120</td><td id="11-1Z">-7.23E-05</td><td id="11-20">4.94E-04</td><td id="11-21">5.44E-04</td><td id="11-22">-7.50E-05</td><td id="11-23">4.88E-04</td><td id="11-24">5.23E-04</td><td id="11-25">-6.98E-05</td><td id="11-26">5.03E-04</td><td id="11-27">5.57E-04</td></tr>
+<tr><td id="11-28">121</td><td id="11-29">-4.48E-03</td><td id="11-2a">-2.10E-02</td><td id="11-2b">-4.13E-02</td><td id="11-2c">-4.30E-03</td><td id="11-2d">-2.18E-02</td><td id="11-2e">-4.25E-02</td><td id="11-2f">-4.64E-03</td><td id="11-2g">-2.04E-02</td><td id="11-2h">-4.04E-02</td></tr>
+<tr><td id="11-2i">122</td><td id="11-2j">-1.27E-03</td><td id="11-2k">-5.96E-03</td><td id="11-2l">-1.27E-02</td><td id="11-2m">-1.42E-03</td><td id="11-2n">-8.19E-03</td><td id="11-2o">-1.71E-02</td><td id="11-2p">-1.14E-03</td><td id="11-2q">-4.84E-03</td><td id="11-2r">-1.04E-02</td></tr>
+<tr><td id="11-2s">123</td><td id="11-2t">-4.82E-05</td><td id="11-2u">2.29E-03</td><td id="11-2v">2.26E-03</td><td id="11-2w">-4.85E-05</td><td id="11-2x">2.32E-03</td><td id="11-2y">2.29E-03</td><td id="11-2z">-4.77E-05</td><td id="11-2A">2.26E-03</td><td id="11-2B">2.23E-03</td></tr>
+<tr><td id="11-2C">124</td><td id="11-2D">-1.21E-03</td><td id="11-2E">-5.43E-02</td><td id="11-2F">-7.73E-02</td><td id="11-2G">-1.24E-03</td><td id="11-2H">-6.49E-02</td><td id="11-2I">-9.21E-02</td><td id="11-2J">-1.18E-03</td><td id="11-2K">-4.68E-02</td><td id="11-2L">-6.67E-02</td></tr>
+<tr><td id="11-2M">125</td><td id="11-2N">-2.70E-04</td><td id="11-2O">-6.67E-03</td><td id="11-2P">-8.70E-03</td><td id="11-2Q">-3.07E-04</td><td id="11-2R">-1.15E-02</td><td id="11-2S">-1.42E-02</td><td id="11-2T">-2.41E-04</td><td id="11-2U">-4.77E-03</td><td id="11-2V">-6.42E-03</td></tr>
+<tr><td id="11-2W">126</td><td id="11-2X">-1.06E-06</td><td id="11-2Y">1.55E-06</td><td id="11-2Z">4.10E-06</td><td id="11-30">-1.86E-06</td><td id="11-31">-2.02E-06</td><td id="11-32">-3.86E-06</td><td id="11-33">-6.26E-07</td><td id="11-34">-6.88E-07</td><td id="11-35">-1.32E-06</td></tr>
+<tr><td id="11-36">127</td><td id="11-37">-6.26E-08</td><td id="11-38">0.00E+00</td><td id="11-39">-2.17E-06</td><td id="11-3a">8.51E-09</td><td id="11-3b">3.97E-08</td><td id="11-3c">8.59E-08</td><td id="11-3d">2.83E-09</td><td id="11-3e">1.34E-08</td><td id="11-3f">2.82E-08</td></tr>
+<tr><td id="11-3g">128</td><td id="11-3h">-3.75E-06</td><td id="11-3i">-7.77E-06</td><td id="11-3j">-7.77E-06</td><td id="11-3k">-7.53E-06</td><td id="11-3l">-1.11E-05</td><td id="11-3m">-2.44E-05</td><td id="11-3n">-2.54E-06</td><td id="11-3o">-3.79E-06</td><td id="11-3p">-8.31E-06</td></tr>
+<tr><td id="11-3q">129</td><td id="11-3r">-5.91E-08</td><td id="11-3s">-3.11E-06</td><td id="11-3t">-6.26E-06</td><td id="11-3u">3.27E-08</td><td id="11-3v">1.23E-07</td><td id="11-3w">2.69E-07</td><td id="11-3x">1.11E-08</td><td id="11-3y">4.19E-08</td><td id="11-3z">9.18E-08</td></tr>
+<tr><td id="11-3A">130</td><td id="11-3B">-4.41E-07</td><td id="11-3C">0.00E+00</td><td id="11-3D">8.56E-07</td><td id="11-3E">-1.03E-06</td><td id="11-3F">2.84E-06</td><td id="11-3G">6.44E-06</td><td id="11-3H">-3.46E-07</td><td id="11-3I">9.51E-07</td><td id="11-3J">2.16E-06</td></tr>
+<tr><td id="11-3K">131</td><td id="11-3L">7.21E-08</td><td id="11-3M">-1.55E-06</td><td id="11-3N">-3.16E-06</td><td id="11-3O">-1.19E-09</td><td id="11-3P">3.05E-08</td><td id="11-3Q">6.48E-08</td><td id="11-3R">-5.16E-10</td><td id="11-3S">1.03E-08</td><td id="11-3T">1.86E-08</td></tr>
+<tr><td id="11-3U">132</td><td id="11-3V">1.93E-05</td><td id="11-3W">-1.41E-02</td><td id="11-3X">-1.63E-02</td><td id="11-3Y">1.94E-05</td><td id="11-3Z">-1.44E-02</td><td id="11-40">-1.67E-02</td><td id="11-41">1.93E-05</td><td id="11-42">-1.39E-02</td><td id="11-43">-1.60E-02</td></tr>
+<tr><td id="11-44">133</td><td id="11-45">7.05E-06</td><td id="11-46">-3.62E-03</td><td id="11-47">-4.12E-03</td><td id="11-48">7.11E-06</td><td id="11-49">-3.67E-03</td><td id="11-4a">-4.18E-03</td><td id="11-4b">7.04E-06</td><td id="11-4c">-3.58E-03</td><td id="11-4d">-4.07E-03</td></tr>
+<tr><td id="11-4e">134</td><td id="11-4f">8.35E-05</td><td id="11-4g">-1.79E-02</td><td id="11-4h">-1.97E-02</td><td id="11-4i">8.52E-05</td><td id="11-4j">-1.89E-02</td><td id="11-4k">-2.10E-02</td><td id="11-4l">8.16E-05</td><td id="11-4m">-1.70E-02</td><td id="11-4n">-1.86E-02</td></tr>
+<tr><td id="11-4o">135</td><td id="11-4p">1.86E-05</td><td id="11-4q">-8.27E-04</td><td id="11-4r">-1.03E-03</td><td id="11-4s">1.86E-05</td><td id="11-4t">-8.30E-04</td><td id="11-4u">-1.03E-03</td><td id="11-4v">1.83E-05</td><td id="11-4w">-8.22E-04</td><td id="11-4x">-1.02E-03</td></tr>
+<tr><td id="11-4y">136</td><td id="11-4z">2.92E-06</td><td id="11-4A">-3.02E-03</td><td id="11-4B">-3.30E-03</td><td id="11-4C">2.91E-06</td><td id="11-4D">-3.07E-03</td><td id="11-4E">-3.37E-03</td><td id="11-4F">2.87E-06</td><td id="11-4G">-2.96E-03</td><td id="11-4H">-3.25E-03</td></tr>
+<tr><td id="11-4I">137</td><td id="11-4J">9.57E-06</td><td id="11-4K">-2.04E-03</td><td id="11-4L">-2.14E-03</td><td id="11-4M">9.46E-06</td><td id="11-4N">-2.04E-03</td><td id="11-4O">-2.15E-03</td><td id="11-4P">9.45E-06</td><td id="11-4Q">-2.04E-03</td><td id="11-4R">-2.15E-03</td></tr>
+<tr><td id="11-4S">138</td><td id="11-4T">4.90E-05</td><td id="11-4U">-2.28E-02</td><td id="11-4V">-2.49E-02</td><td id="11-4W">4.92E-05</td><td id="11-4X">-2.35E-02</td><td id="11-4Y">-2.57E-02</td><td id="11-4Z">4.87E-05</td><td id="11-50">-2.22E-02</td><td id="11-51">-2.42E-02</td></tr>
+<tr><td id="11-52">139</td><td id="11-53">7.45E-06</td><td id="11-54">-2.17E-03</td><td id="11-55">-2.34E-03</td><td id="11-56">7.47E-06</td><td id="11-57">-2.18E-03</td><td id="11-58">-2.36E-03</td><td id="11-59">7.43E-06</td><td id="11-5a">-2.16E-03</td><td id="11-5b">-2.33E-03</td></tr>
+<tr><td id="11-5c">140</td><td id="11-5d">4.19E-04</td><td id="11-5e">-5.57E-02</td><td id="11-5f">-5.85E-02</td><td id="11-5g">4.29E-04</td><td id="11-5h">-5.79E-02</td><td id="11-5i">-6.14E-02</td><td id="11-5j">4.09E-04</td><td id="11-5k">-5.36E-02</td><td id="11-5l">-5.59E-02</td></tr>
+<tr><td id="11-5m">141</td><td id="11-5n">1.01E-04</td><td id="11-5o">-3.13E-03</td><td id="11-5p">-3.72E-03</td><td id="11-5q">1.01E-04</td><td id="11-5r">-3.15E-03</td><td id="11-5s">-3.75E-03</td><td id="11-5t">9.97E-05</td><td id="11-5u">-3.12E-03</td><td id="11-5v">-3.70E-03</td></tr>
+<tr><td id="11-5w">142</td><td id="11-5x">1.51E-05</td><td id="11-5y">-9.72E-03</td><td id="11-5z">-1.00E-02</td><td id="11-5A">1.54E-05</td><td id="11-5B">-9.98E-03</td><td id="11-5C">-1.03E-02</td><td id="11-5D">1.52E-05</td><td id="11-5E">-9.47E-03</td><td id="11-5F">-9.78E-03</td></tr>
+<tr><td id="11-5G">143</td><td id="11-5H">-2.15E-07</td><td id="11-5I">-5.32E-04</td><td id="11-5J">-7.04E-04</td><td id="11-5K">-2.49E-07</td><td id="11-5L">-5.30E-04</td><td id="11-5M">-7.04E-04</td><td id="11-5N">-2.50E-07</td><td id="11-5O">-5.29E-04</td><td id="11-5P">-7.03E-04</td></tr>
+<tr><td id="11-5Q">144</td><td id="11-5R">-1.14E-06</td><td id="11-5S">-1.82E-03</td><td id="11-5T">-2.30E-03</td><td id="11-5U">-1.16E-06</td><td id="11-5V">-1.82E-03</td><td id="11-5W">-2.31E-03</td><td id="11-5X">-1.16E-06</td><td id="11-5Y">-1.82E-03</td><td id="11-5Z">-2.30E-03</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='1f574762-e6cf-4760-ad28-0b34a7a02f5d'></a>
+
+<table id="12-1">
+<tr><td id="12-2">145</td><td id="12-3">3.41E-06</td><td id="12-4">-5.66E-04</td><td id="12-5">-8.59E-04</td><td id="12-6">3.35E-06</td><td id="12-7">-5.60E-04</td><td id="12-8">-8.52E-04</td><td id="12-9">3.34E-06</td><td id="12-a">-5.73E-04</td><td id="12-b">-8.68E-04</td></tr>
+<tr><td id="12-c">146</td><td id="12-d">1.96E-07</td><td id="12-e">0.00E+00</td><td id="12-f">2.52E-06</td><td id="12-g">-1.73E-10</td><td id="12-h">-1.39E-06</td><td id="12-i">-1.73E-06</td><td id="12-j">-3.35E-10</td><td id="12-k">-1.39E-06</td><td id="12-l">-1.73E-06</td></tr>
+<tr><td id="12-m">147</td><td id="12-n">-8.52E-08</td><td id="12-o">-3.11E-06</td><td id="12-p">-8.22E-07</td><td id="12-q">-7.00E-10</td><td id="12-r">-3.88E-06</td><td id="12-s">-4.79E-06</td><td id="12-t">-8.34E-10</td><td id="12-u">-3.88E-06</td><td id="12-v">-4.78E-06</td></tr>
+<tr><td id="12-w">148</td><td id="12-x">-2.05E-07</td><td id="12-y">-3.11E-06</td><td id="12-z">-1.37E-06</td><td id="12-A">3.37E-08</td><td id="12-B">-3.18E-06</td><td id="12-C">-5.15E-06</td><td id="12-D">3.35E-08</td><td id="12-E">-3.19E-06</td><td id="12-F">-5.15E-06</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='5f03a7c4-cf0c-46b2-afb2-ce644a65bfc8'></a>
+
+<table id="13-1">
+<tr><td id="13-2">V</td><td id="13-3">reactions</td><td id="13-4">biological process</td></tr>
+<tr><td id="13-5">1</td><td id="13-6">[EGFR]+[EGF]↔[EGF-EGFR]</td><td id="13-7">receptor activation</td></tr>
+<tr><td id="13-8">2</td><td id="13-9">[EGF-EGFR]+[EGF-EGFR]↔[(EGF-EGFR)2]</td><td id="13-a">receptor activation</td></tr>
+<tr><td id="13-b">3</td><td id="13-c">[(EGF-EGFR)2]↔[(EGF-EGFR*)2]</td><td id="13-d">receptor activation</td></tr>
+<tr><td id="13-e">4</td><td id="13-f">[(EGF-EGFR*)2-GAP-Grb2]+[Prot]↔[(EGF-EGFR*)2-GAP-Grb2-Prot]</td><td id="13-g">internalization</td></tr>
+<tr><td id="13-h">5</td><td id="13-i">[(EGF-EGFR*)2-GAP-Grb2-Prot] → [(EGF-EGFR*)2-GAP-Grb2]+[Prot]</td><td id="13-j">internalization</td></tr>
+<tr><td id="13-k">6</td><td id="13-l">[EGFR] ↔ [EGFRi]</td><td id="13-m">internalization</td></tr>
+<tr><td id="13-n">7</td><td id="13-o">[(EGF-EGFR*)2] → [(EGF-EGFR*)2]</td><td id="13-p">internalization</td></tr>
+<tr><td id="13-q">8</td><td id="13-r">[(EGF-EGFR*)2]+[GAP] ↔ [(EGF-EGFR*)2-GAP]</td><td id="13-s">Ras inactivation</td></tr>
+<tr><td id="13-t">9</td><td id="13-u">[(EGF-EGFR*)2-GAP] → [(EGF-EGFR*)2-GAP]</td><td id="13-v">Ras inactivation</td></tr>
+<tr><td id="13-w">10</td><td id="13-x">[EGFR]+[EGF] ↔ [EGF-EGFR]</td><td id="13-y">receptor activation</td></tr>
+<tr><td id="13-z">11</td><td id="13-A">[EGF-EGFR]+[EGF-EGFR] ↔ [(EGF-EGFR)2]</td><td id="13-B">receptor activation</td></tr>
+<tr><td id="13-C">12</td><td id="13-D">[(EGF-EGFR)2] ↔ [(EGF-EGFR*)2]</td><td id="13-E">receptor activation</td></tr>
+<tr><td id="13-F">13</td><td id="13-G">→ [EGFR]</td><td id="13-H">receptor activation</td></tr>
+<tr><td id="13-I">14</td><td id="13-J">[(EGF-EGFR*)2] + [GAP] ↔ [(EGF-EGFR*)2-GAP]</td><td id="13-K">Ras inactivation</td></tr>
+<tr><td id="13-L">15</td><td id="13-M">[Prot] → [Prot]</td><td id="13-N">internalization</td></tr>
+<tr><td id="13-O">16</td><td id="13-P">[(EGF-EGFR*)2-GAP]+[Grb2] ↔ [(EGF-EGFR*)2-GAP-Grb2]</td><td id="13-Q">recruitment</td></tr>
+<tr><td id="13-R">17</td><td id="13-S">[(EGF-EGFR*)2-GAP-Grb2]+[Sos] ↔ [(EGF-EGFR*)2-GAP-Grb2-Sos]</td><td id="13-T">recruitment</td></tr>
+<tr><td id="13-U">18</td><td id="13-V">[(EGF-EGFR*)2-GAP-Grb2-Sos]+[Ras-GDP] ↔ [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP]</td><td id="13-W">Ras activation</td></tr>
+<tr><td id="13-X">19</td><td id="13-Y">[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP] ↔ [(EGF-EGFR*)2-GAP-Grb2-Sos]+[Ras-GTP]</td><td id="13-Z">Ras activation</td></tr>
+<tr><td id="13-10">20</td><td id="13-11">[Ras-GTP]+[(EGF-EGFR*)2-GAP-Grb2-Sos] ↔ [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP]</td><td id="13-12">Ras inactivation</td></tr>
+<tr><td id="13-13">21</td><td id="13-14">[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP] ↔ [(EGF-EGFR*)2-GAP-Grb2-Sos]+[Ras-GDP]</td><td id="13-15">Ras inactivation</td></tr>
+<tr><td id="13-16">22</td><td id="13-17">[(EGF-EGFR*)2-GAP]+[Shc] ↔ [(EGF-EGFR*)2-GAP-Shc]</td><td id="13-18">recruitment</td></tr>
+<tr><td id="13-19">23</td><td id="13-1a">[(EGF-EGFR*)2-GAP-Shc] ↔ [(EGF-EGFR*)2-GAP-Shc*]</td><td id="13-1b">recruitment</td></tr>
+<tr><td id="13-1c">24</td><td id="13-1d">[(EGF-EGFR*)2-GAP-Shc*]+[Grb2] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2]</td><td id="13-1e">recruitment</td></tr>
+<tr><td id="13-1f">25</td><td id="13-1g">[(EGF-EGFR*)2-GAP-Shc*-Grb2]+[Sos] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]</td><td id="13-1h">recruitment</td></tr>
+<tr><td id="13-1i">26</td><td id="13-1j">[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]</td><td id="13-1k">Ras activation</td></tr>
+<tr><td id="13-1l">27</td><td id="13-1m">[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] + [Ras-GTP]</td><td id="13-1n">Ras activation</td></tr>
+<tr><td id="13-1o">28</td><td id="13-1p">[Raf]+[Ras-GTP] ↔ [Raf-Ras-GTP]</td><td id="13-1q">Ras activates Raf</td></tr>
+<tr><td id="13-1r">29</td><td id="13-1s">[Raf-Ras-GTP] ↔ [Raf*]+[Ras-GTP*]</td><td id="13-1t">Ras activates Raf</td></tr>
+<tr><td id="13-1u">30</td><td id="13-1v">[Ras-GTP*]+[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]</td><td id="13-1w">Ras inactivation</td></tr>
+<tr><td id="13-1x">31</td><td id="13-1y">[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP]</td><td id="13-1z">Ras inactivation</td></tr>
+<tr><td id="13-1A">32</td><td id="13-1B">[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] ↔ [(EGF-EGFR*)2-GAP]+[Shc*-Grb2-Sos]</td><td id="13-1C">recruitment</td></tr>
+<tr><td id="13-1D">33</td><td id="13-1E">[Shc*-Grb2-Sos] ↔ [Grb2-Sos]+[Shc*]</td><td id="13-1F">recruitment</td></tr>
+<tr><td id="13-1G">34</td><td id="13-1H">[(EGF-EGFR*)2-GAP-Grb2-Sos] ↔ [(EGF-EGFR*)2-GAP]+[Grb2-Sos]</td><td id="13-1I">recruitment</td></tr>
+</table>
+
+<a id='156927e3-a4e6-4760-914c-e73cc823a94d'></a>
+
+Supplementary table 4: control by biochemical processes
+
+<!-- PAGE BREAK -->
+
+<a id='fcac4455-433e-40c1-9e55-7406e9de43ee'></a>
+
+35. [Grb2-Sos] ↔ [Grb2] +[Sos]
+36. [Shc*] ↔ [Shc]
+37. [(EGF-EGFR*)2-GAP-Shc*] ↔ [(EGF-EGFR*)2-GAP]+[Shc*]
+38. [Shc*]+[Grb2] ↔ [Shc*-Grb2]
+39. [(EGF-EGFR*)2-GAP-Shc*-Grb2] ↔ [(EGF-EGFR*)2-GAP]+[Shc*-Grb2]
+40. [Shc*-Grb2]+[Sos] ↔ [Shc*-Grb2-Sos]
+41. [(EGF-EGFR*)2-GAP-Shc*] + [Grb2-Sos] ↔ [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]
+42. [Raf*]+[Phosphatase1] ↔ [Raf*-Phosphatase1]
+43. [Raf*-Phosphatase1] ↔ [Raf]+[Phosphatase1]
+44. [MEK] + [Raf*] ↔ [MEK-Raf*]
+45. [MEK-Raf*] ↔ [MEK-P] +[Raf*]
+46. [MEK-P]+[Raf*] ↔ [MEK-P-Raf*]
+47. [MEK-P-Raf*] ↔ [MEK-PP] + [Raf*]
+48. [MEK-PP]+[Phosphatase2] ↔ [MEK-PP-Phosphatase2]
+49. [MEK-PP-Phosphatase2] ↔ [MEK-P] + [Phosphatase2]
+50. [MEK-P]+[Phosphatase2] ↔ [MEK-P-Phosphatase2]
+51. [MEK-P-Phosphatase2] ↔ [MEK]+[Phosphatase2]
+52. [ERK]+[MEK-PP] ↔ [ERK-MEK-PP]
+53. [ERK-MEK-PP] ↔ [ERK-P]+[MEK-PP]
+54. [ERK-P]+[MEK-PP] ↔ [ERK-P-MEK-PP]
+55. [ERK-P-MEK-PP] ↔ [ERK-PP]+[MEK-PP]
+56. [ERK-PP]+[Phosphatase3] ↔ [ERK-PP-Phosphatase3]
+57. [ERK-PP-Phosphatase3] ↔ [ERK-P]+[Phosphatase3]
+58. [ERK-P] + [Phosphatase3] ↔ [ERK-P-Phosphatase3]
+59. [ERK-P-Phosphatase3] ↔ [ERK]+[Phosphatase3]
+60. [EGFRI] ↔ [EGFRideg]
+61. [EGFi] ↔ [EGFideg]
+62. [(EGF-EGFRi*)2] ↔ [(EGF-EGFRi*)2deg]
+63. [(EGF-EGFRi*)2-GAP]+[Grb2] ↔ [(EGF-EGFRi*)2-GAP-Grb2]
+64. [(EGF-EGFRi*)2-GAP-Grb2]+[Sos] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos]
+65. [(EGF-EGFRi*)2-GAP-Grb2-Sos]+[Ras-GDP] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP]
+66. [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos]+[Ras-GTPi]
+67. [Ras-GTPi*]+[(EGF-EGFRi*)2-GAP-Grb2-Sos] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTPi]
+68. [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos]+[Ras-GDP]
+69. [(EGF-EGFRi*)2-GAP]+[Shc] ↔ [(EGF-EGFRi*)2-GAP-Shc]
+70. [(EGF-EGFR*)2-GAP-Shc] ↔ [(EGF-EGFR*)2-GAP-Shc*]
+71. [(EGF-EGFRi*)2-GAP-Shc*]+[Grb2] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2]
+
+<a id='08b27033-67a2-4817-8af8-c64e1350c54a'></a>
+
+recruitment
+recruitment
+recruitment
+recruitment
+recruitment
+recruitment
+recruitment
+Raf dephosphorylation
+Raf dephosphorylation
+Raf phosphorylates MEK
+Raf phosphorylates MEK
+Raf phosphorylates MEK
+Raf phosphorylates MEK
+MEK dephosphorylation
+MEK dephosphorylation
+MEK dephosphorylation
+MEK dephosphorylation
+ERK phosphorylation
+ERK phosphorylation
+ERK phosphorylation
+ERK phosphorylation
+ERK dephosphorylation
+ERK dephosphorylation
+ERK dephosphorylation
+ERK dephosphorylation
+degradation
+degradation
+degradation
+recruitment
+recruitment
+Ras activation
+Ras activation
+Ras inactivation
+Ras inactivation
+recruitment
+recruitment
+recruitment
+
+<!-- PAGE BREAK -->
+
+<a id='7a5b8fb3-2ac6-4f3e-b3d4-43d68e3a015c'></a>
+
+72 [(EGF-EGFRi*)2-GAP-Shc*-Grb2]+[Sos] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]
+73 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]
+74 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] + [Ras-GTPi]
+75 [Raf]+[Ras-GTPi] → [Raf-Ras-GTPi]
+76 [Raf-Ras-GTPi] → [Rafi*]+[Ras-GTPi*]
+77 [Ras-GTPi*]+[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]
+78 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos]+[Ras-GDP]
+79 [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] ↔ [(EGF-EGFRi*)2-GAP]+[Shc-Grb2-Sos]
+80 [(EGF-EGFRi*)2-GAP-Grb2-Sos] → [(EGF-EGFRi*)2-GAP]+[Grb2-Sos]
+81 [(EGF-EGFRi*)2-GAP-Shc*] → [(EGF-EGFRi*)2-GAP]+[Shc*]
+82 [(EGF-EGFRi*)2-GAP-Shc*-Grb2] → [(EGF-EGFRi*)2-GAP]+[Shc*-Grb2]
+83 [(EGF-EGFRi*)2-GAP-Shc*] + [Grb2-Sos] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]
+84 [Rafi*]+[Phosphatase1] → [Rafi*-Phosphatase1]
+85 [Rafi*-Phosphatase 1] → [Raf]+[Phosphatase1]
+86 [MEK] + [Rafi*] → [MEK-Rafi*]
+87 [MEK-Rafi*] → [MEKi-P] +[Rafi*]
+88 [MEKI-P]+[Rafi*] → [MEK-P-Rafi*]
+89 [MEK-P-Rafi*] → [MEKI-PP] + [Rafi*]
+90 [MEKI-PP]+[Phosphatase2] → [MEKI-PP-Phosphatase2]
+91 [MEKI-PP-Phosphatase2] → [MEKi-P] + [Phosphatase2]
+92 [MEKI-P]+[Phosphatase2] → [MEKi-P-Phosphatase2]
+93 [MEKI-P-Phosphatase2] → [MEK]+[Phosphatase2]
+94 [ERK]+[MEKI-PP] → [ERK-MEKI-PP]
+95 [ERK-MEKI-PP] → [ERKI-P]+[MEKI-PP]
+96 [ERKI-P]+[MEKI-PP] → [ERKI-P-MEKI-PP]
+97 [ERKI-P-MEKI-PP] → [ERKI-PP]+[MEKI-PP]
+98 [ERKI-PP]+[Phosphatase3] → [ERKI-PP-Phosphatase3]
+99 [ERKI-PP-Phosphatase3] → [ERKi-P]+[Phosphatase3]
+100 [ERKI-P] + [Phosphatase3] → [ERKI-P-Phosphatase3]
+101 [ERKI-P-Phosphatase3] → [ERK]+[Phosphatase3]
+102 [(EGF-EGFR*)2-GAP] → [(EGF-EGFRi*)2-GAP]
+103 [(EGF-EGFR*)2-GAP-Shc] → [(EGF-EGFRi*)2-GAP-Shc]
+104 [(EGF-EGFR*)2-GAP-Shc*] → [(EGF-EGFRi*)2-GAP-Shc*]
+105 [(EGF-EGFR*)2-GAP-Grb2-Sos] → [(EGF-EGFRI*)2-GAP-Grb2-Sos]
+106 [(EGF-EGFR*)2-GAP-Grb2-Sos]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Prot]
+107 [(EGF-EGFR*)2-GAP-Grb2-Sos-Prot] → [ (EGF-EGFRi*)2-GAP-Grb2-Sos]+[Proti]
+108 [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP] → [(EGF-EGFRI*)2-GAP-Grb2-Sos-Ras-GDP]
+
+<a id='0b4764a4-7531-4a3f-b9c6-e212bda0af04'></a>
+
+recruitment
+Ras activation
+Ras activation
+Ras activates Raf
+Ras activates Raf
+Ras inactivation
+Ras inactivation
+recruitment
+recruitment
+recruitment
+recruitment
+recruitment
+Raf dephosphorylation
+Raf dephosphorylation
+Raf phosphorylates MEK
+Raf phosphorylates MEK
+Raf phosphorylates MEK
+Raf phosphorylates MEK
+MEK dephosphorylation
+MEK dephosphorylation
+MEK dephosphorylation
+MEK dephosphorylation
+ERK phosphorylation
+ERK phosphorylation
+ERK phosphorylation
+ERK phosphorylation
+ERK dephosphorylation
+ERK dephosphorylation
+ERK dephosphorylation
+ERK dephosphorylation
+internalization
+internalization
+internalization
+internalization
+internalization
+internalization
+internalization
+
+<!-- PAGE BREAK -->
+
+<a id='c9a165e6-512e-4e82-9c61-7ae8ee7f9bc7'></a>
+
+<table><thead><tr><th>Col 1</th><th>Reaction/Interaction</th><th>Category</th></tr></thead><tbody><tr><td>109</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP-Prot]</td><td>internalization</td></tr><tr><td>110</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GDP-Prot] → [ (EGF-EGFRI*)2-GAP-Grb2-Sos-Ras-GDP]+[Proti]</td><td>internalization</td></tr><tr><td>111</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP]</td><td>internalization</td></tr><tr><td>112</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP]+[Prot] → [(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP-Prot]</td><td>internalization</td></tr><tr><td>113</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-Ras-GTP-Prot] → [(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP]+[Proti]</td><td>internalization</td></tr><tr><td>114</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2]</td><td>internalization</td></tr><tr><td>115</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Prot]</td><td>internalization</td></tr><tr><td>116</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Prot] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2]+[Proti]</td><td>internalization</td></tr><tr><td>117</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos]</td><td>internalization</td></tr><tr><td>118</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Prot]</td><td>internalization</td></tr><tr><td>119</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Prot] → [ (EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[Proti]</td><td>internalization</td></tr><tr><td>120</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]</td><td>internalization</td></tr><tr><td>121</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP-Prot]</td><td>internalization</td></tr><tr><td>122</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GDP-Prot] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP]+[Proti]</td><td>internalization</td></tr><tr><td>123</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]</td><td>internalization</td></tr><tr><td>124</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]+[Prot] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP-Prot]</td><td>internalization</td></tr><tr><td>125</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-Ras-GTP-Prot] → [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP]+[Proti]</td><td>internalization</td></tr><tr><td>126</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos]+[ERK-PP] → [(EGF-EGFR*)2-GAP-Grb2-Sos-ERK-PP]</td><td>negative feedback loop</td></tr><tr><td>127</td><td>[(EGF-EGFRi*)2-GAP-Grb2-Sos]+[ERKI-PP] → [(EGF-EGFRI*)2-GAP-Grb2-Sos-ERKI-PP]</td><td>negative feedback loop</td></tr><tr><td>128</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]+[ERK-PP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-ERK-PP]</td><td>negative feedback loop</td></tr><tr><td>129</td><td>[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]+[ERKI-PP] → [(EGF-EGFRI*)2-GAP-Shc*-Grb2-Sos-ERKI-PP]</td><td>negative feedback loop</td></tr><tr><td>130</td><td>[Sos]+[ERK-PP] → [Sos-ERK-PP]</td><td>negative feedback loop</td></tr><tr><td>131</td><td>[Sos]+[ERKI-PP] → [Sos-ERKI-PP]</td><td>negative feedback loop</td></tr><tr><td>132</td><td>[(EGF-EGFRi*)2-GAP] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>133</td><td>[(EGF-EGFRi*)2-GAP-Grb2] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>134</td><td>[(EGF-EGFRi*)2-GAP-Grb2-Sos]→ [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>135</td><td>[(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>136</td><td>[(EGF-EGFRi*)2-GAP-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>137</td><td>[(EGF-EGFRi*)2-GAP-Shc] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>138</td><td>[(EGF-EGFRi*)2-GAP-Shc*] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>139</td><td>[(EGF-EGFRi*)2-GAP-Shc*-Grb2] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>140</td><td>[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>141</td><td>[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GDP] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>142</td><td>[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-Ras-GTP] → [(EGF-EGFRi*)2deg]</td><td>degradation</td></tr><tr><td>143</td><td>[(EGF-EGFR*)2-GAP-Grb2-Sos-ERK-PP] → [(EGF-EGFR*)2-GAP-Grb2-Sos]deg+[ERK-PP]</td><td>negative feedback loop</td></tr><tr><td>144</td><td>[(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos-ERK-PP] → [(EGF-EGFR*)2-GAP-Shc*-Grb2-Sos]deg+[ERK-PP]</td><td>negative feedback loop</td></tr><tr><td>145</td><td>[Sos-ERK-PP] → [Sosi]+[ERK-PP]</td><td>negative feedback loop</td></tr></tbody></table>
+
+<!-- PAGE BREAK -->
+
+<a id='f1fa620b-7789-45c6-8d1c-092483a15b18'></a>
+
+<table><thead><tr><th>Col 1</th><th>Col 2</th><th>Col 3</th></tr></thead><tbody><tr><td>146</td><td>[(EGF-EGFRi*)2-GAP-Grb2-Sos-ERKI-PP] ↔ [(EGF-EGFRi*)2-GAP-Grb2-Sos]deg+[ERKi-PP]</td><td>negative feedback loop</td></tr><tr><td>147</td><td>[(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos-ERKI-PP] ↔ [(EGF-EGFRi*)2-GAP-Shc*-Grb2-Sos]deg+[ERKi-PP]</td><td>negative feedback loop</td></tr><tr><td>148</td><td>[Sos-ERK-PPi] ↔ [Sosi]+[ERK-PPi]</td><td>negative feedback loop</td></tr></tbody></table>
+
+<!-- PAGE BREAK -->
+
+<a id='33ea791b-de8d-41ec-8d27-8e56785dd6e2'></a>
+
+<table id="18-1">
+<tr><td id="18-2" rowspan="2">biological process</td><td id="18-3" colspan="3">small perturbations (δp/p= 10^-6)</td><td id="18-4" colspan="3">large perturbations (δp/p= - 0.5)</td><td id="18-5" colspan="3">large perturbations (δp/p= 0.5)</td></tr>
+<tr><td id="18-6">A</td><td id="18-7">d</td><td id="18-8">l</td><td id="18-9">A</td><td id="18-a">d</td><td id="18-b">I</td><td id="18-c">A</td><td id="18-d">d</td><td id="18-e">I</td></tr>
+<tr><td id="18-f">receptor activation</td><td id="18-g">0.0002</td><td id="18-h">0.0257</td><td id="18-i">0.0264</td><td id="18-j">0.0003</td><td id="18-k">0.0289</td><td id="18-l">0.0292</td><td id="18-m">0.0001</td><td id="18-n">0.0233</td><td id="18-o">0.0245</td></tr>
+<tr><td id="18-p">recruitment</td><td id="18-q">-0.0010</td><td id="18-r">0.0322</td><td id="18-s">0.0626</td><td id="18-t">0.0016</td><td id="18-u">0.1265</td><td id="18-v">0.1790</td><td id="18-w">-0.0021</td><td id="18-x">-0.0055</td><td id="18-y">0.0122</td></tr>
+<tr><td id="18-z">Ras activation</td><td id="18-A">0.0236</td><td id="18-B">0.1197</td><td id="18-C">0.2127</td><td id="18-D">0.0850</td><td id="18-E">0.2358</td><td id="18-F">0.4065</td><td id="18-G">0.0120</td><td id="18-H">0.0792</td><td id="18-I">0.1403</td></tr>
+<tr><td id="18-J">Ras inactivation</td><td id="18-K">0.0026</td><td id="18-L">0.2846</td><td id="18-M">0.4267</td><td id="18-N">0.0073</td><td id="18-O">0.3595</td><td id="18-P">0.5294</td><td id="18-Q">0.0012</td><td id="18-R">0.2488</td><td id="18-S">0.3778</td></tr>
+<tr><td id="18-T">Ras activates Raf</td><td id="18-U">0.0004</td><td id="18-V">0.0051</td><td id="18-W">0.0075</td><td id="18-X">0.0022</td><td id="18-Y">0.0100</td><td id="18-Z">0.0155</td><td id="18-10">0.0000</td><td id="18-11">0.0034</td><td id="18-12">0.0047</td></tr>
+<tr><td id="18-13">Raf dephosphorylation</td><td id="18-14">-0.0877</td><td id="18-15">-0.9487</td><td id="18-16">-1.4714</td><td id="18-17">-0.0491</td><td id="18-18">-1.7354</td><td id="18-19">-2.6498</td><td id="18-1a">-0.6217</td><td id="18-1b">-0.6079</td><td id="18-1c">-1.1578</td></tr>
+<tr><td id="18-1d">Raf phosphorylates MEK</td><td id="18-1e">0.0894</td><td id="18-1f">0.9486</td><td id="18-1g">1.4726</td><td id="18-1h">1.5186</td><td id="18-1i">0.9727</td><td id="18-1j">2.1294</td><td id="18-1k">0.0411</td><td id="18-1l">0.8454</td><td id="18-1m">1.2942</td></tr>
+<tr><td id="18-1n">MEK dephosphorylation</td><td id="18-1o">-0.0080</td><td id="18-1p">-1.0257</td><td id="18-1q">-1.1240</td><td id="18-1r">-0.0085</td><td id="18-1s">-1.5643</td><td id="18-1t">-1.6993</td><td id="18-1u">-0.0077</td><td id="18-1v">-0.7765</td><td id="18-1w">-0.8511</td></tr>
+<tr><td id="18-1x">ERK phosphorylation</td><td id="18-1y">0.0809</td><td id="18-1z">0.1721</td><td id="18-1A">0.4389</td><td id="18-1B">0.7294</td><td id="18-1C">0.2552</td><td id="18-1D">1.1425</td><td id="18-1E">0.0478</td><td id="18-1F">0.1141</td><td id="18-1G">0.3115</td></tr>
+<tr><td id="18-1H">ERK dephosphorylation</td><td id="18-1I">-0.0803</td><td id="18-1J">-0.1718</td><td id="18-1K">-0.4353</td><td id="18-1L">-0.0614</td><td id="18-1M">-0.1555</td><td id="18-1N">-0.5006</td><td id="18-1O">-0.1642</td><td id="18-1P">-0.1507</td><td id="18-1Q">-0.4173</td></tr>
+<tr><td id="18-1R">negative feedback loop</td><td id="18-1S">0.0000</td><td id="18-1T">-0.0029</td><td id="18-1U">-0.0039</td><td id="18-1V">0.0000</td><td id="18-1W">-0.0029</td><td id="18-1X">-0.0039</td><td id="18-1Y">0.0000</td><td id="18-1Z">-0.0029</td><td id="18-20">-0.0039</td></tr>
+<tr><td id="18-21">internalization</td><td id="18-22">-0.0209</td><td id="18-23">-0.2677</td><td id="18-24">-0.4279</td><td id="18-25">-0.0210</td><td id="18-26">-0.3469</td><td id="18-27">-0.5411</td><td id="18-28">-0.0210</td><td id="18-29">-0.2219</td><td id="18-2a">-0.3602</td></tr>
+<tr><td id="18-2b">degradation</td><td id="18-2c">0.0008</td><td id="18-2d">-0.1713</td><td id="18-2e">-0.1846</td><td id="18-2f">0.0008</td><td id="18-2g">-0.1713</td><td id="18-2h">-0.1892</td><td id="18-2i">0.0008</td><td id="18-2j">-0.1654</td><td id="18-2k">-0.1766</td></tr>
+</table>
+
+<!-- PAGE BREAK -->
+
+<a id='a50173a7-abf6-47a4-ac02-7ccc389fde0d'></a>
+
+Supplementary table 5: response coefficients
+<table id="19-1">
+<tr><td id="19-2" rowspan="2">protein</td><td id="19-3" colspan="3">small perturbations (δp/p= 10^-6)</td><td id="19-4" colspan="3">large perturbations (δp/p= - 0.5)</td><td id="19-5" colspan="3">large perturbations (δp/p= 0.5)</td></tr>
+<tr><td id="19-6">A</td><td id="19-7">d</td><td id="19-8">l</td><td id="19-9">A</td><td id="19-a">d</td><td id="19-b">I</td><td id="19-c">A</td><td id="19-d">d</td><td id="19-e">I</td></tr>
+<tr><td id="19-f">EGF</td><td id="19-g">0.00E+00</td><td id="19-h">2.00E-04</td><td id="19-i">1.00E-04</td><td id="19-j">0.00E+00</td><td id="19-k">0.00E+00</td><td id="19-l">1.00E-04</td><td id="19-m">0.00E+00</td><td id="19-n">2.00E-04</td><td id="19-o">3.00E-04</td></tr>
+<tr><td id="19-p">EGFR</td><td id="19-q">8.00E-03</td><td id="19-r">1.71E-01</td><td id="19-s">2.75E-01</td><td id="19-t">4.80E-03</td><td id="19-u">1.15E-01</td><td id="19-v">1.99E-01</td><td id="19-w">2.18E-02</td><td id="19-x">2.65E-01</td><td id="19-y">4.02E-01</td></tr>
+<tr><td id="19-z">Prot</td><td id="19-A">-1.67E-02</td><td id="19-B">-3.22E-01</td><td id="19-C">-4.90E-01</td><td id="19-D">-2.20E-02</td><td id="19-E">-2.47E-01</td><td id="19-F">-3.70E-01</td><td id="19-G">-1.29E-02</td><td id="19-H">-5.12E-01</td><td id="19-I">-7.78E-01</td></tr>
+<tr><td id="19-J">shc</td><td id="19-K">1.30E-03</td><td id="19-L">-1.26E-02</td><td id="19-M">-2.90E-03</td><td id="19-N">8.00E-04</td><td id="19-O">-3.29E-02</td><td id="19-P">-2.71E-02</td><td id="19-Q">2.50E-03</td><td id="19-R">1.92E-02</td><td id="19-S">3.32E-02</td></tr>
+<tr><td id="19-T">Grb2</td><td id="19-U">7.00E-04</td><td id="19-V">-8.60E-03</td><td id="19-W">-8.40E-03</td><td id="19-X">5.00E-04</td><td id="19-Y">-9.40E-03</td><td id="19-Z">-1.04E-02</td><td id="19-10">8.00E-04</td><td id="19-11">-7.60E-03</td><td id="19-12">-6.10E-03</td></tr>
+<tr><td id="19-13">Sos</td><td id="19-14">-3.00E-04</td><td id="19-15">9.40E-03</td><td id="19-16">1.70E-02</td><td id="19-17">-5.00E-04</td><td id="19-18">6.10E-03</td><td id="19-19">1.11E-02</td><td id="19-1a">3.00E-04</td><td id="19-1b">1.59E-02</td><td id="19-1c">2.83E-02</td></tr>
+<tr><td id="19-1d">RasGDP</td><td id="19-1e">8.26E-02</td><td id="19-1f">8.40E-01</td><td id="19-1g">1.30E+00</td><td id="19-1h">2.59E-02</td><td id="19-1i">7.28E-01</td><td id="19-1j">1.12E+00</td><td id="19-1k">1.95E+00</td><td id="19-1l">1.07E+00</td><td id="19-1m">1.97E+00</td></tr>
+<tr><td id="19-1n">GAP</td><td id="19-1o">1.62E-02</td><td id="19-1p">2.05E-01</td><td id="19-1q">3.24E-01</td><td id="19-1r">8.90E-03</td><td id="19-1s">9.74E-02</td><td id="19-1t">1.81E-01</td><td id="19-1u">5.88E-02</td><td id="19-1v">3.98E-01</td><td id="19-1w">5.60E-01</td></tr>
+<tr><td id="19-1x">grb2sos</td><td id="19-1y">2.00E-03</td><td id="19-1z">-1.70E-02</td><td id="19-1A">-4.60E-03</td><td id="19-1B">1.00E-03</td><td id="19-1C">-2.23E-02</td><td id="19-1D">-1.92E-02</td><td id="19-1E">6.20E-03</td><td id="19-1F">5.60E-03</td><td id="19-1G">3.83E-02</td></tr>
+<tr><td id="19-1H">Raf</td><td id="19-1I">4.00E-04</td><td id="19-1J">8.80E-03</td><td id="19-1K">1.33E-02</td><td id="19-1L">-1.00E-04</td><td id="19-1M">5.10E-03</td><td id="19-1N">7.40E-03</td><td id="19-1O">3.60E-03</td><td id="19-1P">2.40E-02</td><td id="19-1Q">3.29E-02</td></tr>
+<tr><td id="19-1R">phosphatase 1</td><td id="19-1S">-8.78E-02</td><td id="19-1T">-9.49E-01</td><td id="19-1U">-1.47E+00</td><td id="19-1V">-1.25E+00</td><td id="19-1W">-5.58E-01</td><td id="19-1X">-1.40E+00</td><td id="19-1Y">-3.04E-02</td><td id="19-1Z">-1.64E+00</td><td id="19-20">-2.57E+00</td></tr>
+<tr><td id="19-21">MEK</td><td id="19-22">4.96E-02</td><td id="19-23">9.03E-01</td><td id="19-24">1.24E+00</td><td id="19-25">2.09E-02</td><td id="19-26">8.75E-01</td><td id="19-27">1.18E+00</td><td id="19-28">1.14E+00</td><td id="19-29">8.47E-01</td><td id="19-2a">1.49E+00</td></tr>
+<tr><td id="19-2b">phosphatase 2</td><td id="19-2c">-9.60E-03</td><td id="19-2d">-1.03E+00</td><td id="19-2e">-1.12E+00</td><td id="19-2f">-1.03E-02</td><td id="19-2g">-7.03E-01</td><td id="19-2h">-7.56E-01</td><td id="19-2i">-9.00E-03</td><td id="19-2j">-1.94E+00</td><td id="19-2k">-2.08E+00</td></tr>
+<tr><td id="19-2l">ERK</td><td id="19-2m">1.91E+00</td><td id="19-2n">7.02E-01</td><td id="19-2o">2.74E+00</td><td id="19-2p">1.91E+00</td><td id="19-2q">5.31E-01</td><td id="19-2r">3.15E+00</td><td id="19-2s">1.85E+00</td><td id="19-2t">1.18E+00</td><td id="19-2u">1.94E+00</td></tr>
+<tr><td id="19-2v">phosphatase 3</td><td id="19-2w">-9.43E-01</td><td id="19-2x">-4.86E-01</td><td id="19-2y">-1.67E+00</td><td id="19-2z">-1.02E+00</td><td id="19-2A">-5.28E-01</td><td id="19-2B">-1.35E+00</td><td id="19-2C">-9.27E-01</td><td id="19-2D">-4.65E-01</td><td id="19-2E">-2.10E+00</td></tr>
+</table>

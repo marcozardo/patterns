@@ -732,3 +732,147 @@ www.anesthesia-analgesia.org
 <a id='bb5a4db3-1066-4d2c-b81d-fdd2d26fa9a3'></a>
 
 ANESTHESIA & ANALGESIA
+
+# Supplementary materials
+
+<a id='05d1d851-35ce-4bef-a007-29974ff21961'></a>
+
+Supplemental Digital Content
+
+<a id='f8cac1be-5eb6-49a5-98cb-63357d42f2a1'></a>
+
+"Mechanistic Modeling of the Effects of Acidosis on Thrombin Generation"
+by Alexander Y. Mitrophanov, Frits R. Rosendaal, and Jaques Reifman
+
+<a id='384ba26d-be67-4ac2-9ba3-bdc5e4660aa1'></a>
+
+Supplemental Methods: Computational Modeling
+
+<a id='d3da4761-9257-4042-b660-89b98ed15413'></a>
+
+*General Comments*
+
+In our simulations, we used an updated version¹ of the Hockin–Mann model² of thrombin generation implemented in the SimBiology toolbox of the MATLAB software suite. The general modeling methodology followed our previously published work; the model equations were solved using the SUNDIALS solver in SimBiology.³–⁵ Note that the quantitative parameters of thrombin and TAT generation were calculated from the raw-output trajectories (to preserve numerical accuracy), i.e., before the discretization of the 80-min simulation time interval and the raw-output trajectories into 800 evenly-spaced points for group trajectory analyses (see Methods in the main text). The discretization of the raw-output trajectories was performed using the MATLAB function SPLINE.
+
+<a id='8a1e38fb-468e-4838-8482-ac2be3b9e0cb'></a>
+
+*The Full pH-Dependence Simulation Strategy*
+
+Our full pH-dependence simulation strategy relied on pH factor randomization (see Methods in the main text), because pH factors can be different for different coagulation enzymes⁶ and are unknown for the vast majority. Our pH factor randomization strategy was similar to our recently developed strategy to model the temperature dependence of thrombin generation kinetics.⁵ For each considered acidotic pH level, each pH factor value was sampled independently and uniformly from the corresponding pH-dependent interval (shown in Fig. 1).
+
+<a id='091d2ddb-7d03-493f-a80e-7e24db4c7264'></a>
+
+In our recently developed strategy to model temperature dependence of thrombin generation, the unknown reaction-specific, temperature-independent parameters (termed temperature coefficients) defining the rates of temperature dependence for kinetic constants were sampled randomly from the interval (2–3) (Ref. 5). This choice of sampling interval was deemed reasonable because this interval is often referred to as the typical interval for temperature coefficients characterizing biological processes and biochemical reactions. 7–9 For the pH-dependent pH factors, however, such general localization information is unavailable. This motivated our decision to estimate pH factors from the measurements for extrinsic tenase and prothrombinase reported in Meng et al. 6 [The measurements reported in that work for the enzymatic activity of free factor factor VIIa were not used because this activity is not reflected in the Hockin–Mann model.1,2]
+
+<a id='716ff5af-3cf0-4aa0-89d4-387314e12ac7'></a>
+
+The pH dependence data in Meng et al.⁶ were obtained at room temperature (Dr. Maureanne
+
+<a id='77256b91-c92a-4bc4-9777-39cac33191e6'></a>
+
+1
+
+<!-- PAGE BREAK -->
+
+<a id='3f8eb040-08cb-4a13-9096-7469dc7a7545'></a>
+
+Hoffman, private communication). However, those results could still be used in our modeling (which reflects biochemical processes at body temperature, 37 °C) because catalytic rates for enzymatic reactions depend on temperature and pH in a multiplicative way. This can be expressed as follows: R(T, pH) = k₁(T)*k₂(pH), where R is a rate that depends on temperature (T) and pH, k₁(T) and k₂(pH) are the functions that define the multiplicative dependence, and k₂(pH) only weakly depends on temperature.10 Therefore, R(T, pH)/R(T, 7.4) = k₂(pH)/k₂(7.4) and this implies that pH factors, which are ratios of catalytic rates at different pH levels, are approximately independent of temperature.
+
+<a id='84906332-4a54-4328-bdbe-c6ee6188838a'></a>
+
+We assume that the "real" pH factors for all catalytic rates in the model lie near the values for extrinsic tenase and prothrombinase (Fig. 1). This assumption is based on the observation that all the blood coagulation enzymes belong to the class of chymotrypsin-like serine proteases, which demonstrate a considerable similarity in their catalytic center structure and catalytic mechanism.¹¹ Yet, to account for possible variability, our pH factor sampling domain was obtained by increasing by 100% the distance between the fitted curves for the extrinsic tenase and prothrombinase data (i.e., for each considered pH level, we moved the top and bottom points up and down, respectively, by 50% of the distance between them; see Fig. 1).
+
+<a id='63ef9ff7-1918-4029-911b-f082cc3ef0ca'></a>
+
+To reflect pH-dependent effects in our model, we performed pH factor adjustment to the kinetic constants with the following indices (see Table S1 below for the specific reactions each of those constants controls): 5, 6, 7, 10, 15, 16, 17, 22, 26, 31, 32, 43, and 44. All these kinetic constants represent catalytic rates of enzymatic reactions. Note that we randomized the catalytic rates for extrinsic tenase acting on factor X (kinetic constant index 10) and prothrombinase (kinetic constant indices 31 and 32) despite the availability of data for those enzymatic reactions (Fig. 1). This was done in order to ascertain consistent and uniform pH modulation of all catalytic rates in our simulation strategy. Indeed, the current version of our computational strategy does not take into account localization information for individual pH factor values; it only uses the information (or assumption) that they lie within the selected sampling interval.
+
+<a id='5c5f3cb1-1b1c-442b-b5a2-5958ccc410d3'></a>
+
+Our choice of pH factor sampling interval width (Fig. 1, dashed lines) can be justified as follows. First, for every considered pH level, we wanted to define a contiguous sampling interval that contains pH factor values for both extrinsic tenase and prothrombinase (Fig. 1, solid lines). Second, in the absence of contradicting evidence (and guided by the Maximum Entropy Principle, as in our work on modeling the effects of hypothermia⁵), we assumed that the sampling distribution should be uniform and that the pH factor of a random coagulation protease would be equally likely to fall inside or outside of the interval defined by the measurements for extrinsic tenase and prothrombinase. Our definition of pH factor sampling intervals satisfies all these requirements.
+
+<a id='34357338-c49e-41d1-83ac-12737d9ec5dc'></a>
+
+The Reduced pH-Dependence Simulation Strategy
+
+<a id='087449d0-ca42-44a0-958e-92ec7b43f5dd'></a>
+
+Our reduced pH-dependence simulation strategy relied on the use of one specified pH factor value for all the catalytic rate constants in the model and did not involve pH factor
+
+<a id='e23e89b0-684b-4fe3-b0a3-a69590678afc'></a>
+
+2
+
+<!-- PAGE BREAK -->
+
+<a id='4b0c58f9-2cd2-46ab-9bce-356e94346f1f'></a>
+
+randomization. The specific definition of the pH factor values in this strategy depended on what type of estimation was intended. When, for a given acidotic pH level, the reduced strategy was intended to estimate the *median* value of a sample generated by pH factor randomization (such as a thrombin generation parameter sample generated using the full simulation strategy, see Fig. 4, red circles), then all pH factors were assigned the value equal to the middle of the pH factor sampling interval for that pH level (Fig. 1). Note that this middle value in fact corresponds to the median of the pH factor sampling distribution, because this distribution is uniform. When the reduced strategy was used to estimate the 1^st^ and 3^rd^ *quartiles* of a sample generated by pH factor randomization (Fig. 4, green circles), then the pH factors in the reduced strategy were assigned the values corresponding to the 1^st^ and 3^rd^ quartiles, respectively, of the pH factor sampling distribution. These latter values were equal to the value that is above the lower sampling interval boundary by 25% of the interval length and the value that is below the upper sampling interval boundary by 25% of the interval length, respectively (the pH dependence of these values is shown by solid lines in Fig. 1).
+
+<a id='b3ebc1d7-2884-4b5a-968b-f311b0793071'></a>
+
+3
+
+<!-- PAGE BREAK -->
+
+<a id='93862c24-8e4c-42a3-bf6d-9ef5e0cfbf06'></a>
+
+Table S1. Biochemical reactions represented in the mathematical model of thrombin generation. The reacting biochemical species are blood coagulation factors and their inactive precursors. The numbers in parentheses pointed at by the arrows in the above kinetic schemes designate the kinetic constant indices for those reactions [e.g., A (x) ↔ (y) B denotes the reaction A → B with kinetic constant index y and the reverse reaction with index x]. TF = tissue factor; AT = antithrombin; TFPI = tissue factor pathway inhibitor.
+
+<a id='65e10aed-530d-47f6-86ee-9b009999b6b2'></a>
+
+Biochemical reactions
+TF + FVII (1) ↔ (2) TF:FVII
+TF + FVIIa (3) ↔ (4) TF:FVIIa
+TF:FVIIa + FVII → (5) TF:FVIIa + FVIIa
+FXa + FVII → (6) FXa + FVIIa
+FIIa + FVII → (7) FIIa + FVIIa
+TF:FVIIa + FX (8) ↔ (9) TF:FVIIa:FX → (10) TF:FVIIa:FXa
+TF:FVIIa + FXa (11) ↔ (12) TF:FVIIa:FXa
+TF:FVIIa + FIX (13) ↔ (14) TF:FVIIa:FIX → (15) TF:FVIIa + FIXa
+FXa + FII → (16) FXa + FIIa
+FIIa + FVIII → (17) FIIa + FVIIIa
+FVIIIa + FIXa (18) ↔ (19) FIXa:FVIIIa
+FIXa:FVIIIa + FX (20) ↔ (21) FIXa:FVIIIa:FX → (22) FIXa:FVIIIa + FXa
+FVIIIa (23) ↔ (24) FVIIIa1-L + FVIIIa2
+FIXa:FVIIIa:FX → (25) FVIIIa1-L + FVIIIa2 + FX + FIXa
+FIXa:FVIIIa → (25) FVIIIa1-L + FVIIIa2 + FIXa
+FIIa + FV → (26) FIIa + FVa
+FXa + FVa (27) ↔ (28) FXa:FVa
+FXa:FVa + FII (29) ↔ (30) FXa:FVa:FII → (31) FXa:FVa + mFIIa
+mFIIa + FXa:FVa → (32) FIIa + FXa:FVa
+FXa + TFPI (33) ↔ (34) FXa:TFPI
+TF:FVIIa:FXa + TFPI (35) ↔ (36) TF:FVIIa:FXa:TFPI
+TF:FVIIa + FXa:TFPI → (37) TF:FVIIa:FXa:TFPI
+FXa + AT → (38) FXa:AT
+mFIIa + AT → (39) mFIIa:AT
+FIXa + AT → (40) FIXa:AT
+FIIa + AT → (41) FIIa:AT
+TF:FVIIa + AT → (42) TF:FVIIa:AT
+FIXa + FX → (43) FIXa + FXa
+mFIIa + FV → (44) mFIIa + FVa
+
+<a id='21a632a0-ffa7-4b75-a256-e1573bb80f2c'></a>
+
+4
+
+<!-- PAGE BREAK -->
+
+<a id='ac92ddd4-b786-472e-9f24-a6514c314db0'></a>
+
+References
+
+1. Danforth CM, Orfeo T, Mann KG, Brummel-Ziedins KE, Everse SJ. The impact of uncertainty in a blood coagulation model. Math Med Biol 2009; 26:323-36.
+2. Hockin MF, Jones KC, Everse SJ, Mann KG. A model for the stoichiometric regulation of blood coagulation. J Biol Chem 2002; 277:18322-33.
+3. Mitrophanov AY, Reifman J. Kinetic modeling sheds light on the mode of action of recombinant factor VIIa on thrombin generation. Thromb Res 2011; 128:381-90.
+4. Mitrophanov AY, Rosendaal FR, Reifman J. Computational analysis of intersubject variability and thrombin generation in dilutional coagulopathy. Transfusion 2012; 52:2475-86.
+5. Mitrophanov AY, Rosendaal FR, Reifman J. Computational analysis of the effects of reduced temperature on thrombin generation: the contributions of hypothermia to coagulopathy. Anesth Analg 2013; 117:565-74.
+6. Meng ZH, Wolberg AS, Monroe DM, 3rd, Hoffman M. The effect of temperature and pH on the activity of factor VIIa: implications for the efficacy of high-dose factor VIIa in hypothermic and acidotic patients. J Trauma 2003; 55:886-91.
+7. Ahlgren G. Temperature functions in biology and their application to algal growth constants. Oikos 1987; 49:177-90.
+8. DeAngelis DL. Strategies and difficulties of applying models to aquatic populations and food webs. Ecol Modell 1988; 43:57-73.
+9. Reyes BA, Pendergast JS, Yamazaki S. Mammalian peripheral circadian oscillators are temperature compensated. J Biol Rhythms 2008; 23:95-8.
+10. Tijskens LM, Greiner R, Biekman ES, Konietzny U. Modeling the effect of temperature and pH on activity of enzymes: the case of phytases. Biotechnol Bioeng 2001; 72:323-30.
+11. Hedstrom L. Serine protease mechanism and specificity. Chem Rev 2002; 102:4501-24.
+
+<a id='a7149e8a-446e-4a8e-a18a-61c2c982a3c7'></a>
+
+5

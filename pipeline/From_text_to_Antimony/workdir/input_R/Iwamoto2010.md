@@ -589,3 +589,201 @@ Xu, N., Chang, D.C., 2007. Different thresholds of MPF inactivation are responsi
 Xu, M., Sheppard, K.A., Peng, C.Y., Yee, A.S., Piwnica-Worms, H., 1994. Cyclin A/CDK2 binds directly to E2F-1 and inhibits the DNA-binding activity of E2F-1/DP-1 by phosphorylation. Mol. Cell Biol. 14, 8420-8431.
 Zachariae, W., Nasmyth, K., 1999. Whose end is destruction: cell division and the anaphase-promoting complex. Genes Dev. 13, 2039-2058.
 Zhu, W., Giangrande, P.H., Nevins, J.R., 2004. E2Fs link the control of G1/S and G2/M transcription. EMBO J. 23, 4615-4626.
+
+# Supplementary materials
+
+<a id='d6dc688e-2141-409a-b3a2-2e5d86bd3a11'></a>
+
+<::Biological Pathway Diagram:
+
+The diagram illustrates a complex regulatory network involving various proteins and complexes, primarily focusing on cell cycle control. Nodes are represented by ellipses and reactions/interactions by arrows, with associated rate constants (k values).
+
+**Top Left:**
+- GFs (Growth Factors) activate CycD (k1).
+- CycD is degraded or exits (k2).
+- CycD and Cdk4 form CycD/Cdk4 complex (forward k3, reverse k4).
+
+**Middle Section:**
+- CycD/Cdk4 is degraded or exits (k44).
+- p21 interacts with CycD/Cdk4 to form p21/CycD/Cdk4 complex (k19).
+- p21/CycD/Cdk4 is degraded or exits (k18).
+- p27 interacts with CycD/Cdk4 to form p27/CycD/Cdk4 complex (k20).
+- p27/CycD/Cdk4 is degraded or exits (k21).
+
+**Rb-E2F Pathway:**
+- CycD/Cdk4, p21/CycD/Cdk4, and p27/CycD/Cdk4 all activate (phosphorylate) Rb/E2F to form Rb-PP/E2F (k46, k48, k47 respectively).
+- Rb-PP/E2F is further phosphorylated by aCycE/Cdk2 (k49) and aCycA/Cdk2 (k50) to form Rb-PPP.
+- Rb-PPP can dephosphorylate to Rb (k55).
+- Rb-PPP releases E2F.
+- E2F is degraded or exits (k52, k51, k53, k54).
+- Rb can bind to E2F to form Rb/E2F (k45).
+- Rb is degraded or exits (k57).
+
+**p16 and Rb Regulation:**
+- p16 is degraded or exits (k43).
+- p16 and Rb can interact (k40, k42).
+- p16 inhibits Rb (red T-bar, k41).
+- Rb inhibits CycD/Cdk4, p21/CycD/Cdk4, and p27/CycD/Cdk4 complexes (red T-bars, k56, k58, k59).
+
+**Myb Pathway:**
+- E2F activates iB-Myb (k105).
+- iB-Myb is converted to aB-Myb by aCycA/Cdk2 (k106).
+- aB-Myb is degraded or exits (k107).
+
+**Overall, the diagram illustrates the intricate interactions between cyclins, CDKs, CDK inhibitors (p21, p27, p16), and the Rb-E2F pathway, which are central to cell cycle progression and regulation.**
+: diagram::>
+
+<a id='4dff851a-3d9c-4d10-a0c6-ed25d97a6e0a'></a>
+
+<::Biological pathway diagram showing interactions between various cell cycle regulators. The diagram consists of several oval-shaped nodes representing different proteins or protein complexes, and arrows indicating reactions or regulatory steps with associated rate constants (k values) and modifiers.nnNodes:n- iCdc25An- aCdc25An- CycEn- iCycE/Cdk2n- aCycE/Cdk2n- Cdk2n- CycAn- iCycA/Cdk2n- aCycA/Cdk2n- NF-Yn- p27/aCycE/Cdk2n- p27n- p21/aCycE/Cdk2n- p21n- p27/aCycA/Cdk2n- p21/aCycA/Cdk2nnReactions/Interactions:n- Input to iCdc25A (k80).n- iCdc25A to aCdc25A (k82).n- aCdc25A to iCdc25A (k85).n- iCdc25A degradation (k83, aChk1).n- aCdc25A degradation (k86, aChk1, k84).n- E2F activates CycE (k5).n- CycE degradation (k6).n- CycE and Cdk2 form iCycE/Cdk2 (k7, k16).n- iCycE/Cdk2 dissociates to CycE (k8).n- iCycE/Cdk2 to aCycE/Cdk2 (k23).n- aCycE/Cdk2 to iCycE/Cdk2 (k22).n- Cdk2 to aCycE/Cdk2 (k17).n- Cdk2 degradation/inactivation by aAPC/Cdc20, aAPC/Cdh1 (k14).n- Cdk2 and CycA form iCycA/Cdk2 (k15, k12).n- CycA degradation (k10).n- E2F, aB-Myb, NF-Y activate CycA (k130, k9, k75).n- CycA degradation/inactivation by aAPC/Cdc20, aAPC/Cdh1 (k126, k127).n- iCycA/Cdk2 to aCycA/Cdk2 (k29).n- aCycA/Cdk2 to iCycA/Cdk2 (k28, aCdc25A).n- NF-Y degradation (k89, k90).n- aCycE/Cdk2 to p27/aCycE/Cdk2 (k24).n- p27/aCycE/Cdk2 to p27 (k25).n- p27/aCycE/Cdk2 degradation/dissociation (k35, aCycE/Cdk2; k36, aCycA/Cdk2).n- p27 degradation (k34).n- aCycE/Cdk2 to p27 (k26).n- aCycE/Cdk2 to p21/aCycE/Cdk2 (k27).n- p21/aCycE/Cdk2 to p21 (k39).n- p21/aCycE/Cdk2 degradation (k30).n- p21 degradation (k38, p53; k37).n- aCycA/Cdk2 to p27/aCycA/Cdk2 (k32).n- p27/aCycA/Cdk2 degradation (k31).n- aCycA/Cdk2 to p21/aCycA/Cdk2 (k33).n- p21/aCycA/Cdk2 to p21.n- p21 activates iCycA/Cdk2.::>
+
+<a id='18d049e2-20a6-4ee7-b50e-0498feb5ce4b'></a>
+
+<::Biological pathway diagram showing interactions between various cell cycle regulators and their active/inactive forms, represented by nodes (oval shapes) and directed edges (arrows) with associated rate constants (k-values) or labels. The diagram includes the following components and their interactions:NF-Y activates CycB via k91.CycB is involved in a reversible reaction with iCycB/Cdk1cyto (k93, k92).Cdk1 activates iCycB/Cdk1cyto via k94.iCycB/Cdk1cyto activates aCycB/Cdk1cyto via k95.aCycB/Cdk1cyto is deactivated by aChk1 to iCycB/Cdk1cyto via k96.iCycB/Cdk1cyto transitions to iCycB/Cdk1nuc via k97.iCycB/Cdk1nuc transitions to iCycB/Cdk1cyto via k98.iCycB/Cdk1nuc activates aCycB/Cdk1nuc via k133.aCycB/Cdk1nuc is deactivated to iCycB/Cdk1nuc via k134.aCycB/Cdk1nuc transitions out via k136.aCycB/Cdk1nuc activates p21/aCycB/Cdk1 via k103.p21/aCycB/Cdk1 deactivates aCycB/Cdk1nuc via k104.p21 activates p21/aCycB/Cdk1.Wee1 is involved in a reversible reaction with Wee1p (k100, k101).Wee1p transitions out via k102.Wee1 deactivates aCycB/Cdk1nuc via k99.iCdc25C is activated by aCycB/Cdk1cyto or aCycB/Cdk1nuc to aCdc25C via k109.iCdc25C is deactivated by aChk1 to iCdc25C via k108.aCdc25C transitions out via k114.aCdc25C is deactivated by aChk1 to iCdc25C via k113.iCdc25C Ps216 is activated by aCycB/Cdk1cyto or aCycB/Cdk1nuc to aCdc25C Ps216 via k115.iCdc25C Ps216 is deactivated by aChk1 to iCdc25C Ps216 via k111.aCdc25C Ps216 transitions out via k116.aCdc25C Ps216 is deactivated by aChk1 to iCdc25C Ps216 via k112.14-3-3σ/iCdc25CPs216 transitions out via k121.14-3-3σ activates 14-3-3σ/iCdc25CPs216 via k120.14-3-3σ transitions out via k119.p53 activates 14-3-3σ via k117.aCycA/cdk2 activates 14-3-3σ via k118.iAPC/C^Cdh1 is involved in a reversible reaction with aAPC/C^Cdh1 (k124, k125).aCycB/Cdk1cyto activates iAPC/C^Cdh1 via k124.CycB activates aAPC/C^Cdh1 (k128, k129).iCycB/Cdk1nuc activates aAPC/C^Cdh1 (k135, k137).iAPC/C^Cdc20 is involved in a reversible reaction with aAPC/C^Cdc20 (k122, k123).aCycB/Cdk1nuc activates iAPC/C^Cdc20.aCycB/Cdk1cyto transitions to aCycB/Cdk1nuc via k131.aCycB/Cdk1nuc transitions to aCycB/Cdk1cyto via k132.::>
+
+<a id='3a154dd9-8012-44c2-bdf9-0e391e343b7b'></a>
+
+<::Flowchart illustrating a DNA damage response pathway.The pathway is initiated by a 'DNA damage signal' which is represented by a red jagged line.This signal leads to damaged DNA (represented by 'XXX' with a lightning bolt).From damaged DNA, an arrow labeled 'k72' points to 'Repair'.The 'DNA damage signal' also activates 'p53' (red arrow) and 'ATM/ATR' (red arrow).ATM/ATR is activated by damaged DNA (blue arrow labeled 'k78').ATM/ATR activates 'p53' (blue arrow labeled 'k60').p53 inhibits ATM/ATR (blue blunt-ended arrow labeled 'k61').p53 degrades (arrow labeled 'k62').ATM/ATR activates 'Im' (blue arrow labeled 'k79').ATM/ATR activates 'iChk1' (blue arrow labeled 'k88').iChk1 (inactive Chk1) converts to 'aChk1' (active Chk1), and 'aChk1' converts back to 'iChk1' (arrow labeled 'k87').p53 activates 'Im' (blue arrow labeled 'k70/k71').Im activates 'Mdm2' (blue arrow labeled 'k63').Im degrades (arrow labeled 'k67').Mdm2 inhibits 'p53' (red blunt-ended arrow).Mdm2 activates 'Im' (blue arrow labeled 'k66, k65').Mdm2 degrades (arrow labeled 'k64').: flowchart::>
+
+<a id='75df0a18-4de7-4797-82ce-2497cf1443ac'></a>
+
+<table id="0-1">
+<tr><td id="0-2">Chemical species</td><td id="0-3">Initial value</td><td id="0-4">Chemical species</td><td id="0-5">Initial value</td><td id="0-6">Chemical species</td><td id="0-7">Initial value</td></tr>
+<tr><td id="0-8">Y1</td><td id="0-9">3.00e-02</td><td id="0-a">Y19</td><td id="0-b">1.00e-03</td><td id="0-c">Y37</td><td id="0-d">1.00e-03</td></tr>
+<tr><td id="0-e">Y2</td><td id="0-f">1.00e-03</td><td id="0-g">Y20</td><td id="0-h">1.95e+00</td><td id="0-i">Y38</td><td id="0-j">0</td></tr>
+<tr><td id="0-k">Y3</td><td id="0-l">4.00e-05</td><td id="0-m">Y21</td><td id="0-n">1.00e-03</td><td id="0-o">Y39</td><td id="0-p">0</td></tr>
+<tr><td id="0-q">Y4</td><td id="0-r">5.00e+00</td><td id="0-s">Y22</td><td id="0-t">0</td><td id="0-u">Y40</td><td id="0-v">0</td></tr>
+<tr><td id="0-w">Y5</td><td id="0-x">1.50e+01</td><td id="0-y">Y23</td><td id="0-z">1.00e-02</td><td id="0-A">Y41</td><td id="0-B">0</td></tr>
+<tr><td id="0-C">Y6</td><td id="0-D">7.50e+00</td><td id="0-E">Y24</td><td id="0-F">5.00e-02</td><td id="0-G">Y42</td><td id="0-H">1.00e-06</td></tr>
+<tr><td id="0-I">Y7</td><td id="0-J">1.00e-03</td><td id="0-K">Y25</td><td id="0-L">2.65e-02</td><td id="0-M">Y43</td><td id="0-N">1.00e-06</td></tr>
+<tr><td id="0-O">Y8</td><td id="0-P">1.00e-03</td><td id="0-Q">Y26</td><td id="0-R">2.35e-04</td><td id="0-S">Y44</td><td id="0-T">3.00e-02</td></tr>
+<tr><td id="0-U">Y9</td><td id="0-V">4.00e-04</td><td id="0-W">Y27</td><td id="0-X">0</td><td id="0-Y">Y45</td><td id="0-Z">0</td></tr>
+<tr><td id="0-10">Y10</td><td id="0-11">1.00e-04</td><td id="0-12">Y28</td><td id="0-13">1.00e-03</td><td id="0-14">Y46</td><td id="0-15">2.00e+00</td></tr>
+<tr><td id="0-16">Y</td><td id="0-17">1.40e+01</td><td id="0-18">Y29</td><td id="0-19">1.00e-04</td><td id="0-1a">Y47</td><td id="0-1b">3.00e-02</td></tr>
+<tr><td id="0-1c">Y12</td><td id="0-1d">1.00e-03</td><td id="0-1e">Y30</td><td id="0-1f">9.90e-01</td><td id="0-1g">Y48</td><td id="0-1h">9.00e-01</td></tr>
+<tr><td id="0-1i">Y13</td><td id="0-1j">1.00e+00</td><td id="0-1k">Y31</td><td id="0-1l">1.00e-02</td><td id="0-1m">Y49</td><td id="0-1n">1.00e-01</td></tr>
+<tr><td id="0-1o">Y14</td><td id="0-1p">1.00e-04</td><td id="0-1q">Y32</td><td id="0-1r">0</td><td id="0-1s">Y50</td><td id="0-1t">1.00e-01</td></tr>
+<tr><td id="0-1u">Y15</td><td id="0-1v">0</td><td id="0-1w">Y33</td><td id="0-1x">0</td><td id="0-1y">Y51</td><td id="0-1z">9.00e-01</td></tr>
+<tr><td id="0-1A">Y16</td><td id="0-1B">0</td><td id="0-1C">Y34</td><td id="0-1D">1.00e+01</td><td id="0-1E">Y52</td><td id="0-1F">0</td></tr>
+<tr><td id="0-1G">Y17</td><td id="0-1H">0</td><td id="0-1I">Y35</td><td id="0-1J">1.00e-04</td><td id="0-1K">Y53</td><td id="0-1L">0</td></tr>
+<tr><td id="0-1M">Y18</td><td id="0-1N">0</td><td id="0-1O">Y36</td><td id="0-1P">1.00e-04</td><td id="0-1Q">Im</td><td id="0-1R">0</td></tr>
+</table>
+Abbreviations are as follows: Y₁: CycD, Y₂: CycE, Y₃: CycA, Y₄: Cdk4, Y₅: Cdk2, Y₆: CycD/Cdk4, Y₇: iCycE/Cdk2, Y₈: aCycE/Cdk2, Y₉: iCycA/Cdk2, Y₁₀: aCycA/Cdk2, Y₁₁:
+p27, Y₁₂: p27/CycD/Cdk4, Y₁₃: p27/CycE/Cdk2, Y₁₄: p27/CycA/Cdk2, Y₁₅: p21, Y₁₆: p21/CycD/Cdk4, Y₁₇: p21/CycE/Cdk2, Y₁₈: p21/CycA/Cdk2, Y₁₉: p16, Y₂₀: Rb/E2F, Y₂₁:
+Rb-PP/E2F, Y₂₂: E2F, Y₂₃: Rb-PPP, Y₂₄: Rb, Y₂₅: p53, Y₂₆: Mdm2, Y₂₇: ATM/ATR, Y₂₈: iCdc25A, Y₂₉: aCdc25A, Y₃₀: iChk1, Y₃₁: aChk1, Y₃₂: NF-Y, Y₃₃: CycB, Y₃₄: Cdk1, Y₃₅:
+iCycB/Cdk1cyto, Y₃₆: aCycB/Cdk1cyto, Y₃₇: Wee1, Y₃₈: Wee1p, Y₃₉: p21/CycB/Cdk1, Y₄₀: iB-Myb, Y₄₁: aB-Myb, Y₄₂: iCdc25C, Y₄₃: aCdc25C, Y₄₄: iCdc25CPs216, Y₄₅:
+aCdc25CPs216, Y₄₆: 14-3-3σ, Y₄₇: 14-3-3σ/iCdc25CPS216, Y₄₈: iAPC/Ccdc20, Y₄₉: aAPC/Ccdc20, Y₅₀: iAPC/Ccdh1, Y₅₁: aAPC/Ccdh1, Y₅₂: iCycB/Cdk1nuc, Y₅₃:
+aCycB/Cdk1nuc, Im: Intermediate, DDS: DNA damage signal
+
+<a id='828383aa-2940-46a2-9806-dcd473cff6b4'></a>
+
+<table id="0-1">
+<tr><td id="0-2">Kinetic parameter</td><td id="0-3">Value</td><td id="0-4">Kinetic parameter</td><td id="0-5">Value</td><td id="0-6">Kinetic parameter</td><td id="0-7">Value</td><td id="0-8">Kinetic parameter</td><td id="0-9">Value</td></tr>
+<tr><td id="0-a">k_1</td><td id="0-b">5.00e-04</td><td id="0-c">k_36</td><td id="0-d">1.50e-03</td><td id="0-e">k_71</td><td id="0-f">4.00e-03</td><td id="0-g">K106</td><td id="0-h">5.00e-02</td></tr>
+<tr><td id="0-i">k_2</td><td id="0-j">5.00e-04</td><td id="0-k">k_37</td><td id="0-l">5.00e-05</td><td id="0-m">k_72</td><td id="0-n">1.00e-08</td><td id="0-o">K107</td><td id="0-p">2.00e-03</td></tr>
+<tr><td id="0-q">k_3</td><td id="0-r">5.00e-03</td><td id="0-s">k_38</td><td id="0-t">1.00e-03</td><td id="0-u">k_73</td><td id="0-v">3.00e+00</td><td id="0-w">K108</td><td id="0-x">1.00e-05</td></tr>
+<tr><td id="0-y">k_4</td><td id="0-z">2.50e-03</td><td id="0-A">k_39</td><td id="0-B">5.00e-03</td><td id="0-C">k_74</td><td id="0-D">7.72e-01</td><td id="0-E">K109</td><td id="0-F">1.00e-02</td></tr>
+<tr><td id="0-G">k5</td><td id="0-H">1.00e-01</td><td id="0-I">K40</td><td id="0-J">2.00e-03</td><td id="0-K">K75</td><td id="0-L">1.00e-05</td><td id="0-M">k₁₁₀</td><td id="0-N">1.00e+00</td></tr>
+<tr><td id="0-O">k6</td><td id="0-P">2.50e-03</td><td id="0-Q">K41</td><td id="0-R">5.00e-05</td><td id="0-S">K76</td><td id="0-T">5.56e-02</td><td id="0-U">k₁₁₁</td><td id="0-V">1.00e-03</td></tr>
+<tr><td id="0-W">k7</td><td id="0-X">2.50e-03</td><td id="0-Y">k42</td><td id="0-Z">1.00e-04</td><td id="0-10">k77</td><td id="0-11">2.00e-02</td><td id="0-12">k₁₁₂</td><td id="0-13">1.00e-02</td></tr>
+<tr><td id="0-14">k8</td><td id="0-15">2.50e-05</td><td id="0-16">K43</td><td id="0-17">5.00e-04</td><td id="0-18">k78</td><td id="0-19">2.00e-01</td><td id="0-1a">k₁₁₃</td><td id="0-1b">1.00e-03</td></tr>
+<tr><td id="0-1c">ko</td><td id="0-1d">3.00e-04</td><td id="0-1e">K44</td><td id="0-1f">5.00e-04</td><td id="0-1g">K79</td><td id="0-1h">1.00e-02</td><td id="0-1i">k₁₁₄</td><td id="0-1j">1.00e-04</td></tr>
+<tr><td id="0-1k">k10</td><td id="0-1l">5.00e-04</td><td id="0-1m">K45</td><td id="0-1n">5.00e-05</td><td id="0-1o">k80</td><td id="0-1p">4.00e-02</td><td id="0-1q">k₁₁₅</td><td id="0-1r">1.00e-02</td></tr>
+<tr><td id="0-1s">k11</td><td id="0-1t">5.00e-04</td><td id="0-1u">K46</td><td id="0-1v">2.50e-03</td><td id="0-1w">K81</td><td id="0-1x">1.00e-03</td><td id="0-1y">K₁₁₆</td><td id="0-1z">1.00e+00</td></tr>
+<tr><td id="0-1A">k12</td><td id="0-1B">2.00e-04</td><td id="0-1C">K47</td><td id="0-1D">2.50e-03</td><td id="0-1E">K82</td><td id="0-1F">5.00e-02</td><td id="0-1G">k₁₁₇</td><td id="0-1H">1.00e+00</td></tr>
+<tr><td id="0-1I">k13</td><td id="0-1J">5.00e-04</td><td id="0-1K">K48</td><td id="0-1L">2.50e-03</td><td id="0-1M">K83</td><td id="0-1N">5.00e-03</td><td id="0-1O">K₁₁₈</td><td id="0-1P">1.00e-02</td></tr>
+<tr><td id="0-1Q">K14</td><td id="0-1R">7.50e-03</td><td id="0-1S">K49</td><td id="0-1T">4.00e-02</td><td id="0-1U">K84</td><td id="0-1V">1.00e-03</td><td id="0-1W">k₁₁₉</td><td id="0-1X">1.00e+00</td></tr>
+<tr><td id="0-1Y">k₁₅</td><td id="0-1Z">5.00e-03</td><td id="0-20">k₅₀</td><td id="0-21">2.50e-03</td><td id="0-22">k₈₅</td><td id="0-23">5.00e-03</td><td id="0-24">k₁₂₀</td><td id="0-25">1.00e+02</td></tr>
+<tr><td id="0-26">k₁₆</td><td id="0-27">5.00e-03</td><td id="0-28">k₅₁</td><td id="0-29">5.00e-08</td><td id="0-2a">k₈₆</td><td id="0-2b">5.00e-04</td><td id="0-2c">k₁₂₁</td><td id="0-2d">1.00e+00</td></tr>
+<tr><td id="0-2e">k₁₇</td><td id="0-2f">5.00e-02</td><td id="0-2g">k₅₂</td><td id="0-2h">5.00e-07</td><td id="0-2i">k₈₇</td><td id="0-2j">1.00e+00</td><td id="0-2k">k₁₂₂</td><td id="0-2l">5.00e-03</td></tr>
+<tr><td id="0-2m">k₁₈</td><td id="0-2n">5.00e-04</td><td id="0-2o">k₅₃</td><td id="0-2p">5.00e-05</td><td id="0-2q">k₈₈</td><td id="0-2r">1.00e+00</td><td id="0-2s">k₁₂₃</td><td id="0-2t">1.00e-02</td></tr>
+<tr><td id="0-2u">k₁₉</td><td id="0-2v">5.00e-03</td><td id="0-2w">k₅₄</td><td id="0-2x">1.00e-02</td><td id="0-2y">k₈₉</td><td id="0-2z">1.00e-03</td><td id="0-2A">k₁₂₄</td><td id="0-2B">1.00e-02</td></tr>
+<tr><td id="0-2C">k20</td><td id="0-2D">5.00e-04</td><td id="0-2E">K55</td><td id="0-2F">5.00e-08</td><td id="0-2G">K90</td><td id="0-2H">5.00e-04</td><td id="0-2I">k125</td><td id="0-2J">5.00e-03</td></tr>
+<tr><td id="0-2K">k21</td><td id="0-2L">5.00e-05</td><td id="0-2M">K56</td><td id="0-2N">5.00e-05</td><td id="0-2O">k91</td><td id="0-2P">2.00e-02</td><td id="0-2Q">k126</td><td id="0-2R">5.00e-03</td></tr>
+<tr><td id="0-2S">k22</td><td id="0-2T">6.00e-03</td><td id="0-2U">K57</td><td id="0-2V">5.00e-03</td><td id="0-2W">k92</td><td id="0-2X">5.00e-03</td><td id="0-2Y">k127</td><td id="0-2Z">5.00e-03</td></tr>
+<tr><td id="0-30">K23</td><td id="0-31">1.75e-03</td><td id="0-32">K58</td><td id="0-33">5.00e-05</td><td id="0-34">K93</td><td id="0-35">1.25e-03</td><td id="0-36">K128</td><td id="0-37">1.00e-03</td></tr>
+<tr><td id="0-38">K24</td><td id="0-39">2.25e-02</td><td id="0-3a">k59</td><td id="0-3b">5.00e-04</td><td id="0-3c">K94</td><td id="0-3d">2.50e-04</td><td id="0-3e">k129</td><td id="0-3f">3.00e-01</td></tr>
+<tr><td id="0-3g">K25</td><td id="0-3h">1.75e-04</td><td id="0-3i">K60</td><td id="0-3j">1.00e-04</td><td id="0-3k">k95</td><td id="0-3l">5.00e-02</td><td id="0-3m">k130</td><td id="0-3n">3.00e-06</td></tr>
+<tr><td id="0-3o">k26</td><td id="0-3p">2.25e-02</td><td id="0-3q">K61</td><td id="0-3r">7.00e-02</td><td id="0-3s">K96</td><td id="0-3t">1.00e-04</td><td id="0-3u">k131</td><td id="0-3v">1.00e-02</td></tr>
+<tr><td id="0-3w">K27</td><td id="0-3x">1.75e-04</td><td id="0-3y">k62</td><td id="0-3z">1.00e-03</td><td id="0-3A">K97</td><td id="0-3B">5.00e-03</td><td id="0-3C">k132</td><td id="0-3D">5.00e-05</td></tr>
+<tr><td id="0-3E">k28</td><td id="0-3F">9.00e-04</td><td id="0-3G">K63</td><td id="0-3H">9.40e-04</td><td id="0-3I">k98</td><td id="0-3J">5.00e-03</td><td id="0-3K">k133</td><td id="0-3L">5.00e-04</td></tr>
+<tr><td id="0-3M">k29</td><td id="0-3N">5.00e-05</td><td id="0-3O">K64</td><td id="0-3P">2.00e-02</td><td id="0-3Q">K99</td><td id="0-3R">2.00e-04</td><td id="0-3S">k134</td><td id="0-3T">1.00e-02</td></tr>
+<tr><td id="0-3U">k30</td><td id="0-3V">2.50e-03</td><td id="0-3W">K65</td><td id="0-3X">9.50e+00</td><td id="0-3Y">k100</td><td id="0-3Z">1.00e-01</td><td id="0-40">k135</td><td id="0-41">5.00e-03</td></tr>
+<tr><td id="0-42">k31</td><td id="0-43">1.75e-04</td><td id="0-44">K66</td><td id="0-45">1.00e+01</td><td id="0-46">K101</td><td id="0-47">1.00e+00</td><td id="0-48">K136</td><td id="0-49">5.00e-03</td></tr>
+<tr><td id="0-4a">k32</td><td id="0-4b">2.50e-03</td><td id="0-4c">K67</td><td id="0-4d">5.00e-03</td><td id="0-4e">k102</td><td id="0-4f">1.00e+00</td><td id="0-4g">k137</td><td id="0-4h">3.00e-02</td></tr>
+<tr><td id="0-4i">k33</td><td id="0-4j">1.75e-04</td><td id="0-4k">k68</td><td id="0-4l">5.00e-02</td><td id="0-4m">K103</td><td id="0-4n">2.25e-02</td><td id="0-4o">DDS</td><td id="0-4p">*</td></tr>
+<tr><td id="0-4q">K34</td><td id="0-4r">5.00e-08</td><td id="0-4s">k69</td><td id="0-4t">8.00e-04</td><td id="0-4u">K104</td><td id="0-4v">1.75e-04</td><td id="0-4w"></td><td id="0-4x"></td></tr>
+<tr><td id="0-4y">k35</td><td id="0-4z">5.00e-02</td><td id="0-4A">K70</td><td id="0-4B">6.00e+00</td><td id="0-4C">K105</td><td id="0-4D">5.00e-02</td><td id="0-4E"></td><td id="0-4F"></td></tr>
+</table>
+
+<a id='a142bcbc-1f1a-4747-bf7b-1bbf8480e8c2'></a>
+
+* The values of DDS were as follows: 0 (No-damage), 0.002 (Low-damage), 0.004 (Medium-damage), 0.008 (High-damage), and 0.016 (Excess-damage).
+
+<a id='b60870da-fd20-4fbb-b2d5-292cdfc4d2a5'></a>
+
+dY₁/dt = k₁ + k₄Y₆ - (k₂ + k₃Y₄)Y₁
+dY₂/dt = k₅Y₂₂ + k₈Y₇ - (k₆ + k₇Y₅)Y₂
+dY₃/dt = k₉Y₄₁ + k₁₃₀Y₂₂ + k₁₂Y₉ + k₇₅Y₃₂ - (k₁₀ + k₁₁Y₅ + k₁₂₆Y₄₉ + k₁₂₇Y₅₁)Y₃
+dY₄/dt = k₄Y₆ + k₁₃Y₆ - k₃Y₁Y₄
+dY₅/dt = k₈Y₇ + k₁₂Y₉ + k₁₄Y₁₀(Y₄₉ + Y₅₁) + k₁₅Y₉(Y₄₉ + Y₅₁) + k₁₆Y₇ + k₁₇Y₈Y₈ - (k₇Y₂ + k₁₁Y₃)Y₅
+dY₆/dt = k₃Y₁Y₄ + k₁₉Y₁₆ + k₂₁Y₁₂ - (k₄ + k₁₃ + k₁₈Y₁₅ + k₂₀Y₁₁ + k₄₄Y₁₉)Y₆
+dY₇/dt = k₇Y₂Y₅ + k₂₃Y₈ - (k₈ + k₂₂Y₂₉ + k₁₆)Y₇
+dY₈/dt = k₂₂Y₇Y₂₉ + k₂₅Y₁₃ + k₂₇Y₁₇ - (k₂₃ + k₂₄Y₁₁ + k₂₆Y₁₅ + k₁₇Y₈)Y₈
+dY₉/dt = k₁₁Y₃Y₅ + k₂₉Y₁₀ - (k₁₂ + k₂₈Y₂₉ + k₁₅(Y₄₉ + Y₅₁))Y₉
+dY₁₀/dt = k₂₈Y₉Y₂₉ + k₃₁Y₁₄ + k₃₃Y₁₈ - (k₂₉ + k₃₀Y₁₁ + k₃₂Y₁₅ + k₁₄(Y₄₉ + Y₅₁))Y₁₀
+dY₁₁/dt = k₃₄ + k₂₁Y₂₁ + k₂₅Y₁₃ + k₃₁Y₁₄ - (k₃₅Y₈ + k₃₆Y₁₀ + k₂₀Y₆ + k₂₄Y₈ + k₃₀Y₁₀)Y₁₁
+dY₁₂/dt = k₂₀Y₆Y₁₁ - k₂₁Y₁₂
+dY₁₃/dt = k₂₄Y₈Y₁₁ - k₂₅Y₁₃
+dY₁₄/dt = k₃₀Y₁₀Y₁₁ - k₃₁Y₁₄
+dY₁₅/dt = k₃₇ + k₃₈Y₂₅ + k₁₉Y₁₆ + k₂₇Y₁₇ + k₃₃Y₁₈ + k₁₀₄Y₃₉ - (k₃₉ + k₁₈Y₆ + k₂₆Y₈ + k₃₂Y₁₀ + k₁₀₃Y₅₃)Y₁₅
+dY₁₆/dt = k₁₈Y₆Y₁₅ - k₁₉Y₁₆
+dY₁₇/dt = k₂₆Y₈Y₁₅ - k₂₇Y₁₇
+dY₁₈/dt = k₃₂Y₁₀Y₁₅ - k₃₃Y₁₈
+dY₁₉/dt = k₄₀ + k₄₁/(1 + k₄₂Y₂₄) - (k₄₃ + k₄₄Y₆)Y₁₉
+dY₂₀/dt = k₄₅Y₂₂Y₂₄ - (k₄₆Y₆ + k₄₇Y₁₂ + k₄₈Y₁₆)Y₂₀
+dY₂₁/dt = k₄₆Y₆Y₂₀ + k₄₇Y₁₂Y₂₀ + k₄₈Y₁₆Y₂₀ - (k₄₉Y₈ + k₅₀Y₁₀)Y₂₁
+dY₂₂/dt = k₄₉Y₈Y₂₁ + k₅₀Y₁₀Y₂₁ + k₅₁Y₂₂ + k₅₂ - (k₄₅Y₂₄ + k₅₃ + k₅₄Y₁₀)Y₂₂
+dY₂₃/dt = k₄₉Y₈Y₂₁ + k₅₀Y₁₀Y₂₁ - k₅₅Y₂₃
+dY₂₄/dt = k₅₆ + k₅₈/(1 + k₅₉Y₁₉) + k₅₅Y₂₃ - (k₅₇ + k₄₅Y₂₂)Y₂₄
+dY₂₅/dt = k₆₀ + k₆₁Y₂₇ - (deg(t)Y₂₆ + k₆₂)Y₂₅
+dY₂₆/dt = k₆₃ + (k₆₆Im⁵⁰)/(k₆₅⁵⁰ + Im⁵⁰) - k₆₄Y₂₆
+dY₂₇/dt = k₇₈sig(t) - k₇₉Y₂₇
+dY₂₈/dt = k₈₀Y₂₂ + k₈₅Y₂₉ - (k₈₁Y₃₁ + k₈₂(Y₈ + Y₁₀) + k₈₃)Y₂₈
+dY₂₉/dt = k₈₂(Y₈ + Y₁₀)Y₂₈ - (k₈₄Y₃₁ + k₈₅ + k₈₆)Y₂₉
+dY₃₀/dt = k₈₇Y₃₁ - k₈₈Y₂₇Y₃₀
+dY₃₁/dt = k₈₈Y₂₇Y₃₀ - k₈₇Y₃₁
+dY₃₂/dt = k₈₉Y₁₀ - k₉₀Y₃₂
+dY₃₃/dt = k₉₁Y₃₂ + k₉₄Y₃₅ - (k₉₂ + k₉₃Y₃₄ + k₁₂₈Y₄₉ + k₁₂₉Y₅₁)Y₃₃
+dY₃₄/dt = k₉₄Y₃₅ + k₉₇Y₃₅(Y₄₉ + Y₅₁) + k₉₈Y₃₆(Y₄₉ + Y₅₁) - k₉₃Y₃₃Y₃₄
+dY₃₅/dt = k₉₃Y₃₃Y₃₄ + k₉₆Y₃₆ - (k₉₄ + k₉₅(Y₄₃ + Y₄₅) + k₉₇(Y₄₉ + Y₅₁))Y₃₅
+dY₃₆/dt = k₉₅(Y₄₃ + Y₄₅)Y₃₅ + k₁₃₂Y₅₃ - (k₉₆ + k₉₈(Y₄₉ + Y₅₁) + k₁₃₁Y₃₆)Y₃₆
+dY₃₇/dt = k₉₉ + k₁₀₁Y₃₈ - k₁₀₀Y₅₃Y₃₇
+dY₃₈/dt = k₁₀₀Y₅₃Y₃₇ - (k₁₀₁ + k₁₀₂)Y₃₈
+dY₃₉/dt = k₁₀₃Y₅₃Y₁₅ - k₁₀₄Y₃₉
+dY₄₀/dt = k₁₀₅Y₂₂ - k₁₀₆Y₁₀Y₄₀
+dY₄₁/dt = k₁₀₆Y₁₀Y₄₀ - k₁₀₇Y₄₁
+dY₄₂/dt = k₁₀₈ + k₁₀₉Y₄₃ - (k₁₁₀(Y₃₆ + Y₅₃) + k₁₁₁Y₃₁)Y₄₂
+dY₄₃/dt = k₁₁₀(Y₃₆ + Y₅₃)Y₄₂ + k₁₁₂Y₄₅ - (k₁₀₉Y₄₃ + k₁₁₃Y₃₁ + k₁₁₄)Y₄₃
+dY₄₄/dt = k₁₁₁Y₃₁Y₄₂ + k₁₁₅Y₄₅ - (k₁₁₆(Y₃₆ + Y₅₃) + k₁₂₀Y₄₆)Y₄₄
+dY₄₅/dt = k₁₁₃Y₃₁Y₄₃ + k₁₁₆(Y₃₆ + Y₅₃)Y₄₄ - (k₁₁₅ + k₁₁₂)Y₄₅
+dY₄₆/dt = k₁₁₇ + k₁₁₈Y₂₅ - (k₁₁₉ + k₁₂₀Y₄₄)Y₄₆
+
+<!-- PAGE BREAK -->
+
+<a id='ab5469cf-48df-4954-9949-32d06c80e8fe'></a>
+
+dY47/dt = k120Y44Y46 - k121Y47
+dY48/dt = k122Y49Y51 - k123Y48Y53
+dY49/dt = k123Y48Y53 - k122Y49Y51
+dY50/dt = k124Y51(Y53 + Y10) - k125Y50
+dY51/dt = k125Y50 - k124Y51(Y53 + Y10)
+dY52/dt = k133Y53Y37 - (k134(Y43 + Y45) + k136(Y49 + Y51))Y52
+dY53/dt = k131Y36Y36 + k134(Y43 + Y45)Y52 + k104Y39 - (k132 + k133Y37 + k135Y49 + k137Y51 + k103Y15)Y53
+dIm/dt = k70Y25sig(t)/(1 + k71Y25Y26) - k67Im
+sig(t) = DDS * exp(-k72 * time)
+deg(t) = k76 - k74 * (sig(t) - DDS * exp(-k77 * DDS * time))
+
+<a id='b3dce124-8c95-4f97-ac80-bb00d9bc07c5'></a>
+
+Abbreviations are shown in Table S1.
