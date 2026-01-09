@@ -36,4 +36,7 @@ deepSeek-reasoner,12,Wed: 12.15pm - 02.15pm ,0.25,0.92,1.0,0.25,1.37,0.79,1.08,1
 deepseek-reasoner,12,Fri: 4.30pm - 6.00pm,0.58,0.83,1.0,0.17,1.28,0.73,1.58,1.1,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
 deepseek-reasoner,12,Fri: 6.30pm - 8.00pm,0.33,0.67,0.92,0.17,0.87,0.65,1.04,0.78,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No
 gemini-2.5-pro,12,Thu: 8.00pm - 10.00pm,0.58,0.67,0.67,0.25,1.59,0.88,2.42,1.07,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-gemini-2.5-pro,12,Thu: 6.00pm - 8.00pm,0.92,1.0,1.0,0.08,0.89,0.23,1.04,0.79,6e1be57,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No
+gemini-2.5-pro,12,Thu: 6.00pm - 8.00pm,0.92,1.0,1.0,0.08,0.89,0.23,1.04,0.79,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No
+gemini-3.0-pro,12,Fri: 5.00pm - 6.00pm,0.0,0.92,1.0,0.42,1.38,1.27,1.08,1.18,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
+codestrial-2508,12,9.00am - 12.00pm,0.08,0.08,0.08,0.0,1.07,0.52,1.08,1.81,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
+magistral-medium-2509,12,2.00pm - 4.00pm,0.17,0.42,0.67,0.0,0.83,0.0,0.5,0.35,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
