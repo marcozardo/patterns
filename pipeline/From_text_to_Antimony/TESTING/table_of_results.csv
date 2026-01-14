@@ -40,3 +40,8 @@ gemini-2.5-pro,12,Thu: 6.00pm - 8.00pm,0.92,1.0,1.0,0.08,0.89,0.23,1.04,0.79,6e1
 gemini-3.0-pro,12,Fri: 5.00pm - 6.00pm,0.0,0.92,1.0,0.42,1.38,1.27,1.08,1.18,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
 codestrial-2508,12,9.00am - 12.00pm,0.08,0.08,0.08,0.0,1.07,0.52,1.08,1.81,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
 magistral-medium-2509,12,2.00pm - 4.00pm,0.17,0.42,0.67,0.0,0.83,0.0,0.5,0.35,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
+gemini-2.5-pro,80,8.00am - 12.00pm,0.60,0.74,0.75,0.25,1.08,0.44,1.06,1.15,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
+gemini-3.0-pro,80,8.00am - 6.00pm,0.18,0.73,0.98,0.31,1.0,0.91,1.01,1.2,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
+gpt-5.0,80,Mon: 10.30am - 10.30pm,0.61,0.88,0.96,0.25,1.0,1.14,1.06,1.19,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
+gpt-5.2,80,Tue: 9.45am - 11.25am,0.54,0.73,0.74,0.14,1.07,0.79,1.03,1.1,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
+deepSeek-reasoner,80,Tue: 12.00pm - 10.00pm,0.41,0.74,0.85,0.25,1.1,0.68,1.08,1.13,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
