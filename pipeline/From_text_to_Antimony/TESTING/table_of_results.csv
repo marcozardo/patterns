@@ -1,47 +1,58 @@
-LLM,N° paper,day: time-slot,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),AAFE evaluation (N°correct/N°paper),N° Species B&F(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original),Commit_code,Input_folder,Patterns,Info,Suppl. Materials
-gpt-5.0,10,Wed: 12.00pm - 1.30am,0.8,0.9,1.0,0.2,0.6,0.37,0.95,1.1,eded44d,input_1,Converter + Editor,///,No
-gpt-5.0,10,Thu: 3.15pm - 4.20pm,0.7,1.0,1.0,0.1,0.78,0.35,1.1,1.04,eded44d,input_2,Converter + Editor,///,No
-deepseek-reasoner,10,Thu: 6.30pm - 8.20pm,0.1,0.2,0.5,0.0,0.69,0.32,0.95,0.91,eded44d,input_1,Converter + Editor,///,No
-deepSeek-reasoner,10,Wed: 2.15pm - 4.15pm,0.4,0.5,0.6,0.1,0.72,0.23,1.1,0.97,eded44d,input_2,Converter + Editor,///,No
-gemini-2.5-pro,10,afternoon,0.6,0.7,0.7,0.1,0.69,0.46,0.88,0.95,eded44d,input_1,Converter + Editor,///,No
-gemini-2.5-pro,10,afternoon,0.8,1.0,0.9,0.1,0.78,0.4,1.05,0.97,eded44d,input_2,Converter + Editor,///,No
-gpt-5.0,10,Thu:12.00pm - 12.30am,0.8,0.9,1.0,0.1,0.75,0.34,1.1,1.01,95c2541,input_2,Converter + Editor,///,No
-deepSeek-chat,10,Wed: 10.15pm - 11.00pm,0.1,0.4,0.6,0.2,0.73,0.35,0.95,1.26,95c2541,input_3,Converter + Editor,///,No
-deepSeek-reasoner,10,Thu: 01.30am - 3.15am,0.0,0.2,0.3,0.0,0.72,0.31,1.05,1.07,95c2541,input_1,Converter + Editor,///,No
-gemini-2.5-pro,10,afternoon,0.6,0.7,0.5,0.1,0.66,0.51,0.92,0.87,95c2541,input_1,Converter + Editor,///,No
-gemini-2.5-pro,10,afternoon,0.6,0.7,0.7,0.0,0.6,0.55,0.98,1.05,95c2541,input_1,Converter + Editor,///,No
-mistral-medium,10,Thu: 1.00am - 1.30am,0.0,0.0,0.1,0.1,0.84,0.37,0.82,1.12,95c2541,input_1,Converter + Editor,///,No
-gpt-5.0,10,Fri: 9.30am - 10.30am,0.7,0.9,1.0,0.2,0.61,0.39,1.05,1.07,514e338,input_1,Converter + Editor,///,No
-gpt-5.0,10,Thu: 3.30pm - 4.15pm,0.8,1.0,1.0,0.1,0.6,0.35,1.1,1.21,514e338,input_2,Converter + Editor,///,No
-gpt-5.0,10,Thu: 6.00pm - 6.45pm,0.6,0.9,1.0,0.2,0.74,0.55,1.05,1.31,514e338,input_3,Converter + Editor,///,No
-deepSeek-reasoner,10,Fri: 10.30am - 12.10pm,0.4,0.4,0.5,0.0,0.78,0.36,1.05,1.0,514e338,input_1,Converter + Editor,///,No
-deepSeek-reasoner,10,Thu: 4.40pm - 5.45pm,0.2,0.4,0.9,0.1,0.76,0.07,1.2,0.92,514e338,input_2,Converter + Editor,///,No
-deepSeek-reasoner,10,Thu: 6.45pm -8.00pm,0.1,0.4,0.6,0.0,0.71,0.24,0.95,0.99,514e338,input_3,Converter + Editor,///,No
-gemini-2.5-pro,10,Thu: 3.00pm - 4.00pm,0.3,0.4,0.8,0.1,0.7,0.74,1.02,0.61,514e338,input_1,Converter + Editor,///,No
-gemini-2.5-pro,10,Thu: 4.00pm - 5.00pm,0.5,0.7,0.9,0.1,0.66,0.42,0.75,0.64,514e338,input_2,Converter + Editor,///,No
-gemini-2.5-pro,10,Fri: 10.00am - 11.00am,0.4,0.8,0.8,0.0,0.61,0.36,0.95,1.06,514e338,input_3,Converter + Editor,///,No
-gpt-5.0,10,Tue: 11.45am - 12.45pm,0.9,0.8,1.0,0.2,0.89,0.79,1.18,1.25,6e1be56,input_1,Converter + Editor,///,No
-gpt-5.0,10,Mon: 4.30pm - 5.15pm,0.8,0.9,0.9,0.1,0.69,0.64,1.25,1.02,6e1be56,input_2,Converter + Editor,///,No
-gpt-5.0,10,Mon: 11.45pm - 12.30am,0.6,0.9,0.9,0.0,0.65,0.73,1.1,1.2,6e1be56,input_3,Converter + Editor,///,No
-deepSeek-reasoner,10,Tue: 10.00am - 11.30am,0.4,0.6,0.9,0.1,0.64,0.43,0.95,0.89,6e1be56,input_1,Converter + Editor,///,No
-deepSeek-reasoner,10,Mon: 10.30pm - 11.30pm,0.3,1.0,1.0,0.2,0.82,0.64,1.1,0.96,6e1be56,input_2,Converter + Editor,///,No
-deepSeek-reasoner,10,Tue: 12.45am - 2.00am,0.2,0.7,0.9,0.0,0.71,0.59,0.95,1.02,6e1be56,input_3,Converter + Editor,///,No
-gemini-2.5-pro,10,Thu: 9.00am - 11.00am,0.6,0.5,0.5,0.0,0.62,0.39,0.95,0.95,6e1be56,input_1,Converter + Editor,///,No
-gemini-2.5-pro,10,Thu: 11.00am - 12.00pm,0.7,1.0,0.9,0.2,0.74,0.34,0.95,0.75,6e1be56,input_2,Converter + Editor,///,No
-gemini-2.5-pro,10,Thu: 11.00am - 12.00pm,0.4,0.8,0.8,0.0,0.59,0.37,0.95,0.95,6e1be56,input_3,Converter + Editor,///,No
-gpt-5.0,12,Tue_Wed: 6.00pm - 2.30am,0.42,1.0,1.0,0.33,1.37,1.07,1.08,1.23,6e1be56,input_R,Converter + Editor,with original Antimony models (reproducible),No
-gpt-5.0,12,Fri: 3.00pm - 4.30pm,0.58,1.0,1.0,0.25,0.9,1.05,1.0,1.1,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-gpt-5.0,12,Sun:11.30am - 12.30am,0.75,0.92,0.92,0.0,0.83,0.63,1.04,0.90,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No
-deepSeek-reasoner,12,Wed: 12.15pm - 02.15pm ,0.25,0.92,1.0,0.25,1.37,0.79,1.08,1.12,6e1be56,input_R,Converter + Editor,with original Antimony models (reproducible),No
-deepseek-reasoner,12,Fri: 4.30pm - 6.00pm,0.58,0.83,1.0,0.17,1.28,0.73,1.58,1.1,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-deepseek-reasoner,12,Fri: 6.30pm - 8.00pm,0.33,0.67,0.92,0.17,0.87,0.65,1.04,0.78,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No
-gemini-2.5-pro,12,Thu: 8.00pm - 10.00pm,0.58,0.67,0.67,0.25,1.59,0.88,2.42,1.07,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-gemini-2.5-pro,12,Thu: 6.00pm - 8.00pm,0.92,1.0,1.0,0.08,0.89,0.23,1.04,0.79,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No
-gemini-3.0-pro,12,Fri: 5.00pm - 6.00pm,0.0,0.92,1.0,0.42,1.38,1.27,1.08,1.18,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-codestrial-2508,12,9.00am - 12.00pm,0.08,0.08,0.08,0.0,1.07,0.52,1.08,1.81,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-magistral-medium-2509,12,2.00pm - 4.00pm,0.17,0.42,0.67,0.0,0.83,0.0,0.5,0.35,6e1be56,input_R,Converter + Editor,with modified R models (adding species declaration),No
-gemini-2.5-pro,80,8.00am - 12.00pm,0.60,0.74,0.75,0.25,1.08,0.44,1.06,1.15,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
-gemini-3.0-pro,80,8.00am - 6.00pm,0.18,0.73,0.98,0.31,1.0,0.91,1.01,1.2,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
-gpt-5.0,80,Mon: 10.30am - 10.30pm,0.61,0.88,0.96,0.25,1.0,1.14,1.06,1.19,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
-gpt-5.2,80,Tue: 9.45am - 11.25am,0.54,0.73,0.74,0.14,1.07,0.79,1.03,1.1,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
-deepSeek-reasoner,80,Tue: 12.00pm - 10.00pm,0.41,0.74,0.85,0.25,1.1,0.68,1.08,1.13,6e1be56,input_R,Converter + Editor,with partially modified R models (adding species declaration),Yes
+LLM,N° paper,day: time-slot,First simulation (ratio),Second simulation (ratio),Third simulation (ratio),AAFE evaluation (N°correct/N°paper),N° Species B&F(query/original),N° Reactions(query/original),N° Compartments(query/original),N° Glob.Parameters(query/original),Commit_code,Input_folder,Patterns,Modification_Info,Suppl. Materials,Temperature,Topp
+gpt-5.0,10,Wed: 12.00am - 1.30am,0.8,0.9,1.0,0.2,0.6,0.37,0.95,1.1,eded44d,input_1,Converter + Editor,///,No,1,1
+gpt-5.0,10,Thu: 3.15pm - 4.20pm,0.7,1.0,1.0,0.1,0.78,0.35,1.1,1.04,eded44d,input_2,Converter + Editor,///,No,1,1
+deepseek-reasoner,10,Mon: 3.30pm - 5.00pm,0.5,0.6,0.9,0.2,0.76,0.47,1.15,0.9,eded44d,input_1,Converter + Editor,///,No,0.7,0.9
+deepSeek-reasoner,10,Wed: 2.15am - 4.15am,0.4,0.5,0.6,0.1,0.72,0.23,1.1,0.97,eded44d,input_2,Converter + Editor,///,No,0.7,0.9
+gemini-2.5-pro,10,afternoon,0.6,0.7,0.7,0.1,0.69,0.46,0.88,0.95,eded44d,input_1,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,afternoon,0.8,1.0,0.9,0.1,0.78,0.4,1.05,0.97,eded44d,input_2,Converter + Editor,///,No,1,1
+gpt-5.0,10,Thu:12.00am - 12.30am,0.8,0.9,1.0,0.1,0.75,0.34,1.1,1.01,95c2541,input_2,Converter + Editor,///,No,1,1
+deepSeek-chat,10,Wed: 10.15pm - 11.00pm,0.1,0.4,0.6,0.2,0.73,0.35,0.95,1.26,95c2541,input_3,Converter + Editor,///,No,0.2,0.9
+deepSeek-reasoner,10,Thu: 01.30am - 3.15am,0.0,0.2,0.3,0.0,0.72,0.31,1.05,1.07,95c2541,input_1,Converter + Editor,///,No,0.2,0.9
+gemini-2.5-pro,10,afternoon,0.6,0.7,0.5,0.1,0.66,0.51,0.92,0.87,95c2541,input_1,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,afternoon,0.6,0.7,0.7,0.0,0.6,0.55,0.98,1.05,95c2541,input_1,Converter + Editor,///,No,1,1
+mistral-medium,10,Thu: 1.00am - 1.30am,0.0,0.0,0.1,0.1,0.84,0.37,0.82,1.12,95c2541,input_1,Converter + Editor,///,No,0.2,0.9
+gpt-5.0,10,Fri: 9.30am - 10.30am,0.7,0.9,1.0,0.2,0.61,0.39,1.05,1.07,514e338,input_1,Converter + Editor,///,No,1,1
+gpt-5.0,10,Thu: 3.30pm - 4.15pm,0.8,1.0,1.0,0.1,0.6,0.35,1.1,1.21,514e338,input_2,Converter + Editor,///,No,1,1
+gpt-5.0,10,Thu: 6.00pm - 6.45pm,0.6,0.9,1.0,0.2,0.74,0.55,1.05,1.31,514e338,input_3,Converter + Editor,///,No,1,1
+deepSeek-reasoner,10,Fri: 10.30am - 12.10pm,0.4,0.4,0.5,0.0,0.78,0.36,1.05,1.0,514e338,input_1,Converter + Editor,///,No,1,1
+deepSeek-reasoner,10,Thu: 4.40pm - 5.45pm,0.2,0.4,0.9,0.1,0.76,0.07,1.2,0.92,514e338,input_2,Converter + Editor,///,No,1,1
+deepSeek-reasoner,10,Thu: 6.45pm -8.00pm,0.1,0.4,0.6,0.0,0.71,0.24,0.95,0.99,514e338,input_3,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,Thu: 3.00pm - 4.00pm,0.3,0.4,0.8,0.1,0.7,0.74,1.02,0.61,514e338,input_1,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,Thu: 4.00pm - 5.00pm,0.5,0.7,0.9,0.1,0.66,0.42,0.75,0.64,514e338,input_2,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,Fri: 10.00am - 11.00am,0.4,0.8,0.8,0.0,0.61,0.36,0.95,1.06,514e338,input_3,Converter + Editor,///,No,1,1
+gpt-5.0,10,Tue: 11.45am - 12.45pm,0.9,0.8,1.0,0.2,0.89,0.79,1.18,1.25,6e1be56,input_1,Converter + Editor,///,No,1,1
+gpt-5.0,10,Mon: 4.30pm - 5.15pm,0.8,0.9,0.9,0.1,0.69,0.64,1.25,1.02,6e1be56,input_2,Converter + Editor,///,No,1,1
+gpt-5.0,10,Mon: 11.45pm - 12.30am,0.6,0.9,0.9,0.0,0.65,0.73,1.1,1.2,6e1be56,input_3,Converter + Editor,///,No,1,1
+deepSeek-reasoner,10,Tue: 10.00am - 11.30am,0.4,0.6,0.9,0.1,0.64,0.43,0.95,0.89,6e1be56,input_1,Converter + Editor,///,No,1,1
+deepSeek-reasoner,10,Mon: 10.30pm - 11.30pm,0.3,1.0,1.0,0.2,0.82,0.64,1.1,0.96,6e1be56,input_2,Converter + Editor,///,No,1,1
+deepSeek-reasoner,10,Tue: 12.45am - 2.00am,0.2,0.7,0.9,0.0,0.71,0.59,0.95,1.02,6e1be56,input_3,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,Thu: 9.00am - 11.00am,0.6,0.5,0.5,0.0,0.62,0.39,0.95,0.95,6e1be56,input_1,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,Thu: 11.00am - 12.00pm,0.7,1.0,0.9,0.2,0.74,0.34,0.95,0.75,6e1be56,input_2,Converter + Editor,///,No,1,1
+gemini-2.5-pro,10,Thu: 11.00am - 12.00pm,0.4,0.8,0.8,0.0,0.59,0.37,0.95,0.95,6e1be56,input_3,Converter + Editor,///,No,1,1
+gpt-5.0,12,Tue_Wed: 6.00pm - 2.30am,0.42,1.0,1.0,0.33,1.37,1.07,1.08,1.23,6e1be56,input_R,Converter + Editor,with original Antimony models (reproducible),No,1,1
+gpt-5.0*,12,Fri: 3.00pm - 4.30pm,0.58,1.0,1.0,0.25,0.9,1.05,1.0,1.1,6e1be56,input_R,Converter + Editor,adding species declaration,No,1,1
+gpt-5.0**,12,Fri: 11.15am,0.58,0.83,0.92,0.25,1.26,1.22,1.17,1.41,6e1be56,input_R,Converter + Editor,adding species declaration,Yes,1,1
+gpt-5.0,12,Sun:11.30am - 12.30am,0.75,0.92,0.92,0.0,0.83,0.63,1.04,0.90,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No,1,1
+deepSeek-reasoner,12,Wed: 12.15pm - 02.15pm ,0.25,0.92,1.0,0.25,1.37,0.79,1.08,1.12,6e1be56,input_R,Converter + Editor,with original Antimony models (reproducible),No,1,1
+deepseek-reasoner*,12,Fri: 4.30pm - 6.00pm,0.58,0.83,1.0,0.17,1.28,0.73,1.58,1.1,6e1be56,input_R,Converter + Editor,adding species declaration,No,1,1
+deepseek-reasoner**,12,Wed: 1.00pm - 2.30pm,0.25,0.75,0.92,0.25,1.23,0.5,1.08,1.32,6e1be56,input_R,Converter + Editor,adding species declaration,Yes,1,1
+deepseek-reasoner,12,Fri: 6.30pm - 8.00pm,0.33,0.67,0.92,0.17,0.87,0.65,1.04,0.78,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No,1,1
+gemini-2.5-pro*,12,Thu: 8.00pm - 10.00pm,0.58,0.67,0.67,0.25,1.59,0.88,2.42,1.07,6e1be56,input_R,Converter + Editor,adding species declaration,No,1,1
+gemini-2.5-pro**,12,Fri: 5.00pm,0.42,0.67,0.67,0.33,1.19,0.5,1.0,1.51,6e1be56,input_R,Converter + Editor,adding species declaration,Yes,1,1
+gemini-2.5-pro,12,Thu: 6.00pm - 8.00pm,0.92,1.0,1.0,0.08,0.89,0.23,1.04,0.79,6e1be56,input_RMC,Converter + Editor,with original Antimony models (no reproducible),No,1,1
+gemini-3.0-pro*,12,Fri: 5.00pm - 6.00pm,0.0,0.92,1.0,0.42,1.38,1.27,1.08,1.18,6e1be56,input_R,Converter + Editor,adding species declaration,No,1,1
+gemini-3.0-pro**,12,Sat: 1.00pm,0.17,0.75,0.92,0.33,1.26,0.98,1.08,1.33,6e1be56,input_R,Converter + Editor,adding species declaration,Yes,1,1
+codestrial-2508*,12,9.00am - 12.00pm,0.08,0.08,0.08,0.0,1.07,0.52,1.08,1.81,6e1be56,input_R,Converter + Editor,adding species declaration,No,1,1
+magistral-medium-2509*,12,2.00pm - 4.00pm,0.17,0.42,0.67,0.0,0.83,0.0,0.5,0.35,6e1be56,input_R,Converter + Editor,adding species declaration,No,1,1
+gemini-2.5-pro#,80,8.00am - 12.00pm,0.60,0.74,0.75,0.25,1.08,0.44,1.06,1.15,6e1be56,input_R,Converter + Editor,partially modified R models : adding species declaration,Yes,1,1
+gemini-3.0-pro#,80,8.00am - 6.00pm,0.18,0.73,0.98,0.31,1.0,0.91,1.01,1.2,6e1be56,input_R,Converter + Editor,partially modified R models : adding species declaration,Yes,1,1
+gpt-5.0#,80,Mon: 10.30am - 10.30pm,0.61,0.88,0.96,0.25,1.0,1.14,1.06,1.19,6e1be56,input_R,Converter + Editor,partially modified R models : adding species declaration,Yes,1,1
+gpt-5.2#,80,Tue: 9.45am - 11.25am,0.54,0.73,0.74,0.14,1.07,0.79,1.03,1.1,6e1be56,input_R,Converter + Editor,partially modified R models : adding species declaration,Yes,0.7,0.9
+deepSeek-reasoner#,80,Tue: 12.00pm - 10.00pm,0.41,0.74,0.85,0.25,1.1,0.68,1.08,1.13,6e1be56,input_R,Converter + Editor,partially modified R models : adding species declaration,Yes,0.7,0.9
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+* : original antimony model modified by user ,,,,,,,,,,,,,,,,,
+**: original antimony model modified by user + supplementary  information in input paper,,,,,,,,,,,,,,,,,
+# mixed of original antimony models and modified ones,,,,,,,,,,,,,,,,,
