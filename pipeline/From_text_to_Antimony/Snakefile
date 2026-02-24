@@ -31,7 +31,7 @@ rule conversion:
         "workdir/fabric_output/{sample}.txt"
 
     shell:
-        "Type {input} | fabric -t 1 -T 1 -p Converter > {output}; Start-Sleep -Seconds 1.5"
+        "Type {input} | fabric -s -p Converter > {output}; Start-Sleep -Seconds 1.5"
         
 # PS command for GPT models (like gpt-5) : Type {input} | fabric -t 1 -T 1 -p Antimony_Converter > {output}; Start-Sleep -Seconds 1.5
 # PS command for claude models (like claude-sonnet-4.*) : Type {input} | fabric -t 0.2 -p Antimony_Converter > {output}; Start-Sleep -Seconds 1.5
@@ -91,7 +91,7 @@ rule first_correction:
         corrected_model = "workdir/corrected/{sample}_1C.txt"
 
     shell:
-        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 1 -T 1 -p Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5" 
+        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -s -p Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5" 
 
 # PS command for GPT models (like gpt-5) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 1 -T 1 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5
 # PS command for claude models (like claude-sonnet-4.*) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 0.2 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5
@@ -150,7 +150,7 @@ rule second_correction:
         corrected_model = "workdir/corrected/{sample}_2C.txt"
 
     shell:
-        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 1 -T 1 -p Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5" 
+        "(Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -s -p Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5" 
 
 # PS command for GPT models (like gpt-5) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 1 -T 1 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5
 # PS command for claude models (like claude-sonnet-4.*) : (Type {input.model}) + '==SIMULATION ERROR==' + (Type {input.error}) | fabric -t 0.2 -p Antimony_Editor > {output.corrected_model}; Start-Sleep -Seconds 1.5 
@@ -225,9 +225,30 @@ rule fourth_aggregation:
         df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output[0], index=False)
 
+rule Hamming_distance_Evaluation:
+    input:
+        "workdir/final_models/{sample}_tested.txt",
+        "workdir/expected_output_R/or{sample}.txt"
+    output:
+        "workdir/Evaluation/HAMMING/gen{sample}_vs_or{sample}_hammingRatio_eval.csv"
+    script:
+        "workdir/ComputeHammingDist.py"
+
+rule fifth_aggregation:
+    input:
+        expand("workdir/Evaluation/HAMMING/gen{sample}_vs_or{sample}_hammingRatio_eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/HAMMING_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
 rule aggregate_all:
     input:
-        expand("workdir/CSV/{number}_evaluation.csv", number=["first","second","third", "AAFE"])
+        expand("workdir/CSV/{number}_evaluation.csv", number=["first","second","third", "AAFE", "HAMMING"])
 
     output:
         "workdir/all_simulations.csv"
