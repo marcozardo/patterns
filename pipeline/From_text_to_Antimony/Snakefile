@@ -232,7 +232,7 @@ rule Hamming_distance_Evaluation:
     output:
         "workdir/Evaluation/HAMMING/gen{sample}_vs_or{sample}_hammingRatio_eval.csv"
     script:
-        "workdir/ComputeHammingDist.py"
+        "scripts/ComputeHammingDist.py"
 
 rule fifth_aggregation:
     input:

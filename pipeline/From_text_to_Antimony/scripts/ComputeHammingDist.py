@@ -44,7 +44,7 @@ def checking_simulation(gen_file, orig_file):
         # write the ratio on a CSV:
 
         
-    csv_out= pd.DataFrame({"Hamming_ratio": [hamming_percentage]})
+    csv_out= pd.DataFrame({"Hamming ratio": [hamming_percentage]})
     csv_out.to_csv(hamming_ratio, index=False)
 
     

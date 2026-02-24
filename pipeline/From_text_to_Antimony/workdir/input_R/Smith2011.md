@@ -1198,7 +1198,7 @@ NIH-PA Author Manuscript
 
 <a id='0213ed93-6f73-483d-8a34-9249ce8d48c7'></a>
 
-# Supplementary Material
+# Supplementary Materials
 
 ## Mathematical Model of a Three-Stage Innate Immune Response to a Pneumococcal Lung Infection
 

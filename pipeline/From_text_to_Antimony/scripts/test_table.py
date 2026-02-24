@@ -46,7 +46,7 @@ third_column = pd.Series.to_list(third_column)
 fourth_column = pd.Series(df2["AAFE evaluation"])
 fourth_column = pd.Series.to_list(fourth_column)
 
-fifth_column = pd.Series(df2["HAMMING evaluation"])
+fifth_column = pd.Series(df2["Hamming ratio"])
 
 total = len(first_column)
 first_success = first_column.count(0)
