@@ -3,6 +3,8 @@ model *Perelson1993_HIVinfection_CD4Tcells_ModelA()
 
   // Compartments and Species:
   compartment COMpartment;
+  species $T in COMpartment, $T_1 in COMpartment, $T_2 in COMpartment;
+  species $V in COMpartment;
 
   // Assignment Rules:
   T_tot := T + T_1 + T_2;
@@ -13,6 +15,12 @@ model *Perelson1993_HIVinfection_CD4Tcells_ModelA()
   T_2' = k_2*T_1 - mu_b*T_2;
   V' = N*mu_b*T_2 - k_1*V*T - mu_V*V;
 
+  // Species initializations:
+  T = 1000;
+  T_1 = 0;
+  T_2 = 0;
+  V = 0.001;
+
   // Compartment initializations:
   COMpartment = 1;
   COMpartment has litre;
@@ -22,18 +30,14 @@ model *Perelson1993_HIVinfection_CD4Tcells_ModelA()
   r = 0.03;
   T_max = 1500;
   mu_T = 0.02;
-  T = 1000;
-  T_1 = 0;
-  T_2 = 0;
   k_1 = 2.4e-05;
-  V = 0.001;
   k_2 = 0.003;
   mu_b = 0.24;
   mu_V = 2.4;
   N = 1400;
 
   // Other declarations:
-  var T, T_1, T_2, V, T_tot;
+  var T_tot;
   const COMpartment, s, r, T_max, mu_T, k_1, k_2, mu_b, mu_V, N;
 
   // Unit definitions:

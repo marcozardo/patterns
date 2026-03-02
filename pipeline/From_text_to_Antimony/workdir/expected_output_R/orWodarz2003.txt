@@ -3,6 +3,8 @@ model *Wodarz2003_CTL_cross_priming()
 
   // Compartments and Species:
   compartment COMpartment;
+  species $C in COMpartment, $A_star in COMpartment, $T in COMpartment;
+  species $A in COMpartment;
 
   // Assignment Rules:
   R := C*A_star/(q*T);
@@ -13,21 +15,24 @@ model *Wodarz2003_CTL_cross_priming()
   A' = lambda - delta_1*A - alpha*A*T;
   A_star' = alpha*A*T - delta_2*A_star;
 
+  // Species initializations:
+  T = 0.1;
+  C = 0.3;
+  A = 2;
+  A_star = 2;
+
   // Compartment initializations:
   COMpartment = 1;
 
   // Variable initializations:
-  T = 0.1;
+  
   r = 1;
   k = 10;
   d = 0.1;
   gamma_ = 1;
-  C = 0.3;
-  A = 2;
   lambda = 1;
   delta_1 = 0.1;
   alpha = 0.5;
-  A_star = 2;
   delta_2 = 1.5;
   eta = 2;
   epsilon = 1;
@@ -35,7 +40,7 @@ model *Wodarz2003_CTL_cross_priming()
   mu = 0.1;
 
   // Other declarations:
-  var T, C, A, A_star, R;
+  var R;
   const COMpartment, r, k, d, gamma_, lambda, delta_1, alpha, delta_2, eta;
   const epsilon, q, mu;
 

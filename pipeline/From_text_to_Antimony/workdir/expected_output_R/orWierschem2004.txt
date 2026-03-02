@@ -3,6 +3,8 @@ model *Wierschem2004_PancreaticIslets_ActionPotentials()
 
   // Compartments and Species:
   compartment COMpartment;
+  species $ATP in COMpartment, $ADP in COMpartment, $V_membrane in COMpartment;
+  species $n in COMpartment, $c in COMpartment;
 
   // Assignment Rules:
   phi := ATP*(1 + k*ADP)^2;
@@ -22,6 +24,13 @@ model *Wierschem2004_PancreaticIslets_ActionPotentials()
   n' = (n_infinity - n)/tau_n;
   c' = J_mem;
 
+  // Species initializations:
+  ATP = 2.1047;
+  ADP = 0.085817;
+  V_membrane = -67.018;
+  n = 0.00011;
+  c = 0.15666;
+
   // Compartment initializations:
   COMpartment = 1;
   COMpartment has litre;
@@ -31,20 +40,15 @@ model *Wierschem2004_PancreaticIslets_ActionPotentials()
   eta = 185;
   v = 10;
   k = 20;
-  ATP = 2.1047;
-  ADP = 0.085817;
   C_m = 5300;
-  V_membrane = -67.018;
   g_Ca_ = 1200;
   V_Ca = 25;
   v_m = -20;
   s_m = 12;
   g_K_ = 3000;
   V_K = -75;
-  n = 0.00011;
   g_KCa_ = 300;
   k_D = 0.3;
-  c = 0.15666;
   g_KATP_ = 350;
   tau_n = 16;
   v_n = -16;
@@ -54,8 +58,8 @@ model *Wierschem2004_PancreaticIslets_ActionPotentials()
   k_c = 0.1;
 
   // Other declarations:
-  var phi, ATP, ADP, V_membrane, I_Ca, I_K, I_KCa, I_KATP, m_infinity, n;
-  var omega, c, n_infinity, J_mem;
+  var phi, I_Ca, I_K, I_KCa, I_KATP, m_infinity;
+  var omega, n_infinity, J_mem;
   const COMpartment, tau_c, eta, v, k, C_m, g_Ca_, V_Ca, v_m, s_m, g_K_, V_K;
   const g_KCa_, k_D, g_KATP_, tau_n, v_n, s_n, f, alpha, k_c;
 
