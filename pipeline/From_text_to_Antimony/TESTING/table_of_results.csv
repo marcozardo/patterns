@@ -53,7 +53,7 @@ gemini-3.0-pro,20,9.00am - 12.40pm,0.15,0.85,1.00,0.15,0.94,0.66,0.87,0.78,6e1be
 gemini-3.0-pro,20,2.00pm - 3.30pm,0.35,0.75,0.85,0.20,0.93,0.81,0.87,1.05,6e1be56,input_R,Converter + Editor,Yes,Yes,1,1
 gemini-2.5-pro,80,8.00am - 12.00pm,0.60,0.74,0.75,0.25,1.08,0.44,1.06,1.15,6e1be56,input_R,Converter + Editor,Yes,Yes,1,1
 gemini-3.0-pro,80,8.00am - 6.00pm,0.18,0.73,0.98,0.33,1.02,0.92,1.01,1.2,6e1be56,input_R,Converter + Editor,Yes,Yes,1,1
-gemini-3.0-pro,80,,0.20,0.65,0.95,0.35,0.99,0.63,0.90,1.21,6e1be56,input_R,Converter + Editor,Yes,Yes,1,1
+gemini-3.0-pro,80,04/03/2026,0.26,0.85,0.96,0.33,1.07,1.00,1.05,1.15,6e1be56,input_R,Converter + Editor,Yes,Yes,1,1
 gemini-3.0-pro,80,2.00pm - 5.00pm,0.28,0.73,0.94,0.29,0.96,0.73,0.92,1.07,6e1be56,input_R,Converter + Editor,Yes,Yes,0.7,0.9
 gpt-5.0,80,Mon: 10.30am - 10.30pm,0.61,0.88,0.96,0.25,1.0,1.14,1.06,1.19,6e1be56,input_R,Converter + Editor,Yes,Yes,1,1
 gpt-5.2,80,Tue: 9.45am - 11.25am,0.54,0.73,0.74,0.14,1.07,0.79,1.03,1.1,6e1be56,input_R,Converter + Editor,Yes,Yes,0.7,0.9
