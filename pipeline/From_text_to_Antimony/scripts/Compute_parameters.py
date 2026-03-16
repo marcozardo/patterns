@@ -179,7 +179,9 @@ def order_matrices_by_original_columns(gen_df, orig_df):
 
         if len(generated2original[orig_col]) > 0:
             correct_pattern += 1   
-
+   
+        print("dizionatio riordinato\n")
+        print(generated2original)
     # selection of the closest candidates
 
     for i, (orig_col, gcandidates) in enumerate(generated2original.items()):
@@ -193,8 +195,12 @@ def order_matrices_by_original_columns(gen_df, orig_df):
             )
             ordered_generated_cols.append(zero_vec)
 
-            errors.append(o_vector - zero_vec)
-
+            error_vec = np.zeros_like(o_vector, dtype=float)
+            mask = (o_vector != 0) | (zero_vec.values != 0)
+            den_zero = np.where(o_vector == 0, 1, o_vector)
+            error_vec[mask] = ((o_vector[mask] - zero_vec[mask]) / den_zero[mask])**2
+            errors.append(error_vec)
+            
             hamming_dist.append(distance.hamming(o_vector, zero_vec))
 
             continue
@@ -217,7 +223,15 @@ def order_matrices_by_original_columns(gen_df, orig_df):
 
             correct_coeff += 1
         else:
-            errors.append(o_vector - best_vec)
+            
+            error_vec = np.zeros_like(o_vector, dtype=float)
+            mask = (o_vector != 0) | (best_vec != 0)
+            den = np.where(o_vector == 0, 1, o_vector)
+            error_vec[mask] = ((o_vector[mask] - best_vec[mask]) / den[mask])**2
+            #error_vec = (o_vector != best_vec).astype(float)
+
+            print(error_vec)
+            errors.append(error_vec)
 
             hamming_dist.append(distance.hamming(o_vector, best_vec))
 
@@ -229,39 +243,47 @@ def order_matrices_by_original_columns(gen_df, orig_df):
 
     if len(errors) > 0:
 
-        errors = np.concatenate(errors)
+        errors = np.array(errors)
 
-        rmse = np.sqrt(np.mean(errors**2))
+        print(f"errors:\n{errors}")
 
-        rmse_norm = rmse / np.max(np.abs(orig_df.values))
+        rmse_per_reaction = np.sqrt(np.mean(errors, axis=1))
+
+        for i, ev in enumerate(errors):
+            print(f"Errore reazione {i+1}: {ev}, RMSE per reazione: {rmse_per_reaction[i]}")
+
+        rmse_avg = np.mean(rmse_per_reaction)
 
     else:
 
-        rmse_norm = 0
+        rmse_avg = 0
 
     hamming_avg = np.mean(hamming_dist) if hamming_dist else 0
 
-    return percent_pattern, percent_coeff, rmse_norm, hamming_avg
+    return percent_pattern, percent_coeff, rmse_avg, hamming_avg
 
 
 
 # test:
 
-d1 = {
-    "G1": [-1,1,0,0],
-    "G2": [0,-2,0,0],
+d_orig = {
+    "R1": [-1, 1, 0, 0],
+    "R2": [0, -1, 1, 0],
+    "R3": [0, 0, -1, 1]
 }
 
+df_orig = pd.DataFrame(d_orig, index=["A", "B", "C", "D"])
 
-df1 = pd.DataFrame(data=d1,index=["A","B","Y","Z"])
-
-d2 = {
-    "R1": [-1,1,0,0],
-    "R2": [0,-1,1,0]
+d_gen = {
+    "G1": [-1, 1, 0, 0],   # R1 perfetta
+    "G2": [0, -2, 0, 0],   # R2 parzialmente sbagliata (B sbagliata)
+    "G3": [0, 0, -1, 0]    # R3 parzialmente sbagliata (D mancante)
 }
 
+df_gen = pd.DataFrame(d_gen, index=["A", "B", "C", "D"])
 
-df2 = pd.DataFrame(data=d2,index=["A","B","C","D"])
+print(df_orig)
+print(df_gen)
 
 #original_file = "orAguda1999.txt"
 
@@ -270,20 +292,21 @@ df2 = pd.DataFrame(data=d2,index=["A","B","C","D"])
 #result_1 = checking_simulation(generated_file, original_file)
 
 
-gen_matrix, orig_matrix = getStechiometricMatrices(df1, df2)
+#gen_matrix, orig_matrix = getStechiometricMatrices(df1, df2)
 
-gen_ordered_matrix = Ordering_by_original_rownames(df1, df2)
+gen_ordered_matrix = Ordering_by_original_rownames(df_gen, df_orig)
+x, y, z, hamming = order_matrices_by_original_columns(gen_ordered_matrix, df_orig)
 
-x, y, z, hamming = order_matrices_by_original_columns(gen_ordered_matrix, df2)
+#csv_out_1=pd.DataFrame({"success based on sources&target":[x]})
+#csv_out_1.to_csv("Source&Target.csv", index=False)
 
-csv_out_1=pd.DataFrame({"success based on sources&target":[x]})
-csv_out_1.to_csv("Source&Target.csv", index=False)
+#csv_out_2= pd.DataFrame({"success based on real coeff": [y]})
+#csv_out_2.to_csv("Success_Real_coeff.csv", index=False)
 
-csv_out_2= pd.DataFrame({"success based on real coeff": [y]})
-csv_out_2.to_csv("Success_Real_coeff.csv", index=False)
+#csv_out_3 = pd.DataFrame({"Rmse-norm": [z]})
+#csv_out_3.to_csv("Rmse.csv", index=False)
 
-csv_out_3 = pd.DataFrame({"Rmse-norm": [z]})
-csv_out_3.to_csv("Rmse.csv", index=False)
+#csv_out_4 = pd.DataFrame({"hamming": [hamming]})
+#csv_out_4.to_csv("hamming.csv", index=False)
 
-csv_out_4 = pd.DataFrame({"hamming": [hamming]})
-csv_out_4.to_csv("hamming.csv", index=False)
+print(f"source_target:{x},\nreal_coeff:{y},\nhamming_ratio:{hamming},\nrmse_ratio:{z}")
