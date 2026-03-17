@@ -37,6 +37,8 @@ def checking_simulation(gen_file, orig_file):
 
         gen_matrix, orig_matrix = getStechiometricMatrices(gen_file, orig_file)
 
+        gen_matrix, orig_matrix = normalization(gen_matrix,orig_matrix)
+
         gen_ordered_matrix = Ordering_by_original_rownames(gen_matrix, orig_matrix)
 
         x, y, z, hamming = order_matrices_by_original_columns(gen_ordered_matrix, orig_matrix)
@@ -102,7 +104,27 @@ def getStechiometricMatrices(gen_file, orig_file):
     except Exception:
 
         return None, None
+
+def normalization(generated_dataframe, original_dataframe):
     
+    orig_sp = original_dataframe.index
+    gen_sp = generated_dataframe.index
+
+    adj_gen_sp = []
+    adj_orig_sp = []
+
+    for i , j in zip(gen_sp,orig_sp):
+
+        gen_norm = i.replace("_","").lower()
+        orig_norm = j.replace("_","").lower()
+
+        adj_gen_sp.append(gen_norm)
+        adj_orig_sp.append(orig_norm)
+
+    generated_dataframe.index = adj_gen_sp
+    original_dataframe.index = adj_orig_sp
+
+    return generated_dataframe, original_dataframe
 
 def Ordering_by_original_rownames(df1,df2):
 
@@ -272,7 +294,7 @@ d_orig = {
     "R3": [0, 0, -1, 1]
 }
 
-df_orig = pd.DataFrame(d_orig, index=["A", "B", "C", "D"])
+df_orig = pd.DataFrame(d_orig, index=["A_i", "B_T", "C_r", "D_1r"])
 
 d_gen = {
     "G1": [-1, 1, 0, 0],   # R1 perfetta
@@ -280,7 +302,7 @@ d_gen = {
     "G3": [0, 0, -1, 0]    # R3 parzialmente sbagliata (D mancante)
 }
 
-df_gen = pd.DataFrame(d_gen, index=["A", "B", "C", "D"])
+df_gen = pd.DataFrame(d_gen, index=["A_i", "B_T", "D_1r", "C_r"])
 
 print(df_orig)
 print(df_gen)
@@ -293,6 +315,12 @@ print(df_gen)
 
 
 #gen_matrix, orig_matrix = getStechiometricMatrices(df1, df2)
+
+df_gen,df_orig = normalization(df_gen,df_orig)
+
+print(f"\ngenerated matrix with normalization: {df_gen}\n")
+
+print(f"\noriginal matrix with normalization: {df_orig}\n")
 
 gen_ordered_matrix = Ordering_by_original_rownames(df_gen, df_orig)
 x, y, z, hamming = order_matrices_by_original_columns(gen_ordered_matrix, df_orig)
