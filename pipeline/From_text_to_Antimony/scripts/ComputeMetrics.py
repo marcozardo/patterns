@@ -114,24 +114,15 @@ def getStechiometricMatrices(gen_file, orig_file):
 
 def normalization(generated_dataframe, original_dataframe):
     
-    orig_sp = original_dataframe.index
-    gen_sp = generated_dataframe.index
+    adj_gen_sp = [s.replace("_", "") for s in generated_dataframe.index]
 
-    adj_gen_sp = []
-    adj_orig_sp = []
-
-    for i , j in zip(gen_sp,orig_sp):
-
-        gen_norm = i.replace("_","").lower()
-        orig_norm = j.replace("_","").lower()
-
-        adj_gen_sp.append(gen_norm)
-        adj_orig_sp.append(orig_norm)
+    adj_orig_sp = [s.replace("_", "") for s in original_dataframe.index]
 
     generated_dataframe.index = adj_gen_sp
     original_dataframe.index = adj_orig_sp
 
     return generated_dataframe, original_dataframe
+
 
 def Ordering_by_original_rownames(df1,df2):
 
