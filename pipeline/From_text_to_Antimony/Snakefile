@@ -230,15 +230,57 @@ rule Hamming_distance_Evaluation:
         "workdir/final_models/{sample}_tested.txt",
         "workdir/expected_output_R/or{sample}.txt"
     output:
-        "workdir/Evaluation/HAMMING/gen{sample}_vs_or{sample}_hammingRatio_eval.csv"
+        "workdir/Evaluation/Arrow%/gen{sample}_vs_or{sample}_Arrow_eval.csv",
+        "workdir/Evaluation/Reaction%/gen{sample}_vs_or{sample}_Reaction_eval.csv",
+        "workdir/Evaluation/Av_Hamming_Distance/gen{sample}_vs_or{sample}_Hamming_eval.csv",
+        "workdir/Evaluation/Av_RMSRE/gen{sample}_vs_or{sample}_RMSRE_eval.csv",
+        "workdir/Evaluation/different_species/{sample}_different_species.txt",
+        "workdir/Evaluation/missing_species/{sample}_missing_species.txt"
+
     script:
-        "scripts/ComputeHammingDist.py"
+        "scripts/ComputeMetrics.py"
 
 rule fifth_aggregation:
     input:
-        expand("workdir/Evaluation/HAMMING/gen{sample}_vs_or{sample}_hammingRatio_eval.csv",sample=Papers)
+        expand("workdir/Evaluation/Arrow%/gen{sample}_vs_or{sample}_Arrow_eval.csv",sample=Papers)
     output:
-        "workdir/CSV/HAMMING_evaluation.csv"
+        "workdir/CSV/Arrow%_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
+rule sixth_aggregation:
+    input:
+        expand("workdir/Evaluation/Reaction%/gen{sample}_vs_or{sample}_Reaction_eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/Reaction%_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
+rule seventh_aggregation:
+    input:
+        expand("workdir/Evaluation/Av_Hamming_Distance/gen{sample}_vs_or{sample}_Hamming_eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/AvHammingDist_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
+rule eighth_aggregation:
+    input:
+        expand("workdir/Evaluation/Av_RMSRE/gen{sample}_vs_or{sample}_RMSRE_eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/AvRMSRE_evaluation.csv"
     run:
         import pandas as pd
         
@@ -248,7 +290,7 @@ rule fifth_aggregation:
 
 rule aggregate_all:
     input:
-        expand("workdir/CSV/{number}_evaluation.csv", number=["first","second","third", "AAFE", "HAMMING"])
+        expand("workdir/CSV/{metric}_evaluation.csv", metric=["first","second","third","AAFE","Arrow%","Reaction%","AvHammingDist","AvRMSRE"])
 
     output:
         "workdir/all_simulations.csv"

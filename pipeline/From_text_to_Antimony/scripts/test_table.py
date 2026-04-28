@@ -18,7 +18,10 @@ data = {
     "Second simulation (ratio)":True,
     "Third simulation (ratio)":True,
     "AAFE evaluation (N°correct/N°paper)":True,
-    "Total Hamming ratio":True,
+    "Arrow%":True,
+    "Reaction%":True,
+    "Average Hamming distance":True,
+    "Average RMSRE":True,
     "N° Species B&F(query/original)":round(df3.iloc[0, 0], 2),
     "N° Reactions(query/original)":round(df3.iloc[0, 1], 2),
     "N° Compartments(query/original)":round(df3.iloc[0, 2], 2),
@@ -46,7 +49,13 @@ third_column = pd.Series.to_list(third_column)
 fourth_column = pd.Series(df2["AAFE evaluation"])
 fourth_column = pd.Series.to_list(fourth_column)
 
-fifth_column = pd.Series(df2["Hamming ratio"])
+fifth_column = pd.Series(df2["Arrow%"])
+
+sixth_column = pd.Series(df2["Reaction%"])
+
+seventh_column = pd.Series(df2["Average_Hamming_Distance"])
+
+eighth_column = pd.Series(df2["Average_RMSRE"])
 
 total = len(first_column)
 first_success = first_column.count(0)
@@ -61,6 +70,9 @@ ratio_2 = (second_success/total)
 ratio_3 =  (third_success/total)
 ratio_4 = (fourth_success/total)
 ratio_5 = fifth_column.mean()
+ratio_6 = sixth_column.mean()
+ratio_7 = seventh_column.mean()
+ratio_8 = eighth_column.mean()
 
 print("day and time slot in which you have been used this LLM model:")
 df["Day:time-slot"] = input()
@@ -70,6 +82,10 @@ df["First simulation (ratio)"] = ratio_1
 df["Second simulation (ratio)"] = ratio_2
 df["Third simulation (ratio)"] = ratio_3
 df["AAFE evaluation (N°correct/N°paper)"] = ratio_4
-df["Total Hamming ratio"] = ratio_5
+df["Arrow%"] = ratio_5
+df["Reaction%"] = ratio_6
+df["Average Hamming distance"] = ratio_7
+df["Average RMSRE"] = ratio_8
+
 
 df.to_csv(out_csv)

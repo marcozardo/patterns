@@ -6,11 +6,14 @@ from collections import OrderedDict
 
 # Snakemake inputs & output
 
-#generated_model = snakemake.input[0]
-#original_model = snakemake.input[1]
-#success_SourceTarget = snakemake.output[0]
-#success_RealCoeff = snakemake.output[1]
-#hamming_percentage = snakemake.output[0]
+generated_model = snakemake.input[0]
+original_model = snakemake.input[1]
+Arrow_evaluation = snakemake.output[0]
+Reaction_evaluation = snakemake.output[1]
+Av_Hamming_Dist_evaluation = snakemake.output[2]
+Av_RMSRE_evaluation = snakemake.output[3]
+different = snakemake.output[4]
+missing = snakemake.output[5]
 
 
 # Loading the models and extract the stechiometric matrices
@@ -45,12 +48,22 @@ def checking_simulation(gen_file, orig_file):
             average_hamming_distance = np.nan
             average_RMSRE = np.nan
 
+            # save empty spurious/different species txt
+            with open(different, "w") as f_5:
+                f_5.write("Species in generated Stoichiometric matrix NOT found in original:\n")
+                f_5.write("No matrices, No information") 
+
+            # save empty missing species txt
+            with open(missing, "w") as f_6:
+                f_6.write("Species in original Stoichiometric matrix NOT found in generated:\n")
+                f_6.write("No matrices, No information")
+
         else:
-            gen_matrix, orig_matrix = normalization(gen_matrix,orig_matrix)
+            gen_norm_matrix, orig_norm_matrix = normalization(gen_matrix,orig_matrix)
 
-            gen_ordered_matrix = Ordering_by_original_rownames(gen_matrix, orig_matrix)
+            gen_ordered_matrix = Ordering_by_original_rownames(gen_norm_matrix, orig_norm_matrix)
 
-            arrow, Reaction, average_hamming_distance, average_RMSRE = order_matrices_by_original_columns(gen_ordered_matrix, orig_matrix)
+            arrow, Reaction, average_hamming_distance, average_RMSRE = order_matrices_by_original_columns(gen_ordered_matrix, orig_norm_matrix)
        
 
     else:
@@ -60,18 +73,18 @@ def checking_simulation(gen_file, orig_file):
         average_RMSRE = np.nan
 
         # write the ratios on a CSV:
-
-    csv_out_1=pd.DataFrame({"Arrow%":[arrow]})
-    csv_out_1.to_csv("Arrow%.csv", index=False)
-
-    csv_out_2= pd.DataFrame({"Reaction%": [Reaction]})
-    csv_out_2.to_csv("Reaction%.csv", index=False)
-
-    csv_out_3 = pd.DataFrame({"Average_hamming_distance": [average_hamming_distance]})
-    csv_out_3.to_csv("average_hamming_dist.csv", index=False)
-
-    csv_out_4 = pd.DataFrame({"Average_RMSRE": [average_RMSRE]})
-    csv_out_4.to_csv("Average RMSRE.csv", index=False)
+    with open(Arrow_evaluation, "w") as f_1:
+        csv_out_1=pd.DataFrame({"Arrow%":[arrow]})
+        csv_out_1.to_csv(Arrow_evaluation, index=False)
+    with open(Reaction_evaluation, "w") as f_2:
+        csv_out_2= pd.DataFrame({"Reaction%": [Reaction]})
+        csv_out_2.to_csv(Reaction_evaluation, index=False)
+    with open(Av_Hamming_Dist_evaluation, "w") as f_3:
+        csv_out_3 = pd.DataFrame({"Average_Hamming_Distance": [average_hamming_distance]})
+        csv_out_3.to_csv(Av_Hamming_Dist_evaluation, index=False)
+    with open(Av_RMSRE_evaluation, "w") as f_4:
+        csv_out_4 = pd.DataFrame({"Average_RMSRE": [average_RMSRE]})
+        csv_out_4.to_csv(Av_RMSRE_evaluation, index=False)
    
 # Function Extraction_matrix: load the models if simulation goes fine and extract the stechiomatric matrix of both (generated vs original)
 
@@ -114,12 +127,31 @@ def getStechiometricMatrices(gen_file, orig_file):
 
 def normalization(generated_dataframe, original_dataframe):
     
-    adj_gen_sp = [s.replace("_", "") for s in generated_dataframe.index]
+    generated_dataframe.index = [s.replace("_", "") for s in generated_dataframe.index]
 
-    adj_orig_sp = [s.replace("_", "") for s in original_dataframe.index]
+    original_dataframe.index = [s.replace("_", "") for s in original_dataframe.index]
 
-    generated_dataframe.index = adj_gen_sp
-    original_dataframe.index = adj_orig_sp
+    # extraction of unmatched species after normalization
+    orig_species = set(original_dataframe.index)
+    gen_species = set(generated_dataframe.index)
+
+    # Case 1: species in generated but NOT in original (spurious/different species)
+    unmatched_gen_species = gen_species - orig_species
+
+    # Case 2: species in original but NOT in generated (missing species)
+    unmatched_orig_species = orig_species - gen_species
+
+    # save spurious/different species to txt
+    with open(different, "w") as f_5:
+        f_5.write("Species in generated Stoichiometric matrix NOT found in original:\n")
+        for species in sorted(unmatched_gen_species):
+            f_5.write(f"{species}\n") 
+    
+    # save missing species to txt
+    with open(missing, "w") as f_6:
+        f_6.write("Species in original Stoichiometric matrix NOT found in generated:\n")
+        for species in sorted(unmatched_orig_species):
+            f_6.write(f"{species}\n")
 
     return generated_dataframe, original_dataframe
 
@@ -267,3 +299,8 @@ def order_matrices_by_original_columns(gen_df, orig_df):
         hamming_avg = np.mean(hamming_dist)
 
     return arrow_percent, reaction_percent, hamming_avg, rmsre_avg
+
+
+# Run
+
+checking_simulation(generated_model, original_model)
