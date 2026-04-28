@@ -51,12 +51,12 @@ def checking_simulation(gen_file, orig_file):
             # save empty spurious/different species txt
             with open(different, "w") as f_5:
                 f_5.write("Species in generated Stoichiometric matrix NOT found in original:\n")
-                f_5.write("No matrices, No information") 
+                f_5.write("\nNo matrices, No information") 
 
             # save empty missing species txt
             with open(missing, "w") as f_6:
                 f_6.write("Species in original Stoichiometric matrix NOT found in generated:\n")
-                f_6.write("No matrices, No information")
+                f_6.write("\nNo matrices, No information")
 
         else:
             gen_norm_matrix, orig_norm_matrix = normalization(gen_matrix,orig_matrix)
@@ -71,6 +71,16 @@ def checking_simulation(gen_file, orig_file):
         Reaction = np.nan
         average_hamming_distance = np.nan
         average_RMSRE = np.nan
+
+        # generated model doesn't executable, empty txt files
+
+        with open(different, "w") as f_5:
+                f_5.write("Species in generated Stoichiometric matrix NOT found in original:\n")
+                f_5.write("\nGenerated model not executable, No information") 
+
+        with open(missing, "w") as f_6:
+                f_6.write("Species in original Stoichiometric matrix NOT found in generated:\n")
+                f_6.write("\nGenerated model not executable, No information")
 
         # write the ratios on a CSV:
     with open(Arrow_evaluation, "w") as f_1:
@@ -145,13 +155,13 @@ def normalization(generated_dataframe, original_dataframe):
     with open(different, "w") as f_5:
         f_5.write("Species in generated Stoichiometric matrix NOT found in original:\n")
         for species in sorted(unmatched_gen_species):
-            f_5.write(f"{species}\n") 
+            f_5.write(f"\n{species}\n") 
     
     # save missing species to txt
     with open(missing, "w") as f_6:
         f_6.write("Species in original Stoichiometric matrix NOT found in generated:\n")
         for species in sorted(unmatched_orig_species):
-            f_6.write(f"{species}\n")
+            f_6.write(f"\n{species}\n")
 
     return generated_dataframe, original_dataframe
 
@@ -290,7 +300,7 @@ def order_matrices_by_original_columns(gen_df, orig_df):
 
     if len(errors) > 0:
         errors = np.array(errors)
-        print(f"errors:\n{errors}")
+        #print(f"errors:\n{errors}")
         row_sums = np.sum(errors, axis=1)
         rmsre_avg = np.sqrt(np.mean(row_sums))
 
