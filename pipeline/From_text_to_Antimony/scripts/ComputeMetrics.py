@@ -115,6 +115,8 @@ def getStechiometricMatrices(gen_file, orig_file):
 
             gen_df = pd.DataFrame(gen_matrix, index=depen_gen_sp)
 
+            gen_df = gen_df.loc[:,(gen_df != 0).any(axis=0)]
+
     # Loading the original model and extracting its stechiometric matrix
         
         with open(orig_file, "r") as file2:
@@ -128,6 +130,8 @@ def getStechiometricMatrices(gen_file, orig_file):
             orig_matrix = orig_model.getFullStoichiometryMatrix()
 
             orig_df = pd.DataFrame(orig_matrix, index=depen_or_sp)
+
+            orig_df = orig_df.loc[:,(orig_df != 0).any(axis=0)]
 
         return gen_df, orig_df
     
