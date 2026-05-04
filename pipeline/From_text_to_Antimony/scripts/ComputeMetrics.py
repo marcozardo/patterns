@@ -234,7 +234,11 @@ def order_matrices_by_original_columns(gen_df, orig_df):
                 original2generated[orig_col].append(gen_col)        
 
         if len(original2generated[orig_col]) > 0:
-            correct_pattern += 1   
+            correct_pattern += 1 
+
+        # set of available generated columns
+
+    available_gen_cols = set(gen_df.columns)  
     
     # selection of the closest candidates
 
@@ -243,7 +247,11 @@ def order_matrices_by_original_columns(gen_df, orig_df):
         o_vector = orig_df[orig_col].values
         epsilon = 1
 
-        if len(gcandidates) == 0:
+        # filter candidates to only those still available
+        
+        available_candidates = [c for c in gcandidates if c in available_gen_cols]
+
+        if len(available_candidates) == 0:
 
             zero_vec = pd.Series(
                 np.zeros(orig_df.shape[0]),
@@ -255,7 +263,7 @@ def order_matrices_by_original_columns(gen_df, orig_df):
         else:
             distances = []
 
-            for candidate in gcandidates:
+            for candidate in available_candidates:
                 g_vector = gen_df[candidate].values
                 dist = np.linalg.norm(o_vector - g_vector)
                 distances.append(dist)
@@ -266,6 +274,10 @@ def order_matrices_by_original_columns(gen_df, orig_df):
             best_vec = gen_df[best_gen_col].values
 
             ordered_generated_cols.append(gen_df[best_gen_col])
+
+            # remove assigned column from available set --> 1:1 mapping enforced
+
+            available_gen_cols.remove(best_gen_col)
         
         if np.array_equal(o_vector,best_vec):
 
