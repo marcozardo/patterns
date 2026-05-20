@@ -1,0 +1,9 @@
+generated,original
+Prot14_3_3,protein_14_3_3
+Rad3,Rad3_ATM
+Wee1P,Wee1_phosphorylated
+aCdc25,Cdc25_active
+aCdc25Ps216,Cdc25Ps216_active
+iCdc25,Cdc25_inactive
+iCdc25Ps216,Cdc25Ps216_inactive
+iCdc25Ps216_14_3_3,Cdc25Ps21614_3_3_inactive

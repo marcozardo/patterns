@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 generated_model = snakemake.input[0]
 original_model = snakemake.input[1]
+species_map = snakemake.input[2]
 Arrow_evaluation = snakemake.output[0]
 Reaction_evaluation = snakemake.output[1]
 Av_Hamming_Dist_evaluation = snakemake.output[2]
@@ -59,11 +60,11 @@ def checking_simulation(gen_file, orig_file):
                 f_6.write("\nNo matrices, No information")
 
         else:
-            gen_norm_matrix, orig_norm_matrix = normalization(gen_matrix,orig_matrix)
+            gen_norm_matrix_mapped = normalization(gen_matrix,orig_matrix,csv_path=species_map)
 
-            gen_ordered_matrix = Ordering_by_original_rownames(gen_norm_matrix, orig_norm_matrix)
+            gen_ordered_matrix = Ordering_by_original_rownames(gen_norm_matrix_mapped, orig_matrix)
 
-            arrow, Reaction, average_hamming_distance, average_RMSRE = order_matrices_by_original_columns(gen_ordered_matrix, orig_norm_matrix)
+            arrow, Reaction, average_hamming_distance, average_RMSRE = order_matrices_by_original_columns(gen_ordered_matrix, orig_matrix)
        
 
     else:
@@ -139,11 +140,11 @@ def getStechiometricMatrices(gen_file, orig_file):
 
         return None, None
 
-def normalization(generated_dataframe, original_dataframe):
+def normalization(generated_dataframe, original_dataframe, csv_path):
     
-    generated_dataframe.index = [s.replace("_", "") for s in generated_dataframe.index]
+    #generated_dataframe.index = [s.replace("_", "") for s in generated_dataframe.index]
 
-    original_dataframe.index = [s.replace("_", "") for s in original_dataframe.index]
+    #original_dataframe.index = [s.replace("_", "") for s in original_dataframe.index]
 
     # extraction of unmatched species after normalization
     orig_species = set(original_dataframe.index)
@@ -159,15 +160,46 @@ def normalization(generated_dataframe, original_dataframe):
     with open(different, "w") as f_5:
         f_5.write("Species in generated Stoichiometric matrix NOT found in original:\n")
         for species in sorted(unmatched_gen_species):
-            f_5.write(f"\n{species}\n") 
+            f_5.write(f"{species}\n") 
     
     # save missing species to txt
     with open(missing, "w") as f_6:
         f_6.write("Species in original Stoichiometric matrix NOT found in generated:\n")
         for species in sorted(unmatched_orig_species):
-            f_6.write(f"\n{species}\n")
+            f_6.write(f"{species}\n")
 
-    return generated_dataframe, original_dataframe
+    # step 2: load and build the mapping dict
+    mapping_dict = dict()
+
+    with open(csv_path, "r") as f:
+        lines = f.readlines()
+
+        if len(lines) > 1:
+            for line in lines[1:]:
+                line = line.strip()
+                if not line:
+                    continue
+
+                parts = line.split(",",maxsplit=1)
+                if len(parts) != 2:
+                    continue
+
+                generated_block, original = parts[0].strip(), parts[1].strip()
+
+                generated_names = [
+                    name.strip().replace("//","")
+                    for name in generated_block.split("//")
+                    if name.strip()
+                ]
+
+                for name in generated_names:
+                    mapping_dict[name] = original
+    
+    # step 3: rename generated species names to original ones (if mapping exists)
+    if mapping_dict:
+        generated_dataframe = generated_dataframe.rename(index=mapping_dict)
+
+    return generated_dataframe
 
 
 def Ordering_by_original_rownames(df1,df2):

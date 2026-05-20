@@ -228,7 +228,8 @@ rule fourth_aggregation:
 rule Hamming_distance_Evaluation:
     input:
         "workdir/final_models/{sample}_tested.txt",
-        "workdir/expected_output_R/or{sample}.txt"
+        "workdir/expected_output_R/or{sample}.txt",
+        "workdir/SpeciesMap/{sample}_speciesMap.csv"
     output:
         "workdir/Evaluation/Arrow%/gen{sample}_vs_or{sample}_Arrow_eval.csv",
         "workdir/Evaluation/Reaction%/gen{sample}_vs_or{sample}_Reaction_eval.csv",
