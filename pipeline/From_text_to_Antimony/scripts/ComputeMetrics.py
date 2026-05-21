@@ -301,7 +301,7 @@ def order_matrices_by_original_columns(gen_df, orig_df):
                 distances.append(dist)
         
             best_idx = np.argmin(distances)
-            best_gen_col = gcandidates[best_idx]
+            best_gen_col = available_candidates[best_idx]
 
             best_vec = gen_df[best_gen_col].values
 
