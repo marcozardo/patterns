@@ -22,7 +22,7 @@ data = {
     "Reaction%":True,
     "Average Hamming distance":True,
     "Average RMSRE":True,
-    "Average correctly identified species":True,
+    "species%":True,
     "N° Species B&F(query/original)":round(df3.iloc[0, 0], 2),
     "N° Reactions(query/original)":round(df3.iloc[0, 1], 2),
     "N° Compartments(query/original)":round(df3.iloc[0, 2], 2),
@@ -90,7 +90,7 @@ df["Arrow%"] = ratio_5
 df["Reaction%"] = ratio_6
 df["Average Hamming distance"] = ratio_7
 df["Average RMSRE"] = ratio_8
-df["Average correctly identified species"] = ratio_9
+df["species%"] = ratio_9
 
 
 df.to_csv(out_csv)
