@@ -15,6 +15,7 @@ Av_Hamming_Dist_evaluation = snakemake.output[2]
 Av_RMSRE_evaluation = snakemake.output[3]
 different = snakemake.output[4]
 missing = snakemake.output[5]
+Correct_species_evaluation = snakemake.output[6]
 
 
 # Loading the models and extract the stechiometric matrices
@@ -48,6 +49,7 @@ def checking_simulation(gen_file, orig_file):
             Reaction = np.nan
             average_hamming_distance = np.nan
             average_RMSRE = np.nan
+            species_identification_rate = np.nan
 
             # save empty spurious/different species txt
             with open(different, "w") as f_5:
@@ -60,7 +62,7 @@ def checking_simulation(gen_file, orig_file):
                 f_6.write("\nNo matrices, No information")
 
         else:
-            gen_norm_matrix_mapped = normalization(gen_matrix,orig_matrix,csv_path=species_map)
+            gen_norm_matrix_mapped, species_identification_rate = normalization(gen_matrix,orig_matrix,csv_path=species_map)
 
             gen_ordered_matrix = Ordering_by_original_rownames(gen_norm_matrix_mapped, orig_matrix)
 
@@ -72,6 +74,7 @@ def checking_simulation(gen_file, orig_file):
         Reaction = np.nan
         average_hamming_distance = np.nan
         average_RMSRE = np.nan
+        species_identification_rate = np.nan
 
         # generated model doesn't executable, empty txt files
 
@@ -96,6 +99,9 @@ def checking_simulation(gen_file, orig_file):
     with open(Av_RMSRE_evaluation, "w") as f_4:
         csv_out_4 = pd.DataFrame({"Average_RMSRE": [average_RMSRE]})
         csv_out_4.to_csv(Av_RMSRE_evaluation, index=False)
+    with open(Correct_species_evaluation, "w") as f_7:
+        csv_out_5 = pd.DataFrame({"Average_Correct_species":[species_identification_rate]})
+        csv_out_5.to_csv(Correct_species_evaluation, index=False)
    
 # Function Extraction_matrix: load the models if simulation goes fine and extract the stechiomatric matrix of both (generated vs original)
 
@@ -199,7 +205,13 @@ def normalization(generated_dataframe, original_dataframe, csv_path):
     if mapping_dict:
         generated_dataframe = generated_dataframe.rename(index=mapping_dict)
 
-    return generated_dataframe
+    # compute % of correctly identified species after mapping
+
+    gen_species_after_mapping = set(generated_dataframe.index)
+    correctly_identified = orig_species.intersection(gen_species_after_mapping)
+    percent_correct_species = len(correctly_identified) / len(orig_species)
+
+    return generated_dataframe, percent_correct_species
 
 
 def Ordering_by_original_rownames(df1,df2):

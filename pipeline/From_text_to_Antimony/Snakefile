@@ -236,7 +236,8 @@ rule Hamming_distance_Evaluation:
         "workdir/Evaluation/Av_Hamming_Distance/gen{sample}_vs_or{sample}_Hamming_eval.csv",
         "workdir/Evaluation/Av_RMSRE/gen{sample}_vs_or{sample}_RMSRE_eval.csv",
         "workdir/Evaluation/different_species/{sample}_different_species.txt",
-        "workdir/Evaluation/missing_species/{sample}_missing_species.txt"
+        "workdir/Evaluation/missing_species/{sample}_missing_species.txt",
+        "workdir/Evaluation/Correct_species%/gen{sample}_vs_or{sample}_Correct_species_eval.csv"
 
     script:
         "scripts/ComputeMetrics.py"
@@ -289,9 +290,22 @@ rule eighth_aggregation:
         df = pd.concat(dfs, ignore_index=True)
         df.to_csv(output[0], index=False)
 
+rule ninth_aggregation:
+    input:
+        expand("workdir/Evaluation/Correct_species%/gen{sample}_vs_or{sample}_Correct_species_eval.csv",sample=Papers)
+    output:
+        "workdir/CSV/CorrectSpecies_evaluation.csv"
+    run:
+        import pandas as pd
+        
+        dfs = [pd.read_csv(file) for file in input]
+        df = pd.concat(dfs, ignore_index=True)
+        df.to_csv(output[0], index=False)
+
+
 rule aggregate_all:
     input:
-        expand("workdir/CSV/{metric}_evaluation.csv", metric=["first","second","third","AAFE","Arrow%","Reaction%","AvHammingDist","AvRMSRE"])
+        expand("workdir/CSV/{metric}_evaluation.csv", metric=["first","second","third","AAFE","Arrow%","Reaction%","AvHammingDist","AvRMSRE","CorrectSpecies"])
 
     output:
         "workdir/all_simulations.csv"

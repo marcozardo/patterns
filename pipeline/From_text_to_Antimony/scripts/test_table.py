@@ -22,6 +22,7 @@ data = {
     "Reaction%":True,
     "Average Hamming distance":True,
     "Average RMSRE":True,
+    "Average correctly identified species":True,
     "N° Species B&F(query/original)":round(df3.iloc[0, 0], 2),
     "N° Reactions(query/original)":round(df3.iloc[0, 1], 2),
     "N° Compartments(query/original)":round(df3.iloc[0, 2], 2),
@@ -57,6 +58,8 @@ seventh_column = pd.Series(df2["Average_Hamming_Distance"])
 
 eighth_column = pd.Series(df2["Average_RMSRE"])
 
+ninth_column = pd.Series(df2["Average_Correct_species"])
+
 total = len(first_column)
 first_success = first_column.count(0)
 second_total = len(second_column) 
@@ -73,6 +76,7 @@ ratio_5 = fifth_column.mean()
 ratio_6 = sixth_column.mean()
 ratio_7 = seventh_column.mean()
 ratio_8 = eighth_column.mean()
+ratio_9 = ninth_column.mean()
 
 print("day and time slot in which you have been used this LLM model:")
 df["Day:time-slot"] = input()
@@ -86,6 +90,7 @@ df["Arrow%"] = ratio_5
 df["Reaction%"] = ratio_6
 df["Average Hamming distance"] = ratio_7
 df["Average RMSRE"] = ratio_8
+df["Average correctly identified species"] = ratio_9
 
 
 df.to_csv(out_csv)
