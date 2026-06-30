@@ -1,4 +1,4 @@
 generated,original
 C,CML
-T_e,T_cell_effector
-T_n,T_cell_naive
+T_e//Te,T_cell_effector
+T_n//Tn,T_cell_naive
