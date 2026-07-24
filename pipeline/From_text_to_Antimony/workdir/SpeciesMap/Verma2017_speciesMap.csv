@@ -1,5 +1,5 @@
 generated,original
-E,E_CTL,s16
+E//E_CTL,s16
 I//I_infected_CD4,s3
 T//T_CD4,s4
 V//V_HIV,s2
