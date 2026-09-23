@@ -22,7 +22,7 @@ def simulate_and_check(file1, file2, file_time):
 
     # fix the right coordinates to properly simulate the Antimony model
 
-    Sampling_freq = int((end - start)/step)
+    sampling_freq = ((end - start)/step)
     
     gen_ok = True
     orig_ok = True
@@ -32,7 +32,7 @@ def simulate_and_check(file1, file2, file_time):
             original = f2.read()
 
         or_load = te.loadAntimonyModel(original)
-        ts_ground = or_load.simulate(0,end,int(end/Sampling_freq))
+        ts_ground = or_load.simulate(0,end,int(end/sampling_freq))
 
         # select data starting from this requested time:
 
@@ -54,7 +54,7 @@ def simulate_and_check(file1, file2, file_time):
             generated = f1.read()
 
         gen_load = te.loadAntimonyModel(generated)
-        ts_gen = gen_load.simulate(0,end,end/Sampling_freq)
+        ts_gen = gen_load.simulate(0,end,end/sampling_freq)
 
         # do the same with the generated simulation matrix
 
