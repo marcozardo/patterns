@@ -9,11 +9,20 @@ import math
 
 input_1 = snakemake.input[0]
 input_2 = snakemake.input[1]
+input_3 = snakemake.input[2]
 output_1 = snakemake.output[0]
 output_2 = snakemake.output[1]
 
 
-def simulate_and_check(file1, file2):
+def simulate_and_check(file1, file2, file_time):
+
+    timespan = pd.read_csv(file_time)
+    values = timespan.iloc[0].tolist()
+    start, end, step = map(int, values)
+
+    # fix the right coordinates to properly simulate the Antimony model
+
+    Sampling_freq = int((end - start)/step)
     
     gen_ok = True
     orig_ok = True
@@ -23,7 +32,20 @@ def simulate_and_check(file1, file2):
             original = f2.read()
 
         or_load = te.loadAntimonyModel(original)
-        ts_ground = or_load.simulate(0,100,200)
+        ts_ground = or_load.simulate(0,end,int(end/Sampling_freq))
+
+        # select data starting from this requested time:
+
+        time_or = np.asarray(ts_ground[:,0])
+
+        # find the first row corrsponding to start
+
+        first_row_or = np.searchsorted(time_or, start)
+
+        ts_ground_outres = ts_ground[first_row_or:]
+
+        ts_ground_outres.colnames = ts_ground.colnames
+
     except Exception:
         orig_ok = False
 
@@ -32,7 +54,18 @@ def simulate_and_check(file1, file2):
             generated = f1.read()
 
         gen_load = te.loadAntimonyModel(generated)
-        ts_gen = gen_load.simulate(0,100,200)
+        ts_gen = gen_load.simulate(0,end,end/Sampling_freq)
+
+        # do the same with the generated simulation matrix
+
+        time_gen = np.asarray(ts_gen[:,0])
+
+        first_row_gen = np.searchsorted(time_gen, start)
+
+        ts_gen_outres = ts_gen[first_row_gen:]
+
+        ts_gen_outres.colnames = ts_gen.colnames
+
     except Exception:
         gen_ok = False
 
@@ -41,10 +74,10 @@ def simulate_and_check(file1, file2):
     if orig_ok and gen_ok:
 
         # Compute reproducibility
-        aafe_result = partial_reproducibility(ts_ground, ts_gen)
+        aafe_result = partial_reproducibility(ts_ground_outres, ts_gen_outres)
 
         # plot both
-        make_plots(ts_ground, ts_gen, output_2)
+        make_plots(ts_ground_outres, ts_gen_outres, output_2)
 
         # write CSV
         with open(output_1, "w") as file:
@@ -53,7 +86,7 @@ def simulate_and_check(file1, file2):
 
     else:
         # Only original works -> plot only that
-        make_single_plot(ts_ground, output_2)
+        make_single_plot(ts_ground_outres, output_2)
 
         # AAEF not computed --> value = 1
         with open(output_1, "w") as file:
@@ -228,5 +261,5 @@ def make_plots(ts_ground, ts_gen, outfile):
     plt.close()
 
          
-simulate_and_check(input_1, input_2)
+simulate_and_check(input_1, input_2, input_3)
 
