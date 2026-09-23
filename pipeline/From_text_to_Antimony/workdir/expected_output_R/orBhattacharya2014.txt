@@ -47,4 +47,10 @@ model *Bhattacharya2014___A_mathematical_model_of_the_sterol_regulatory_element_
   // Display Names:
   compartment_ is "compartment";
 
+  // SBO terms:
+  HMGCR_Transcription.sboTerm = 183
+  HMGCR_mRNA_Degradation.sboTerm = 179
+  HMGCR_Translation.sboTerm = 184
+  HMGCR_Degradation.sboTerm = 179
+
 end
