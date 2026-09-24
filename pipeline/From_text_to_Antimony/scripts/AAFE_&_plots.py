@@ -54,7 +54,7 @@ def simulate_and_check(file1, file2, file_time):
             generated = f1.read()
 
         gen_load = te.loadAntimonyModel(generated)
-        ts_gen = gen_load.simulate(0,end,end/sampling_freq)
+        ts_gen = gen_load.simulate(0,end,int(end/sampling_freq))
 
         # do the same with the generated simulation matrix
 
