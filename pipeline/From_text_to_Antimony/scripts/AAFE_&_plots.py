@@ -179,7 +179,7 @@ def make_single_plot(ts_ground, outfile):
     if n == 0:
         plt.figure()
         plt.text(0.5, 0.5, "No variables to plot", ha="center", va="center")
-        plt.savefig(outfile, dpi=300)
+        plt.savefig(outfile, dpi=150)
         plt.close()
         return
 
@@ -199,7 +199,7 @@ def make_single_plot(ts_ground, outfile):
     axes[-1].set_xlabel("Time")
 
     plt.tight_layout()
-    plt.savefig(outfile, dpi=300)
+    plt.savefig(outfile, dpi=150)
     plt.close()
 
 def make_plots(ts_ground, ts_gen, outfile):
@@ -222,7 +222,7 @@ def make_plots(ts_ground, ts_gen, outfile):
     if n == 0:
         plt.figure()
         plt.text(0.5,0.5, "No variables to plot", ha="center", va="center")
-        plt.savefig(outfile, dpi=300)
+        plt.savefig(outfile, dpi=150)
         plt.close()
         return
 
@@ -257,7 +257,7 @@ def make_plots(ts_ground, ts_gen, outfile):
     fig.suptitle("Ground-truth vs Generated Simulation", y=0.995)
 
     plt.tight_layout()
-    plt.savefig(outfile, dpi=300)
+    plt.savefig(outfile, dpi=150)
     plt.close()
 
          
